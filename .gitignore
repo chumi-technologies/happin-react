@@ -1,0 +1,26 @@
+# OS Specific
+.DS_Store
+
+# IDE Specific
+nbproject
+.~lock.*
+.buildpath
+.idea
+.project
+.settings
+.vscode
+composer.lock
+*.sublime-workspace
+*.swp
+*.swo
+
+# Project Specific
+/node_modules
+*.log
+/lib
+tmp
+.changelog
+coverage/
+.nyc_output/
+.eslintcache
+.env
