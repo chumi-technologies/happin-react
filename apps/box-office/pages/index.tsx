@@ -1,10 +1,12 @@
 import Head from 'next/head'
-import { GetStaticProps } from 'next'
+import { GetStaticPropsResult } from 'next'
 import React from 'react'
 import styles from '../styles/Home.module.css'
 import { getEvents } from '../api/activity'
+import Link from 'next/link'
 
 interface Props {
+  count: number;
   activities: Array<Object>;
 }
 
@@ -21,11 +23,14 @@ const Home: React.FC<Props> = (props) => {
           Happin Box Office
         </h1>
 
-        <ul>
-          {props.activities.map((e: any) => (
-            <li>{e.title}</li>
-          ))}
-        </ul>
+        {props.activities.map((e: any) => (
+          <Link key={e._id} href={`/event/${e._id}`}>
+            <div className={styles.card}>
+              <h2>{e.title}</h2>
+              <p>{e.location}</p>
+            </div>
+          </Link>
+        ))}
 
         {/* <p className={styles.description}>
           Get started by editing{' '}
@@ -71,8 +76,8 @@ const Home: React.FC<Props> = (props) => {
   )
 }
 
-export const getStaticProps: GetStaticProps = async () => {
-  const res = await getEvents('abc')
+export async function getStaticProps(): Promise<GetStaticPropsResult<Props>> {
+  const res = await getEvents()
   const props = res.data
 
   return {
