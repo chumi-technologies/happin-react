@@ -1,7 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import styles from '../../styles/Event.module.css'
 import { GetStaticPropsResult } from 'next'
-import Link from 'next/link'
 import { getEvents, getEventById } from '../../api/activity'
 
 interface Event {
@@ -15,15 +14,27 @@ interface Event {
 const Event: React.FC<Event> = (props) => {
 
   const loadCheckoutIframe = () => {
-    let host = props.seatSelection ?
+    const host = props.seatSelection ?
       'https://checkout.happin.app/checkoutNew/reservedSeating/' : 'https://checkout.happin.app/checkoutNew/ticket/'
+    
+    const url = host+props._id
 
     if (process.browser) {
-      const iframeElement = document.createElement('iframe');
-      iframeElement.id = 'checkout-iframe';
+      const checkoutIframe = document.createElement('iframe');
+      checkoutIframe.id = 'checkout-iframe';
+      checkoutIframe.style.cssText = 'position: fixed;' +
+        'top: 0;' +
+        'left: 0;' +
+        'right: 0;' +
+        'bottom: 0;' +
+        'margin: 0;' +
+        'border: 0;' +
+        'width: 100%;' +
+        'height: 100%;' +
+        'z-index: 999;';
+      checkoutIframe.src = url;
+      document.body.appendChild(checkoutIframe);
     }
-
-    return host + props._id
   };
 
   return (
@@ -35,11 +46,9 @@ const Event: React.FC<Event> = (props) => {
           </div>
         </div>
         <div className="row">
-            <Link href={`${loadCheckoutIframe()}`}>
-              <button type="button" className="btn btn-primary">
-                Sell
-              </button>
-            </Link>
+          <button type="button" className="btn btn-primary" onClick={loadCheckoutIframe}>
+            Sell
+          </button>
         </div>
       </div>   
   )
