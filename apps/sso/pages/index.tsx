@@ -2,8 +2,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/Link'
+import { useState } from 'react'; 
 
 export default function Home() {
+  const [login, setLogin] = useState(true)
+  const [role, setRole] = useState("fan")
 
   return (
     <div className={styles.container}>
@@ -11,22 +14,23 @@ export default function Home() {
         <title>Login</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main className={styles.main}>
-        <h1 className={styles.title}>Login</h1>
-
-        <div className="btn-group" role="group" aria-label="Basic example">
-          <button type="button" className="btn btn-primary">Fan</button>
-          <button type="button" className="btn btn-primary">Organizer</button>
+        { login ? <h1 className={styles.title}>Login</h1> : <h1 className={styles.title}>Sign up</h1> }
+        
+        <div className="btn-group" role="group">
+          <button className="btn btn-primary" onClick={() => setRole("fan")}>Fan</button>
+          <button className="btn btn-primary" onClick={() => setRole("organizer")}>Organizer</button>
         </div>
 
         <div className={styles.grid}>
           <div className="d-grid gap-3">
-            <Link href={`/phone`}>
-              <div className="btn btn-primary">
-                Continue with Phone
-              </div>
-            </Link>
+            { role === "fan" ? 
+              <Link href={`/phone`}>
+                <div className="btn btn-primary">
+                  Continue with Phone
+                </div>
+              </Link> : null 
+            }
             <Link href={`/email`}>
               <div className="btn btn-primary">
                 Continue with Email
@@ -38,7 +42,10 @@ export default function Home() {
       </main>
 
       <footer className={styles.footer}>
-          Can't login? sign up for new user
+        { login ? 
+          (<div>Can't login? <div className="btn btn-primary" onClick={() => setLogin(!login)}>sign up</div> for new user</div>) :
+          (<div>Already onboard? <div className="btn btn-primary" onClick={() => setLogin(!login)}>Log in</div></div>)
+        }
       </footer>
     </div>
   )
