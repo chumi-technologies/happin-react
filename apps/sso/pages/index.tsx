@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Link from 'next/Link'
 import { useState } from 'react'; 
@@ -10,10 +9,6 @@ export default function Home() {
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Login</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <main className={styles.main}>
         { login ? <h1 className={styles.title}>Login</h1> : <h1 className={styles.title}>Sign up</h1> }
         
