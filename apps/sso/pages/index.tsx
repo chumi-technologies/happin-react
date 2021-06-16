@@ -2,10 +2,27 @@ import 'bootstrap/dist/css/bootstrap.css'
 import styles from '../styles/Home.module.css'
 import Link from 'next/Link'
 import { useState } from 'react'; 
+import { firebaseClient } from '../api/firebaseClient';
 
 export default function Home() {
   const [login, setLogin] = useState(true)
   const [role, setRole] = useState("fan")
+
+  const googleAuth = () => {
+    return new Promise<any>((resolve, reject) => {
+      const provider = new firebaseClient.auth.GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      firebaseClient.auth()
+        .signInWithPopup(provider)
+        .then(res => {
+          resolve(res);
+        }, err => {
+          console.log(err);
+          reject(err);
+        })
+    })
+  }
 
   return (
     <div className={styles.container}>
@@ -31,7 +48,9 @@ export default function Home() {
                 Continue with Email
               </div>
             </Link>
-            <button className="btn btn-primary" type="button">Continue with Google</button>
+            <button className="btn btn-primary" type="button"
+              onClick={googleAuth}
+            >Continue with Google</button>
           </div>
         </div>
       </main>

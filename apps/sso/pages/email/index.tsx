@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import Link from 'next/Link';
 import { firebaseClient } from '../../api/firebaseClient';
 
-
 export default function EmailLogin() {
   const [email, setEmail] = useState('');
   const [pass, setPass] = useState('');
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -31,7 +31,9 @@ export default function EmailLogin() {
               .createUserWithEmailAndPassword(email, pass);
             window.location.href = '/';
           }}
-        >Sign up</button>
+        >
+          Sign up
+        </button>
         <button
           onClick={async () => {
             const res = await firebaseClient.auth().signInWithEmailAndPassword(email, pass);
