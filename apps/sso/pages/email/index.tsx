@@ -1,5 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.css'
-import styles from '../../styles/Home.module.css'
 import React, { useState } from 'react';
 import Link from 'next/Link';
 import { firebaseClient } from '../../api/firebaseClient';
@@ -9,9 +7,9 @@ export default function EmailLogin() {
   const [pass, setPass] = useState('');
 
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>Log In with your email</h1>
+    <div>
+      <main>
+        <h1>Log In with your email</h1>
 
         <input
           value={email}
@@ -46,7 +44,7 @@ export default function EmailLogin() {
         </button>
       </main>
 
-      <footer className={styles.footer}>
+      <footer>
         <Link href="/">
           <a>More Login Option</a>
         </Link>
