@@ -1,0 +1,15 @@
+// ========================================
+// Login page
+// ========================================
+.login-bg {
+  @apply fixed inset-0 flex items-center justify-center;
+  background-color: rgba(40, 41, 44, 0.9);
+  z-index: 100;
+}
+.login-container {
+  @apply flex flex-col bg-white rounded-2xl;
+  width: calc(100% - 40px);
+  min-height: 600px;
+  max-width: 500px;
+  padding: 40px 30px 30px;
+}
