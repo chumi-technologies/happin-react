@@ -9,23 +9,40 @@ import PhoneInput from 'react-phone-input-2';
 import classNames from 'classnames';
 import { Input } from '@chakra-ui/react';
 
+declare var grecaptcha: any
+
 export default function Home() {
   const [phone, setPhone] = useState('')
+  const [verificationCode, setVerificationCode] = useState('')
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<any | null>(null)
-  const [verificationCode, setVerificationCode] = useState<any | null>(null)
-  let recaptchaWidgetId
+  const [signinResult, setSigninResult] = useState<any | null>(null)
+  const [recaptchaWidgetId, setRecaptchaWidgetId] = useState<any | null>(null)
 
   const sendVerificationCode = async () => {
-    console.log("phone", phone, "captcha", recaptchaVerifier)
     try {
-      firebaseClient.auth().signInWithPhoneNumber(phone, recaptchaVerifier).then(verificationCode => {
-        setVerificationCode(verificationCode)
+      firebaseClient.auth().signInWithPhoneNumber(phone, recaptchaVerifier).then(res => {
+        setSigninResult(res)
       }, err => {
         console.log(err)
       })
     } catch (err) {
       console.log('Unknown error, please try to update your browser');
     };
+  }
+
+  const login = async () => {
+    try {
+      const redirectLoginResult = await signinResult.confirm(verificationCode)
+      console.log(redirectLoginResult)
+    } catch (err) {
+      console.log(err);
+      grecaptcha.reset(recaptchaWidgetId);
+    }
+  }
+
+  const resend = () => {
+    setSigninResult(null)
+    grecaptcha.reset(recaptchaWidgetId);
   }
 
   // Lifecycle hook - ComponentDidMount
@@ -38,7 +55,7 @@ export default function Home() {
         }
       });
       verifier.render().then((widgetId: any) => {
-        recaptchaWidgetId = widgetId;
+        setRecaptchaWidgetId(widgetId)
       }, (error: any) => {
         console.log(error);
       })
@@ -63,11 +80,13 @@ export default function Home() {
             onChange={phone => setPhone("+"+phone)}
           />
           <div className="mt-4" id="recaptcha-container"></div>
-          <Input placeholder="Enter 6 digital" size="md" className="mt-4" />
+          <Input placeholder="Enter 6 digital" size="md" className="mt-4" 
+            value={verificationCode}
+            onChange={e => setVerificationCode(e.target.value)}/>
           <button className="btn btn-light w-full mt-12" onClick={sendVerificationCode}>Send Code</button>
           <div className="flex mt-4">
-            <button className="btn btn-teal w-full flex-grow">Resend</button>
-            <button className="btn btn-light ml-4 !px-8">Confirm</button>
+            <button className="btn btn-teal w-full flex-grow" onClick={resend}>Resend</button>
+            <button className="btn btn-light ml-4 !px-8" onClick={login}>Confirm</button>
           </div>
         </div>
         <div className="flex-grow" />
