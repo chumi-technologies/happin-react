@@ -79,8 +79,8 @@ export default function Home() {
             disableSearchIcon={true}
             onChange={phone => setPhone("+"+phone)}
           />
-          <div className="mt-4" id="recaptcha-container"></div>
-          <Input placeholder="Enter 6 digital" size="md" className="mt-4" 
+          <div className="mt-4 flex justify-center" id="recaptcha-container" />
+          <Input placeholder="Enter 6 digital" size="md" className="mt-4"
             value={verificationCode}
             onChange={e => setVerificationCode(e.target.value)}/>
           <button className="btn btn-light w-full mt-12" onClick={sendVerificationCode}>Send Code</button>
