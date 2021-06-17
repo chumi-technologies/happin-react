@@ -1,11 +1,11 @@
 import Link from 'next/Link'
-import { useState } from 'react'; 
+import { useState } from 'react';
 import { firebaseClient } from '../api/firebaseClient';
 import classNames from 'classnames';
 
 export default function Home() {
   const [roleCur, setRoleCur] = useState(0);
-  const roleList = ['Fan', 'Organizer']
+  const roleList = ['Fan', 'Creator']
 
   const googleAuth = () => {
     return new Promise<any>((resolve, reject) => {
@@ -28,7 +28,7 @@ export default function Home() {
       <div className="login-container">
         <div className="text-center">
           <h2 className="text-4xl font-semibold mb-12 mt-6">Login</h2>
-          <div className="toggle-tab average w-56">
+          <div className="toggle-tab average w-52">
             {roleList.map((item, index) => (
               <div
                 key={index}
@@ -45,7 +45,7 @@ export default function Home() {
           <Link href="/email">
             <button className="btn btn-outline-dark w-full mb-4">Continue with email</button>
           </Link>
-          <button className="btn btn-outline-dark w-full mb-4 flex items-center justify-center" onClick={googleAuth}> 
+          <button className="btn btn-outline-dark w-full mb-4 flex items-center justify-center" onClick={googleAuth}>
             <img src="/images/google-logo.svg" alt="" width="18" />
             <span className="ml-3">Continue with Google</span>
           </button>

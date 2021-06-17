@@ -13,13 +13,13 @@ const Input = {
     md: {
       field: {
         fontSize: "md",
-        px: 5,
+        px: 4,
         h: 12,
         borderRadius: "lg"
       },
       addon: {
         fontSize: "md",
-        px: 5,
+        px: 4,
         h: 12,
         borderRadius: "lg"
       }
@@ -36,6 +36,13 @@ const Input = {
     }
   }
 };
+const FormError = {
+  baseStyle: {
+    text: {
+      mt: 1
+    }
+  }
+}
 
 const breakpoints = createBreakpoints({
   sm: "640px",
@@ -83,7 +90,8 @@ const theme = extendTheme({
   },
   components: {
     Button,
-    Input
+    Input,
+    FormError
   },
   breakpoints
 });
