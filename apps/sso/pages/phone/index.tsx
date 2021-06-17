@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { firebaseClient } from '../../api/firebaseClient';
 import firebase from "firebase/app";
@@ -13,15 +13,36 @@ declare var grecaptcha: any
 
 export default function Home() {
   const [phone, setPhone] = useState('')
-  const [verificationCode, setVerificationCode] = useState('')
+
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<any | null>(null)
-  const [signinResult, setSigninResult] = useState<any | null>(null)
   const [recaptchaWidgetId, setRecaptchaWidgetId] = useState<any | null>(null)
+  
+  const [verificationCode, setVerificationCode] = useState('')
+  const [resendTimer, setResendTimer] = useState(0)
+  const [verificationSent, setVerificationSent] = useState(false)
+  const [signinResult, setSigninResult] = useState<any | null>(null)
+
+
+  React.useEffect(() => {
+    const tm = window.setInterval(() => {
+      if (resendTimer > 0) {
+        setResendTimer(resendTimer - 1);
+      }
+      if (resendTimer <= 0) {
+        clearInterval(tm)
+      }
+    }, 1000);
+    return () => {
+      window.clearInterval(tm);
+    };
+  }, [resendTimer]);
 
   const sendVerificationCode = async () => {
     try {
       firebaseClient.auth().signInWithPhoneNumber(phone, recaptchaVerifier).then(res => {
         setSigninResult(res)
+        setVerificationSent(true)
+        setResendTimer(60)
       }, err => {
         console.log(err)
       })
@@ -79,14 +100,16 @@ export default function Home() {
             disableSearchIcon={true}
             onChange={phone => setPhone("+"+phone)}
           />
-          <div className="mt-4 flex justify-center" id="recaptcha-container" />
+          <div className="mt-4 flex justify-center" hidden={verificationSent} id="recaptcha-container" />
           <Input placeholder="Enter 6 digital" size="md" className="mt-4"
             value={verificationCode}
             onChange={e => setVerificationCode(e.target.value)}/>
-          <button className="btn btn-light w-full mt-12" onClick={sendVerificationCode}>Send Code</button>
+          <button className="btn btn-light w-full mt-12" hidden={verificationSent} onClick={sendVerificationCode}>Send Code</button>
           <div className="flex mt-4">
-            <button className="btn btn-teal w-full flex-grow" onClick={resend}>Resend</button>
-            <button className="btn btn-light ml-4 !px-8" onClick={login}>Confirm</button>
+            <button className="btn btn-teal w-full flex-grow" hidden={!verificationSent} disabled={resendTimer > 0} onClick={resend}>
+              Resend {resendTimer === 0 ? '' : '(' + resendTimer + ' seconds)'}
+              </button>
+            <button className="btn btn-light ml-4 !px-8" hidden={!verificationSent} onClick={login}>Confirm</button>
           </div>
         </div>
         <div className="flex-grow" />
@@ -98,6 +121,5 @@ export default function Home() {
         </div>
       </div>
     </div>
-
   )
 }

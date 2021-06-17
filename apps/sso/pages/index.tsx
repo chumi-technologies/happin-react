@@ -5,7 +5,7 @@ import classNames from 'classnames';
 
 export default function Home() {
   const [roleCur, setRoleCur] = useState(0);
-  const roleList = ['Fan', 'Creator']
+  const roleList = ['Fan', 'Organizer']
 
   const googleAuth = () => {
     return new Promise<any>((resolve, reject) => {

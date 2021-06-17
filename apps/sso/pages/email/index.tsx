@@ -7,9 +7,9 @@ import { Formik, Form, Field, FieldProps } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 
 export default function EmailLogin() {
-  const [showPWD, setShowPWD] = React.useState(false)
+  const [showPWD, setShowPWD] = useState(false)
   const [roleCur, setRoleCur] = useState(0);
-  const roleList = ['Fan', 'Creator']
+  const roleList = ['Fan', 'Organizer']
 
   function validateEmail(value: string) {
     if (!value) {
@@ -92,16 +92,6 @@ export default function EmailLogin() {
             )}
           </Formik>
         </div>
-        {/*<button
-          onClick={async () => {
-            await firebaseClient
-              .auth()
-              .createUserWithEmailAndPassword(email, pass);
-            window.location.href = '/';
-          }}
-        >
-          Sign up
-        </button>*/}
         <div className="flex-grow" />
         <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid pt-3 text-sm text-gray-500">
           <div className="flex justify-between">
