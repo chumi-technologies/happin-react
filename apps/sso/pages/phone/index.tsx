@@ -8,6 +8,7 @@ import Link from 'next/Link';
 import PhoneInput from 'react-phone-input-2';
 import classNames from 'classnames';
 import { Input } from '@chakra-ui/react';
+import { useAppState } from '../../contexts/state';
 
 declare var grecaptcha: any
 
@@ -21,6 +22,8 @@ export default function Home() {
   const [resendTimer, setResendTimer] = useState(0)
   const [verificationSent, setVerificationSent] = useState(false)
   const [signinResult, setSigninResult] = useState<any | null>(null)
+
+  const { signin, toggleMode } = useAppState();
 
 
   React.useEffect(() => {
@@ -88,7 +91,11 @@ export default function Home() {
     <div className="login-bg">
       <div className="login-container">
         <div className="text-center">
-          <h2 className="text-3xl font-semibold mt-6">Log In with your phone</h2>
+          {
+            signin 
+            ? <h2 className="text-3xl font-semibold mt-6">Log In with your phone</h2>
+            : <h2 className="text-3xl font-semibold mt-6">Sign up</h2>
+          }
           <div className="text-gray-500 text-sm mt-3">6 digit code already sent over SMS to</div>
           <div className="text-sm mt-1" hidden={true}>905 483 9655</div>
         </div>
@@ -113,12 +120,21 @@ export default function Home() {
           </div>
         </div>
         <div className="flex-grow" />
-        <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid pt-3 text-sm text-gray-500">
-          <div className="flex justify-between">
-            <Link href="/"><a className="underline transition font-semibold text-teal-500 hover:text-teal-600">More login options</a></Link>
-            <div>Can’t login? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600">Sign up</a></Link> for new user?</div>
-          </div>
-        </div>
+        {
+          signin 
+          ? <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid pt-3 text-sm text-gray-500">
+              <div className="flex justify-between">
+                <Link href="/"><a className="underline transition font-semibold text-teal-500 hover:text-teal-600">More login options</a></Link>
+                <div>Can’t login? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600" onClick={toggleMode}>Sign up</a></Link> for new user?</div>
+              </div>
+            </div>
+          : <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid pt-3 text-sm text-gray-500">
+              <div className="flex justify-between">
+                <Link href="/"><a className="underline transition font-semibold text-teal-500 hover:text-teal-600">More signup options</a></Link>
+                <div>Already onboard? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600" onClick={toggleMode}>Log in</a></Link></div>
+              </div>
+            </div>
+        }
       </div>
     </div>
   )
