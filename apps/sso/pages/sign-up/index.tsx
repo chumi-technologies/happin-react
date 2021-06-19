@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/Link';
 import { firebaseClient } from '../../api/firebaseClient';
-import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox } from '@chakra-ui/react';
+import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox, Tooltip } from '@chakra-ui/react';
 import classNames from 'classnames';
 import { Formik, Form, Field, FieldProps, useFormikContext, useFormik } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
@@ -10,7 +10,17 @@ import { SubmitButton } from '@components/SubmitButton';
 export default function EmailLogin() {
   const [showPWD, setShowPWD] = useState(false);
   const [roleCur, setRoleCur] = useState(0);
+  const [age, setAge] = useState(false);
+  const [terms, setTerms] = useState(false);
+  const [ageState, setAgeState] = useState(false);
+  const [termsState, setTermsState] = useState(false);
   const roleList = ['Fan', 'Organizer'];
+
+  useEffect(() => {
+    console.log(age, terms);
+    age && setAgeState(false)
+    terms && setTermsState(false)
+  }, [age, terms])
 
   function validateEmail(value: string) {
     if (!value) {
@@ -39,7 +49,12 @@ export default function EmailLogin() {
     }
     return false
   }
-
+  /*function validateAgeTerms(value: boolean) {
+    if (!value) {
+      return "Last name is required";
+    }
+    return false
+  }*/
 
   return (
     <div className="login-bg">
@@ -117,9 +132,45 @@ export default function EmailLogin() {
                     </FormControl>
                   )}
                 </Field>
-                <SubmitButton className="btn btn-dark w-full mt-4 mb-8">Continue</SubmitButton>
-                <Checkbox><span className="text-sm leading-none text-gray-600">I’m 13 or over years of age</span></Checkbox>
-                <Checkbox mt={1}><span className="text-sm leading-none text-gray-600">I agree to Happin’s <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Term of Use</a></Link> and <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Privacy Policy.</a></Link></span></Checkbox>
+                <SubmitButton
+                  className="btn btn-dark w-full mt-4 mb-8"
+                  onClick={() => {
+                    if (!age) {
+                      setAgeState(true)
+                    }
+                    if (!terms) {
+                      setTermsState(true)
+                    }
+                  }}
+                >Continue</SubmitButton>
+                {/*<Field name="ageTerms" validate={validateAgeTerms}>
+                  {({ field, form }: FieldProps) => (
+                    <FormControl isInvalid={!!form.errors.ageTerms && !!form.touched.ageTerms}>
+                      <Checkbox id="ageTerms" {...field}>
+                        <span className="text-sm leading-none text-gray-600">I’m 13 or over years of age</span>
+                      </Checkbox>
+                    </FormControl>
+                  )}
+                </Field>*/}
+                <Checkbox
+                  isChecked={age}
+                  isInvalid={ageState}
+                  onChange={() => {
+                    setAge(s => !s)
+                  }}
+                >
+                  <span className="text-sm leading-none text-gray-600">I’m 13 or over years of age</span>
+                </Checkbox>
+                <Checkbox
+                  isChecked={terms}
+                  isInvalid={termsState}
+                  mt={1}
+                  onChange={() => {
+                    setTerms(s => !s)
+                  }}
+                >
+                  <span className="text-sm leading-none text-gray-600">I agree to Happin’s <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Term of Use</a></Link> and <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Privacy Policy.</a></Link></span>
+                </Checkbox>
               </Form>
             )}
           </Formik>
