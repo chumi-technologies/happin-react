@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Link from 'next/Link';
 import { firebaseClient } from '../../api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox } from '@chakra-ui/react';
 import classNames from 'classnames';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import { Formik, Form, Field, FieldProps, useFormikContext, useFormik } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
+import { SubmitButton } from '@components/SubmitButton';
 
 export default function EmailLogin() {
   const [showPWD, setShowPWD] = useState(false);
@@ -107,7 +108,7 @@ export default function EmailLogin() {
                           placeholder="Password"
                         />
                         <InputRightElement width="3rem">
-                          <div className="leading-none p-1" onClick={() => setShowPWD(s => !s)}>
+                          <div className="leading-none p-1 cursor-pointer" onClick={() => setShowPWD(s => !s)}>
                             {showPWD ? <PreviewOpen size="18" fill="#9ca3af"/> : <PreviewCloseOne size="18" fill="#9ca3af"/>}
                           </div>
                         </InputRightElement>
@@ -116,7 +117,7 @@ export default function EmailLogin() {
                     </FormControl>
                   )}
                 </Field>
-                <button className="btn btn-dark w-full mt-4 mb-8" type="submit">Continue</button>
+                <SubmitButton className="btn btn-dark w-full mt-4 mb-8">Continue</SubmitButton>
                 <Checkbox><span className="text-sm leading-none text-gray-600">I’m 13 or over years of age</span></Checkbox>
                 <Checkbox mt={1}><span className="text-sm leading-none text-gray-600">I agree to Happin’s <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Term of Use</a></Link> and <Link href="/"><a className="transition text-rose-500 hover:text-rose-600">Privacy Policy.</a></Link></span></Checkbox>
               </Form>

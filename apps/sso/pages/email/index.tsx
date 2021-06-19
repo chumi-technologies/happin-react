@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { useAppState } from '../../contexts/state';
+import { SubmitButton } from '@components/SubmitButton';
 
 export default function EmailLogin() {
   const [showPWD, setShowPWD] = useState(false)
@@ -76,7 +77,7 @@ export default function EmailLogin() {
                           placeholder="Password"
                         />
                         <InputRightElement width="3rem">
-                          <div className="leading-none p-1" onClick={() => setShowPWD(s => !s)}>
+                          <div className="leading-none p-1 cursor-pointer" onClick={() => setShowPWD(s => !s)}>
                             {showPWD ? <PreviewOpen size="18" fill="#9ca3af"/> : <PreviewCloseOne size="18" fill="#9ca3af"/>}
                           </div>
                         </InputRightElement>
@@ -89,7 +90,7 @@ export default function EmailLogin() {
                     </FormControl>
                   )}
                 </Field>
-                <button className="btn btn-dark w-full mt-10" type="submit">Continue</button>
+                <SubmitButton className="btn btn-dark w-full mt-4 mb-8">Continue</SubmitButton>
               </Form>
             )}
           </Formik>

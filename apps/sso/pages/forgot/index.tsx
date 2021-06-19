@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Link from 'next/Link';
 import { FormControl, FormErrorMessage, Input } from '@chakra-ui/react';
 import { Formik, Form, Field, FieldProps } from 'formik';
+import { SubmitButton } from '@components/SubmitButton';
 
 export default function Forgot() {
 
@@ -42,7 +43,7 @@ export default function Forgot() {
                     </FormControl>
                   )}
                 </Field>
-                <button className="btn btn-dark w-full mt-10" type="submit">Send reset link</button>
+                <SubmitButton className="btn btn-dark w-full mt-10">Send reset link</SubmitButton>
               </Form>
             )}
           </Formik>
