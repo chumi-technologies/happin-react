@@ -1,5 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
-import { createBreakpoints, getColor } from '@chakra-ui/theme-tools';
+import { createBreakpoints, mode } from '@chakra-ui/theme-tools';
 const colors = require('tailwindcss/colors');
 
 const Button = {
@@ -43,7 +43,39 @@ const FormError = {
     }
   }
 }
-
+const Checkbox = {
+  baseStyle: {
+    control: {
+      border: '1px solid',
+      borderRadius: '3px',
+      _checked: {
+        bg: colors.coolGray['900'],
+        borderColor: colors.coolGray['900'],
+        _hover: {
+          bg: colors.coolGray['900'],
+          borderColor: colors.coolGray['900']
+        }
+      }
+    },
+    label: {
+      display: 'inline-flex'
+    }
+  },
+  sizes: {
+    md: {
+      // control: {
+      //   w: number;
+      //   h: number;
+      // };
+      // label: {
+      //   fontSize: string;
+      // };
+      icon: {
+        fontSize: '8px'
+      }
+    }
+  }
+}
 const breakpoints = createBreakpoints({
   sm: "640px",
   md: "768px",
@@ -53,8 +85,8 @@ const breakpoints = createBreakpoints({
 
 const theme = extendTheme({
   fonts: {
-    heading: 'MDPrimer, \'PingFang SC\', Arial, sans-serif',
-    body: 'MDPrimer, \'PingFang SC\', Arial, sans-serif'
+    heading: '\'Helvetica Neue\', \'PingFang SC\', Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'',
+    body: '\'Helvetica Neue\', \'PingFang SC\', Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\''
   },
   shadows: {
     outline: 'none'
@@ -91,7 +123,8 @@ const theme = extendTheme({
   components: {
     Button,
     Input,
-    FormError
+    FormError,
+    Checkbox
   },
   breakpoints
 });

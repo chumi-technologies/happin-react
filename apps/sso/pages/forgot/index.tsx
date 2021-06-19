@@ -42,7 +42,7 @@ export default function Forgot() {
                     </FormControl>
                   )}
                 </Field>
-                <button className="btn btn-light w-full mt-10" type="submit">Send reset link</button>
+                <button className="btn btn-dark w-full mt-10" type="submit">Send reset link</button>
               </Form>
             )}
           </Formik>
