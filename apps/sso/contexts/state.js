@@ -6,7 +6,7 @@ export function AppState({ children }) {
   const [signin, setSignin] = useState(true);
 
   const toggleMode = () => {
-    setSignin(signin => !signin);
+    setSignin(s => !s);
   }
 
   return (

@@ -84,6 +84,13 @@ const breakpoints = createBreakpoints({
 })
 
 const theme = extendTheme({
+  styles: {
+    global: {
+      body: {
+        background: 'transparent'
+      }
+    },
+  },
   fonts: {
     heading: '\'Helvetica Neue\', \'PingFang SC\', Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\'',
     body: '\'Helvetica Neue\', \'PingFang SC\', Arial, sans-serif, \'Apple Color Emoji\', \'Segoe UI Emoji\', \'Segoe UI Symbol\''
