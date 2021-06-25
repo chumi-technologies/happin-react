@@ -4,13 +4,17 @@ const AppContext = createContext();
 
 export function AppState({ children }) {
   const [signin, setSignin] = useState(true);
+  const [origin, setOrigin] = useState(null);
 
   const toggleMode = () => {
     setSignin(s => !s);
   }
 
   return (
-    <AppContext.Provider value={{signin, toggleMode}}>
+    <AppContext.Provider value={{
+      signin, toggleMode,
+      origin, setOrigin
+    }}>
       {children}
     </AppContext.Provider>
   );

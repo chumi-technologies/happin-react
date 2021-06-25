@@ -1,15 +1,31 @@
 import Link from 'next/Link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { firebaseClient } from '../api/firebaseClient'
 import classNames from 'classnames'
 import { useAppState } from '../contexts/state'
+import { useRouter } from 'next/dist/client/router'
 
 
 export default function Home() {
+  const { signin, toggleMode, setOrigin } = useAppState();
   const [roleCur, setRoleCur] = useState(0);
   const roleList = ['Fan', 'Organizer']
+  const router = useRouter()
 
-  const { signin, toggleMode } = useAppState();
+  useEffect(() => {
+    if (router.query && Object.keys(router.query).length) {
+      const { origin, role, prefillEmail } = router.query;
+      // load setting from query into state
+      console.log('SSO save origin', router.query.origin);
+      setOrigin(router.query.origin);
+      if (role) {
+        setRoleCur(1);
+        if (prefillEmail) {
+          // TODO: redirect organizer email with prefill value
+        }
+      }
+    }
+  }, [router.query]);
 
   const googleAuth = () => {
     return new Promise<any>((resolve, reject) => {

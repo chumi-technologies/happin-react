@@ -23,7 +23,7 @@ export default function Home() {
   const [verificationSent, setVerificationSent] = useState(false)
   const [signinResult, setSigninResult] = useState<any | null>(null)
 
-  const { signin, toggleMode } = useAppState();
+  const { signin, toggleMode, origin } = useAppState();
 
 
   React.useEffect(() => {
@@ -56,8 +56,11 @@ export default function Home() {
 
   const login = async () => {
     try {
-      const redirectLoginResult = await signinResult.confirm(verificationCode)
-      console.log(redirectLoginResult)
+      const loginResult = await signinResult.confirm(verificationCode)
+      console.log('loginResult', loginResult)
+      // TODO: should unify in one place/module
+      // TODO: construct url for manage dasboard and happin.app
+      window.parent.postMessage({ action: 'redirect', payload: { url: 'xxx' } }, origin);
     } catch (err) {
       console.log(err);
       grecaptcha.reset(recaptchaWidgetId);
