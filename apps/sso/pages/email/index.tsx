@@ -3,16 +3,17 @@ import Link from 'next/Link';
 import { firebaseClient } from '../../api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import classNames from 'classnames';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikValues } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { useAppState } from '../../contexts/state';
 import { SubmitButton } from '@components/SubmitButton';
+import { getSaaSDashboardURL } from 'utils/redirect-url';
 
 export default function EmailLogin() {
   const [showPWD, setShowPWD] = useState(false)
   const [roleCur, setRoleCur] = useState(0);
   const roleList = ['Fan', 'Organizer']
-  const { signin, toggleMode } = useAppState();
+  const { origin, signin, toggleMode } = useAppState();
 
   function validateEmail(value: string) {
     if (!value) {
@@ -28,6 +29,19 @@ export default function EmailLogin() {
       return "Password is required";
     }
     return false
+  }
+
+  const onFormSubmit: FormikConfig<{ email: string, password: string }>['onSubmit'] = async ({ email, password }, actions) => {
+    actions.setSubmitting(false)
+    const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+    console.log('onFormSubmit email res', res);
+    const firebaseToken = await res?.user?.getIdToken();
+    if (firebaseToken) {
+      const redirectURL = await getSaaSDashboardURL(firebaseToken, email);
+      console.log('redirectURL', redirectURL);
+
+      window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+    }
   }
 
   return (
@@ -47,13 +61,7 @@ export default function EmailLogin() {
       <div className="w-full max-w-sm mx-auto mt-8">
         <Formik
           initialValues={{ email: '', password: '' }}
-          onSubmit={async ({email, password}, actions) => {
-            actions.setSubmitting(false)
-            const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
-            const parsed = JSON.parse(JSON.stringify(res));
-            console.log(parsed.user.stsTokenManager.accessToken)
-            // window.location.href = '/';
-          }}
+          onSubmit={onFormSubmit}
         >
           {(props) => (
             <Form>
