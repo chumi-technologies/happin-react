@@ -1,0 +1,92 @@
+// Button
+.btn {
+  @apply py-3 px-4 rounded-lg font-medium focus:outline-none text-base border-0 transition;
+}
+.btn-outline-dark {
+  @apply bg-white text-gray-900 border border-solid border-gray-900;
+  &:hover {
+    @apply bg-gray-100
+  }
+  &:active {
+    @apply bg-gray-200
+  }
+}
+.btn-outline-light {
+  @apply bg-white text-gray-900 border border-solid border-gray-300;
+  &:hover {
+    @apply bg-gray-100
+  }
+  &:active {
+    @apply bg-gray-200
+  }
+}
+.btn-dark {
+  @apply bg-gray-900 text-white;
+  &:hover {
+    @apply bg-rose-500;
+  }
+  &:active {
+    @apply bg-rose-600;
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-100 text-gray-300;
+    cursor: not-allowed;
+  }
+}
+.btn-rose {
+  @apply bg-rose-500 text-white;
+  &:hover {
+    @apply bg-rose-600;
+  }
+  &:active {
+    @apply bg-rose-700
+  }
+  &.disabled, &:disabled {
+    @apply bg-rose-100;
+    cursor: not-allowed;
+  }
+}
+.btn-teal {
+  @apply bg-teal-500 text-white;
+  &:hover {
+    @apply bg-teal-600;
+  }
+  &:active {
+    @apply bg-teal-700
+  }
+  &.disabled, &:disabled {
+    @apply bg-teal-100;
+    cursor: not-allowed;
+  }
+}
+.btn-light {
+  @apply bg-gray-100;
+  &:hover {
+    @apply bg-gray-200
+  }
+  &:active {
+    @apply bg-gray-300
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-100 text-gray-300;
+    cursor: not-allowed;
+  }
+}
+
+// Toggle tab
+.toggle-tab {
+  @apply inline-flex bg-gray-100 rounded-full p-1;
+}
+.toggle-tab-item {
+  @apply px-2 py-2 text-sm font-medium rounded-full cursor-pointer transition duration-100;
+  &:not(.active):hover {
+    @apply text-rose-500;
+  }
+  &.active {
+    @apply bg-rose-500 text-white;
+    //box-shadow: 0 3px 6px 0 rgba(140, 152, 164, 25%);
+  }
+  .average &{
+    @apply w-1/2 text-center;
+  }
+}
