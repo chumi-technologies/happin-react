@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import { firebaseClient } from '../../api/firebaseClient';
+import { firebaseClient } from '@api/firebaseClient';
 import firebase from "firebase/app";
 import 'firebase/auth';
 

@@ -1,4 +1,4 @@
-import { getChumiServerToken } from 'api/happin-server';
+import { getChumiServerToken } from '@api/happin-server';
 
 const happinWebHost = process.env.NEXT_PUBLIC_HAPPIN_WEB_HOST;
 

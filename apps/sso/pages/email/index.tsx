@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { firebaseClient } from '../../api/firebaseClient';
+import { firebaseClient } from '@api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import classNames from 'classnames';
 import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikValues } from 'formik';
