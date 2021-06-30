@@ -4,7 +4,7 @@ import { firebaseClient } from '../../api/firebaseClient';
 import firebase from "firebase/app";
 import 'firebase/auth';
 
-import Link from 'next/Link';
+import Link from 'next/link';
 import PhoneInput from 'react-phone-input-2';
 import classNames from 'classnames';
 import { Input } from '@chakra-ui/react';
