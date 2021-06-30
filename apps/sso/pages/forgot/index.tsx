@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Link from 'next/Link';
+import Link from 'next/link';
 import { FormControl, FormErrorMessage, Input } from '@chakra-ui/react';
 import { Formik, Form, Field, FieldProps } from 'formik';
 import { SubmitButton } from '@components/SubmitButton';
