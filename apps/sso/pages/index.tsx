@@ -2,7 +2,7 @@ import Link from 'next/Link'
 import { useEffect, useState } from 'react'
 import { firebaseClient } from '../api/firebaseClient'
 import classNames from 'classnames'
-import { useAppState } from '../contexts/state'
+import { useAppState } from '@contexts/state';
 import { useRouter } from 'next/dist/client/router'
 
 

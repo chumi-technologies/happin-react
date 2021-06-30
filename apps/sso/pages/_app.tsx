@@ -1,7 +1,6 @@
 import '@styles/globals.scss'
 import type { AppProps } from 'next/app'
-import { AppState } from '../contexts/state'
-
+import { AppState } from '@contexts/state';
 import { ChakraProvider } from "@chakra-ui/react"
 import Layout from '@components/Layout'
 import theme from "../theme"

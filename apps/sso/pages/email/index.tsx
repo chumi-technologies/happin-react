@@ -5,7 +5,7 @@ import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } f
 import classNames from 'classnames';
 import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikValues } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
-import { useAppState } from '../../contexts/state';
+import { useAppState } from '@contexts/state';
 import { SubmitButton } from '@components/SubmitButton';
 import { getSaaSDashboardURL } from 'utils/redirect-url';
 

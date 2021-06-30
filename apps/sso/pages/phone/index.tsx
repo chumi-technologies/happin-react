@@ -8,8 +8,7 @@ import Link from 'next/Link';
 import PhoneInput from 'react-phone-input-2';
 import classNames from 'classnames';
 import { Input } from '@chakra-ui/react';
-import { useAppState } from '../../contexts/state';
-
+import { useAppState } from '@contexts/state';
 declare var grecaptcha: any
 
 export default function Home() {
