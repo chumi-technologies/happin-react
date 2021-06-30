@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
 import Link from 'next/Link';
+import React, { useState } from 'react';
 import { firebaseClient } from '../../api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import classNames from 'classnames';
