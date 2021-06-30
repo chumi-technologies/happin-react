@@ -7,7 +7,7 @@ import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikVa
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { useAppState } from '@contexts/state';
 import { SubmitButton } from '@components/SubmitButton';
-import { getSaaSDashboardURL } from 'utils/redirect-url';
+import { getSaaSDashboardURL } from '@utils/redirect-url';
 
 export default function EmailLogin() {
   const [showPWD, setShowPWD] = useState(false)
