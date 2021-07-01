@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { firebaseClient } from '../../api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
-import classNames from 'classnames';
 import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikValues } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
-import { useAppState } from '../../contexts/state';
+import { ERole, useAppState } from '../../contexts/state';
 import { SubmitButton } from '@components/SubmitButton';
 import { getSaaSDashboardURL } from 'utils/redirect-url';
+import { RoleToggle } from '@components/RoleToggle';
 
-export default function EmailLogin() {
+export default function EmailSignIn() {
   const [showPWD, setShowPWD] = useState(false)
-  const [roleCur, setRoleCur] = useState(0);
-  const roleList = ['Fan', 'Organizer']
-  const { origin, signin, toggleMode } = useAppState();
+  const { origin, toggleMode } = useAppState();
 
   function validateEmail(value: string) {
     if (!value) {
@@ -32,31 +30,23 @@ export default function EmailLogin() {
   }
 
   const onFormSubmit: FormikConfig<{ email: string, password: string }>['onSubmit'] = async ({ email, password }, actions) => {
-    actions.setSubmitting(false)
     const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
     console.log('onFormSubmit email res', res);
     const firebaseToken = await res?.user?.getIdToken();
     if (firebaseToken) {
-      const redirectURL = await getSaaSDashboardURL(firebaseToken, email);
+      const redirectURL = await getSaaSDashboardURL(firebaseToken);
       console.log('redirectURL', redirectURL);
 
       window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
     }
+    actions.setSubmitting(false)
   }
 
   return (
     <>
       <div className="text-center">
         <h2 className="text-3xl font-semibold mt-6">Log In with your email</h2>
-        <div className="toggle-tab average w-52 mt-10">
-          {roleList.map((item, index) => (
-            <div
-              key={index}
-              className={classNames('toggle-tab-item', { active: roleCur === index })}
-              onClick={() => setRoleCur(index)}
-            >{item}</div>
-          ))}
-        </div>
+        <RoleToggle className="toggle-tab average w-52 mt-10" />
       </div>
       <div className="w-full max-w-sm mx-auto mt-8">
         <Formik

@@ -3,21 +3,32 @@ import Link from 'next/link';
 import { firebaseClient } from '../../api/firebaseClient';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox, Tooltip } from '@chakra-ui/react';
 import classNames from 'classnames';
-import { Formik, Form, Field, FieldProps, useFormikContext, useFormik } from 'formik';
+import { Formik, Form, Field, FieldProps, useFormikContext, useFormik, FormikConfig } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { SubmitButton } from '@components/SubmitButton';
+import { ERole, useAppState } from 'contexts/state';
+import { RoleToggle } from '@components/RoleToggle';
+import { getSaaSDashboardURL } from 'utils/redirect-url';
+import { signUpHappin } from 'api/happin-server';
 
-export default function EmailLogin() {
+
+interface IFormValues {
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string,
+}
+
+export default function EmailSignUp() {
   const [showPWD, setShowPWD] = useState(false);
-  const [roleCur, setRoleCur] = useState(0);
   const [age, setAge] = useState(false);
   const [terms, setTerms] = useState(false);
   const [ageState, setAgeState] = useState(false);
   const [termsState, setTermsState] = useState(false);
-  const roleList = ['Fan', 'Organizer'];
+  const { origin } = useAppState();
+
 
   useEffect(() => {
-    console.log(age, terms);
     age && setAgeState(false)
     terms && setTermsState(false)
   }, [age, terms])
@@ -56,32 +67,45 @@ export default function EmailLogin() {
     return false
   }*/
 
+  const onFormSubmit: FormikConfig<IFormValues>['onSubmit'] = async ({ email, password }, actions) => {
+    try {
+      const res = await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
+      console.log('onFormSubmit email res', res);
+      const firebaseToken = await res?.user?.getIdToken();
+      if (firebaseToken) {
+        await signUpHappin(firebaseToken, { version: 2 });
+        const redirectURL = await getSaaSDashboardURL(firebaseToken);
+        console.log('redirectURL', redirectURL);
+        window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+      }
+      actions.setSubmitting(false)
+    } catch (error) {
+      if (error.code.includes('auth/email-already-in-use')) {
+        alert('Email exists, please try another one.')
+      } else if (error.code === 'auth/invalid-email') {
+        alert('This email is invalid')
+      } else if (error.code === 'auth/weak-password') {
+        alert('The password should be at least 6 characters')
+      } else if (error.code === 'auth/operation-not-allowed') {
+        alert('This account is disabled, please contact support')
+      } else {
+        alert('Failed to sign up, please contact support');
+      }
+      console.log('Failed to sign up', error.message);
+    }
+  }
+
   return (
     <>
       <div className="text-center">
         <h2 className="text-3xl font-semibold">Sign up</h2>
         <div className="text-gray-500 text-sm mt-3">Let’s Sign up first for enter into Happin Website</div>
-        <div className="toggle-tab average w-52 mt-10">
-          {roleList.map((item, index) => (
-            <div
-              key={index}
-              className={classNames('toggle-tab-item', { active: roleCur === index })}
-              onClick={() => setRoleCur(index)}
-            >{item}</div>
-          ))}
-        </div>
+        <RoleToggle className="toggle-tab average w-52 mt-10" />
       </div>
       <div className="w-full max-w-sm mx-auto mt-8">
         <Formik
           initialValues={{firstName: '', lastName: '', email: '', password: ''}}
-          onSubmit={async ({firstName, lastName, email, password}, actions) => {
-            console.log(111);
-            actions.setSubmitting(false)
-            // const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
-            // const parsed = JSON.parse(JSON.stringify(res));
-            // console.log(parsed.user.stsTokenManager.accessToken)
-            // window.location.href = '/';
-          }}
+          onSubmit={onFormSubmit}
         >
           {(props) => (
             <Form>

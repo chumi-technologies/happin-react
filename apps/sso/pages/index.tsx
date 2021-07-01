@@ -1,28 +1,24 @@
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { firebaseClient } from '../api/firebaseClient'
-import classNames from 'classnames'
-import { useAppState } from '../contexts/state'
+import { ERole, useAppState } from '../contexts/state'
 import { useRouter } from 'next/dist/client/router'
+import { getSaaSDashboardURL } from 'utils/redirect-url'
+import { RoleToggle } from '@components/RoleToggle'
 
 
 export default function Home() {
-  const { signin, toggleMode, setOrigin } = useAppState();
-  const [roleCur, setRoleCur] = useState(0);
-  const roleList = ['Fan', 'Organizer']
+  const { signin, toggleMode, origin, setOrigin, role, setRole } = useAppState();
   const router = useRouter()
 
   useEffect(() => {
     if (router.query && Object.keys(router.query).length) {
-      const { origin, role, prefillEmail } = router.query;
+      const { origin, role } = router.query;
       // load setting from query into state
       console.log('SSO save origin', router.query.origin);
-      setOrigin(router.query.origin);
-      if (role) {
-        setRoleCur(1);
-        if (prefillEmail) {
-          // TODO: redirect organizer email with prefill value
-        }
+      setOrigin(router.query.origin as string);
+      if (Object.values(ERole).includes(role as ERole)) {
+        setRole(role as ERole);
       }
     }
   }, [router.query]);
@@ -34,7 +30,15 @@ export default function Home() {
       provider.addScope('email');
       firebaseClient.auth()
         .signInWithPopup(provider)
-        .then(res => {
+        .then(async (res) => {
+          console.log('res', res);
+          const firebaseToken = await res?.user?.getIdToken();
+          if (firebaseToken) {
+            const redirectURL = await getSaaSDashboardURL(firebaseToken);
+            console.log('redirectURL', redirectURL);
+
+            window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+          }
           resolve(res);
         }, err => {
           console.log(err);
@@ -46,29 +50,21 @@ export default function Home() {
   return (
     <>
       <div className="text-center">
-      {
-        signin
-        ? <h2 className="text-4xl font-semibold mb-12 mt-6">Login</h2>
-        : <h2 className="text-4xl font-semibold mb-12 mt-6">Sign up</h2>
-      }
-        <div className="toggle-tab average w-52">
-          {roleList.map((item, index) => (
-            <div
-              key={index}
-              className={classNames('toggle-tab-item', { active: roleCur === index })}
-              onClick={() => setRoleCur(index)}
-            >{item}</div>
-          ))}
-        </div>
+        {
+          signin
+          ? <h2 className="text-4xl font-semibold mb-12 mt-6">Login</h2>
+          : <h2 className="text-4xl font-semibold mb-12 mt-6">Sign up</h2>
+        }
+        <RoleToggle className="toggle-tab average w-52" />
       </div>
       <div className="w-full max-w-xs mx-auto mt-10">
         {
-          roleCur === 0 ?
+          role === ERole.fan ?
           <Link href="/phone">
             <button className="btn btn-outline-light w-full mb-4">Continue with phone</button>
           </Link> : null
         }
-        <Link href={signin ? '/email' : '/sign-up'}>
+        <Link href={signin ? '/email-sign-in' : '/email-sign-up'}>
           <button className="btn btn-outline-light w-full mb-4">Continue with email</button>
         </Link>
         <button className="btn btn-outline-light w-full mb-4 flex items-center justify-center" onClick={googleAuth}>

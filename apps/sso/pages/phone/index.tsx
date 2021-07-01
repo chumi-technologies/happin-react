@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { firebaseClient } from '../../api/firebaseClient';
 import firebase from "firebase/app";
@@ -6,13 +6,12 @@ import 'firebase/auth';
 
 import Link from 'next/link';
 import PhoneInput from 'react-phone-input-2';
-import classNames from 'classnames';
 import { Input } from '@chakra-ui/react';
 import { useAppState } from '../../contexts/state';
 
 declare var grecaptcha: any
 
-export default function Home() {
+export default function Phone() {
   const [phone, setPhone] = useState('')
 
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<any | null>(null)
