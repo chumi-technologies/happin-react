@@ -19,7 +19,7 @@ export default function Forgot() {
   return (
     <>
       <div className="text-center">
-        <h2 className="text-3xl font-semibold mt-6">Log In with your email</h2>
+        <h2 className="black-title text-3xl font-semibold mt-6">Log In with your email</h2>
         <div className="text-gray-500 leading-tight mt-3 max-w-sm mx-auto">Enter the email address associated with your account we’ll email you a link to reset your password.
         </div>
       </div>

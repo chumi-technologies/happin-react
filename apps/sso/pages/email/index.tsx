@@ -47,7 +47,7 @@ export default function EmailLogin() {
   return (
     <>
       <div className="text-center">
-        <h2 className="text-3xl font-semibold mt-6">Log In with your email</h2>
+        <h2 className="black-title text-3xl font-semibold mt-6">Log In with your email</h2>
         <div className="toggle-tab average w-52 mt-10">
           {roleList.map((item, index) => (
             <div

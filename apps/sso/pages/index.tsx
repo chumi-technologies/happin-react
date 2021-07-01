@@ -48,8 +48,8 @@ export default function Home() {
       <div className="text-center">
       {
         signin
-        ? <h2 className="text-4xl font-semibold mb-12 mt-6">Login</h2>
-        : <h2 className="text-4xl font-semibold mb-12 mt-6">Sign up</h2>
+        ? <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Login</h2>
+        : <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Sign up</h2>
       }
         <div className="toggle-tab average w-52">
           {roleList.map((item, index) => (

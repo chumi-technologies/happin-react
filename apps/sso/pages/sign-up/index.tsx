@@ -59,7 +59,7 @@ export default function EmailLogin() {
   return (
     <>
       <div className="text-center">
-        <h2 className="text-3xl font-semibold">Sign up</h2>
+        <h2 className="black-title text-3xl font-semibold">Sign up</h2>
         <div className="text-gray-500 text-sm mt-3">Let’s Sign up first for enter into Happin Website</div>
         <div className="toggle-tab average w-52 mt-10">
           {roleList.map((item, index) => (

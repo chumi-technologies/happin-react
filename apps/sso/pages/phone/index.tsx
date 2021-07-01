@@ -95,8 +95,8 @@ export default function Home() {
       <div className="text-center">
         {
           signin
-          ? <h2 className="text-3xl font-semibold mt-6">Log In with your phone</h2>
-          : <h2 className="text-3xl font-semibold mt-6">Sign up</h2>
+          ? <h2 className="black-title text-3xl font-semibold mt-6">Log In with your phone</h2>
+          : <h2 className="black-title text-3xl font-semibold mt-6">Sign up</h2>
         }
         <div className="text-gray-500 text-sm mt-3">6 digit code already sent over SMS to</div>
         <div className="text-sm mt-1" hidden={true}>905 483 9655</div>
