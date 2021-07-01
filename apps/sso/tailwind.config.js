@@ -39,10 +39,10 @@ module.exports = {
     },
     fontFamily: {
       sans: [
-        'MDPrimer',
-        '"PingFang SC"',
+        'Helvetica Neue',
         '-apple-system',
         'BlinkMacSystemFont',
+        '"PingFang SC"',
         'Arial',
         'sans-serif',
       ]
