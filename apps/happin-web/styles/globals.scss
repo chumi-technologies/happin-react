@@ -1,0 +1,39 @@
+// tailwindcss
+@tailwind components;
+@tailwind utilities;
+
+// reset & public
+@import "styles/reset";
+@import "styles/public";
+
+// components
+@import "styles/components";
+
+@font-face {
+  font-family: proximanova;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../public/fonts/proximanova/proximanova-semibold-webfont.woff2") format("woff2"),
+  url("../public/fonts/proximanova/proximanova-semibold-webfont.woff") format("woff")
+}
+@font-face {
+  font-family: proximanova;
+  font-weight: 600;
+  font-display: swap;
+  src: url("../public/fonts/proximanova/proximanova-bold-webfont.woff2") format("woff2"),
+  url("../public/fonts/proximanova/proximanova-bold-webfont.woff") format("woff")
+}
+@font-face {
+  font-family: proximanova;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff2") format("woff2"),
+  url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff") format("woff")
+}
+@font-face {
+  font-family: proximanova;
+  font-weight: 800;
+  font-display: swap;
+  src: url("../public/fonts/proximanova/proximanova-black-webfont.woff2") format("woff2"),
+  url("../public/fonts/proximanova/proximanova-black-webfont.woff") format("woff")
+}
