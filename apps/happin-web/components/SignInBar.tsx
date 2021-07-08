@@ -1,6 +1,6 @@
 import { Box, HStack, Flex, Image, Text, Button } from "@chakra-ui/react";
 
-const SignInBar = ({ setItem }: any) => {
+const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
   return (
     <>
       <Box
@@ -38,7 +38,7 @@ const SignInBar = ({ setItem }: any) => {
           bottom="auto"
           p="0"
           onClick={(e) => {
-            setItem(false);
+            setIsFirstTimeVisitor(false);
           }}
         >
           <Image w="20px" src="/images/icons/close.svg" />

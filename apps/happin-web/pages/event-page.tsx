@@ -12,12 +12,14 @@ const EventPage = () => {
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   return (
     <>
-      {isFirstTimeVisitor && <SignInBar setItem={setIsFirstTimeVisitor} />}
+      {isFirstTimeVisitor && (
+        <SignInBar setIsFirstTimeVisitor={setIsFirstTimeVisitor} />
+      )}
 
       <Flex direction="row" h="100%" position="relative">
         <ActionSideBar
-          state={isFirstTimeVisitor}
-          setItem={setIsFirstTimeVisitor}
+          isFirstTimeVisitor={isFirstTimeVisitor}
+          setIsFirstTimeVisitor={setIsFirstTimeVisitor}
         />
 
         {/* Left Side */}
