@@ -6,9 +6,9 @@ const BottomBar = () => {
       position="absolute"
       bottom="0"
       right="0"
-      w="50%"
+      w={{ base: "100%", sm: "50%" }}
       bg="brandGrey.200"
-      p="16px 148px 16px 60px"
+      p={{ base: "15px 24px 45px 24px", sm: "16px 148px 16px 60px" }}
     >
       <ButtonGroup w="100%">
         <Button

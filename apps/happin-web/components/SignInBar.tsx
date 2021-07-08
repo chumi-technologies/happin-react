@@ -4,6 +4,7 @@ const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
   return (
     <>
       <Box
+        display={{ base: "none", sm: "block" }}
         bg="white"
         w="100%"
         px="60px"

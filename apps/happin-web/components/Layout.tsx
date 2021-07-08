@@ -15,7 +15,12 @@ const Layout = ({ children }: { children: any }) => {
 
       {/* Page Content */}
       <Box h="100vh" bg="black" color="white">
-        <Box maxW="1440px" h="100vh" mx="auto" pt="88px">
+        <Box
+          maxW="1440px"
+          h="100vh"
+          mx="auto"
+          pt={{ base: "80px", sm: "88px" }}
+        >
           {children}
         </Box>
       </Box>

@@ -15,6 +15,7 @@ const EventPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   return (
     <>
+      {/* Event Dates Modal */}
       {isModalOpen && (
         <PopUpModal
           modalTitle="Event Dates"
@@ -24,23 +25,34 @@ const EventPage = () => {
           <EventDates />
         </PopUpModal>
       )}
+
+      {/* Top Popups for First-Time Visitors */}
       {isFirstTimeVisitor && (
         <SignInBar setIsFirstTimeVisitor={setIsFirstTimeVisitor} />
       )}
 
-      <Flex direction="row" h="100%" position="relative">
+      <Flex
+        direction={{ base: "column", sm: "row" }}
+        h="100%"
+        position="relative"
+      >
         <ActionSideBar
           isFirstTimeVisitor={isFirstTimeVisitor}
           setIsFirstTimeVisitor={setIsFirstTimeVisitor}
         />
 
         {/* Left Side */}
-        <Box w="50%" h="100%">
+        <Box w={{ base: "100%", sm: "50%" }} h="100%">
           <ImageSection />
         </Box>
 
         {/* Right Side */}
-        <Box w="50%" h="100%" overflowY="auto" p="60px 148px 80px 60px">
+        <Box
+          w={{ base: "100%", sm: "50%" }}
+          h="100%"
+          overflowY="auto"
+          p={{ base: "24px", sm: "60px 148px 80px 60px" }}
+        >
           <EventSection setIsModalOpen={setIsModalOpen} />
           <BottomBar />
         </Box>
