@@ -21,7 +21,7 @@ const EventTitle = ({ setIsModalOpen }: any) => {
       </HStack>
 
       {/* Event Title */}
-      <Text fontSize="4xl" fontWeight="900" mt="16px">
+      <Text mt="16px" fontSize="4xl" fontWeight="900" fontFamily="proximanova">
         American Express UNSTAGED with Maroon 5- The Encore
       </Text>
 

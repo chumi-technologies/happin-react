@@ -18,8 +18,8 @@ const theme = extendTheme({
   },
   fonts: {
     heading:
-      'proximanova, "Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
-    body: 'proximanova, "Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      '"Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    body: '"Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
   },
   shadows: {
     outline: "none",
