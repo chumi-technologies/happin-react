@@ -10,9 +10,14 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <Box h="100vh">
-        <Header></Header>
-        {children}
+
+      <Header />
+
+      {/* Page Content */}
+      <Box h="100vh" bg="black" color="white">
+        <Box maxW="1440px" h="100vh" mx="auto" pt="88px">
+          {children}
+        </Box>
       </Box>
     </>
   );
