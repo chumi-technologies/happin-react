@@ -37,8 +37,8 @@ const theme = extendTheme({
       500: "#FFF846",
     },
     brandGrey: {
-      200: "#222222", // used by BottomBar
-      500: "#333333", // used by Buttons
+      200: "#222222", // used by BottomBar, PopUpModal
+      500: "#333333", // used by Buttons, PopUpOverlay
       700: "#FFFFFFB3", // 70% transparency
     },
   },

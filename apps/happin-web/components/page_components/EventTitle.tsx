@@ -9,7 +9,7 @@ import {
 
 import TableComp from "./TableComp";
 
-const EventTitle = () => {
+const EventTitle = ({ setIsModalOpen }: any) => {
   return (
     <>
       {/* Badges */}
@@ -44,6 +44,8 @@ const EventTitle = () => {
           titleText="Date & Time"
           lineText="Fri, July 2・11 PM - Sat, July 3・2 AM CST (180 mins)"
           lineButtonText="See More Dates"
+          lineButtonAction={setIsModalOpen}
+          titleButtonText="See More Dates"
         />
         <TableComp
           iconURL="/images/icons/location.svg"
@@ -55,6 +57,7 @@ const EventTitle = () => {
           iconURL="/images/icons/ticket.svg"
           titleText="Price from $30.00"
           titleButtonText="Redeem Ticket"
+          titleButtonAction="pass a method" // TODO: pass a method
         />
       </VStack>
 

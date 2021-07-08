@@ -5,11 +5,11 @@ import EventLineUp from "./EventLineUp";
 import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
 
-const EventSection = () => {
+const EventSection = ({ setIsModalOpen }: any) => {
   return (
     <>
       <Box>
-        <EventTitle />
+        <EventTitle setIsModalOpen={setIsModalOpen} />
         <Divider my="40px" />
         <EventLineUp />
         <Divider my="40px" />

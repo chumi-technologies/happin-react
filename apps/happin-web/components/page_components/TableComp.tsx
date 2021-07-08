@@ -4,8 +4,10 @@ const TableComp = ({
   iconURL = null,
   titleText = null,
   titleButtonText = null,
+  titleButtonAction = null, // Sets to true when clicked
   lineText = null,
   lineButtonText = null,
+  lineButtonAction = null, // Sets to true when clicked
 }: any) => {
   return (
     <HStack justify="start" spacing="18px" w="100%">
@@ -14,12 +16,13 @@ const TableComp = ({
       <VStack align="start" spacing="0px" w="100%">
         <Flex justify="space-between" align="center" w="100%">
           {titleText && <Text>{titleText}</Text>}
-          {titleButtonText && (
+          {titleButtonText && titleButtonAction && (
             <Button
               variant="outline"
               colorScheme="brandBlue"
               fontSize="xs"
               h="24px"
+              onClick={() => titleButtonAction(true)}
             >
               {titleButtonText}
             </Button>
@@ -27,12 +30,13 @@ const TableComp = ({
         </Flex>
         <Flex justify="space-between" align="center" w="100%">
           {lineText && <Text color="brandGrey.700">{lineText}</Text>}
-          {lineButtonText && (
+          {lineButtonText && lineButtonAction && (
             <Button
               variant="outline"
               colorScheme="brandBlue"
               fontSize="xs"
               h="24px"
+              onClick={() => lineButtonAction(true)}
             >
               {lineButtonText}
             </Button>
