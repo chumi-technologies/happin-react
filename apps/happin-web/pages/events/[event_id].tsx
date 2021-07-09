@@ -1,18 +1,24 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 import { Box, Flex } from "@chakra-ui/react";
 
-import SignInBar from "../components/SignInBar";
-import PopUpModal from "../components/PopUpModal";
-import ActionSideBar from "../components/page_components/ActionSideBar";
-import ImageSection from "../components/page_components/ImageSection";
-import EventSection from "../components/page_components/EventSection";
-import BottomBar from "../components/page_components/BottomBar";
-import EventDates from "../components/page_components/EventDates";
+import SignInBar from "../../components/SignInBar";
+import PopUpModal from "../../components/PopUpModal";
+import ActionSideBar from "../../components/page_components/ActionSideBar";
+import ImageSection from "../../components/page_components/ImageSection";
+import EventSection from "../../components/page_components/EventSection";
+import BottomBar from "../../components/page_components/BottomBar";
+import EventDates from "../../components/page_components/EventDates";
 
-const EventPage = () => {
+const Events = () => {
+  const router = useRouter();
+  // Use event_id for api calls to request the event details
+  const { event_id } = router.query;
+
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <>
       {/* Event Dates Modal */}
@@ -61,4 +67,4 @@ const EventPage = () => {
   );
 };
 
-export default EventPage;
+export default Events;
