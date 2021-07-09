@@ -12,8 +12,8 @@ const LineUpTile = ({ lineUpTile }: any) => {
             alt="profile picture"
           ></Image>
           <Text
-            fontSize="sm"
-            w="116px"
+            fontSize={{ base: "xs", sm: "sm" }}
+            w={{ base: "64px", sm: "116px" }}
             maxH="2.4rem"
             align="center"
             // whiteSpace="nowrap"
@@ -47,14 +47,17 @@ const EventLineUp = () => {
   ];
   return (
     <>
-      <Text mt="40px" fontSize="xl">
-        Line Up
-      </Text>
+      <Text textStyle="sectionTitle">Line Up</Text>
       <Grid
-        mt="24px"
-        gridTemplateColumns="repeat(auto-fit, 116px)"
+        mt={{ base: "16px", sm: "24px" }}
+        gridTemplateColumns={{
+          // base: "repeat(auto-fit, 64px)",
+          base: "repeat(100, 1fr)",
+          sm: "repeat(auto-fit, 116px)",
+        }}
         columnGap="16px"
-        rowGap="40px"
+        rowGap={{ base: "16px", sm: "40px" }}
+        overflowX="auto"
       >
         {lineUp.map((lineUpTile: any, i: Number) => {
           return <LineUpTile key={i} lineUpTile={lineUpTile} />;

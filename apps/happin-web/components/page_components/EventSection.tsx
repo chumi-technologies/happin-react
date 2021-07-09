@@ -10,11 +10,11 @@ const EventSection = ({ setIsModalOpen }: any) => {
     <>
       <Box>
         <EventTitle setIsModalOpen={setIsModalOpen} />
-        <Divider my="40px" />
+        <Divider my={{ base: "24px", sm: "40px" }} />
         <EventLineUp />
-        <Divider my="40px" />
+        <Divider my={{ base: "24px", sm: "40px" }} />
         <EventAgenda />
-        <Divider my="40px" />
+        <Divider my={{ base: "24px", sm: "40px" }} />
         <EventHost />
       </Box>
     </>

@@ -14,21 +14,32 @@ const TableComp = ({
       {iconURL && <Image src={iconURL} />}
 
       <VStack align="start" spacing="0px" w="100%">
-        <Flex justify="space-between" align="center" w="100%">
+        <Flex
+          justify="space-between"
+          align={{ base: "start", sm: "center" }}
+          w="100%"
+          direction={{ base: "column", sm: "row" }}
+        >
           {titleText && <Text>{titleText}</Text>}
           {titleButtonText && titleButtonAction && (
             <Button
               variant="outline"
               colorScheme="brandBlue"
-              fontSize="xs"
+              fontSize={{ base: "xs", sm: "sm" }}
               h="24px"
+              mt={{ base: "8px", sm: "0" }}
               onClick={() => titleButtonAction(true)}
             >
               {titleButtonText}
             </Button>
           )}
         </Flex>
-        <Flex justify="space-between" align="center" w="100%">
+        <Flex
+          justify="space-between"
+          align={{ base: "start", sm: "center" }}
+          w="100%"
+          direction={{ base: "column", sm: "row" }}
+        >
           {lineText && <Text color="brandGrey.700">{lineText}</Text>}
           {lineButtonText && lineButtonAction && (
             <Button
@@ -36,6 +47,7 @@ const TableComp = ({
               colorScheme="brandBlue"
               fontSize="xs"
               h="24px"
+              mt={{ base: "8px", sm: "0" }}
               onClick={() => lineButtonAction(true)}
             >
               {lineButtonText}

@@ -5,9 +5,9 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
     <>
       <Flex
         id="pop_up_modal"
-        position="absolute"
+        position="fixed"
+        h="100%"
         w="100vw"
-        h="100vh"
         left="0px"
         top="0px"
         bg="rgba(0, 0, 0, 0.6)"
@@ -23,8 +23,8 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
         <Box
           position="relative"
           minW="240px"
-          maxH="calc(100vh - 20px)"
-          maxW="calc(100vh - 20px)"
+          maxH="calc(100% - 80px)"
+          maxW="calc(100vw - 48px)"
           bg="brandGrey.200"
           borderRadius="10px"
           boxShadow="0px 0px 20px rgba(255, 255, 255, 0.3)"
@@ -49,10 +49,12 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
           </Button>
 
           {/* Body Block */}
-          <VStack>
+          <VStack maxH="100%">
             {/* Adds empty title when title not passed  */}
             {modalTitle ? (
-              <Text fontWeight="700">{modalTitle}</Text>
+              <Text h="24px" fontWeight="700">
+                {modalTitle}
+              </Text>
             ) : (
               <Text>&nbsp;</Text>
             )}

@@ -17,8 +17,6 @@ const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
         zIndex="10"
       >
         <HStack justify="center" align="center">
-          {/* Central Block */}
-          {/* Search */}
           <Image src="/images/icons/akar-icons_ticket.svg" />
           <Text fontSize="sm">
             Already have tickets or invitation code? Sign in to check your

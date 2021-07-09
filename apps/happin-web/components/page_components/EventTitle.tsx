@@ -14,19 +14,35 @@ const EventTitle = ({ setIsModalOpen }: any) => {
     <>
       {/* Badges */}
       <HStack>
-        <Badge variant="outline" colorScheme="highlight">
+        <Badge
+          variant="outline"
+          colorScheme="highlight"
+          fontSize={{ base: "sm", sm: "md" }}
+        >
           Music Consert
         </Badge>
-        <Badge colorScheme="brandPink">・LIVE</Badge>
+        <Badge colorScheme="brandPink" fontSize={{ base: "sm", sm: "md" }}>
+          ・LIVE
+        </Badge>
       </HStack>
 
       {/* Event Title */}
-      <Text mt="16px" fontSize="4xl" fontWeight="900" fontFamily="proximanova">
+      <Text
+        mt="16px"
+        fontSize={{ base: "xl", sm: "4xl" }}
+        fontWeight="900"
+        fontFamily="proximanova"
+      >
         American Express UNSTAGED with Maroon 5- The Encore
       </Text>
 
       {/* Event Date and Time */}
-      <Text fontSize="xl" fontWeight="700" color="highlight.500" mt="8px">
+      <Text
+        fontSize={{ base: "sm", sm: "xl" }}
+        fontWeight="700"
+        color="highlight.500"
+        mt="8px"
+      >
         Fri, July 2・11 PM CST
       </Text>
 
@@ -37,7 +53,7 @@ const EventTitle = ({ setIsModalOpen }: any) => {
         spacing="12px"
         fontSize="sm"
         w="100%"
-        mt="40px"
+        mt={{ base: "24px", sm: "40px" }}
       >
         <TableComp
           iconURL="/images/icons/time_circle.svg"
@@ -63,7 +79,7 @@ const EventTitle = ({ setIsModalOpen }: any) => {
 
       {/* About and Agenda links */}
       <ButtonGroup
-        mt="40px"
+        mt={{ base: "24px", sm: "40px" }}
         w="100%"
         border="1px"
         borderRadius="full"
@@ -73,10 +89,13 @@ const EventTitle = ({ setIsModalOpen }: any) => {
         fontSize="sm"
         fontWeight="700"
       >
-        <Button isFullWidth={true}>About</Button>
+        <Button isFullWidth={true} fontSize={{ base: "sm", sm: "md" }}>
+          About
+        </Button>
         <Button
           variant="link"
           isFullWidth={true}
+          fontSize={{ base: "sm", sm: "md" }}
           onClick={() => {
             location.href = "#agenda";
           }}
@@ -86,10 +105,8 @@ const EventTitle = ({ setIsModalOpen }: any) => {
       </ButtonGroup>
 
       {/* Description */}
-      <Text mt="40px" fontSize="xl">
-        Description
-      </Text>
-      <Text mt="24px" fontSize="sm">
+      <Text textStyle="sectionTitle">Description</Text>
+      <Text mt={{ base: "16px", sm: "24px" }} fontSize="sm">
         NYC legend Skyzoo comes to Berlin Under A to perform an exclusive first
         look at his new album 'All The Brilliant Things' the night before it
         drops! Website, Instagram, Spotify

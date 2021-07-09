@@ -21,6 +21,13 @@ const theme = extendTheme({
       '"Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     body: '"Helvetica Neue", "PingFang SC", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
   },
+  textStyles: {
+    sectionTitle: {
+      mt: { base: "24px", sm: "40px" },
+      fontSize: { base: "md", sm: "xl" },
+      fontWeight: { base: "700", sm: "400" },
+    },
+  },
   shadows: {
     outline: "none",
   },
@@ -40,6 +47,9 @@ const theme = extendTheme({
       200: "#222222", // used by BottomBar, PopUpModal
       500: "#333333", // used by Buttons, PopUpOverlay
       700: "#FFFFFFB3", // 70% transparency
+    },
+    brandBlack: {
+      500: "#000000", // used by Buttons
     },
   },
   components: {

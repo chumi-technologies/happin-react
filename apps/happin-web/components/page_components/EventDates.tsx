@@ -1,4 +1,4 @@
-import { Image, ButtonGroup, Button, Grid } from "@chakra-ui/react";
+import { Image, ButtonGroup, Button, Grid, Divider } from "@chakra-ui/react";
 
 import TableDates from "./TableDates";
 
@@ -46,7 +46,22 @@ const EventDates = () => {
       buttonText: "Get Tickets",
       isDisabled: false,
     },
+    {
+      date: "Fri, July 2・11 PM CST",
+      price: "From $30",
+      type: "Public Show / VIP Meeeting / Merch",
+      buttonText: "Get Tickets",
+      isDisabled: false,
+    },
+    {
+      date: "Fri, July 2・11 PM CST",
+      price: "From $30",
+      type: "Public Show / VIP Meeeting / Merch",
+      buttonText: "Get Tickets",
+      isDisabled: false,
+    },
   ];
+
   return (
     <>
       {/* List and Calendar Toggle */}
@@ -79,14 +94,22 @@ const EventDates = () => {
           <Image src="/images/icons/calendar.svg" alt="Calendar" />
         </Button>
       </ButtonGroup>
+
+      {/* Grid with available dates */}
       <Grid
-        h="calc(100vh - 258px)"
+        maxH="calc(100vh - 258px)"
         overflowY="auto"
-        gridTemplateColumns="3fr 1fr"
+        gridTemplateColumns="1fr"
         gap="24px"
       >
         {dates.map((date: any, index: Number) => {
-          return <TableDates key={index} date={date} />;
+          return (
+            <>
+              <TableDates key={index} date={date} />
+              {/* <Divider gridColumn="1 / 3" /> */}
+              <Divider />
+            </>
+          );
         })}
       </Grid>
     </>

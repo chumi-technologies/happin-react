@@ -3,10 +3,13 @@ import { Flex, Image, Text, HStack, Button } from "@chakra-ui/react";
 const EventHost = () => {
   return (
     <>
-      <Text mt="40px" fontSize="xl">
-        Meet Your Host
-      </Text>
-      <Flex justify="space-between" w="100%" mt="24px" mb="56px">
+      <Text textStyle="sectionTitle">Meet Your Host</Text>
+      <Flex
+        justify="space-between"
+        w="100%"
+        mt={{ base: "16px", sm: "24px" }}
+        mb="56px"
+      >
         <HStack spacing="12px">
           <Image
             borderRadius="full"
@@ -14,9 +17,14 @@ const EventHost = () => {
             src="/images/profile_pic.png"
             alt="profile picture"
           ></Image>
-          <Text>Happin Staff</Text>
+          <Text fontSize={{ base: "xs", sm: "md" }}>Happin Staff</Text>
         </HStack>
-        <Button colorScheme="brandBlue" h="32px" fontSize="sm">
+        <Button
+          colorScheme="brandBlue"
+          h="32px"
+          fontSize={{ base: "xs", sm: "sm" }}
+          fontWeight={{ base: "700", sm: "400" }}
+        >
           Contact
         </Button>
       </Flex>

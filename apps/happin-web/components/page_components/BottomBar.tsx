@@ -3,7 +3,7 @@ import { Box, ButtonGroup, Button, Image } from "@chakra-ui/react";
 const BottomBar = () => {
   return (
     <Box
-      position="absolute"
+      position={{ base: "fixed", sm: "absolute" }}
       bottom="0"
       right="0"
       w={{ base: "100%", sm: "50%" }}
@@ -14,6 +14,7 @@ const BottomBar = () => {
         <Button
           colorScheme="highlight"
           color="black"
+          fontSize={{ base: "sm", sm: "md" }}
           fontWeight="700"
           leftIcon={<Image src="/images/icons/chat.svg" />}
           isFullWidth={true}
@@ -22,6 +23,7 @@ const BottomBar = () => {
         </Button>
         <Button
           colorScheme="brandPink"
+          fontSize={{ base: "sm", sm: "md" }}
           fontWeight="700"
           leftIcon={<Image src="/images/icons/ticket.svg" />}
           isFullWidth={true}

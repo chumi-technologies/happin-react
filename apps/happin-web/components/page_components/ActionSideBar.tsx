@@ -1,6 +1,6 @@
 import { Box, Image, VStack, Link, Text, Flex } from "@chakra-ui/react";
 
-import PopUpOverlay from "../PopUpOverlay";
+import PopUpOverlay from "../reusable/PopUpOverlay";
 
 const ActionSideBar = ({ isFirstTimeVisitor, setIsFirstTimeVisitor }: any) => {
   return (
