@@ -1,5 +1,5 @@
-import { SEO } from '@components/SEO';
-import { Box, Button, DarkMode, Stack } from '@chakra-ui/react';
+import { SEO } from "@components/SEO";
+import { Box, Button, DarkMode, Stack } from "@chakra-ui/react";
 
 export default function Home() {
   return (
@@ -77,5 +77,5 @@ export default function Home() {
         </Stack>
       </Box>
     </>
-  )
+  );
 }
