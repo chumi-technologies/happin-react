@@ -7,11 +7,14 @@ import 'firebase/auth';
 import Link from 'next/link';
 import PhoneInput from 'react-phone-input-2';
 import { Input } from '@chakra-ui/react';
-import { useAppState } from '../../contexts/state';
+import { ERole, ESSOMode, useAppState } from '../../contexts/state';
+import { signUpHappin } from 'api/happin-server';
+import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
 
 declare var grecaptcha: any
 
 export default function Phone() {
+  const [countryCode, setCountryCode] = useState('us');
   const [phone, setPhone] = useState('')
 
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<any | null>(null)
@@ -22,7 +25,7 @@ export default function Phone() {
   const [verificationSent, setVerificationSent] = useState(false)
   const [signinResult, setSigninResult] = useState<any | null>(null)
 
-  const { signin, toggleMode, origin } = useAppState();
+  const { signin, toggleMode, origin, role } = useAppState();
 
 
   React.useEffect(() => {
@@ -55,11 +58,17 @@ export default function Phone() {
 
   const login = async () => {
     try {
-      const loginResult = await signinResult.confirm(verificationCode)
-      console.log('loginResult', loginResult)
-      // TODO: should unify in one place/module
-      // TODO: construct url for manage dasboard and happin.app
-      window.parent.postMessage({ action: 'redirect', payload: { url: 'xxx' } }, origin);
+      const result = await signinResult.confirm(verificationCode)
+      console.log('result', result)
+      const firebaseToken = await result?.user?.getIdToken();
+      console.log('firebaseToken', firebaseToken);
+
+      if (!signin) {
+        await signUpHappin(firebaseToken, { version: 2, phone, areaCode: countryCode });
+      }
+      const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
+      console.log('redirectURL', redirectURL);
+      window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
     } catch (err) {
       console.log(err);
       grecaptcha.reset(recaptchaWidgetId);
@@ -89,6 +98,11 @@ export default function Phone() {
     }, 500)
   }, [])
 
+  const onPhoneChange = (phone: string, country: { name: string, dialCode: string, countryCode: string }) => {
+    setPhone("+"+phone);
+    setCountryCode(country.dialCode);
+  }
+
   return (
     <>
       <div className="text-center">
@@ -102,11 +116,13 @@ export default function Phone() {
       </div>
       <div className="w-full max-w-sm mx-auto mt-12">
         <PhoneInput
-          country={'us'}
+          country={countryCode}
           value={phone}
           enableSearch={true}
           disableSearchIcon={true}
-          onChange={phone => setPhone("+"+phone)}
+          preferredCountries={['us', 'ca', 'gb']}
+          preserveOrder={['preferredCountries']}
+          onChange={onPhoneChange}
         />
         <div className="mt-4 flex justify-center" hidden={verificationSent} id="recaptcha-container" />
         <Input placeholder="Enter 6 digital" size="md" className="mt-4"

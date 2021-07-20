@@ -6,12 +6,13 @@ import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikVa
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { ERole, useAppState } from '../../contexts/state';
 import { SubmitButton } from '@components/SubmitButton';
-import { getSaaSDashboardURL } from 'utils/redirect-url';
+import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
 import { RoleToggle } from '@components/RoleToggle';
+import { toast } from 'react-toastify';
 
 export default function EmailSignIn() {
   const [showPWD, setShowPWD] = useState(false)
-  const { origin, toggleMode } = useAppState();
+  const { origin, toggleMode, role } = useAppState();
 
   function validateEmail(value: string) {
     if (!value) {
@@ -30,16 +31,22 @@ export default function EmailSignIn() {
   }
 
   const onFormSubmit: FormikConfig<{ email: string, password: string }>['onSubmit'] = async ({ email, password }, actions) => {
-    const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
-    console.log('onFormSubmit email res', res);
-    const firebaseToken = await res?.user?.getIdToken();
-    if (firebaseToken) {
-      const redirectURL = await getSaaSDashboardURL(firebaseToken);
-      console.log('redirectURL', redirectURL);
+    try {
+      const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+      console.log('onFormSubmit email res', res);
+      const firebaseToken = await res?.user?.getIdToken();
+      if (!firebaseToken) throw new Error('no firebaseToken');
 
+      const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
+      console.log('redirectURL', redirectURL);
       window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+      actions.setSubmitting(false)
+      // getHappinWebURL
+    } catch (err) {
+      console.error('failed to sign in', err);
+      toast.error('Failed to sign in, please try again later');
     }
-    actions.setSubmitting(false)
+
   }
 
   return (

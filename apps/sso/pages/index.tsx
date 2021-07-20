@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { firebaseClient } from '../api/firebaseClient'
-import { ERole, useAppState } from '../contexts/state'
+import { ERole, ESSOMode, useAppState } from '../contexts/state'
 import { useRouter } from 'next/dist/client/router'
-import { getSaaSDashboardURL } from 'utils/redirect-url'
+import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url'
 import { RoleToggle } from '@components/RoleToggle'
 
 
@@ -13,15 +13,18 @@ export default function Home() {
 
   useEffect(() => {
     if (router.query && Object.keys(router.query).length) {
-      const { origin, role } = router.query;
+      const { origin, role, mode } = router.query;
       // load setting from query into state
-      console.log('SSO save origin', router.query.origin);
-      setOrigin(router.query.origin as string);
+      console.log('SSO on triggered', origin, role, mode);
+      setOrigin(origin as string);
       if (Object.values(ERole).includes(role as ERole)) {
         setRole(role as ERole);
       }
+      if (mode === ESSOMode.signUp && signin) {
+        toggleMode();
+      }
     }
-  }, [router.query]);
+  }, [router?.query]);
 
   const googleAuth = () => {
     return new Promise<any>((resolve, reject) => {
@@ -34,9 +37,8 @@ export default function Home() {
           console.log('res', res);
           const firebaseToken = await res?.user?.getIdToken();
           if (firebaseToken) {
-            const redirectURL = await getSaaSDashboardURL(firebaseToken);
+            const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
             console.log('redirectURL', redirectURL);
-
             window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
           }
           resolve(res);

@@ -21,6 +21,14 @@ const getChumiServerToken = async (firebaseToken: string) => {
   }
 }
 
+const getFirebaseCustomToken = async (firebaseToken: string) => {
+  const { data: { code, data: { customToken } } } = await getAxiosWithAuth(firebaseToken).get(`/user/firebase-custom-token`);
+  if (code !== 200 || !customToken) {
+    throw new Error('Fail to getFirebaseCustomToken')
+  }
+  return customToken;
+}
+
 interface signUpHappinPayload {
   // birthday,
   // languageCode,
@@ -37,4 +45,4 @@ const signUpHappin = async (firebaseToken: string, payload: signUpHappinPayload)
   return data;
 }
 
-export { getChumiServerToken, signUpHappin };
+export { getChumiServerToken, getFirebaseCustomToken, signUpHappin };

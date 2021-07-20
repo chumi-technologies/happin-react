@@ -8,7 +8,7 @@ import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { SubmitButton } from '@components/SubmitButton';
 import { ERole, useAppState } from 'contexts/state';
 import { RoleToggle } from '@components/RoleToggle';
-import { getSaaSDashboardURL } from 'utils/redirect-url';
+import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
 import { signUpHappin } from 'api/happin-server';
 
 
@@ -25,7 +25,7 @@ export default function EmailSignUp() {
   const [terms, setTerms] = useState(false);
   const [ageState, setAgeState] = useState(false);
   const [termsState, setTermsState] = useState(false);
-  const { origin } = useAppState();
+  const { origin, role } = useAppState();
 
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default function EmailSignUp() {
       const firebaseToken = await res?.user?.getIdToken();
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
-        const redirectURL = await getSaaSDashboardURL(firebaseToken);
+        const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
         console.log('redirectURL', redirectURL);
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }

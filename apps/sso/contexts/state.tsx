@@ -14,6 +14,10 @@ enum ERole {
   fan = 'Fan',
   organizer = 'Organizer',
 }
+enum ESSOMode {
+  signIn = 'sign-in',
+  signUp = 'sign-up',
+}
 
 function AppState({ children }: { children: any }) {
   const [signin, setSignin] = useState(true);
@@ -39,4 +43,4 @@ function useAppState() {
   return useContext(AppContext);
 }
 
-export { AppState, ERole, useAppState };
+export { AppState, ERole, useAppState, ESSOMode };
