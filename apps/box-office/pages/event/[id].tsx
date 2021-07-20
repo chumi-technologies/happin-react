@@ -1,4 +1,4 @@
-import 'bootstrap/dist/css/bootstrap.css'
+// import 'bootstrap/dist/css/bootstrap.css'
 import styles from '../../styles/Event.module.css'
 import { GetStaticPropsResult } from 'next'
 import { getEvents, getEventById } from '../../api/activity'
@@ -16,7 +16,7 @@ const Event: React.FC<Event> = (props) => {
   const loadCheckoutIframe = () => {
     const host = props.seatSelection ?
       'https://checkout.happin.app/checkoutNew/reservedSeating/' : 'https://checkout.happin.app/checkoutNew/ticket/'
-    
+
     const url = host+props._id
 
     if (process.browser) {
@@ -50,7 +50,7 @@ const Event: React.FC<Event> = (props) => {
             Sell
           </button>
         </div>
-      </div>   
+      </div>
   )
 }
 

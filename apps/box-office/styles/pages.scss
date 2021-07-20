@@ -1,0 +1,9 @@
+// ========================================
+// Dashboard page
+// ========================================
+.card {
+  @apply p-4 rounded-md bg-white
+}
+.expend {
+  @apply flex items-center justify-center w-8 h-8 border-gray-200 border-2 border-solid rounded-full text-gray-500;
+}

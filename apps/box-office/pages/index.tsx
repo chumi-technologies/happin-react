@@ -1,7 +1,6 @@
 import Head from 'next/head'
 import { GetStaticPropsResult } from 'next'
 import React from 'react'
-import styles from '../styles/Home.module.css'
 import { getEvents } from '../api/activity'
 import Link from 'next/link'
 
@@ -12,20 +11,20 @@ interface Props {
 
 const Home: React.FC<Props> = (props) => {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <title>Happin Box Office</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
+      <main>
+        <h1>
           Happin Box Office
         </h1>
 
         {props.activities.map((e: any) => (
           <Link key={e._id} href={`/event/${e._id}`}>
-            <div className={styles.card}>
+            <div>
               <h2>{e.title}</h2>
               <p>{e.location}</p>
             </div>
