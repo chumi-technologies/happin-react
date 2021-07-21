@@ -9,31 +9,69 @@
 // components
 @import "styles/components";
 
+// scrollbar
+@import "styles/scrollbar";
+
 @font-face {
   font-family: proximanova;
   font-weight: 500;
   font-display: swap;
-  src: url("../public/fonts/proximanova/proximanova-semibold-webfont.woff2") format("woff2"),
-  url("../public/fonts/proximanova/proximanova-semibold-webfont.woff") format("woff")
+  src: url("../public/fonts/proximanova/proximanova-semibold-webfont.woff2")
+      format("woff2"),
+    url("../public/fonts/proximanova/proximanova-semibold-webfont.woff")
+      format("woff");
 }
 @font-face {
   font-family: proximanova;
   font-weight: 600;
   font-display: swap;
-  src: url("../public/fonts/proximanova/proximanova-bold-webfont.woff2") format("woff2"),
-  url("../public/fonts/proximanova/proximanova-bold-webfont.woff") format("woff")
+  src: url("../public/fonts/proximanova/proximanova-bold-webfont.woff2")
+      format("woff2"),
+    url("../public/fonts/proximanova/proximanova-bold-webfont.woff")
+      format("woff");
 }
 @font-face {
   font-family: proximanova;
   font-weight: 700;
   font-display: swap;
-  src: url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff2") format("woff2"),
-  url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff") format("woff")
+  src: url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff2")
+      format("woff2"),
+    url("../public/fonts/proximanova/proximanova-extrabold-webfont.woff")
+      format("woff");
 }
 @font-face {
   font-family: proximanova;
   font-weight: 800;
   font-display: swap;
-  src: url("../public/fonts/proximanova/proximanova-black-webfont.woff2") format("woff2"),
-  url("../public/fonts/proximanova/proximanova-black-webfont.woff") format("woff")
+  src: url("../public/fonts/proximanova/proximanova-black-webfont.woff2")
+      format("woff2"),
+    url("../public/fonts/proximanova/proximanova-black-webfont.woff")
+      format("woff");
+}
+
+// Helvetica Neue
+@font-face {
+  font-family: "Helvetica Neue";
+  font-weight: 400;
+  font-display: swap;
+  src: url("../public/fonts/helvetica/helveticaneue.ttf") format("truetype"),
+    url("../public/fonts/helvetica/helveticaneue.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Helvetica Neue";
+  font-weight: 700;
+  font-display: swap;
+  src: url("../public/fonts/helvetica/Helvetica Neue LT 75 Bold.ttf")
+      format("truetype"),
+    url("../public/fonts/helvetica/Helvetica Neue LT 75 Bold.ttf")
+      format("truetype");
+}
+@font-face {
+  font-family: "Helvetica Neue";
+  font-weight: 900;
+  font-display: swap;
+  src: url("../public/fonts/helvetica/Helvetica Neue LT 97 Black Condensed.ttf")
+      format("truetype"),
+    url("../public/fonts/helvetica/Helvetica Neue LT 97 Black Condensed.ttf")
+      format("truetype");
 }
