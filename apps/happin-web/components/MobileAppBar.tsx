@@ -3,7 +3,7 @@ import { HStack } from "@chakra-ui/react";
 const MobileAppBar = ({ setIsMobileBarOpen }: any) => {
   return (
     <>
-      <div className="px-4 py-4 text-white bg-rose-500">
+      <div className="px-4 py-4 text-white bg-rose-500 sm:hidden">
         <div className="text-sm font-bold">
           Happin is better on the app, try our event social app now!
         </div>
