@@ -1,0 +1,50 @@
+@import 'mixin';
+
+// Event Details
+.event-details__page{
+  @apply relative bg-black text-white;
+  height: calc(100vh - 64px);
+  @media (min-width: 1024px) {
+    height: calc(100vh - 80px);
+  }
+}
+.event-details__container {
+  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  @media (min-width: 640px) {
+    max-width: 720px;
+  }
+}
+.event-details__body-scroll {
+  overflow-y: auto;
+  @media (min-width: 640px) {
+    @include dark-scroll
+  }
+}
+.event-details__tab {
+  @apply flex items-center justify-center flex-1 rounded-full h-10 cursor-pointer font-medium text-gray-400 transition;
+  &:hover {
+    @apply text-white;
+  }
+  &.active, &.first-active {
+    @apply bg-gray-700 text-white;
+  }
+}
+.event-details__side-action {
+  @apply flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 text-xl rounded-full border-2 border-solid border-gray-600 text-gray-400 cursor-pointer transition;
+  background-color: rgba(#000, .7);
+  &:hover {
+    @apply text-gray-200 bg-gray-900
+  }
+  &.favorite {
+    @apply text-rose-500 bg-gray-700
+  }
+  &.active {
+    @apply bg-gray-800
+  }
+}
+.event-details__side-vip {
+  @apply absolute -right-2 top-0 flex items-center justify-center w-5 h-5 bg-yellow-500 rounded-full z-10 text-gray-900 font-extrabold select-none;
+  font-size: 10px;
+  box-shadow: 0 0 16px 0 rgba(#ddd619, .9);
+}
+

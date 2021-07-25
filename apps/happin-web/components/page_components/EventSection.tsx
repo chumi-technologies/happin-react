@@ -1,6 +1,5 @@
-import { Box, Divider } from "@chakra-ui/react";
-
 import EventTitle from "./EventTitle";
+import EventDescription from "./EventDescription";
 import EventLineUp from "./EventLineUp";
 import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
@@ -8,15 +7,18 @@ import EventHost from "./EventHost";
 const EventSection = ({ setIsModalOpen }: any) => {
   return (
     <>
-      <Box>
-        <EventTitle setIsModalOpen={setIsModalOpen} />
-        <Divider my={{ base: "24px", sm: "40px" }} />
+      <EventTitle setIsModalOpen={setIsModalOpen} />
+      <div id="about" className="pt-6 sm:pt-10">
+        <EventDescription />
+        <div className="h-px bg-gray-600 my-6 sm:my-10" />
         <EventLineUp />
-        <Divider my={{ base: "24px", sm: "40px" }} />
+        <div className="h-px bg-gray-600 mt-6 sm:mt-10" />
+      </div>
+      <div id="agenda" className="pt-6 sm:pt-10">
         <EventAgenda />
-        <Divider my={{ base: "24px", sm: "40px" }} />
+        <div className="h-px bg-gray-600 my-6 sm:my-10" />
         <EventHost />
-      </Box>
+      </div>
     </>
   );
 };

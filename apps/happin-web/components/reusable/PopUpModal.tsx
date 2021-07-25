@@ -10,7 +10,7 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
         w="100vw"
         left="0px"
         top="0px"
-        bg="rgba(0, 0, 0, 0.6)"
+        bg="rgba(0, 0, 0, .7)"
         zIndex="modal"
         justify="center"
         align="center"
@@ -27,7 +27,7 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
           maxW="calc(100vw - 48px)"
           bg="brandGrey.200"
           borderRadius="10px"
-          boxShadow="0px 0px 20px rgba(255, 255, 255, 0.3)"
+          boxShadow="0px 10px 20px rgba(0, 0, 0, .75)"
           border="1px solid #333333"
           p="24px"
         >

@@ -1,49 +1,21 @@
-import { Box, HStack, Flex, Image, Text, Button } from "@chakra-ui/react";
+import SvgIcon from '@components/SvgIcon';
+import { CloseSmall } from '@icon-park/react';
+import React from 'react';
 
 const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
   return (
-    <>
-      <Box
-        display={{ base: "none", sm: "block" }}
-        bg="white"
-        w="100%"
-        px="60px"
-        py="8px"
-        color="black"
-        pos="absolute"
-        top="88px"
-        left="0"
-        right="0"
-        zIndex="10"
-      >
-        <HStack justify="center" align="center">
-          <Image src="/images/icons/akar-icons_ticket.svg" />
-          <Text fontSize="sm">
-            Already have tickets or invitation code? Sign in to check your
-            ticket!
-          </Text>
-          <Button colorScheme="brandPink" fontSize="sm" h="32px">
-            Sign In to continue
-          </Button>
-        </HStack>
-
-        {/* Close Icon */}
-        <Button
-          variant="ghost"
-          h="32px"
-          position="absolute"
-          right="60px"
-          top="8px"
-          bottom="auto"
-          p="0"
-          onClick={(e) => {
-            setIsFirstTimeVisitor(false);
-          }}
-        >
-          <Image w="20px" src="/images/icons/close.svg" />
-        </Button>
-      </Box>
-    </>
+    <div className="absolute top-0 w-full py-3 px-6 sm:px-8 md:px-10 lg:px-14 z-30 bg-white text-gray-900">
+      <div className="relative flex items-center justify-center">
+        <SvgIcon id="ticket-2" className="text-lg" />
+        <div className="ml-3">Already have tickets or invitation code? Sign in to check your ticket!</div>
+        <button className="btn btn-rose btn-sm !px-6 !rounded-full ml-6 font-semibold">Sign In to continue</button>
+        <div className="flex items-center justify-center absolute -right-4 w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer" onClick={() => {
+          setIsFirstTimeVisitor(false)
+        }}>
+          <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
+        </div>
+      </div>
+    </div>
   );
 };
 

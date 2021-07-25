@@ -1,15 +1,12 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-
-import { Box, Flex } from "@chakra-ui/react";
-
 import SignInBar from "../../components/SignInBar";
 import PopUpModal from "../../components/reusable/PopUpModal";
 import ActionSideBar from "../../components/page_components/ActionSideBar";
-import ImageSection from "../../components/page_components/ImageSection";
 import EventSection from "../../components/page_components/EventSection";
 import BottomBar from "../../components/page_components/BottomBar";
 import EventDates from "../../components/page_components/EventDates";
+import { Box } from '@chakra-ui/react';
 
 const Events = () => {
   const router = useRouter();
@@ -18,9 +15,11 @@ const Events = () => {
 
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isFavorite, setFavorite] = useState(false);
+  const [showDownload, setShowDownload] = useState(true);
 
   return (
-    <>
+    <div className="event-details__page">
       {/* Top Popups for First-Time Visitors */}
       {isFirstTimeVisitor && (
         <SignInBar setIsFirstTimeVisitor={setIsFirstTimeVisitor} />
@@ -36,37 +35,42 @@ const Events = () => {
           <EventDates />
         </PopUpModal>
       )}
-
-      <Flex
-        direction={{ base: "column", sm: "row" }}
-        h={{ base: "auto", sm: "100%" }}
-        position="relative"
-      >
+      <div id="scroll-body" className="relative lg:flex h-full lg:flex-row event-details__body-scroll">
         <ActionSideBar
-          isFirstTimeVisitor={isFirstTimeVisitor}
-          setIsFirstTimeVisitor={setIsFirstTimeVisitor}
+          showDownload={showDownload}
+          isFavorite={isFavorite}
+          onFavorite={() => {
+            setFavorite(s => !s)
+          }}
+          onShare={() => {
+            console.log('share');
+          }}
+          onDownload={() => {
+            setShowDownload(s => !s)
+          }}
         />
 
         {/* Event Image */}
-        <Box
-          w={{ base: "100vw", sm: "50%" }}
-          h={{ base: "112.5vw", sm: "100%" }}
-        >
-          <ImageSection />
-        </Box>
+        <div className="lg:sticky lg:top-0 w-full lg:w-5/12 xl:w-1/2 h-80 lg:h-full">
+          <Box
+            w="100%"
+            h="100%"
+            backgroundImage="url('/images/pic.png')"
+            backgroundPosition="center"
+            backgroundRepeat="no-repeat"
+            backgroundSize="cover"
+          />
+        </div>
 
         {/* Event Texts */}
-        <Box
-          w={{ base: "100%", sm: "50%" }}
-          h={{ base: "visible", sm: "100%" }}
-          overflowY={{ base: "auto", sm: "auto" }}
-          p={{ base: "24px", sm: "60px 148px 80px 60px" }}
-        >
-          <EventSection setIsModalOpen={setIsModalOpen} />
+        <div className="w-full lg:w-7/12 xl:w-1/2 pb-16 sm:pb-20">
+          <div className="event-details__container relative py-6 sm:py-8 md:py-14">
+            <EventSection setIsModalOpen={setIsModalOpen} />
+          </div>
           <BottomBar />
-        </Box>
-      </Flex>
-    </>
+        </div>
+      </div>
+    </div>
   );
 };
 

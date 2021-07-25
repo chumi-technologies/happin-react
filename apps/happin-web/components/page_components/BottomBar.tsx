@@ -1,37 +1,19 @@
-import { Box, ButtonGroup, Button, Image } from "@chakra-ui/react";
+import SvgIcon from '@components/SvgIcon';
 
 const BottomBar = () => {
   return (
-    <Box
-      position={{ base: "fixed", sm: "absolute" }}
-      bottom="0"
-      right="0"
-      w={{ base: "100%", sm: "50%" }}
-      bg="brandGrey.200"
-      p={{ base: "15px 24px 45px 24px", sm: "16px 148px 16px 60px" }}
-    >
-      <ButtonGroup w="100%">
-        <Button
-          colorScheme="highlight"
-          color="black"
-          fontSize={{ base: "sm", sm: "md" }}
-          fontWeight="700"
-          leftIcon={<Image src="/images/icons/chat.svg" />}
-          isFullWidth={true}
-        >
-          Chat with Fans
-        </Button>
-        <Button
-          colorScheme="brandPink"
-          fontSize={{ base: "sm", sm: "md" }}
-          fontWeight="700"
-          leftIcon={<Image src="/images/icons/ticket.svg" />}
-          isFullWidth={true}
-        >
-          Get Tickets
-        </Button>
-      </ButtonGroup>
-    </Box>
+    <div className="fixed lg:sticky bottom-0 right-0 w-full bg-gray-800 z-40">
+      <div className="event-details__container flex py-3 sm:py-4">
+        <button className="btn btn-yellow !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1">
+          <SvgIcon id="chat" className="text-lg text-gray-900 mr-1 sm:mr-2" />
+          <span className="text-sm sm:text-base">Chat with Fans</span>
+        </button>
+        <button className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
+          <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
+          <span className="text-sm sm:text-base">Get Tickets</span>
+        </button>
+      </div>
+    </div>
   );
 };
 

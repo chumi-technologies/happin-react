@@ -1,33 +1,21 @@
-import { Flex, Image, Text, HStack, Button } from "@chakra-ui/react";
+import { Image, HStack } from "@chakra-ui/react";
 
 const EventHost = () => {
   return (
     <>
-      <Text textStyle="sectionTitle">Meet Your Host</Text>
-      <Flex
-        justify="space-between"
-        w="100%"
-        mt={{ base: "16px", sm: "24px" }}
-        mb="56px"
-      >
-        <HStack spacing="12px">
+      <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
+      <HStack justify="space-between" mt={5}>
+        <HStack spacing={{base: 3, sm: 5}}>
           <Image
             borderRadius="full"
-            boxSize="36px"
+            boxSize={10}
             src="/images/profile_pic.png"
             alt="profile picture"
-          ></Image>
-          <Text fontSize={{ base: "xs", sm: "md" }}>Happin Staff</Text>
+          />
+          <div className="font-medium">Happin Staff</div>
         </HStack>
-        <Button
-          colorScheme="brandBlue"
-          h="32px"
-          fontSize={{ base: "xs", sm: "sm" }}
-          fontWeight={{ base: "700", sm: "400" }}
-        >
-          Contact
-        </Button>
-      </Flex>
+        <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full">Contact</button>
+      </HStack>
     </>
   );
 };

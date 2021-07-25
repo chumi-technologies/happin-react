@@ -1,60 +1,24 @@
-import {
-  Box,
-  VStack,
-  HStack,
-  Flex,
-  Image,
-  Text,
-  Button,
-} from "@chakra-ui/react";
+import { HStack } from "@chakra-ui/react";
 
 const MobileAppBar = ({ setIsMobileBarOpen }: any) => {
   return (
     <>
-      <Box
-        display={{ base: "block", sm: "none" }}
-        bg="brandPink.500"
-        w="100%"
-        px="24px"
-        py="16px"
-        color="white"
-      >
-        <VStack align="stretch">
-          <Text fontSize="sm" fontWeight="700">
-            Happin is better on the app, try our event social app now!
-          </Text>
-
-          <HStack>
-            <Button
-              variant="outline"
-              fontSize="xs"
-              fontWeight="700"
-              h="32px"
-              onClick={() => {
-                setIsMobileBarOpen(false);
-              }}
-              s
-            >
-              Not Now
-            </Button>
-
-            <Button
-              // variant="ghost"
-              colorScheme="brandBlack"
-              fontSize="xs"
-              fontWeight="700"
-              h="32px"
-              isFullWidth={true}
-              onClick={() => {
-                setIsMobileBarOpen(false);
-                location.href = "#";
-              }}
-            >
-              Switch to the App
-            </Button>
-          </HStack>
-        </VStack>
-      </Box>
+      <div className="px-4 py-4 text-white bg-rose-500">
+        <div className="text-sm font-bold">
+          Happin is better on the app, try our event social app now!
+        </div>
+        <HStack mt={3}>
+          <button className="btn btn-outline-white btn-sm !rounded-full" onClick={() => {
+            setIsMobileBarOpen(false);
+          }}>Not Now</button>
+          <div className="flex-1">
+            <button className="w-full btn btn-dark-pure btn-sm !rounded-full" onClick={() => {
+              setIsMobileBarOpen(false);
+              location.href = "#";
+            }}>Switch to the App</button>
+          </div>
+        </HStack>
+      </div>
     </>
   );
 };

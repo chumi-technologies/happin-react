@@ -4,3 +4,18 @@ body {
 a {
   cursor: pointer;
 }
+
+::selection {
+  background: theme('colors.rose.500');
+  color: #fff;
+}
+
+::-moz-selection {
+  background: theme('colors.rose.500');
+  color: #fff;
+}
+
+::-webkit-selection {
+  background: theme('colors.rose.500');
+  color: #fff;
+}

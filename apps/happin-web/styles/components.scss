@@ -1,1 +1,205 @@
+$rose: #fe4365;
+$blue: #53B4FA;
 // Your components styles
+
+// Button
+@mixin btn-color($bgColor) {
+  @apply bg-#{$bgColor}-500 text-white;
+  &:hover {
+    @apply bg-#{$bgColor}-600;
+  }
+  &:active {
+    @apply bg-#{$bgColor}-700
+  }
+  &.disabled, &:disabled {
+    @apply bg-#{$bgColor}-100;
+    cursor: not-allowed;
+  }
+}
+
+.btn {
+  @apply py-3 px-4 font-medium focus:outline-none text-base border-0 transition;
+  border-radius: 10px;
+  &.btn-xs {
+    @apply py-1 px-2 text-xs;
+  }
+  &.btn-sm {
+    @apply h-8 py-0 px-3 text-sm;
+  }
+  &.btn-lg {
+    @apply py-4 px-5 text-lg rounded-xl;
+  }
+}
+.btn-xs {
+  @apply rounded-md;
+}
+.btn-sm {
+  @apply rounded-lg;
+}
+.btn-lg {
+  @apply rounded-xl;
+}
+
+.btn-icon {
+  @apply p-0 w-12 h-12 inline-flex items-center justify-center focus:outline-none text-lg border-0 transition;
+  border-radius: 10px;
+  &.btn-xs {
+    @apply w-6 h-6 text-xs;
+  }
+  &.btn-sm {
+    @apply w-8 h-8 text-sm;
+  }
+  &.btn-lg {
+    @apply text-2xl;
+    width: 60px;
+    height: 60px;
+  }
+}
+
+[class*="btn-outline-"] {
+  @apply border border-solid
+}
+
+.btn-outline-dark {
+  @apply bg-white text-gray-900 border-gray-900;
+  &:hover {
+    @apply bg-gray-100
+  }
+  &:active {
+    @apply bg-gray-200
+  }
+}
+
+.btn-outline-light {
+  @apply bg-transparent text-gray-900 border-gray-600;
+  color: #fff;
+  &:hover {
+    //@apply border-gray-500;
+    background-color: rgba(#fff, .5);
+  }
+  &:active {
+    background-color: rgba(#fff, .4);
+  }
+}
+
+.btn-outline-rose {
+  @apply bg-transparent text-rose-500 border-rose-500;
+  &:hover {
+    background-color: rgba($rose, .5);
+    color: #fff;
+  }
+  &:active {
+    background-color: rgba($rose, .4);
+  }
+}
+
+.btn-outline-blue {
+  @apply bg-transparent font-semibold text-blue-400 border-blue-500;
+  &:hover {
+    @apply text-blue-100;
+    background-color: rgba($blue, .5);
+  }
+  &:active {
+    background-color: rgba($blue, .4);
+  }
+}
+
+.btn-outline-white {
+  @apply bg-transparent font-semibold text-white border-white;
+  &:hover {
+    background-color: rgba(#fff, .2);
+  }
+  &:active {
+    background-color: rgba(#fff, .1);
+  }
+}
+
+.btn-ghost {
+  @apply text-gray-900;
+  &:hover {
+    @apply bg-gray-100;
+  }
+}
+.btn-link {
+  @apply text-gray-900;
+  &:hover {
+    @apply text-rose-500;
+  }
+}
+
+.btn-dark {
+  @apply bg-gray-900 text-white;
+  &:hover {
+    @apply bg-rose-500;
+  }
+  &:active {
+    @apply bg-rose-600;
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-100 text-gray-300;
+    cursor: not-allowed;
+  }
+}
+
+.btn-dark-pure {
+  @apply bg-gray-900 text-white;
+  &:hover {
+    @apply bg-gray-800;
+  }
+  &:active {
+    @apply bg-black;
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-100 text-gray-300;
+    cursor: not-allowed;
+  }
+}
+
+.btn-white {
+  @apply bg-white text-gray-900;
+  &:hover {
+    @apply bg-gray-50;
+  }
+  &:active {
+    @apply bg-white;
+  }
+  &.disabled, &:disabled {
+    @apply bg-white text-gray-300;
+    cursor: not-allowed;
+  }
+}
+.btn-yellow {
+  @apply bg-yellow-500 text-gray-900;
+  &:hover {
+    @apply bg-yellow-600;
+  }
+  &:active {
+    @apply bg-yellow-700;
+  }
+  &.disabled, &:disabled {
+    @apply bg-yellow-100;
+    cursor: not-allowed;
+  }
+}
+
+.btn-rose {
+  @include btn-color("rose")
+}
+
+.btn-blue {
+  @include btn-color("blue")
+}
+
+.btn-light {
+  @apply bg-gray-100;
+  &:hover {
+    @apply bg-gray-200
+  }
+  &:active {
+    @apply bg-gray-300
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-100 text-gray-300;
+    cursor: not-allowed;
+  }
+}
