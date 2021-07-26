@@ -1,37 +1,13 @@
-import { Flex, Text, Button, Box } from "@chakra-ui/react";
+import { Flex, Text } from "@chakra-ui/react";
 
 const TableDates = ({ date }: any) => {
   return (
-    <>
-      <Box minW={{ base: "0px", sm: "432px" }}>
-        <Button
-          float="right"
-          h="32px"
-          ml="8px"
-          fontSize="xs"
-          fontWeight="700"
-          colorScheme="brandPink"
-          isDisabled={date.isDisabled}
-        >
-          {date.buttonText}
-        </Button>
-        <Flex direction="column">
-          <Text
-            color="highlight.500"
-            fontWeight="700"
-            fontSize={{ base: "sm", sm: "md" }}
-          >
-            {date.date}
-          </Text>
-          <Text fontSize="sm" fontWeight="700">
-            {date.price}
-          </Text>
-        </Flex>
-        <Text color="brandGrey.700" fontSize={{ base: "xs", sm: "sm" }}>
-          {date.type}
-        </Text>
-      </Box>
-    </>
+    <div className="w-full py-4">
+      <button className="btn btn-rose btn-sm float-right !rounded-full" disabled={date.isDisabled}>{date.buttonText}</button>
+      <div className="font-bold text-yellow-500 mb-1">{date.date}</div>
+      <div className="text-sm font-semibold text-white mb-1">{date.price}</div>
+      <div className="text-sm text-gray-400">{date.type}</div>
+    </div>
   );
 };
 

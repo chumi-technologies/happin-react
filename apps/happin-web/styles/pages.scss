@@ -14,14 +14,8 @@
     max-width: 720px;
   }
 }
-.event-details__body-scroll {
-  overflow-y: auto;
-  @media (min-width: 640px) {
-    @include dark-scroll
-  }
-}
 .event-details__tab {
-  @apply flex items-center justify-center flex-1 rounded-full h-10 cursor-pointer font-medium text-gray-400 transition;
+  @apply flex items-center justify-center flex-1 rounded-full h-8 sm:h-10 cursor-pointer font-medium text-gray-400 transition;
   &:hover {
     @apply text-white;
   }
@@ -47,4 +41,9 @@
   font-size: 10px;
   box-shadow: 0 0 16px 0 rgba(#ddd619, .9);
 }
-
+.event-details__modal {
+  @apply flex flex-col w-full pt-3 sm:pt-4 px-4 sm:px-5 rounded-t-2xl sm:rounded-lg border border-solid border-gray-700 bg-gray-800;
+  max-width: 500px;
+  max-height: calc(100% - 80px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, .75);
+}

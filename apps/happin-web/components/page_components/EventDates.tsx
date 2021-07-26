@@ -1,6 +1,9 @@
 import { Image, ButtonGroup, Button, Grid, Divider } from "@chakra-ui/react";
 
 import TableDates from "./TableDates";
+import { Link } from 'react-scroll';
+import classNames from 'classnames';
+import SvgIcon from '@components/SvgIcon';
 
 const EventDates = () => {
   const dates = [
@@ -65,53 +68,21 @@ const EventDates = () => {
   return (
     <>
       {/* List and Calendar Toggle */}
-      <ButtonGroup
-        my="24px"
-        w="100%"
-        border="1px"
-        borderRadius="full"
-        borderColor="brandGrey.500"
-        p="4px"
-        colorScheme="brandGrey"
-        fontSize="sm"
-        fontWeight="700"
-      >
-        <Button
-          isFullWidth={true}
-          // onClick={() => {
-          //   location.href = "#";
-          // }}
-        >
-          <Image src="/images/icons/eva_list-fill.svg" alt="List" />
-        </Button>
-        <Button
-          variant="link"
-          isFullWidth={true}
-          // onClick={() => {
-          //   location.href = "#";
-          // }}
-        >
-          <Image src="/images/icons/calendar.svg" alt="Calendar" />
-        </Button>
-      </ButtonGroup>
+      <div className="flex w-full mb-2 sm:mb-3 mt-3 sm:mt-4 p-1 border border-solid border-gray-600 rounded-full">
+        <div className="event-details__tab active">
+          <SvgIcon id="list" className="text-2xl" />
+        </div>
+        <div className="event-details__tab">
+          <SvgIcon id="calendar" className="text-2xl" />
+        </div>
+      </div>
 
       {/* Grid with available dates */}
-      <Grid
-        maxH="calc(100vh - 258px)"
-        overflowY="auto"
-        gridTemplateColumns="1fr"
-        gap="24px"
-      >
+      <div className="flex-1 overflow-y-auto web-scroll -mr-4 pr-4 sm:-mr-5 sm:pr-3 grid grid-cols-1 divide-y divide-gray-600">
         {dates.map((date: any, index: Number) => {
-          return (
-            <>
-              <TableDates key={index} date={date} />
-              {/* <Divider gridColumn="1 / 3" /> */}
-              <Divider />
-            </>
-          );
+          return <TableDates key={index} date={date} />
         })}
-      </Grid>
+      </div>
     </>
   );
 };

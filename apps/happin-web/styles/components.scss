@@ -12,7 +12,8 @@ $blue: #53B4FA;
     @apply bg-#{$bgColor}-700
   }
   &.disabled, &:disabled {
-    @apply bg-#{$bgColor}-100;
+    @apply bg-#{$bgColor}-300;
+    opacity: .3;
     cursor: not-allowed;
   }
 }

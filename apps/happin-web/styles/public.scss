@@ -41,7 +41,11 @@
 .ellipsis-2 {
   @include ellipsis(2)
 }
-
+.web-scroll {
+  @media (min-width: 640px) {
+    @include dark-scroll
+  }
+}
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -58,13 +62,40 @@
     opacity: 1;
   }
 }
+@keyframes fade-background {
+  0% {
+    background-color: rgba(0,0,0,0);
+  }
+  100% {
+    background-color: rgba(0,0,0,.7);
+  }
+}
+@keyframes fade-in-up {
+  0% {
+    transform: translateY(30px);
+    opacity: .75;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 .fade-scale-in {
-  animation-duration: .2s;
+  animation-duration: .3s;
   animation-fill-mode: both;
   animation-name: fade-scale;
   animation-timing-function: ease-out;
 }
-
+.fade-background {
+  animation-duration: .3s;
+  animation-fill-mode: both;
+  animation-name: fade-background;
+}
+.fade-in-up {
+  animation-duration: .3s;
+  animation-fill-mode: both;
+  animation-name: fade-in-up;
+}
 @supports (bottom: env(safe-area-inset-bottom)){
   .footer-action {
     padding-bottom: constant(safe-area-inset-bottom);

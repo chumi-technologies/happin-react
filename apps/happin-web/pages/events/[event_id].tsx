@@ -35,7 +35,7 @@ const Events = () => {
           <EventDates />
         </PopUpModal>
       )}
-      <div id="scroll-body" className="relative lg:flex h-full lg:flex-row event-details__body-scroll">
+      <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
         <ActionSideBar
           showDownload={showDownload}
           isFavorite={isFavorite}
