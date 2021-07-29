@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import {
-  Image,
+  Avatar,
   InputGroup,
   InputLeftElement,
-  Input, HStack
+  Input, HStack, DarkMode
 } from '@chakra-ui/react';
 import { SearchIcon } from "@chakra-ui/icons";
+import React from 'react';
+import { HamburgerButton } from '@icon-park/react';
 
 export default function Header() {
   return (
@@ -14,45 +16,32 @@ export default function Header() {
         {/* Left Block */}
         <div className="flex items-center">
           {/* Logo */}
-          <img className="h-10 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
-          <img className="h-10 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
+          <img className="h-10 mr-6 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
+          <img className="h-10 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
           <Link href="/">
-            <a className="text-white font-medium p-1 ml-8 hidden sm:block">Explore events</a>
+            <a className="header__link">Explore events</a>
           </Link>
         </div>
 
         {/* Central Block */}
         {/* Search */}
-        <InputGroup
-          w="267px"
-          h="44px"
-          display={{ base: "none", lg: "block" }}
-        >
-          <InputLeftElement
-            h="100%"
-            pointerEvents="none"
-            children={<SearchIcon color="gray.500" />}
-          />
-          <Input
-            h="100%"
-            variant="outline"
-            placeholder="Search"
-            borderRadius="full"
-          />
-        </InputGroup>
+        <div className="header__search">
+          <label htmlFor="search" className="absolute left-4 leading-none inline-flex transition">
+            <SearchIcon w={4} h={4} color="currentColor" />
+          </label>
+          <input id="search" type="text" className="header__search-input" placeholder="Search..." />
+        </div>
 
         {/* Right Block */}
-        <HStack spacing={6}>
+        <HStack spacing={5}>
           <Link href="/">
-            <a className="text-white font-medium p-1 hidden sm:block">Host Event</a>
+            <a className="header__link">Host Event</a>
           </Link>
           {/* User Profile */}
-          <Image
-            w="83px"
-            objectFit="contain"
-            src="/images/profile.png"
-            alt="Profile"
-          />
+          <div className="header__menu">
+            <HamburgerButton theme="outline" size="22" fill="currentColor"/>
+            <Avatar size="sm" ml={2} bg="gray.500"/>
+          </div>
         </HStack>
       </HStack>
     </div>

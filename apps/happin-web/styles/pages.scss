@@ -1,4 +1,27 @@
 @import 'mixin';
+// Header
+.header__link {
+  @apply inline-flex p-1 font-medium text-gray-300 hover:text-white transition
+}
+.header__menu {
+  @apply flex items-center rounded-full border-2 border-solid border-gray-600 text-gray-500 py-1 pr-1 pl-3 cursor-pointer transition;
+  &:hover {
+    @apply text-gray-300 bg-gray-600
+  }
+}
+.header__search {
+  @apply relative flex items-center w-full text-gray-500 focus-within:text-gray-300;
+  max-width: 268px;
+}
+.header__search-input {
+  @apply block w-full pl-10 pr-3 py-2 rounded-full border-2 border-solid border-gray-800 bg-transparent text-white transition placeholder-gray-400;
+  &:hover {
+    @apply border-gray-700
+  }
+  &:focus {
+    @apply bg-gray-900
+  }
+}
 
 // Event Details
 .event-details__page{

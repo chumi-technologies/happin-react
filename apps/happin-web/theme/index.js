@@ -31,27 +31,28 @@ const theme = extendTheme({
   shadows: {
     outline: "none",
   },
-  colors: {
-    brandPink: {
-      100: "#FE4365",
-      500: "#FE4365",
-    },
-    brandBlue: {
-      500: "#53B4FA",
-      600: "#53B4FA",
-    },
-    highlight: {
-      500: "#FFF846",
-    },
-    brandGrey: {
-      200: "#222222", // used by BottomBar, PopUpModal
-      500: "#333333", // used by Buttons, PopUpOverlay
-      700: "#FFFFFFB3", // 70% transparency
-    },
-    brandBlack: {
-      500: "#000000", // used by Buttons
-    },
-  },
+  colors,
+  // colors: {
+  //   brandPink: {
+  //     100: "#FE4365",
+  //     500: "#FE4365",
+  //   },
+  //   brandBlue: {
+  //     500: "#53B4FA",
+  //     600: "#53B4FA",
+  //   },
+  //   highlight: {
+  //     500: "#FFF846",
+  //   },
+  //   brandGrey: {
+  //     200: "#222222", // used by BottomBar, PopUpModal
+  //     500: "#333333", // used by Buttons, PopUpOverlay
+  //     700: "#FFFFFFB3", // 70% transparency
+  //   },
+  //   brandBlack: {
+  //     500: "#000000", // used by Buttons
+  //   },
+  // },
   components: {
     Button,
     Badge,

@@ -19,3 +19,11 @@ a {
   background: theme('colors.rose.500');
   color: #fff;
 }
+
+input {
+  appearance: none;
+  outline: none;
+  &:focus {
+    outline: none;
+  }
+}
