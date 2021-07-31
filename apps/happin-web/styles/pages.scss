@@ -19,7 +19,7 @@
   }
 }
 .header__search {
-  @apply relative flex items-center w-full text-gray-500 focus-within:text-gray-300 hidden sm:block;
+  @apply relative hidden sm:flex items-center w-full text-gray-500 focus-within:text-gray-300;
   max-width: 268px;
 }
 .header__search-input {
