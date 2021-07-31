@@ -1,7 +1,7 @@
 @import 'mixin';
 // Header
 .header__link {
-  @apply inline-flex p-1 font-medium text-gray-300 hover:text-white transition
+  @apply hidden sm:inline-flex p-1 font-medium text-gray-300 hover:text-white transition
 }
 .header__menu {
   @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-500 py-1 pr-1 pl-3 cursor-pointer transition;
@@ -19,7 +19,7 @@
   }
 }
 .header__search {
-  @apply relative flex items-center w-full text-gray-500 focus-within:text-gray-300;
+  @apply relative flex items-center w-full text-gray-500 focus-within:text-gray-300 hidden sm:block;
   max-width: 268px;
 }
 .header__search-input {

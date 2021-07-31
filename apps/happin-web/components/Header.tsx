@@ -14,7 +14,7 @@ export default function Header() {
         <div className="flex items-center">
           {/* Logo */}
           <img className="h-10 mr-6 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
-          <img className="h-10 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
+          <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
           <Link href="/">
             <a className="header__link">Explore events</a>
           </Link>
