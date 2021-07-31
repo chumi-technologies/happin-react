@@ -1,13 +1,10 @@
-import Link from 'next/link'
-import {
-  Avatar,
-  InputGroup,
-  InputLeftElement,
-  Input, HStack, DarkMode
-} from '@chakra-ui/react';
+import React, { Fragment } from 'react';
+import Link from 'next/link';
+import { Avatar, HStack } from '@chakra-ui/react';
 import { SearchIcon } from "@chakra-ui/icons";
-import React from 'react';
-import { HamburgerButton } from '@icon-park/react';
+import { DownTwo, HamburgerButton, International } from '@icon-park/react';
+import { Menu, Transition } from '@headlessui/react'
+import classNames from 'classnames';
 
 export default function Header() {
   return (
@@ -38,10 +35,61 @@ export default function Header() {
             <a className="header__link">Host Event</a>
           </Link>
           {/* User Profile */}
-          <div className="header__menu">
-            <HamburgerButton theme="outline" size="22" fill="currentColor"/>
-            <Avatar size="sm" ml={2} bg="gray.500"/>
-          </div>
+          <Menu as="div" className="relative">
+            {({ open }) => (
+              <>
+                <Menu.Button as={Fragment}>
+                  <div className={classNames('header__menu', { 'active': open })}>
+                    <HamburgerButton theme="outline" size="22" fill="currentColor"/>
+                    <Avatar size="sm" ml={2} bg="gray.600"/>
+                  </div>
+                </Menu.Button>
+                <Transition
+                  show={open}
+                  as={Fragment}
+                  enter="fade-enter"
+                  enterFrom="fade-enter-from"
+                  enterTo="fade-enter-to"
+                  leave="fade-leave"
+                  leaveFrom="fade-leave-from"
+                  leaveTo="fade-leave-to"
+                >
+                  <Menu.Items className="header__menu-dropdown divide-y divide-gray-800">
+                    <div className="py-1">
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">
+                            <International theme="outline" size="16" fill="currentColor"/>
+                            <span className="ml-2">Host Event Dashboard</span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">
+                            <DownTwo theme="outline" size="16" fill="currentColor"/>
+                            <span className="ml-2">Download Happin</span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+                    </div>
+                    <div className="py-1">
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">Log in</a>
+                        </Link>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">Sign up</a>
+                        </Link>
+                      </Menu.Item>
+                    </div>
+                  </Menu.Items>
+                </Transition>
+              </>
+            )}
+          </Menu>
         </HStack>
       </HStack>
     </div>

@@ -4,31 +4,11 @@ import {
 } from '@chakra-ui/react';
 
 import SvgIcon from '@components/SvgIcon';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-scroll';
 import classNames from 'classnames';
 
-function useResize() {
-  const [width, setWidth] = useState<number>(0);
-  const onResize = useCallback(() => {
-    return setWidth(document.documentElement.clientWidth);
-  }, []);
-  useEffect(() => {
-    if (width === 0) {
-      setWidth(document.documentElement.clientWidth);
-    }
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [onResize, width]);
-  return width;
-}
-
 const EventTitle = ({ setIsModalOpen }: any) => {
-  const windowWidth = useResize();
-  console.log(windowWidth);
-  const parentID = windowWidth > 1024 ? 'scroll-inner-body' : 'scroll-body'
   const [firstActive, setFirstActive] = useState(true)
   return (
     <>
