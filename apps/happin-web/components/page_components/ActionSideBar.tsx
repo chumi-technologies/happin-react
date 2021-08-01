@@ -43,7 +43,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
           {
             showDownload ? (
               <div className="fade-scale-in absolute right-5 top-5 w-72">
-                <div className="py-3 px-4 border border-solid border-gray-600 rounded-lg bg-gray-700">
+                <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800">
                   <div className="text-sm pr-4">
                     This event includes <Link href="/"><a className="link-white">VIP/Fan meeting</a></Link>.
                     Download the Happin app to meet your favourite artists
