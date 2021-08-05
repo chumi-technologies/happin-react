@@ -6,7 +6,7 @@ interface dashboardData {
   totalRevnue: number,
   ticketsSold: number,
   currency: string,
-  ticketBreakDown?: any[]
+  ticketBreakDown?: {count: number, default_currency: string, commision: number, _id: string}[]
 }
 
 const Affiliate = () => {
@@ -15,10 +15,12 @@ const Affiliate = () => {
   useEffect(() => {
     if (!router.isReady) return;
     const { query: { acid, partnerId, ownerId } } = router;
+    if (!acid || !partnerId || !ownerId) {
+      return
+    }
     (async () => {
       try {
         const result = await getDashboardStatAffiliation(String(acid), String(partnerId), String(ownerId))
-        console.log(result)
         const processedData = processDashboardData(result)
         setDashbordData(processedData);
       } catch (err) {
@@ -27,7 +29,7 @@ const Affiliate = () => {
     })();
   }, [router.isReady])
 
-  const processDashboardData = (data: { commision: number, count: number, default_currency: string }[]) => {
+  const processDashboardData = (data: { commision: number, count: number, default_currency: string, _id: string }[]) => {
     const result: dashboardData = { totalRevnue: 0, ticketsSold: 0, currency: '' };
     data.forEach((d: { commision: number, count: number, default_currency: string }) => {
       result.totalRevnue += (+d.commision.toFixed(2));
