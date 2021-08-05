@@ -77,7 +77,7 @@ const Dashboard = () => {
         </div>
         <div className="h-px bg-gray-100 my-5"></div>
         <div className="font-medium mb-2">5 hours range from 4 hours before the show</div>
-        <LineChart data={data} />
+        {/* <LineChart data={data} /> */}
       </div>
     </div>
   )

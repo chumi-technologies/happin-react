@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { GetStaticPropsResult } from 'next'
 import React from 'react'
-import { getEvents } from '../api/activity'
+import { getEvents } from '../api/chumi-server'
 import Link from 'next/link'
 
 interface Props {

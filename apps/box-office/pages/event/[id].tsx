@@ -1,7 +1,7 @@
 // import 'bootstrap/dist/css/bootstrap.css'
 import styles from '../../styles/Event.module.css'
 import { GetStaticPropsResult } from 'next'
-import { getEvents, getEventById } from '../../api/activity'
+import { getEvents, getEventById } from '../../api/chumi-server'
 
 interface Event {
   _id: string
