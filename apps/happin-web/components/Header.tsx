@@ -10,15 +10,15 @@ import classNames from 'classnames';
 export default function Header() {
   const [showSearch, setSearch] = useState(false)
   const router = useRouter();
-  const searchRef = useRef<HTMLInputElement | null>(null);
+  const searchRef = useRef<HTMLInputElement>(null!);
   useEffect(() => {
-    showSearch && searchRef.current!.focus()
+    showSearch && searchRef.current.focus()
   }, [showSearch])
   return (
     <div className="relative z-50 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
       {/* Mobile Search Form */}
       <form className={classNames('absolute top-full left-0 w-full z-10 hidden', {'!block': showSearch})}>
-        <input ref={searchRef as any} type="text" className="header__phone-search" placeholder="Search..." />
+        <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
       </form>
       <HStack w="100%" h="100%" justify="space-between">
         {/* Left Block */}
