@@ -11,6 +11,11 @@ export async function getDashboardStatAffiliation(acid: string, partnerId: strin
     return data
 }
 
+export async function getDashboardStat(acid: string) {
+    const { data } = await getAxios().get(`/activity/sale-stat-for-box-office/${acid}`)
+    return data
+}
+
 export async function getEvents() {
     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiI1ZmJkYmZmOTVlNWZkODMzMGQ4OWQ2ZDUiLCJyb290VXNlcklEIjoiNWZkY2JjNDQ4ODBkNTMwZjI1ZmVmY2IxIiwiaGFwcGluVXNlcklEIjoiNWZjYWZhM2Q4OTc3ZGIwMDA4MGMyMGVmIiwiaWF0IjoxNjI2NDk1MTg2LCJleHAiOjE2MjkwODcxODZ9.qjyfQANCoHOMJPkhKJcJSYXUhW_NQftj6QW4HliZd-Y';
     const res = await axios({
