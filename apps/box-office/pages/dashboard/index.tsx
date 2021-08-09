@@ -86,8 +86,8 @@ const Dashboard = () => {
       <div className="card mt-3">
         <div className="font-medium mb-2">Total Check In</div>
         <div className="mb-5">
-          <span className="text-2xl font-medium text-blue-500">{dashboardData.checkinStat?.reduce((acc, cur)=> cur.checked + acc, 0)}</span>
-          <span className="mx-1">/</span><span>{dashboardData.checkinStat?.reduce((acc, cur)=> cur.total + acc, 0)}</span>
+          <span className="text-2xl font-medium text-blue-500">{(dashboardData.checkinStat?.reduce((acc, cur)=> cur.checked + acc, 0)) ||0}</span>
+          <span className="mx-1">/</span><span>{(dashboardData.checkinStat?.reduce((acc, cur)=> cur.total + acc, 0)) || 0}</span>
         </div>
         {dashboardData.checkinStat && dashboardData.checkinStat.map((ticket,index) => (
           <div key={index}>

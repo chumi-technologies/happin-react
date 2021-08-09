@@ -3,7 +3,7 @@ import axios from 'axios';
 const chumiServerHost = process.env.NEXT_PUBLIC_CHUMI_SERVER_HOST;
 
 const getAxios = () => axios.create({
-    baseURL: 'http://localhost:8082' //`${chumiServerHost}/prod`
+    baseURL: `${chumiServerHost}/prod`
 })
 
 export async function getDashboardStatAffiliation(acid: string, partnerId: string, ownerId: string) {
