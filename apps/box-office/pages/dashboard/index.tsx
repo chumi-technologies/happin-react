@@ -60,7 +60,7 @@ const Dashboard = () => {
           <div className="w-24 h-24">
             <CircularProgressbar
               value={((dashboardData.sold / dashboardData.total) || 0) * 100}
-              text={`${(((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)} %`}
+              text={`${(((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)}%`}
               strokeWidth={6}
               styles={buildStyles({
                 pathColor: '#00A699',
