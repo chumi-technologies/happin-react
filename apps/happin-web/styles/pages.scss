@@ -55,11 +55,7 @@
 
 // Event Details
 .event-details__page{
-  @apply relative bg-black text-white;
-  height: calc(100vh - 64px);
-  @media (min-width: 1024px) {
-    height: calc(100vh - 80px);
-  }
+  @apply relative flex-1 h-0 bg-black text-white;
 }
 .event-details__container {
   @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
@@ -99,4 +95,84 @@
   max-width: 500px;
   max-height: calc(100% - 80px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, .75);
+}
+
+// Check out
+.checkout__page {
+  @apply relative flex-1 h-0 bg-black text-white;
+}
+.checkout__container {
+  max-width: 720px;
+}
+.checkout__ticket-tag {
+  @apply flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer;
+  &.ticket {
+    @apply border-blue-500 text-blue-500
+  }
+  &.video {
+    @apply border-rose-500 text-rose-500
+  }
+  &.bag {
+    @apply border-green-500 text-green-500
+  }
+  &.vip {
+    @apply border-yellow-500 text-yellow-500
+  }
+}
+.checkout__ticket-select {
+  @apply w-36 py-2 border-2 border-solid border-gray-600 bg-transparent text-white;
+  &:hover {
+    @apply border-gray-500 bg-gray-900;
+  }
+  &:active {
+    @apply bg-gray-800
+  }
+  &.disabled, &:disabled {
+    @apply cursor-not-allowed border-gray-900 bg-transparent text-gray-600;
+  }
+}
+.transition-margin {
+  transition: margin .15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mask-enter {
+  transition: all .3s cubic-bezier(0, 0, 0.2, 1);
+}
+.mask-enter-from, .mask-leave-to {
+  opacity: 0;
+}
+.mask-enter-to, .mask-leave-from {
+  opacity: 1;
+}
+.mask-leave {
+  transition: all .2s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.dialog-enter {
+  transition: all .3s cubic-bezier(0, 0, 0.2, 1);
+}
+.dialog-enter-from, .dialog-leave-to {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.dialog-enter-to, .dialog-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+}
+.dialog-leave {
+  transition: all .2s cubic-bezier(0.4, 0, 1, 1);
+}
+
+.badge-count {
+  @apply absolute right-1 top-1 origin-top-right rounded-full text-white bg-rose-500 h-5 text-center px-1.5 text-sm;
+  min-width: 20px;
+  transform: translate(50%, -50%);
+}
+.checkout__sidebar {
+  @apply absolute right-0 flex flex-col bg-gray-800 bottom-0 z-10;
+  top: 81px;
+  width: 500px;
+}
+.checkout__goods-item {
+  @apply flex items-start mb-5
 }

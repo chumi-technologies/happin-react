@@ -3,6 +3,11 @@ $blue: #53B4FA;
 // Your components styles
 
 // Button
+button {
+  &:disabled, &.disabled {
+    cursor: not-allowed;
+  }
+}
 @mixin btn-color($bgColor) {
   @apply bg-#{$bgColor}-500 text-white;
   &:hover {
@@ -14,7 +19,6 @@ $blue: #53B4FA;
   &.disabled, &:disabled {
     @apply bg-#{$bgColor}-300;
     opacity: .3;
-    cursor: not-allowed;
   }
 }
 
@@ -138,7 +142,6 @@ $blue: #53B4FA;
   }
   &.disabled, &:disabled {
     @apply bg-gray-100 text-gray-300;
-    cursor: not-allowed;
   }
 }
 
@@ -152,7 +155,6 @@ $blue: #53B4FA;
   }
   &.disabled, &:disabled {
     @apply bg-gray-100 text-gray-300;
-    cursor: not-allowed;
   }
 }
 
@@ -166,7 +168,6 @@ $blue: #53B4FA;
   }
   &.disabled, &:disabled {
     @apply bg-white text-gray-300;
-    cursor: not-allowed;
   }
 }
 .btn-yellow {
@@ -179,7 +180,6 @@ $blue: #53B4FA;
   }
   &.disabled, &:disabled {
     @apply bg-yellow-100;
-    cursor: not-allowed;
   }
 }
 
@@ -201,6 +201,55 @@ $blue: #53B4FA;
   }
   &.disabled, &:disabled {
     @apply bg-gray-100 text-gray-300;
-    cursor: not-allowed;
+  }
+}
+
+// Select counter
+.number-input {
+  @apply relative w-36;
+  input {
+    @apply block w-full px-9 py-2 border-2 border-solid border-gray-600 rounded-lg bg-transparent text-white text-center transition placeholder-gray-400;
+    &:focus {
+      @apply bg-gray-900
+    }
+  }
+  &:hover {
+    input {
+      @apply border-gray-500
+    }
+  }
+  &-button {
+    @apply absolute top-0 flex items-center justify-center text-gray-300 hover:text-rose-500 w-10 h-full cursor-pointer transition;
+    &.plus {
+      @apply right-0;
+    }
+    &.minus {
+      @apply left-0;
+    }
+    &.disabled, &:disabled {
+      @apply cursor-not-allowed border-gray-900 bg-transparent text-gray-600;
+    }
+  }
+  &.disabled {
+    input {
+      @apply cursor-not-allowed border-gray-900 text-gray-600
+    }
+  }
+}
+
+// Select
+.select-button {
+  @apply relative w-full py-1 pl-3 pr-10 text-left border-2 border-solid border-gray-600 rounded-lg bg-transparent text-white transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900;
+  &:disabled {
+    @apply border-gray-700 text-gray-500
+  }
+  &.open {
+    @apply border-gray-500
+  }
+  &__arrow {
+    @apply absolute inset-y-0 right-0 flex items-center pr-2 text-gray-400 pointer-events-none;
+    .select-button:disabled & {
+      @apply text-gray-600
+    }
   }
 }
