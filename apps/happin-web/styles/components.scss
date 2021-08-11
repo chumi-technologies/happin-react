@@ -239,7 +239,7 @@ button {
 
 // Select
 .select-button {
-  @apply relative w-full py-1 pl-3 pr-10 text-left border-2 border-solid border-gray-600 rounded-lg bg-transparent text-white transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900;
+  @apply relative w-full py-1 pl-3 pr-10 text-left border-2 border-solid border-gray-600 rounded-lg bg-transparent text-white transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 focus:outline-none;
   &:disabled {
     @apply border-gray-700 text-gray-500
   }

@@ -5,6 +5,7 @@ import { Check, CloseSmall } from '@icon-park/react';
 import NumberInput from '@components/page_components/NumberInput';
 import SvgIcon from '@components/SvgIcon';
 import Select from '@components/reusable/Select';
+import Merch from './components/Merch';
 
 const Checkout = () => {
   const people = [
@@ -87,7 +88,9 @@ const Checkout = () => {
                   <span className="ml-2">Bundle includes:</span>
                 </div>
                 <div className="checkout__goods-item">
-                  <div className="w-40 h-40 bg-gray-400"></div>
+                  <div className="w-40 h-40 rounded-md overflow-hidden">
+                    <Merch />
+                  </div>
                   <div className="flex-1 min-w-0 ml-5">
                     <div className="text-white font-semibold mb-1">Merch Name</div>
                     <div className="text-gray-400 text-tiny mb-3">Merch Descript..........Hello, I’m a black notebook; Hello, I’m a black notebook.</div>

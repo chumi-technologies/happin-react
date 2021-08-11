@@ -52,12 +52,12 @@ export default function Select(props: SelectProps) {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options static className="absolute w-full py-1 mt-1 overflow-auto text-sm bg-gray-700 rounded-md max-h-60 font-medium">
+              <Listbox.Options static className="absolute w-full py-1 mt-1 overflow-auto text-sm bg-gray-700 rounded-md max-h-60 font-medium focus:outline-none">
                 {data.map((item: SelectItemProps, index) => (
                   <Listbox.Option
                     key={index}
                     className={({ selected, active }) =>
-                      classNames('block py-2 px-3 truncate cursor-pointer select-none transition hover:bg-gray-600', { 'bg-gray-600 bg-opacity-60': selected }, {'text-gray-500 cursor-not-allowed hover:bg-gray-700': item.disabled})
+                      classNames('block py-2 px-3 truncate cursor-pointer select-none transition hover:bg-gray-600 focus:outline-none', { 'bg-gray-600 bg-opacity-60': selected }, {'text-gray-500 cursor-not-allowed hover:bg-gray-700': item.disabled})
                     }
                     value={item}
                     disabled={item.disabled}
