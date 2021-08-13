@@ -96,6 +96,17 @@
   max-height: calc(100% - 80px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, .75);
 }
+.event-details__description-modal {
+  @apply relative inline-flex flex-col w-full h-full max-w-2xl sm:my-8 overflow-hidden text-left align-middle bg-white rounded-xl sm:rounded-xl md:rounded-2xl z-10;
+  max-height: calc(100vh - 1rem);
+  @media (min-width: 640px) {
+    max-height: calc(100vh - 80px);
+  }
+  @media (min-width: 768px) {
+    max-height: calc(100vh - 120px);
+  }
+}
+
 
 // Check out
 .checkout__page {
