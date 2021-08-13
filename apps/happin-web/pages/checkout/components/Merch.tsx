@@ -1,21 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { Listbox, Transition } from '@headlessui/react';
+import React, { useState } from 'react';
 import { CloseSmall, Left, Right } from '@icon-park/react';
 import classNames from 'classnames';
 import Slider from 'react-slick';
 import Lightbox, { ImagesListType } from 'react-spring-lightbox';
-
-type SelectProps = {
-  data: SelectItemProps[];
-  onChange?: (data: any) => void;
-  defaultValue?: string | number | SelectItemProps;
-  disabled?: boolean;
-}
-type SelectItemProps = {
-  value: string | number;
-  label: string | number;
-  disabled?: boolean;
-};
 
 function Arrow(props: any) {
   const { className, onClick, children } = props;
@@ -28,31 +15,8 @@ function Arrow(props: any) {
     </div>
   );
 }
-function NextArrow(props: any) {
-  const { className, onClick } = props;
-  return (
-    <div
-      className={className}
-      onClick={onClick}
-    >
-      <Right theme="outline" size="14" fill="currentColor" />
-    </div>
-  );
-}
 
-function PrevArrow(props: any) {
-  const { className, onClick } = props;
-  return (
-    <div
-      className={className}
-      onClick={onClick}
-    >
-      <Left theme="outline" size="14" fill="currentColor" />
-    </div>
-  );
-}
-
-export default function Merch() {
+export default function Merch({ imgList }: { imgList: ImagesListType }) {
   const [currentImageIndex, setCurrentIndex] = useState(0);
   const [lightboxOpen, setLightboxOpen] = useState(false);
 
@@ -67,20 +31,7 @@ export default function Merch() {
     prevArrow: <Arrow><Left theme="outline" size="14" fill="currentColor" /></Arrow>,
     customPaging: () => <div className="slides-dot-item" />
   };
-  const imgList: ImagesListType = [
-    {
-      src: 'https://cdn.sspai.com/editor/u_/c49hkn5b34tdfon49s2g.jpeg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1',
-      alt: 'img-01'
-    },
-    {
-      src: 'https://cdn.sspai.com/2021/06/20/9a852c3a26e00530fd867ec10bd1d97a.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1',
-      alt: 'img-02'
-    },
-    {
-      src: 'https://cdn.sspai.com/2021/06/27/d9c675f539aa34caa7783f149eb06705.jpg?imageView2/2/w/1120/q/90/interlace/1/ignore-error/1',
-      alt: 'img-03'
-    }
-  ];
+
   const gotoPrevious = () =>
     currentImageIndex > 0 && setCurrentIndex(currentImageIndex - 1);
 
@@ -92,7 +43,7 @@ export default function Merch() {
       <Slider {...settings}>
         {
           imgList.map((item, index) => (
-            <div className="w-40 h-40 rounded-md overflow-hidden" key={index} onClick={() => {
+            <div className="w-40 h-40 cursor-pointer rounded-md overflow-hidden" key={index} onClick={() => {
               setCurrentIndex(index);
               setLightboxOpen(true);
             }}>

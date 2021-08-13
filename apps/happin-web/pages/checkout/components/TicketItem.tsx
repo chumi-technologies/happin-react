@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import NumberInput from '@components/page_components/NumberInput';
 import { HStack, Tooltip } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { Right } from '@icon-park/react';
 import Link from 'next/link';
 
-type TicketItemProps = {
+export type TicketItemProps = {
   data: TicketItemDataProps;
   actionType: 'button' | 'input'; // number input or select button
   onSelect?: (data: any) => void;
@@ -16,8 +16,14 @@ type TicketItemProps = {
 const TicketItem = (props: TicketItemProps) => {
   const { data, onSelect, actionType } = props;
   const [numberInputValue, setNumberInputValue] = useState('0');
+  const didMountRef = useRef(false);
   useEffect(() => {
-    return onSelect?.(numberInputValue);
+    if (didMountRef.current) {
+      actionType === 'input' && onSelect?.(numberInputValue);
+    } else {
+      didMountRef.current = true
+    }
+    // actionType === 'input' && onSelect?.(numberInputValue);
   }, [numberInputValue])
   return (
     <div className="py-8">

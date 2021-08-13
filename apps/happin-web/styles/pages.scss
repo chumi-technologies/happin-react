@@ -113,7 +113,10 @@
   @apply relative flex-1 h-0 bg-black text-white;
 }
 .checkout__container {
-  max-width: 720px;
+  max-width: 600px;
+  @media (min-width: 1280px) {
+    max-width: 720px;
+  }
 }
 .checkout__ticket-tag {
   @apply flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer;
@@ -182,7 +185,19 @@
 .checkout__sidebar {
   @apply absolute right-0 flex flex-col bg-gray-800 bottom-0 z-10;
   top: 81px;
-  width: 500px;
+
+  transform: translateX(100%);
+  transition: all .3s;
+  &.open {
+    transform: translateX(0)
+  }
+  width: 450px;
+  @media (min-width: 1024px) {
+    width: 450px;
+  }
+  @media (min-width: 1280px) {
+    width: 500px;
+  }
 }
 .checkout__goods-item {
   @apply flex items-start mb-5

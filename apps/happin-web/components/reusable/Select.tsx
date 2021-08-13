@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react'
 import { Down } from '@icon-park/react';
 import classNames from 'classnames';
@@ -32,8 +32,13 @@ export default function Select(props: SelectProps) {
   const { data, onChange, defaultValue, disabled } = props;
   const defaultIndex = getArrIndex(data, defaultValue)
   const [selected, setSelected] = useState(data[defaultIndex || 0]);
+  const didMountRef = useRef(false);
   useEffect(() => {
-    return onChange?.(selected);
+    if (didMountRef.current) {
+      return onChange?.(selected);
+    } else {
+      didMountRef.current = true
+    }
   }, [selected])
   return (
     <div className="w-full">
