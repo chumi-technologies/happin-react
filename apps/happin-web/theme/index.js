@@ -9,6 +9,8 @@ import Checkbox from "./components/checkbox";
 import FormError from "./components/form";
 
 const theme = extendTheme({
+  initialColorMode: "dark",
+  useSystemColorMode: false,
   styles: {
     global: {
       body: {
