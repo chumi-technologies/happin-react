@@ -232,7 +232,7 @@ button {
   }
   &.disabled {
     input {
-      @apply cursor-not-allowed border-gray-900 text-gray-600
+      @apply cursor-not-allowed opacity-40 hover:border-gray-600;
     }
   }
 }

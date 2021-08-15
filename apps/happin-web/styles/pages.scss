@@ -118,6 +118,23 @@
     max-width: 720px;
   }
 }
+.checkout__head-tab {
+  @apply relative px-1 py-4 font-semibold text-gray-400 mr-5 cursor-pointer transition;
+  &:after {
+    content: '';
+    @apply absolute left-0 right-0 bottom-0 h-0 bg-white transition;
+  }
+  &:hover {
+    @apply text-gray-300;
+  }
+  &.active {
+    @apply text-white;
+    &:after {
+      @apply h-px;
+    }
+  }
+
+}
 .checkout__ticket-tag {
   @apply flex items-center justify-center w-6 h-6 border rounded-full cursor-pointer;
   &.ticket {
@@ -143,6 +160,18 @@
   }
   &.disabled, &:disabled {
     @apply cursor-not-allowed border-gray-900 bg-transparent text-gray-600;
+  }
+}
+.checkout__merch-select {
+  @apply w-full py-0 h-8 text-sm border border-solid border-gray-500 bg-transparent text-white;
+  &:hover {
+    @apply border-gray-400 bg-gray-700;
+  }
+  &:active {
+    @apply bg-gray-600
+  }
+  &.disabled, &:disabled {
+    @apply cursor-not-allowed border-gray-600 bg-transparent text-gray-500;
   }
 }
 .transition-margin {
@@ -183,13 +212,13 @@
   transform: translate(50%, -50%);
 }
 .checkout__sidebar {
-  @apply absolute right-0 flex flex-col bg-gray-800 bottom-0 z-10;
+  @apply absolute right-0 flex flex-col bg-gray-800 bottom-0 z-20;
   top: 81px;
-
   transform: translateX(100%);
   transition: all .3s;
   &.open {
-    transform: translateX(0)
+    transform: translateX(0);
+    box-shadow: -10px 10px 50px -12px rgba(0, 0, 0, .6);
   }
   width: 450px;
   @media (min-width: 1024px) {
@@ -201,4 +230,9 @@
 }
 .checkout__goods-item {
   @apply flex items-start mb-5
+}
+.checkout__cart {
+  @apply absolute z-30 mt-2 bg-gray-900 rounded-lg focus:outline-none shadow-2xl;
+  width: 450px;
+
 }

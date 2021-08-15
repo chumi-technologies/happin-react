@@ -15,3 +15,12 @@ export type TicketItemFeaturesProps = {
   type: 'ticket' | 'video' | 'bag' | 'vip';
   tooltip?: string;
 };
+
+export type MerchItemDataProps = {
+  id: number;
+  cover: string;
+  title: string;
+  price: string;
+  introduction?: string;
+  soldOut?: boolean;
+};

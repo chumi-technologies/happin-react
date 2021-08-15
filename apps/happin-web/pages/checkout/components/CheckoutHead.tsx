@@ -1,11 +1,12 @@
-import React from 'react';
-import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import React, { Fragment, useState } from 'react';
+import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall } from '@icon-park/react';
+import NumberInput from '@components/page_components/NumberInput';
 
 const CheckoutHead = () => {
   const [isOpen, setIsOpen] = useState(false)
+  const [numberInputValue, setNumberInputValue] = useState('0');
   const closeModal = () => {
     setIsOpen(false)
   }
@@ -20,11 +21,54 @@ const CheckoutHead = () => {
             <div>TWRP: Comin' Atcha Live at the Opera House</div>
             <div className="text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
           </div>
-          <div className="relative flex items-center justify-center w-12 h-12 border-2 border-solid border-gray-600 rounded-full mr-6 cursor-pointer hover:bg-gray-600 transition">
-            <SvgIcon id="buy" className="text-xl" />
-            <div className="badge-count">3</div>
-          </div>
-          <button className="btn btn-rose !rounded-full !px-5" onClick={openModal}>Enter Pre-Sale Code</button>
+          <Popover className="relative">
+            {({ open }) => (
+              <>
+                <Popover.Button as={Fragment}>
+                  <div className="relative flex items-center justify-center w-12 h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition">
+                    <SvgIcon id="buy" className="text-xl" />
+                    <div className="badge-count">3</div>
+                  </div>
+                </Popover.Button>
+                <Transition
+                  as={Fragment}
+                  enter="fade-enter"
+                  enterFrom="fade-enter-from"
+                  enterTo="fade-enter-to"
+                  leave="fade-leave"
+                  leaveFrom="fade-leave-from"
+                  leaveTo="fade-leave-to"
+                >
+                  <Popover.Panel className="checkout__cart right-0 origin-top-right">
+                    <div className="px-4 mt-4 text-white">
+                      <div className="flex items-start mb-5">
+                        <div className="w-20 h-20 rounded-md overflow-hidden">
+                          <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1628755840182-11c29f38b44c" alt="" />
+                        </div>
+                        <div className="flex-1 min-w-0 ml-4">
+                          <div className="flex items-start mb-1">
+                            <div className="text-white text-sm font-semibold w-2/3">General Admission Livestream Ticket</div>
+                            <div className="text-white font-bold w-1/3 text-right">CA$99.99 </div>
+                          </div>
+                          <div className="flex items-center">
+                            <NumberInput
+                              defaultValue={3}
+                              isDisabled={true}
+                              onChange={(value) => {
+                                console.log(value);
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Popover.Panel>
+                </Transition>
+              </>
+            )}
+          </Popover>
+
+          <button className="btn btn-rose !rounded-full !px-5 ml-6" onClick={openModal}>Enter Pre-Sale Code</button>
         </div>
       </div>
       {/*Dialog*/}

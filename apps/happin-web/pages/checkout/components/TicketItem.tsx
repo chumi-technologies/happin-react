@@ -15,16 +15,16 @@ export type TicketItemProps = {
 
 const TicketItem = (props: TicketItemProps) => {
   const { data, onSelect, actionType } = props;
-  const [numberInputValue, setNumberInputValue] = useState('0');
-  const didMountRef = useRef(false);
-  useEffect(() => {
-    if (didMountRef.current) {
-      actionType === 'input' && onSelect?.(numberInputValue);
-    } else {
-      didMountRef.current = true
-    }
-    // actionType === 'input' && onSelect?.(numberInputValue);
-  }, [numberInputValue])
+  // const [numberInputValue, setNumberInputValue] = useState('0');
+  // const didMountRef = useRef(false);
+  // useEffect(() => {
+  //   if (didMountRef.current) {
+  //     actionType === 'input' && onSelect?.(numberInputValue);
+  //   } else {
+  //     didMountRef.current = true;
+  //   }
+  //   // actionType === 'input' && onSelect?.(numberInputValue);
+  // }, [numberInputValue]);
   return (
     <div className="py-8">
       <div className="flex items-start">
@@ -42,16 +42,34 @@ const TicketItem = (props: TicketItemProps) => {
         </div>
         {
           actionType === 'button' ?
-            <button onClick={() => onSelect?.(data)} className="btn checkout__ticket-select" disabled={data.soldOut}>Select</button> :
-            <NumberInput setNumberInputValue={setNumberInputValue} disabled={data.soldOut} />
+            <button
+              onClick={() => onSelect?.(data)}
+              className="btn checkout__ticket-select"
+              disabled={data.soldOut}
+            >
+              Select
+            </button> :
+            <NumberInput
+              onChange={(value) => {
+                onSelect?.(value)
+              }}
+              isDisabled={data.soldOut}
+            />
         }
       </div>
       <HStack my={2}>
         {
           data.features && data.features.map((item: TicketItemFeaturesProps, index) => (
-            <Tooltip key={index} hasArrow label={item.tooltip}
-                     placement="bottom-start" py={2} px={3} offset={[0, 10]}
-                     borderRadius="lg" bg="gray.700">
+            <Tooltip
+              key={index}
+              hasArrow
+              label={item.tooltip}
+              placement="bottom-start"
+              py={2}
+              px={3}
+              offset={[0, 10]}
+              borderRadius="lg" bg="gray.700"
+            >
               <div className={classNames('checkout__ticket-tag', item.type)}>
                 <SvgIcon id={`${item.type}-bold`} className="text-sm" />
               </div>
@@ -66,7 +84,8 @@ const TicketItem = (props: TicketItemProps) => {
         data.helpText?.length && (
           <div>
             <Link href="/">
-              <a className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s VIP room?</a>
+              <a className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s
+                VIP room?</a>
             </Link>
           </div>
         )
