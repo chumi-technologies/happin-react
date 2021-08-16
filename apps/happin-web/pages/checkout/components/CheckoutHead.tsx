@@ -1,65 +1,151 @@
 import React, { Fragment, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
-import { CloseSmall } from '@icon-park/react';
+import { CloseSmall, Delete } from '@icon-park/react';
 import NumberInput from '@components/page_components/NumberInput';
+import Select from '@components/reusable/Select';
+import classNames from 'classnames';
 
 const CheckoutHead = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const [numberInputValue, setNumberInputValue] = useState('0');
   const closeModal = () => {
     setIsOpen(false)
   }
   const openModal = () => {
     setIsOpen(true)
   }
+  const select = [
+    { value: 'xl', label: 'xl' },
+    { value: 'm', label: 'm', disabled: true },
+    { value: 'xs', label: 'xs' },
+  ]
   return (
-    <div className="bg-gray-800 border-b border-solid border-gray-700">
+    <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
         <div className="flex items-center h-20">
-          <div className="flex-1 font-semibold">
-            <div>TWRP: Comin' Atcha Live at the Opera House</div>
-            <div className="text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
+          <div className="flex-1 font-semibold min-w-0">
+            <div className="truncate">TWRP: Comin' Atcha Live at the Opera House</div>
+            <div className="truncate text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
           </div>
-          <Popover className="relative">
+          <Popover className="md:relative ml-4">
             {({ open }) => (
               <>
-                <Popover.Button as={Fragment}>
-                  <div className="relative flex items-center justify-center w-12 h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition">
-                    <SvgIcon id="buy" className="text-xl" />
-                    <div className="badge-count">3</div>
-                  </div>
+                <Popover.Button
+                  as="div"
+                  className={classNames('relative flex items-center justify-center w-12 h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
+                >
+                  <SvgIcon id="buy" className="text-xl" />
+                  <div className="badge-count">3</div>
                 </Popover.Button>
                 <Transition
                   as={Fragment}
-                  enter="fade-enter"
-                  enterFrom="fade-enter-from"
-                  enterTo="fade-enter-to"
-                  leave="fade-leave"
-                  leaveFrom="fade-leave-from"
-                  leaveTo="fade-leave-to"
+                  enter="checkout-enter"
+                  enterFrom="checkout-enter-from"
+                  enterTo="checkout-enter-to"
+                  leave="checkout-leave"
+                  leaveFrom="checkout-leave-from"
+                  leaveTo="checkout-leave-to"
                 >
                   <Popover.Panel className="checkout__cart right-0 origin-top-right">
-                    <div className="px-4 mt-4 text-white">
-                      <div className="flex items-start mb-5">
-                        <div className="w-20 h-20 rounded-md overflow-hidden">
-                          <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1628755840182-11c29f38b44c" alt="" />
+                    <div className="text-white">
+                      <div className="px-5 h-12 flex items-center justify-between md:hidden border-b border-solid border-white border-opacity-10">
+                        <div className="font-bold leading-none">My Cart</div>
+                        <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
+                          <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
                         </div>
-                        <div className="flex-1 min-w-0 ml-4">
-                          <div className="flex items-start mb-1">
-                            <div className="text-white text-sm font-semibold w-2/3">General Admission Livestream Ticket</div>
-                            <div className="text-white font-bold w-1/3 text-right">CA$99.99 </div>
+                      </div>
+                      <div className="checkout__cart-list web-scroll">
+                        <div className="flex p-4">
+                          <div className="w-16 h-16 rounded-md overflow-hidden">
+                            <img className="w-full h-full object-cover" src="https://cdn.sspai.com/2021/08/04/ead81f219cd73b7070124c69eefe9923.jpg" alt="" />
                           </div>
-                          <div className="flex items-center">
-                            <NumberInput
-                              defaultValue={3}
-                              isDisabled={true}
-                              onChange={(value) => {
-                                console.log(value);
-                              }}
-                            />
+                          <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                            <div className="flex items-start mb-2">
+                              <div className="text-white text-sm font-semibold w-2/3">Bubblegum Unisex Shirt</div>
+                              <div className="text-white font-bold w-1/3 text-right">CA$199.99</div>
+                            </div>
+                            <div className="flex items-end justify-between flex-1">
+                              <div className="flex items-center">
+                                <NumberInput
+                                  defaultValue={1}
+                                  size="sm"
+                                  min={1}
+                                  onChange={(value) => {
+                                    console.log(value);
+                                  }}
+                                />
+                                <div className="w-24 ml-3">
+                                  <Select
+                                    data={select}
+                                    defaultValue="xl"
+                                    onChange={(data) => {
+                                      console.log(data);
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                              <div className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                <Delete theme="outline" size="14" fill="currentColor"/>
+                              </div>
+                            </div>
                           </div>
                         </div>
+                        <div className="flex p-4">
+                          <div className="w-16 h-16 rounded-md overflow-hidden">
+                            <img className="w-full h-full object-cover" src="https://images.unsplash.com/photo-1628755840182-11c29f38b44c" alt="" />
+                          </div>
+                          <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                            <div className="flex items-start mb-2">
+                              <div className="text-white text-sm font-semibold w-2/3">General Admission Livestream Ticket</div>
+                              <div className="text-white font-bold w-1/3 text-right">CA$99.99 </div>
+                            </div>
+                            <div className="flex items-end justify-between flex-1">
+                              <NumberInput
+                                defaultValue={3}
+                                size="sm"
+                                min={1}
+                                onChange={(value) => {
+                                  console.log(value);
+                                }}
+                              />
+                              <div className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                <Delete theme="outline" size="14" fill="currentColor"/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex p-4">
+                          <div className="w-16 h-16 rounded-md overflow-hidden">
+                            <img className="w-full h-full object-cover" src="https://cdn.sspai.com/article/320aa906-a0ca-412a-c312-2519a82ebbc4.jpg" alt="" />
+                          </div>
+                          <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                            <div className="flex items-start mb-2">
+                              <div className="text-white text-sm font-semibold w-2/3">VIP Pass + Merch Bundle Ticket</div>
+                              <div className="text-white font-bold w-1/3 text-right">CA$199.99</div>
+                            </div>
+                            <div className="flex items-end justify-between flex-1">
+                              <NumberInput
+                                defaultValue={1}
+                                size="sm"
+                                min={1}
+                                onChange={(value) => {
+                                  console.log(value);
+                                }}
+                              />
+                              <div className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                <Delete theme="outline" size="14" fill="currentColor"/>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
+                        <input type="text" className="block w-full px-4 h-11 rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                        <button className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Apply</button>
+                      </div>
+                      <div className="px-5 pb-5 flex justify-between mt-5">
+                        <div className="font-semibold text-lg">Subtotal</div>
+                        <div className="font-semibold text-lg">CAD$225.98</div>
                       </div>
                     </div>
                   </Popover.Panel>
@@ -68,7 +154,7 @@ const CheckoutHead = () => {
             )}
           </Popover>
 
-          <button className="btn btn-rose !rounded-full !px-5 ml-6" onClick={openModal}>Enter Pre-Sale Code</button>
+          <button className="btn btn-rose !rounded-full !px-5 ml-4 sm:ml-6" onClick={openModal}>Enter Pre-Sale Code</button>
         </div>
       </div>
       {/*Dialog*/}

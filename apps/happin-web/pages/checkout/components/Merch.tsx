@@ -43,7 +43,7 @@ export default function Merch({ imgList }: { imgList: ImagesListType }) {
       <Slider {...settings}>
         {
           imgList.map((item, index) => (
-            <div className="w-40 h-40 cursor-pointer rounded-md overflow-hidden" key={index} onClick={() => {
+            <div className="w-32 h-32 sm:w-40 sm:h-40 cursor-pointer rounded-md overflow-hidden" key={index} onClick={() => {
               setCurrentIndex(index);
               setLightboxOpen(true);
             }}>

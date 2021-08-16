@@ -15,7 +15,6 @@ type CheckoutSidebarProps = {
 
 const CheckoutSidebar = (props: CheckoutSidebarProps) => {
   const { isOpen, onClose, type } = props;
-  const [numberInputValue, setNumberInputValue] = useState('0');
   const bundleList = [
     {
       name: 'Merch Name',
@@ -123,7 +122,7 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
           {
             bundleList.map((item, index) => (
               <div className="checkout__goods-item" key={index}>
-                <div className="w-40 h-40 rounded-md overflow-hidden">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-md overflow-hidden">
                   <Merch
                     // @ts-ignore
                     imgList={item.imgList}

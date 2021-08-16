@@ -28,14 +28,14 @@ const NumberInput = ({ isDisabled, size, ...rest }: NumberInputProps) => {
   const inc = getIncrementButtonProps()
   const dec = getDecrementButtonProps()
   const input = getInputProps()
-
+  // const sizeClass = size && `number-input--${size}` || ''
   return (
-    <div className={classNames('number-input', { 'disabled': isDisabled })}>
+    <div className={classNames('number-input', { 'disabled': isDisabled, [size && `number-input--${size}` || '']: true })}>
       <button className="number-input-button minus" {...dec}>
-        <Minus theme="outline" size="16" fill="currentColor"/>
+        <Minus theme="outline" size="1em" fill="currentColor"/>
       </button>
       <button className="number-input-button plus" {...inc}>
-        <Plus theme="outline" size="16" fill="currentColor"/>
+        <Plus theme="outline" size="1em" fill="currentColor"/>
       </button>
       <input {...input}/>
     </div>

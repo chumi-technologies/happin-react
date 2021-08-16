@@ -15,18 +15,8 @@ export type TicketItemProps = {
 
 const TicketItem = (props: TicketItemProps) => {
   const { data, onSelect, actionType } = props;
-  // const [numberInputValue, setNumberInputValue] = useState('0');
-  // const didMountRef = useRef(false);
-  // useEffect(() => {
-  //   if (didMountRef.current) {
-  //     actionType === 'input' && onSelect?.(numberInputValue);
-  //   } else {
-  //     didMountRef.current = true;
-  //   }
-  //   // actionType === 'input' && onSelect?.(numberInputValue);
-  // }, [numberInputValue]);
   return (
-    <div className="py-8">
+    <div className="py-5 sm:py-8">
       <div className="flex items-start">
         <div className="flex-1">
           <div className="text-lg leading-none mb-1 font-semibold text-white">{data.title}</div>

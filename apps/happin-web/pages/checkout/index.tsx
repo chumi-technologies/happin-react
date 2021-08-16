@@ -5,7 +5,6 @@ import CheckoutSidebar from './components/CheckoutSidebar';
 import { MerchItemDataProps } from './data';
 import MerchItem from './components/MerchItem';
 import { Link } from 'react-scroll';
-import classNames from 'classnames';
 
 const Checkout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -96,7 +95,7 @@ const Checkout = () => {
 
   return (
     <div className="checkout__page">
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col-reverse md:flex-col h-full">
         <CheckoutHead />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
@@ -132,7 +131,7 @@ const Checkout = () => {
           <div className="container">
             <div className="checkout__container">
               <div className="divide-y divide-gray-700">
-                <div id="livestream-tickets">
+                <div id="livestream-tickets" className="divide-y divide-gray-700">
                   {
                     ticketDataList.map((item) => (
                       <TicketItem
@@ -150,9 +149,9 @@ const Checkout = () => {
                     ))
                   }
                 </div>
-                <div id="merch" className="py-8 text-white">
+                <div id="merch" className="py-5 sm:py-8 text-white">
                   <div className="mb-3 font-semibold text-lg">Adds On</div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                     {
                       merchList.map((item) => (
                         <MerchItem
