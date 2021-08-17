@@ -32,7 +32,7 @@ const CheckoutHead = () => {
               <>
                 <Popover.Button
                   as="div"
-                  className={classNames('relative flex items-center justify-center w-12 h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
+                  className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
                 >
                   <SvgIcon id="buy" className="text-xl" />
                   <div className="badge-count">3</div>
@@ -50,9 +50,11 @@ const CheckoutHead = () => {
                     <div className="text-white">
                       <div className="px-5 h-12 flex items-center justify-between md:hidden border-b border-solid border-white border-opacity-10">
                         <div className="font-bold leading-none">My Cart</div>
-                        <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
-                          <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
-                        </div>
+                        <Popover.Button as={Fragment}>
+                          <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
+                            <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
+                          </div>
+                        </Popover.Button>
                       </div>
                       <div className="checkout__cart-list web-scroll">
                         <div className="flex p-4">
@@ -140,7 +142,7 @@ const CheckoutHead = () => {
                         </div>
                       </div>
                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
-                        <input type="text" className="block w-full px-4 h-11 rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                        <input type="text" className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                         <button className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Apply</button>
                       </div>
                       <div className="px-5 pb-5 flex justify-between mt-5">
@@ -154,7 +156,7 @@ const CheckoutHead = () => {
             )}
           </Popover>
 
-          <button className="btn btn-rose !rounded-full !px-5 ml-4 sm:ml-6" onClick={openModal}>Enter Pre-Sale Code</button>
+          <button className="btn btn-rose !rounded-full !px-5 ml-3 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>
         </div>
       </div>
       {/*Dialog*/}
@@ -195,11 +197,11 @@ const CheckoutHead = () => {
               leaveFrom="dialog-leave-from"
               leaveTo="dialog-leave-to"
             >
-              <div className="relative inline-block w-full max-w-sm p-6 my-8 overflow-hidden text-left align-middle bg-gray-800 rounded-2xl z-10">
+              <div className="relative inline-block w-full max-w-sm p-5 sm:p-6 my-8 overflow-hidden text-left align-middle bg-gray-800 rounded-2xl z-10">
                 <div className="relative flex items-center mb-6">
                   <Dialog.Title
                     as="h3"
-                    className="text-xl font-bold leading-6 text-white"
+                    className="text-lg sm:text-xl font-bold leading-6 text-white"
                   >
                     Please enter <span className="text-rose-500">Pre-Sale Code</span>
                   </Dialog.Title>
@@ -207,7 +209,7 @@ const CheckoutHead = () => {
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
                   </div>
                 </div>
-                <input type="text" className="block w-full px-9 py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-2xl" placeholder="Enter code" />
+                <input type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
                 <p className="mt-6 text-sm text-gray-400">Invitation code is case sensitive, you will reicive the code from the host.</p>
                 <button
                   type="button"

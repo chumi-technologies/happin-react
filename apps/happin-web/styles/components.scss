@@ -244,6 +244,17 @@ button {
       @apply cursor-not-allowed opacity-40 hover:border-gray-600;
     }
   }
+  @media (max-width: 639px) {
+    .media-sm &{
+      @apply w-24;
+      input {
+        @apply px-7 py-1 text-sm;
+      }
+      .number-input-button {
+        @apply w-7 text-sm
+      }
+    }
+  }
 }
 
 // Select

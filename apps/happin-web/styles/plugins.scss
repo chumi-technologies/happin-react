@@ -198,27 +198,34 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: theme('colors.gray.400');
-  background: rgba(#fff, .1);
+  color: theme('colors.gray.300');
+  background: rgba(#000, .3);
   transition: all .2s ease;
   cursor: pointer;
   z-index: 1;
+
   &:hover {
-    background: rgba(#fff, .2);
+    background: rgba(#000, .4);
     color: #fff;
   }
   &.disabled {
     opacity: .25;
     cursor: default;
     &:hover {
-      color: theme('colors.gray.400');
-      background: rgba(#fff, .1);
+      color: theme('colors.gray.300');
+      background: rgba(#000, .2);
     }
   }
   &.next {
-    right: 24px;
+    right: 12px;
+    @media (min-width: 640px) {
+      right: 24px;
+    }
   }
   &.prev {
-    left: 24px;
+    left: 12px;
+    @media (min-width: 640px) {
+      left: 24px;
+    }
   }
 }

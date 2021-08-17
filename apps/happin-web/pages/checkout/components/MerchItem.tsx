@@ -9,7 +9,7 @@ export type MerchItemProps = {
 const MerchItem = (props: MerchItemProps) => {
   const { data, onSelect } = props;
   return (
-    <div className="bg-gray-800 p-3 rounded-lg">
+    <div className="bg-gray-800 p-2 sm:p-3 rounded-lg">
       <div className="aspect-w-1 aspect-h-1">
         <img src={data.cover} alt={data.title} className="w-full h-full object-center object-cover rounded-md" />
       </div>

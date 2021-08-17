@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TicketItem, { TicketItemProps } from './components/TicketItem';
 import CheckoutHead from './components/CheckoutHead';
 import CheckoutSidebar from './components/CheckoutSidebar';
 import { MerchItemDataProps } from './data';
 import MerchItem from './components/MerchItem';
-import { Link } from 'react-scroll';
+import { Link, animateScroll as scroll } from 'react-scroll';
+import { useResize } from 'utils/hooks';
 
 const Checkout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -92,6 +93,14 @@ const Checkout = () => {
       introduction: 'Merch DesMerch DesMerch DesMe...'
     }
   ];
+  const windowWidth = useResize();
+
+  useEffect(() => {
+    // hack react-scroll初加载拿不到offset的问题
+    scroll.scrollTo(1, {
+      containerId: 'checkout-scroll-body'
+    });
+  }, [])
 
   return (
     <div className="checkout__page">
@@ -106,9 +115,10 @@ const Checkout = () => {
                   activeClass="active"
                   containerId="checkout-scroll-body"
                   to="livestream-tickets"
+                  name="myScrollToElement"
                   spy={true}
                   smooth={true}
-                  offset={-56}
+                  offset={windowWidth > 640 ? -56 : -44}
                   duration={500}
                 >
                   Livestream Tickets
@@ -120,7 +130,7 @@ const Checkout = () => {
                   to="merch"
                   spy={true}
                   smooth={true}
-                  offset={-56}
+                  offset={windowWidth > 640 ? -56 : -44}
                   duration={500}
                 >
                   Merch

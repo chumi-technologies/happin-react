@@ -79,10 +79,10 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
   return (
     <div className={classNames('checkout__sidebar', { 'open': isOpen })}>
       <div className="flex flex-col flex-1 h-0">
-        <div className="px-6">
+        <div className="px-5 sm:px-6">
           {
             type === 'bundle' ? (
-              <div className="relative flex items-start py-6 border-b border-solid border-gray-700">
+              <div className="relative flex items-start py-4 sm:py-6 border-b border-solid border-gray-700">
                 <div className="w-full pr-7">
                   <div className="leading-none mb-2 font-semibold text-white">VIP Pass + Merch Bundle B</div>
                   <div className="font-medium text-xs text-gray-400">
@@ -110,7 +110,7 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
             )
           }
         </div>
-        <div className="flex-1 h-0 web-scroll overflow-y-auto px-6">
+        <div className="flex-1 h-0 web-scroll overflow-y-auto px-5 sm:px-6">
           {
             type === 'bundle' && (
               <div className="flex items-center text-green-500 font-bold uppercase py-5">
@@ -154,11 +154,11 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
           }
         </div>
       </div>
-      <div className="flex items-center px-6 py-4 border-t border-solid border-gray-700">
+      <div className="flex items-center px-5 sm:px-6 py-4 border-t border-solid border-gray-700">
         <NumberInput onChange={(value) => {
           console.log(value);
         }} />
-        <div className="flex-1 ml-6">
+        <div className="flex-1 ml-4 sm:ml-6">
           <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>

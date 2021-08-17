@@ -145,7 +145,7 @@
   }
 }
 .checkout__head-tab {
-  @apply relative px-1 py-4 font-semibold text-gray-400 mr-5 cursor-pointer transition;
+  @apply relative px-1 py-3 sm:py-4 text-sm sm:text-base font-semibold text-gray-400 mr-4 sm:mr-5 cursor-pointer transition;
   &:after {
     content: '';
     @apply absolute left-0 right-0 bottom-0 h-0 bg-white transition;
@@ -177,7 +177,7 @@
   }
 }
 .checkout__ticket-select {
-  @apply w-36 py-2 border-2 border-solid border-gray-600 bg-transparent text-white;
+  @apply w-24 sm:w-36 py-1 sm:py-2 text-sm sm:text-base border-2 border-solid border-gray-600 bg-transparent text-white;
   &:hover {
     @apply border-gray-500 bg-gray-900;
   }
