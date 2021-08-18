@@ -142,6 +142,10 @@ const Checkout = () => {
             <div className="checkout__container">
               <div className="divide-y divide-gray-700">
                 <div id="livestream-tickets" className="divide-y divide-gray-700">
+                  <div className="font-semibold py-5 sm:hidden">
+                    <div className="leading-5 mb-1">TWRP: Comin' Atcha Live at the Opera House</div>
+                    <div className="text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
+                  </div>
                   {
                     ticketDataList.map((item) => (
                       <TicketItem

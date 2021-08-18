@@ -268,7 +268,7 @@
 }
 .checkout__cart-list {
   @apply p-1 overflow-y-auto;
-  max-height: calc(100vh - 328px);
+  max-height: calc(100vh - 316px);
   height: 100vh;
   @media (min-width: 640px) {
     max-height: 320px;

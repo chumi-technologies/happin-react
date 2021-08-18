@@ -22,12 +22,12 @@ const CheckoutHead = () => {
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
-        <div className="flex items-center h-20">
-          <div className="flex-1 font-semibold min-w-0">
+        <div className="flex items-center py-3 sm:py-0 sm:h-20">
+          <div className="flex-1 font-semibold min-w-0 hidden sm:block">
             <div className="truncate">TWRP: Comin' Atcha Live at the Opera House</div>
             <div className="truncate text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
           </div>
-          <Popover className="md:relative ml-4">
+          <Popover className="flex md:relative sm:ml-4">
             {({ open }) => (
               <>
                 <Popover.Button
@@ -156,7 +156,7 @@ const CheckoutHead = () => {
             )}
           </Popover>
 
-          <button className="btn btn-rose !rounded-full !px-5 ml-3 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>
+          <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>
         </div>
       </div>
       {/*Dialog*/}
