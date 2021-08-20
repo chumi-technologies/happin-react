@@ -3,7 +3,13 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState } from 'react';
 import { CloseSmall } from '@icon-park/react';
 
-const EventDescription = () => {
+type EventDescriptionProps = {
+  description?: string;
+  rawDescription?: string;
+}
+
+const EventDescription = ({description, rawDescription = ""}: EventDescriptionProps) => {
+
   const [isOpen, setIsOpen] = useState(false)
   const closeModal = () => {
     setIsOpen(false)
@@ -11,27 +17,28 @@ const EventDescription = () => {
   const openModal = () => {
     setIsOpen(true)
   }
+
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Description</div>
-      <div className="mt-3 sm:mt-5 text-sm sm:text-base">
-        NYC legend Skyzoo comes to Berlin Under A to perform an exclusive first
-        look at his new album 'All The Brilliant Things' the night before it
-        drops!
+      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 3 * 80)? "" : "max-h-20 overflow-hidden"}`}>
+        {rawDescription}
         <div>
           <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
           <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>
           <Link href="#"><a className="link-blue">Spotify</a></Link>
         </div>
-        <div className="link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More...</div>
+
       </div>
+      {!(rawDescription?.length < 3 * 80) && (
+          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+        )}
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto"
           onClose={() => {
-            console.log(111)
           }}
         >
           <div className="min-h-screen px-2 sm:px-4 text-center">
@@ -79,9 +86,7 @@ const EventDescription = () => {
                   <div className="px-6">
                     {/*Description content here*/}
                     <div className="text-sm sm:text-base">
-                      NYC legend Skyzoo comes to Berlin Under A to perform an exclusive first
-                      look at his new album 'All The Brilliant Things' the night before it
-                      drops!
+                      <div  dangerouslySetInnerHTML={{ __html: description || '' }}/>
                       <div>
                         <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
                         <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>

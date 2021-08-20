@@ -7,25 +7,54 @@ import SvgIcon from '@components/SvgIcon';
 import { useState } from 'react';
 import { Link } from 'react-scroll';
 import classNames from 'classnames';
+import moment from 'moment-timezone';
+import { LocationInfo } from "lib/model/event";
+import { GroupEvent } from 'lib/model/groupEvent';
 
-const EventTitle = ({ setIsModalOpen }: any) => {
+type EventTitleProps = {
+  setIsModalOpen?: boolean;
+  eventTitle?: string;
+  isLiveStream?: boolean;
+  tags?: string[];
+  eventStartDate?: string;
+  eventEndDate?: string;
+  price?: number;
+  groupEvents?: GroupEvent[];
+  location?: LocationInfo;
+}
+
+const EventTitle = ({setIsModalOpen, eventTitle, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = []}: EventTitleProps) => {
   const [firstActive, setFirstActive] = useState(true)
+  const isLiveNow = moment().isBetween(moment(eventStartDate), moment(eventEndDate))
   return (
     <>
       {/* Badges */}
       <HStack spacing={3}>
-        <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">Music Concert</div>
-        <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
-          <span className="w-2 h-2 rounded-full bg-white mr-2" />
-          <span>LIVE</span>
-        </div>
+        {tags && tags.map((tag: string, index: Number) => {
+          return (
+            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
+              {tag}
+            </div>
+          )
+        })}
+
+        {isLiveNow && (
+          <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
+            <span className="w-2 h-2 rounded-full bg-white mr-2" />
+            <span>LIVE</span>
+          </div>
+        )}
       </HStack>
 
       {/* Event Title */}
-      <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white mt-4 sm:mt-6 font-bold lg:pr-10">American Express UNSTAGED with Maroon 5- The Encore</h1>
+      <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white mt-4 sm:mt-6 font-bold lg:pr-10">
+        {eventTitle}
+      </h1>
 
       {/* Event Date and Time */}
-      <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">Fri, July 2・11 PM CST</h1>
+      <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">
+        {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
+      </h1>
 
       {/* Block with Icons */}
 
@@ -39,37 +68,46 @@ const EventTitle = ({ setIsModalOpen }: any) => {
           <div className="ml-3 flex-1">
             <div className="text-white leading-none mb-1">Date & Time</div>
             <div className="flex items-start sm:items-center flex-col sm:flex-row text-gray-400">
-              <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">Fri, July 2・11 PM - Sat, July 3・2 AM CST (180 mins)</div>
-              <button className="btn btn-xs btn-outline-blue"
-                      onClick={() => setIsModalOpen(true)}>See More Dates
-              </button>
+              <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">
+                {`${moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')} - ${moment.utc(eventEndDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')} (${moment.duration(moment(eventEndDate).diff(moment(eventStartDate))).asMinutes()} mins)`}
+              </div>
+              {(groupEvents || []).length > 0 && (
+                  <button 
+                    className="btn btn-xs btn-outline-blue" 
+                    onClick={() => setIsModalOpen(true)}>
+                      See More Dates
+                  </button>
+              )}
+  
             </div>
           </div>
         </div>
         <div className="flex items-start w-full">
           <SvgIcon id="location" className="text-lg text-white" />
           <div className="ml-3">
-            <div className="text-white leading-none mb-1">The Bowery Club</div>
+            <div className="text-white leading-none mb-1">
+              {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.venueName)}
+            </div>
             <div className="text-gray-400 text-sm">
-              127 East 23rd Street New York, NY, USA
+              {location?.location !== "happin.app" && (location?.location)}
             </div>
           </div>
         </div>
         <div className="flex items-center w-full">
           <SvgIcon id="livestream" className="text-lg text-white" />
-          <div className="ml-3 text-white">Livestream</div>
+          <div className="ml-3 text-white">{isLiveStream && "Livestream"}</div>
         </div>
         <div className="flex items-start sm:items-center w-full">
           <SvgIcon id="ticket" className="text-lg text-white" />
           <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">Price from $30.00</div>
+            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{price && `Price from $${(price/100).toFixed(2)}`}</div>
             <button className="btn btn-xs btn-outline-blue">Redeem Ticket</button>
           </div>
         </div>
       </VStack>
 
       {/* About and Agenda links */}
-      <div className="sticky top-0 bg-black z-10">
+      {/* <div className="sticky top-0 bg-black z-10">
         <div className="flex w-full mt-8 sm:mt-14 p-1 border border-solid border-gray-600 rounded-full">
           <Link
             className={classNames('event-details__tab', { 'first-active': firstActive })}
@@ -102,7 +140,7 @@ const EventTitle = ({ setIsModalOpen }: any) => {
             Agenda
           </Link>
         </div>
-      </div>
+      </div> */}
     </>
   );
 };
