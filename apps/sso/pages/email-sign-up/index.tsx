@@ -70,6 +70,11 @@ export default function EmailSignUp() {
 
   const onFormSubmit: FormikConfig<IFormValues>['onSubmit'] = async ({ email, password }, actions) => {
     try {
+      if (!age || !terms) {
+        !age && setAgeState(true)
+        !terms && setTermsState(true);
+        return
+      }
       const res = await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
@@ -159,14 +164,6 @@ export default function EmailSignUp() {
               </Field>
               <SubmitButton
                 className="btn btn-dark w-full mt-4 mb-8"
-                onClick={() => {
-                  if (!age) {
-                    setAgeState(true)
-                  }
-                  if (!terms) {
-                    setTermsState(true)
-                  }
-                }}
               >Continue</SubmitButton>
               {/*<Field name="ageTerms" validate={validateAgeTerms}>
                 {({ field, form }: FieldProps) => (
