@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { FormControl, FormErrorMessage, Input } from '@chakra-ui/react';
-import { Formik, Form, Field, FieldProps } from 'formik';
+import { Formik, Form, Field, FieldProps, FormikConfig } from 'formik';
 import { SubmitButton } from '@components/SubmitButton';
+import { firebaseClient } from '../../api/firebaseClient';
+import { toast } from 'react-toastify';
 
 export default function Forgot() {
 
@@ -16,6 +18,25 @@ export default function Forgot() {
     return false
   }
 
+  const onForgotFormSubmit: FormikConfig<{email: string}>['onSubmit'] = async ({ email }, actions) => {
+    try {
+      const actionCodeSetting = {
+        url: 'https://happin.app',
+        handelCodeInApp: true,
+      }
+      await firebaseClient.auth().sendPasswordResetEmail(email, actionCodeSetting)
+      window.parent.postMessage({ action: 'reset_requested', payload: { reset: true } }, origin);
+      actions.setSubmitting(false)
+    } catch (error) {
+      if (error.code.includes('auth/user-not-found')) {
+        toast.error(`No account exists for ${email}`);
+      } else {
+        toast.error('Failed to send reset link');
+      }
+      console.log('Failed to send reset link', error.message);
+    }
+  }
+
   return (
     <>
       <div className="text-center">
@@ -26,11 +47,7 @@ export default function Forgot() {
       <div className="w-full max-w-sm mx-auto mt-12">
         <Formik
           initialValues={{ email: '' }}
-          onSubmit={async (values, actions) => {
-            console.log(values);
-            actions.setSubmitting(false)
-            // window.location.href = '/';
-          }}
+          onSubmit={onForgotFormSubmit}
         >
           {(props) => (
             <Form>

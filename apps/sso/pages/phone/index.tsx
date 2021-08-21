@@ -68,6 +68,7 @@ export default function Phone() {
       }
       const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
       console.log('redirectURL', redirectURL);
+      window.parent.postMessage({ action: 'get_token', payload: { token: firebaseToken } }, origin);
       window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
     } catch (err) {
       console.log(err);
