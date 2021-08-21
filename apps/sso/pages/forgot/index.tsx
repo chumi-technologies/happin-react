@@ -5,8 +5,11 @@ import { Formik, Form, Field, FieldProps, FormikConfig } from 'formik';
 import { SubmitButton } from '@components/SubmitButton';
 import { firebaseClient } from '../../api/firebaseClient';
 import { toast } from 'react-toastify';
+import { useAppState } from 'contexts/state';
 
 export default function Forgot() {
+
+  const { origin } = useAppState();
 
   function validateEmail(value: string) {
     if (!value) {
