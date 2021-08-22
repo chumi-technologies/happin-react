@@ -31,7 +31,7 @@ export default function Forgot() {
       window.parent.postMessage({ action: 'reset_requested', payload: { reset: true } }, origin);
       actions.setSubmitting(false)
     } catch (error) {
-      if (error.code.includes('auth/user-not-found')) {
+      if (error.code  === 'auth/user-not-found') {
         toast.error(`No account exists for ${email}`);
       } else {
         toast.error('Failed to send reset link');

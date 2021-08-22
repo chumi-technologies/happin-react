@@ -79,7 +79,6 @@ export default function EmailSignUp() {
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
-      console.log(refreshToken)
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
