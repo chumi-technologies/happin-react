@@ -78,11 +78,13 @@ export default function EmailSignUp() {
       const res = await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
+      const refreshToken = res?.user?.refreshToken;
+      console.log(refreshToken)
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
         console.log('redirectURL', redirectURL);
-        window.parent.postMessage({ action: 'get_token', payload: { token: firebaseToken } }, origin);
+        window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       actions.setSubmitting(false)

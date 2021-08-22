@@ -12,15 +12,12 @@ const CLIENT_CONFIG = {
   measurementId: 'G-5BDXD5HHF8'
 };
 
-let auth: firebaseClient.auth.Auth;
-
 if (typeof window !== "undefined" && !firebaseClient.apps.length) {
   firebaseClient.initializeApp(CLIENT_CONFIG);
   firebaseClient
     .auth()
     .setPersistence(firebaseClient.auth.Auth.Persistence.SESSION);
   (window as any).firebase = firebaseClient;
-  auth = firebaseClient.auth();
 }
 
-export { firebaseClient, auth };
+export { firebaseClient };

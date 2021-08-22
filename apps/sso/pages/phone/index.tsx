@@ -61,14 +61,13 @@ export default function Phone() {
       const result = await signinResult.confirm(verificationCode)
       console.log('result', result)
       const firebaseToken = await result?.user?.getIdToken();
-      console.log('firebaseToken', firebaseToken);
-
+      const refreshToken = result?.user?.refreshToken;
       if (!signin) {
         await signUpHappin(firebaseToken, { version: 2, phone, areaCode: countryCode });
       }
       const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
       console.log('redirectURL', redirectURL);
-      window.parent.postMessage({ action: 'get_token', payload: { token: firebaseToken } }, origin);
+      window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
       window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
     } catch (err) {
       console.log(err);
@@ -78,6 +77,7 @@ export default function Phone() {
 
   const resend = () => {
     setSigninResult(null)
+    setVerificationSent(false)
     grecaptcha.reset(recaptchaWidgetId);
   }
 
