@@ -1,6 +1,11 @@
 import { Image, HStack } from "@chakra-ui/react";
 
-const EventHost = () => {
+type EventHostProps = {
+  hostName?: string;
+  hostProfileImageUrl?:string;
+}
+
+const EventHost = (props : EventHostProps) => {
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
@@ -9,12 +14,12 @@ const EventHost = () => {
           <Image
             borderRadius="full"
             boxSize={10}
-            src="/images/profile_pic.png"
+            src={`${props.hostProfileImageUrl || "/images/profile_pic.png"}`}
             alt="profile picture"
           />
-          <div className="font-medium">Happin Staff</div>
+          <div className="font-medium">{props.hostName}</div>
         </HStack>
-        <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full">Contact</button>
+        {/* <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full">Contact</button> */}
       </HStack>
     </>
   );
