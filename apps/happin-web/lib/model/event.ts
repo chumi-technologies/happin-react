@@ -1,4 +1,5 @@
 import { Creator } from './creator'
+import { GroupEvent } from './groupEvent';
 
 export interface Member {
     avatar: string;
@@ -77,6 +78,7 @@ export interface EventData {
     hasTicketNonPB: boolean;
     hasTicketPB: boolean;
     hotTopics: any[];
+    groupEvents?: GroupEvent[];
 }
 
 export interface EventResponse {

@@ -4,15 +4,19 @@ import theme from "../theme"
 import type { AppProps } from 'next/app'
 import '@styles/globals.scss'
 import { AppState } from '../contexts/state'
+import { SSO } from '@components/SSO'
+import { SEO } from "@components/SEO";
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
-      <Layout>
       <AppState>
-        <Component {...pageProps} />
+        <SEO />
+        <SSO/>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </AppState>
-      </Layout>
     </ChakraProvider>
   )
 }

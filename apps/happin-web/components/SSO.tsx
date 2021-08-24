@@ -13,10 +13,6 @@ const SSO = () => {
   const [origin, setOrigin] = useState('');
   const router = useRouter();
 
-  console.log('mode', mode);
-
-
-
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
@@ -45,12 +41,12 @@ const SSO = () => {
   // make sure you use camelCase attribute names
   const attributes = {
     src: url.toString(),
-    className: 'fixed inset-0 h-screen w-screen z-10',
+    className: 'fixed inset-0 h-screen w-screen z-100',
   };
 
   // the postMessage data you want to send to your iframe
   // it will be send after the iframe has loaded
-  const postMessageData = "hello iframe";
+  //const postMessageData = "hello iframe";
 
   // parent received a message from iframe
   const onReceiveMessage = (e: MessageEvent) => {
@@ -58,9 +54,10 @@ const SSO = () => {
     console.log("onReceiveMessage", e.data);
     const { action, payload } = e.data || {};
     if (action === 'close') hideSSO();
-    if (action === 'redirect') {
-      console.log('receive', payload.url);
-      window.location.assign(payload.url)
+    if (action === 'get_token') {
+      localStorage.setItem('happin_jwt', payload.idToken);
+      localStorage.setItem('happin_refresh_token', payload.refreshToken);
+      hideSSO();
     }
   };
 
@@ -72,7 +69,7 @@ const SSO = () => {
   return (visible && (
     <IframeComm
       attributes={attributes}
-      postMessageData={postMessageData}
+      // postMessageData={postMessageData}
       // handleReady={onReady}
       handleReceiveMessage={onReceiveMessage}
     />

@@ -34,7 +34,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
   } = props;
   const [openShare, setOpenShare] = useState(false)
   return (
-    <div className="absolute right-4 top-4 sm:right-6 sm:top-6 lg:right-14 lg:top-14 z-30">
+    <div className="absolute right-4 top-4 sm:right-6 sm:top-6 lg:right-14 lg:top-14 z-20">
       <VStack>
         <div className={classNames('event-details__side-action', { 'favorite': isFavorite })}
              onClick={onFavorite}

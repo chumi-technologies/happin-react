@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import { Box } from '@chakra-ui/react';
-
-import { SSO } from '../../components/SSO';
-import SignInBar from "../../components/SignInBar";
+import SignInBar from '../../components/SignInBar'
 import PopUpModal from "../../components/reusable/PopUpModal";
 import ActionSideBar from "../../components/page_components/ActionSideBar";
 import EventSection from "../../components/page_components/EventSection";
@@ -11,46 +8,40 @@ import BottomBar from "../../components/page_components/BottomBar";
 import EventDates from "../../components/page_components/EventDates";
 import { getEventDetail, getGroupEvents } from "lib/api";
 import { EventData } from "lib/model/event";
-import { GroupEvent } from "lib/model/groupEvent";
+import Head from 'next/head';
+import { GetServerSidePropsResult } from "next";
 
-const Events = () => {
-  const router = useRouter();
-  // Use event_id for api calls to request the event details
-  const { event_id } = router.query;
-  
-  useEffect(() => {
-    (async () => {
-      try {
-        if (event_id as string !== undefined) {
-          const data = await getEventDetail(event_id as string, 'crowdcore')
-          setEventData(data.data)
-          console.log
-          if (data.data.event.groupAcid) {
-            const groupEvents = await getGroupEvents(data.data.event.groupAcid || "")
-            setGroupEvents(groupEvents)
-          }
-          console.log(data)
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    })();
-  }, [event_id]);
-  
+const Events = (props: EventData) => {
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFavorite, setFavorite] = useState(false);
   const [showDownload, setShowDownload] = useState(true);
-  const [eventData, setEventData] = useState<EventData>();
-  const [groupEvents, setGroupEvents] = useState<GroupEvent[]>([]);
+  
+  const eventData = props;
+  const groupEvents = props.groupEvents;
+
+  useEffect(()=> {
+    const isVisitor = Boolean(localStorage.getItem('is_visitor'));
+    setIsFirstTimeVisitor(!isVisitor);
+  },[])
+
+  const firstTimeVisitHandler = () => {
+    localStorage.setItem('is_visitor', 'false');
+    setIsFirstTimeVisitor( s => !s);
+  }
 
   return (
     <>
-    {/* <SSO /> */}
+    <Head>
+    {/* More meta tags needed to be added */}
+    <title>{eventData?.event?.title}</title>
+    <meta name="description" content={eventData?.event?.contentPlainText} />
+    <meta property="og:image" content={eventData?.event?.cover} />
+    </Head>
     <div className="event-details__page">
       {/* Top Popups for First-Time Visitors */}
       {isFirstTimeVisitor && (
-        <SignInBar setIsFirstTimeVisitor={setIsFirstTimeVisitor} />
+        <SignInBar setIsFirstTimeVisitor={firstTimeVisitHandler} />
       )}
 
       {/* Event Dates Modal */}
@@ -112,3 +103,20 @@ const Events = () => {
 };
 
 export default Events;
+
+
+// fetch data on server upon every request.. not using static page pre render
+export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
+  const res = await getEventDetail(context.params.event_id as string, 'crowdcore')
+  const props = res.data
+  if (res.data?.event?.groupAcid) {
+    const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
+    props.groupEvents = groupEvents;
+  }
+  console.log('props',props)
+  return {
+    props,
+  }
+}
+
+

@@ -7,13 +7,8 @@ const AppContext = createContext();
 export function AppState({ children }) {
   const [dimmed, setDimmed] = useState(false);
   const [ssoState, setSSOState] = useState({ visible: false, mode: ESSOMode.signIn });
-  const [fromHappin, setFromHappin] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    if (router.query.fromHappin ==='true' && !fromHappin) {
-      setFromHappin(true);
-    }
-  }, [router.query.fromHappin])
+
 
   const showSSO = () => {
     setDimmed(true);
@@ -38,7 +33,6 @@ export function AppState({ children }) {
   return (
     <AppContext.Provider value={{
       dimmed,
-      fromHappin,
       ssoState, showSSO, showSSOSignUp, hideSSO,
     }}>
       {children}
