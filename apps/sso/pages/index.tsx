@@ -36,9 +36,11 @@ export default function Home() {
         .then(async (res) => {
           console.log('res', res);
           const firebaseToken = await res?.user?.getIdToken();
+          const refreshToken = res?.user?.refreshToken;
           if (firebaseToken) {
             const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
             console.log('redirectURL', redirectURL);
+            window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
             window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
           }
           resolve(res);
