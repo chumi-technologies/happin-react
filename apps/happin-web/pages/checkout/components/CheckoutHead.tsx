@@ -24,7 +24,7 @@ const CheckoutHead = () => {
       <div className="container">
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
           <div className="flex-1 font-semibold min-w-0 hidden sm:block">
-            <div className="truncate">TWRP: Comin' Atcha Live at the Opera House</div>
+            <div className="truncate">TWRP: Comin Atcha Live at the Opera House</div>
             <div className="truncate text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
           </div>
           <Popover className="flex md:relative sm:ml-4">
