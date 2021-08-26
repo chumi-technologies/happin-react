@@ -111,7 +111,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                   </div>
                   <HStack justify="space-between" mt={3}>
                     <Link href="/">
-                      <a href={process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE} target="_blank"><img className="h-10" src="/images/app-store.svg" alt="App Store" /></a>
+                      <a href={process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE} rel="noreferrer" target="_blank"><img className="h-10" src="/images/app-store.svg" alt="App Store" /></a>
                     </Link>
                    {/*  <Link href="/">
                       <a><img className="h-10" src="/images/google-play.svg" alt="Google Play" /></a>
