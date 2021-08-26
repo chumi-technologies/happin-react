@@ -65,10 +65,11 @@ export default function Phone() {
       if (!signin) {
         await signUpHappin(firebaseToken, { version: 2, phone, areaCode: countryCode });
       }
-      const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
-      console.log('redirectURL', redirectURL);
+      if (origin.includes('ticketing')) {
+        const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
+        window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+      }
       window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
-      window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
     } catch (err) {
       console.log(err);
       grecaptcha.reset(recaptchaWidgetId);

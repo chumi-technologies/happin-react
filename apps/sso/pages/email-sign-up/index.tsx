@@ -81,10 +81,11 @@ export default function EmailSignUp() {
       const refreshToken = res?.user?.refreshToken;
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
-        const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
-        console.log('redirectURL', redirectURL);
+        if (origin.includes('ticketing')) {
+          const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
+          window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+        }
         window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
-        window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       actions.setSubmitting(false)
     } catch (error) {
