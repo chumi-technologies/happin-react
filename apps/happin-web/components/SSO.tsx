@@ -1,7 +1,8 @@
-import { useAppState } from '../contexts/state';
+import { useSSOState } from '../contexts/sso-state';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import IframeComm from 'react-iframe-comm';
+import { useUserState } from 'contexts/user-state';
 
 enum ESSOMode {
   signIn = 'sign-in',
@@ -9,7 +10,8 @@ enum ESSOMode {
 }
 
 const SSO = () => {
-  const { ssoState: { visible, mode }, hideSSO } = useAppState();
+  const { setUserInfo } = useUserState();
+  const { ssoState: { visible, mode }, hideSSO } = useSSOState();
   const [origin, setOrigin] = useState('');
   const router = useRouter();
 
@@ -49,7 +51,7 @@ const SSO = () => {
   //const postMessageData = "hello iframe";
 
   // parent received a message from iframe
-  const onReceiveMessage = (e: MessageEvent) => {
+  const onReceiveMessage = async (e: MessageEvent) => {
     if (e.origin !== process.env.NEXT_PUBLIC_HAPPIN_SSO) return;
     console.log("onReceiveMessage", e.data);
     const { action, payload } = e.data || {};
@@ -57,6 +59,8 @@ const SSO = () => {
     if (action === 'get_token') {
       localStorage.setItem('happin_jwt', payload.idToken);
       localStorage.setItem('happin_refresh_token', payload.refreshToken);
+      const user = await setUserInfo();
+      console.log(user)
       hideSSO();
     }
   };

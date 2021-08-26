@@ -1,10 +1,10 @@
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall } from '@icon-park/react';
-import { useAppState } from 'contexts/state';
+import { useSSOState } from 'contexts/sso-state';
 import React, { useEffect } from 'react';
 
 const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
-  const { dimmed, showSSO } = useAppState();
+  const { dimmed, showSSO } = useSSOState();
 
   useEffect(() => {
     if (dimmed) {

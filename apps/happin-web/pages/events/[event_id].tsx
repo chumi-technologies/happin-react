@@ -113,7 +113,7 @@ export async function getServerSideProps(context: { params: { event_id: string }
     const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
     props.groupEvents = groupEvents;
   }
-  console.log('props',props)
+  //console.log('props',props)
   return {
     props,
   }

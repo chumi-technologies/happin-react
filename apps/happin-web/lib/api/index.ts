@@ -1,3 +1,4 @@
 import { getEventDetail, getGroupEvents } from "./events";
+import { getUserInfo } from "./user";
 
-export { getEventDetail, getGroupEvents };
+export { getEventDetail, getGroupEvents, getUserInfo };
