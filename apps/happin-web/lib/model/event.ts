@@ -64,6 +64,7 @@ export interface EventDetail {
     isAudio: boolean;
     creator: Creator;
     acInfo: LocationInfo;
+    socialImg: string;
 }
 
 export interface EventData {

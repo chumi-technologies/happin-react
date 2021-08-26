@@ -1,6 +1,7 @@
 import { useSSOState } from '../contexts/sso-state';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+// @ts-ignore
 import IframeComm from 'react-iframe-comm';
 import { useUserState } from 'contexts/user-state';
 
