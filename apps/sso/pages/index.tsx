@@ -38,10 +38,11 @@ export default function Home() {
           const firebaseToken = await res?.user?.getIdToken();
           const refreshToken = res?.user?.refreshToken;
           if (firebaseToken) {
-            const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
-            console.log('redirectURL', redirectURL);
+            if (origin.includes('ticketing')) {
+              const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
+              window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
+            }
             window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
-            window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
           }
           resolve(res);
         }, err => {
