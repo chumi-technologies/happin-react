@@ -126,7 +126,8 @@ export default function Header() {
               <>
                 <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
                   <HamburgerButton theme="outline" size="22" fill="currentColor" />
-                  <Avatar size="sm" ml={2} bg="gray.600" />
+                  {!user && <Avatar size="sm" ml={2} bg="gray.600" />}
+                  {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
                 </Menu.Button>
                 <Transition
                   show={open}

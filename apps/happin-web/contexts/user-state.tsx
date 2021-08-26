@@ -1,10 +1,17 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { getUserInfo } from "lib/api";
+import { User } from 'lib/model/user';
 
-const userContext = createContext();
+interface UserContext {
+  setUserInfo: ()=> Promise<void>,
+  clearUser: ()=> void,
+  user: User|undefined
+}
 
-export function UserState({ children }) {
-  const [user, setUser] = useState();
+const userContext = createContext<UserContext>({} as UserContext);
+
+export function UserState({ children }: {children: any}) {
+  const [user, setUser] = useState<User>();
 
   useEffect(() => {
     const idToken = localStorage.getItem('happin_jwt')
@@ -21,13 +28,14 @@ export function UserState({ children }) {
         setUser(user);
         return user
       } catch (err) {
+        clearUser();
         console.log(err)
       }
     }
   }
 
   const clearUser = () => {
-    setUser();
+    setUser(undefined);
     localStorage.removeItem('happin_refresh_token');
     localStorage.removeItem('happin_jwt');
   }

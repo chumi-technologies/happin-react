@@ -54,8 +54,7 @@ const SSO = () => {
     if (action === 'get_token') {
       localStorage.setItem('happin_jwt', payload.idToken);
       localStorage.setItem('happin_refresh_token', payload.refreshToken);
-      const user = await setUserInfo();
-      console.log(user)
+      await setUserInfo();
       hideSSO();
     }
   };
