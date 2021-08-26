@@ -18,15 +18,10 @@ const SSO = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
-      console.log('hostname', hostname);
       setOrigin(window.location.href);
     }
   }, [router]);
 
-  useEffect(() => {
-    console.log('mode', mode);
-
-  }, [mode]);
 
 
   const url = new URL(process.env.NEXT_PUBLIC_HAPPIN_SSO || '');

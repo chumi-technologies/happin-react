@@ -1,14 +1,11 @@
 import { ESSOMode } from '@components/SSO';
-import { createContext, useContext, useState, useEffect } from 'react';
-import {useRouter} from "next/router";
+import { createContext, useContext, useState } from 'react';
 
 const ssoContext = createContext();
 
 export function SSOState({ children }) {
   const [dimmed, setDimmed] = useState(false);
   const [ssoState, setSSOState] = useState({ visible: false, mode: ESSOMode.signIn });
-  const router = useRouter();
-
 
   const showSSO = () => {
     setDimmed(true);

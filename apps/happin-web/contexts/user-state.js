@@ -7,7 +7,10 @@ export function UserState({ children }) {
   const [user, setUser] = useState();
 
   useEffect(() => {
-    setUserInfo()
+    const idToken = localStorage.getItem('happin_jwt')
+    if (idToken) {
+      setUserInfo()
+    }
   }, [])
 
   const setUserInfo = async ()=> {
@@ -16,7 +19,6 @@ export function UserState({ children }) {
         const response = await getUserInfo();
         const user = response.data;
         setUser(user);
-        console.log(user)
         return user
       } catch (err) {
         console.log(err)
