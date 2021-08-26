@@ -125,11 +125,13 @@ export default function Phone() {
           preferredCountries={['us', 'ca', 'gb']}
           preserveOrder={['preferredCountries']}
           onChange={onPhoneChange}
+          disabled={verificationSent}
         />
         <div className="mt-4 flex justify-center" hidden={verificationSent} id="recaptcha-container" />
-        <Input placeholder="Enter 6 digital" size="md" className="mt-4"
+        {verificationSent &&  <Input placeholder="Enter 6 digital" size="md" className="mt-4"
           value={verificationCode}
-          onChange={e => setVerificationCode(e.target.value)}/>
+          onChange={e => setVerificationCode(e.target.value)}/>}
+       
         <button className="btn btn-dark w-full mt-12" hidden={verificationSent} onClick={sendVerificationCode}>Send Code</button>
         <div className="flex mt-4">
           <button className="btn btn-teal w-full flex-grow" hidden={!verificationSent} disabled={resendTimer > 0} onClick={resend}>
