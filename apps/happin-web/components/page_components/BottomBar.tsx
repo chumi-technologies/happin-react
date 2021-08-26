@@ -1,6 +1,28 @@
 import SvgIcon from '@components/SvgIcon';
+import { EventData } from 'lib/model/event';
 
-const BottomBar = () => {
+interface eventDataProp {
+  eventData: EventData
+}
+const BottomBar = ({eventData}: eventDataProp) => {
+  console.log(eventData)
+  const isSoldOut = eventData.isTicketSoldOut;
+
+  const offSaleTimeHasPast = (eventData: EventData): boolean => {
+    if (eventData?.event?.acInfo?.offSaleSetting?.offSaleTime) {
+      return new Date(eventData.event.acInfo.offSaleSetting.offSaleTime).getTime() < new Date().getTime();
+    } 
+    return false
+  }
+
+  const checkOffLineEventStarted = (eventData: EventData): boolean => {
+    if (eventData?.event?.acInfo?.location !== 'happin.app') {
+      return new Date(eventData.event.start_datetime).getTime() < new Date().getTime();
+    } else {
+      return false
+    }
+  }
+
   return (
     <div className="footer-action fixed lg:sticky bottom-0 right-0 w-full bg-gray-800 z-40">
       <div className="event-details__container flex py-3 sm:py-4">
@@ -8,10 +30,15 @@ const BottomBar = () => {
           <SvgIcon id="chat" className="text-lg text-gray-900 mr-1 sm:mr-2" />
           <span className="text-sm sm:text-base">Chat with Fans</span>
         </button>
-        <button className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
+        {!offSaleTimeHasPast(eventData) &&  <button disabled={isSoldOut || checkOffLineEventStarted(eventData)} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
           <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
-          <span className="text-sm sm:text-base">Get Tickets</span>
-        </button>
+          <span className="text-sm sm:text-base">{isSoldOut ? "Sold Out" :checkOffLineEventStarted(eventData) ? "Event Started" : "Get Tickets"}</span>
+        </button>}
+
+        {offSaleTimeHasPast(eventData) && <button disabled={true} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
+          <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
+          <span className="text-sm sm:text-base">{eventData.event.acInfo.offSaleSetting?.offSaleText}</span>
+        </button>}
       </div>
     </div>
   );

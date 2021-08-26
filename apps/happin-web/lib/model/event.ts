@@ -21,7 +21,12 @@ export interface LocationInfo {
     hasSeat: boolean;
     location: string;
     venueName?: string;
-    offSaleSetting?: Map<string, any>
+    offSaleSetting?: offsaleSetting
+}
+
+export interface offsaleSetting {
+    offSaleText: string;
+    offSaleTime: Date;
 }
 
 export interface EventDetail {
@@ -65,6 +70,7 @@ export interface EventDetail {
     creator: Creator;
     acInfo: LocationInfo;
     socialImg: string;
+    hasPFM: boolean
 }
 
 export interface EventData {
@@ -80,6 +86,7 @@ export interface EventData {
     hasTicketPB: boolean;
     hotTopics: any[];
     groupEvents?: GroupEvent[];
+    isTicketSoldOut: boolean;
 }
 
 export interface EventResponse {

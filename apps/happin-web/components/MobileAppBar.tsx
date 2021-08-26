@@ -14,8 +14,8 @@ const MobileAppBar = ({ setIsMobileBarOpen }: any) => {
           <div className="flex-1">
             <button className="w-full btn btn-dark-pure btn-sm !rounded-full" onClick={() => {
               setIsMobileBarOpen(false);
-              location.href = "#";
-            }}>Switch to the App</button>
+              location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string;
+            }}>Download the App</button>
           </div>
         </HStack>
       </div>

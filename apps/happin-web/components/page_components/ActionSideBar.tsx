@@ -22,6 +22,7 @@ type ActionSideBarProps = {
   onFavorite: () => void;
   onDownload: () => void;
   onShare: () => void;
+  hasPFM: boolean;
 };
 const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
   const {
@@ -31,6 +32,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
     onFavorite,
     onShare,
     onDownload,
+    hasPFM
   } = props;
   const [openShare, setOpenShare] = useState(false)
   return (
@@ -103,20 +105,21 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
               <div className="fade-scale-in absolute right-5 top-5 w-72">
                 <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800">
                   <div className="text-sm pr-4">
-                    This event includes <Link href="/"><a className="link-white">VIP/Fan meeting</a></Link>.
-                    Download the Happin app to meet your favourite artists
+                    {hasPFM ? <>This event includes <a href="https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting" target="_blank" className="link-white">VIP/Fan meeting</a>
+                    . Download the Happin app to meet your favourite artists`</> : 'Download the app and chat with other attendees.'}
+                    
                   </div>
                   <HStack justify="space-between" mt={3}>
                     <Link href="/">
-                      <a><img className="h-10" src="/images/app-store.svg" alt="App Store" /></a>
+                      <a href={process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE} target="_blank"><img className="h-10" src="/images/app-store.svg" alt="App Store" /></a>
                     </Link>
-                    <Link href="/">
+                   {/*  <Link href="/">
                       <a><img className="h-10" src="/images/google-play.svg" alt="Google Play" /></a>
-                    </Link>
+                    </Link> */}
                   </HStack>
                 </div>
               </div>
-            ) : <div className="event-details__side-vip">VIP</div>
+            ) : (hasPFM && <div className="event-details__side-vip">VIP</div>)
           }
         </div>
       </VStack>

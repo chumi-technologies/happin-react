@@ -1,18 +1,18 @@
 import {
   HStack,
-  VStack,
+  VStack
 } from '@chakra-ui/react';
 
 import SvgIcon from '@components/SvgIcon';
-import { useState } from 'react';
-import { Link } from 'react-scroll';
-import classNames from 'classnames';
+import { useEffect } from 'react';
 import moment from 'moment-timezone';
 import { LocationInfo } from "lib/model/event";
 import { GroupEvent } from 'lib/model/groupEvent';
+import { useUserState } from 'contexts/user-state';
+import { useSSOState } from 'contexts/sso-state';
 
 type EventTitleProps = {
-  setIsModalOpen?: boolean;
+  setIsModalOpen: (arg0: boolean) => void;
   eventTitle?: string;
   isLiveStream?: boolean;
   tags?: string[];
@@ -21,11 +21,32 @@ type EventTitleProps = {
   price?: number;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
+  setIsRedeemModalOpen: (arg0: boolean) => void;
 }
 
-const EventTitle = ({setIsModalOpen, eventTitle, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = []}: EventTitleProps) => {
-  const [firstActive, setFirstActive] = useState(true)
+const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = []}: EventTitleProps) => {
+  // const [firstActive, setFirstActive] = useState(true)
+  const { user } = useUserState();
+  const { dimmed, showSSO } = useSSOState();
   const isLiveNow = moment().isBetween(moment(eventStartDate), moment(eventEndDate))
+
+  useEffect(() => {
+    if (dimmed) {
+      document.body.classList.add("body-overflow-hidden");
+    } else {
+      document.body.classList.remove("body-overflow-hidden");
+    }
+  }, [dimmed])
+
+  
+  const openRedeemModal = () => {
+    if (!user) {
+      showSSO();
+      return
+    }
+    setIsRedeemModalOpen(true);
+  }
+
   return (
     <>
       {/* Badges */}
@@ -93,15 +114,17 @@ const EventTitle = ({setIsModalOpen, eventTitle, isLiveStream = false, tags = []
             </div>
           </div>
         </div>
-        <div className="flex items-center w-full">
+        {isLiveStream &&  <div className="flex items-center w-full">
           <SvgIcon id="livestream" className="text-lg text-white" />
-          <div className="ml-3 text-white">{isLiveStream && "Livestream"}</div>
-        </div>
+          <div className="ml-3 text-white">Livestream</div>
+        </div>}
+       
         <div className="flex items-start sm:items-center w-full">
           <SvgIcon id="ticket" className="text-lg text-white" />
           <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{price && `Price from $${(price/100).toFixed(2)}`}</div>
-            <button className="btn btn-xs btn-outline-blue">Redeem Ticket</button>
+            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price!== undefined) && `Price from $${(price/100).toFixed(2)}`}</div>
+            {/* not showing redeem when it's offline event  */}
+            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>} 
           </div>
         </div>
       </VStack>

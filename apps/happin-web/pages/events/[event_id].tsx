@@ -12,13 +12,16 @@ import Head from 'next/head';
 import { GetServerSidePropsResult } from "next";
 import { PRODUCTION_URL } from "utils/constants";
 import { useRouter } from "next/router";
+import RedeemEventCode from "../../components/page_components/RedeemEventCode"
 
 const Events = (props: EventData) => {
   const router = useRouter();
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
+
   const [isFavorite, setFavorite] = useState(false);
-  const [showDownload, setShowDownload] = useState(true);
+  const [showDownload, setShowDownload] = useState(false);
 
   // TODO need to handle if event not exist, redirect?
   const eventData = props;
@@ -47,19 +50,19 @@ const Events = (props: EventData) => {
   return (
     <>
       <Head>
-      <meta name="description" key="description" content={seoProps.description} />
-      <meta name="keywords" key="keywords" content={seoProps.keywords} />
-      <title>{seoProps.title}</title>
-      <meta property="og:title" key="og:title" content={seoProps.title} />
-      <meta property="og:description" key="og:description" content={seoProps.description} />
-      <meta property="og:image" key="og:image" content={seoProps.ogImage} />
-      <meta property="og:site_name" key="og:site_name" content={seoProps.title} />
-      <meta property="og:url" key="og:url" content={seoProps.ogUrl} />
-      <meta property="og:type" key="og:type" content={'website'} />
-      <meta name="twitter:title" key="twitter:title" content={seoProps.title} />
-      <meta name="twitter:description" key="twitter:description" content={seoProps.description} />
-      <meta name="twitter:image" key="twitter:image" content={seoProps.twitterImage} />
-      <meta name="twitter:card" key="twitter:card" content="summary_large_image" />
+        <meta name="description" key="description" content={seoProps.description} />
+        <meta name="keywords" key="keywords" content={seoProps.keywords} />
+        <title>{seoProps.title}</title>
+        <meta property="og:title" key="og:title" content={seoProps.title} />
+        <meta property="og:description" key="og:description" content={seoProps.description} />
+        <meta property="og:image" key="og:image" content={seoProps.ogImage} />
+        <meta property="og:site_name" key="og:site_name" content={seoProps.title} />
+        <meta property="og:url" key="og:url" content={seoProps.ogUrl} />
+        <meta property="og:type" key="og:type" content={'website'} />
+        <meta name="twitter:title" key="twitter:title" content={seoProps.title} />
+        <meta name="twitter:description" key="twitter:description" content={seoProps.description} />
+        <meta name="twitter:image" key="twitter:image" content={seoProps.twitterImage} />
+        <meta name="twitter:card" key="twitter:card" content="summary_large_image" />
       </Head>
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
@@ -74,7 +77,19 @@ const Events = (props: EventData) => {
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
           >
-            <EventDates groupEvents={groupEvents} />
+            <EventDates groupEvents={groupEvents} setIsModalOpen={setIsModalOpen} eventData={eventData} />
+          </PopUpModal>
+        )}
+        {/* redeem modal */}
+        {isRedeemModalOpen && (
+          <PopUpModal
+            modalTitle="Redeem Ticket Code"
+            isModalOpen={isRedeemModalOpen}
+            setIsModalOpen={setIsRedeemModalOpen}
+          >
+            <div className="m-5">
+              <RedeemEventCode setIsRedeemModalOpen={setIsRedeemModalOpen} happinEID={eventData.event._id}/>
+            </div>
           </PopUpModal>
         )}
         <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
@@ -91,6 +106,7 @@ const Events = (props: EventData) => {
             onDownload={() => {
               setShowDownload(s => !s)
             }}
+            hasPFM={eventData.event.hasPFM}
           />
 
           {/* Event Image */}
@@ -115,9 +131,9 @@ const Events = (props: EventData) => {
           {/* Event Texts */}
           <div className="w-full lg:w-7/12 xl:w-1/2 pb-16 sm:pb-20">
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
-              <EventSection setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
+              <EventSection setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar />
+            <BottomBar eventData={eventData} />
           </div>
         </div>
       </div>

@@ -112,6 +112,17 @@ export const getFromHappin = async<T = any>(path: string) => {
   }
 }
 
+export const postToHappin = async(path:string, payload: any) => {
+  try {
+    const result = await instanceHappin.post(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
+
+
+
 export const getFromCrowdCore = async<T = any>(path: string) => {
   try {
     const result = await instanceCrowCore.get<T>(path)
@@ -120,6 +131,7 @@ export const getFromCrowdCore = async<T = any>(path: string) => {
     throw error
   }
 }
+
 
 
 export {
