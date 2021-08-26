@@ -1,5 +1,5 @@
 import React from 'react';
-import { MerchItemDataProps } from '../data';
+import { MerchItemDataProps } from '../model/data';
 
 export type MerchItemProps = {
   data: MerchItemDataProps;

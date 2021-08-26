@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import TicketItem, { TicketItemProps } from './components/TicketItem';
 import CheckoutHead from './components/CheckoutHead';
 import CheckoutSidebar from './components/CheckoutSidebar';
-import { MerchItemDataProps } from './data';
+import { MerchItemDataProps } from './model/data';
 import MerchItem from './components/MerchItem';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
