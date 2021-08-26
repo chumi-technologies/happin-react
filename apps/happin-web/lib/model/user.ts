@@ -10,3 +10,10 @@ export interface User {
     areaCode: string;
     pointOneGifts: number;
 }
+
+
+export interface UserResponse {
+    data: User;
+    code: number;
+    message: string;
+}

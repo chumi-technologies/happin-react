@@ -26,7 +26,6 @@ export function UserState({ children }: {children: any}) {
         const response = await getUserInfo();
         const user = response.data;
         setUser(user);
-        return user
       } catch (err) {
         clearUser();
         console.log(err)

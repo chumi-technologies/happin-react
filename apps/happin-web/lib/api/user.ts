@@ -1,11 +1,11 @@
 import { getFromHappin } from './base';
-import { User } from 'lib/model/user';
+import { UserResponse } from 'lib/model/user';
 
 const USER_INFO_PATH = '/user';
 
 
 const getUserInfo = async () => {
-    const response = await getFromHappin<User>(USER_INFO_PATH)
+    const response = await getFromHappin<UserResponse>(USER_INFO_PATH)
     return response || {}
 }
 

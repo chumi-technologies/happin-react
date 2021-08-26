@@ -105,7 +105,7 @@ const refreshToken = async (): Promise<refreshTokenResponse> => {
 
 export const getFromHappin = async<T = any>(path: string) => {
   try {
-    const result = await instanceHappin.get(path)
+    const result = await instanceHappin.get<T>(path)
     return result.data
   } catch (error) {
     throw error
@@ -114,7 +114,7 @@ export const getFromHappin = async<T = any>(path: string) => {
 
 export const getFromCrowdCore = async<T = any>(path: string) => {
   try {
-    const result = await instanceCrowCore.get(path)
+    const result = await instanceCrowCore.get<T>(path)
     return result.data
   } catch (error) {
     throw error
