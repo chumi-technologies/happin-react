@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import { Box } from '@chakra-ui/react';
 import SignInBar from '../../components/SignInBar'
 import PopUpModal from "../../components/reusable/PopUpModal";
-import ActionSideBar from "../../components/page_components/ActionSideBar";
-import EventSection from "../../components/page_components/EventSection";
-import BottomBar from "../../components/page_components/BottomBar";
-import EventDates from "../../components/page_components/EventDates";
+import ActionSideBar from "../../components/page_components/EventPageComponents/ActionSideBar";
+import EventSection from "../../components/page_components/EventPageComponents/EventSection";
+import BottomBar from "../../components/page_components/EventPageComponents/BottomBar";
+import EventDates from "../../components/page_components/EventPageComponents/EventDates";
 import { getEventDetail, getGroupEvents } from "lib/api";
 import { EventData } from "lib/model/event";
 import Head from 'next/head';
 import { GetServerSidePropsResult } from "next";
 import { PRODUCTION_URL } from "utils/constants";
 import { useRouter } from "next/router";
-import RedeemEventCode from "../../components/page_components/RedeemEventCode"
+import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
 
 const Events = (props: EventData) => {
   const router = useRouter();

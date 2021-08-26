@@ -2,7 +2,7 @@ import React, { Fragment, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall, Delete } from '@icon-park/react';
-import NumberInput from '@components/page_components/NumberInput';
+import NumberInput from '@components/reusable/NumberInput';
 import Select from '@components/reusable/Select';
 import classNames from 'classnames';
 

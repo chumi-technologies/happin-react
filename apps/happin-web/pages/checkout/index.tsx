@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import TicketItem, { TicketItemProps } from './components/TicketItem';
-import CheckoutHead from './components/CheckoutHead';
-import CheckoutSidebar from './components/CheckoutSidebar';
+import TicketItem, { TicketItemProps } from '../../components/page_components/CheckoutPageComponents/TicketItem';
+import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
+import CheckoutSidebar from '../../components/page_components/CheckoutPageComponents/CheckoutSidebar';
 import { MerchItemDataProps } from '../../lib/model/checkout';
-import MerchItem from './components/MerchItem';
+import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 

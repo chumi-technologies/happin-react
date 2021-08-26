@@ -4,7 +4,7 @@ import SvgIcon from '@components/SvgIcon';
 import { Check, CloseSmall } from '@icon-park/react';
 import Merch from './Merch';
 import Select from '@components/reusable/Select';
-import NumberInput from '@components/page_components/NumberInput';
+import NumberInput from '@components/reusable/NumberInput';
 import classNames from 'classnames';
 
 type CheckoutSidebarProps = {
