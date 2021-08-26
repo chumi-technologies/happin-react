@@ -35,16 +35,24 @@ export default function EmailSignIn() {
       const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
+      const refreshToken = res?.user?.refreshToken;
       if (!firebaseToken) throw new Error('no firebaseToken');
 
       const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
       console.log('redirectURL', redirectURL);
+      window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
       window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       actions.setSubmitting(false)
       // getHappinWebURL
     } catch (err) {
+      if (err.code === 'auth/wrong-password') {
+        toast.error('The password is invalid')
+      } else if (err.code === 'auth/user-not-found') {
+        toast.error('Email not exists, please sign up')
+      } else {
+        toast.error('Failed to sign in, please try again later');
+      }
       console.error('failed to sign in', err);
-      toast.error('Failed to sign in, please try again later');
     }
 
   }

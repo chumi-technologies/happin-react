@@ -10,6 +10,7 @@ import { ERole, useAppState } from 'contexts/state';
 import { RoleToggle } from '@components/RoleToggle';
 import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
 import { signUpHappin } from 'api/happin-server';
+import { toast } from 'react-toastify';
 
 
 interface IFormValues {
@@ -69,27 +70,34 @@ export default function EmailSignUp() {
 
   const onFormSubmit: FormikConfig<IFormValues>['onSubmit'] = async ({ email, password }, actions) => {
     try {
+      if (!age || !terms) {
+        !age && setAgeState(true)
+        !terms && setTermsState(true);
+        return
+      }
       const res = await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
+      const refreshToken = res?.user?.refreshToken;
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
         console.log('redirectURL', redirectURL);
+        window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       actions.setSubmitting(false)
     } catch (error) {
       if (error.code.includes('auth/email-already-in-use')) {
-        alert('Email exists, please try another one.')
+        toast.error('Email exists, please try another one.')
       } else if (error.code === 'auth/invalid-email') {
-        alert('This email is invalid')
+        toast.error('This email is invalid')
       } else if (error.code === 'auth/weak-password') {
-        alert('The password should be at least 6 characters')
+        toast.error('The password should be at least 6 characters')
       } else if (error.code === 'auth/operation-not-allowed') {
-        alert('This account is disabled, please contact support')
+        toast.error('This account is disabled, please contact support')
       } else {
-        alert('Failed to sign up, please contact support');
+        toast.error('Failed to sign up, please contact support');
       }
       console.log('Failed to sign up', error.message);
     }
@@ -157,14 +165,6 @@ export default function EmailSignUp() {
               </Field>
               <SubmitButton
                 className="btn btn-dark w-full mt-4 mb-8"
-                onClick={() => {
-                  if (!age) {
-                    setAgeState(true)
-                  }
-                  if (!terms) {
-                    setTermsState(true)
-                  }
-                }}
               >Continue</SubmitButton>
               {/*<Field name="ageTerms" validate={validateAgeTerms}>
                 {({ field, form }: FieldProps) => (
