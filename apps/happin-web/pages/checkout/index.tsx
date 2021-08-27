@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TicketItem, { TicketItemProps } from '../../components/page_components/CheckoutPageComponents/TicketItem';
 import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
 import CheckoutSidebar from '../../components/page_components/CheckoutPageComponents/CheckoutSidebar';
