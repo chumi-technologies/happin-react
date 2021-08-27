@@ -1,7 +1,7 @@
 export type TicketItemDataProps = {
-  id: number;
+  id: string;
   title: string;
-  price: string;
+  price: number;
   subPrice?: string[];
   time: string;
   features?: TicketItemFeaturesProps[];
@@ -9,6 +9,7 @@ export type TicketItemDataProps = {
   merch?: boolean; // Merch Details
   helpText?: string; // What’s VIP room?
   soldOut: boolean;
+  kind: 'ticket'
 };
 
 export type TicketItemFeaturesProps = {
@@ -17,10 +18,31 @@ export type TicketItemFeaturesProps = {
 };
 
 export type MerchItemDataProps = {
-  id: number;
+  id: string;
   cover: string;
   title: string;
-  price: string;
+  price: number;
   introduction?: string;
   soldOut?: boolean;
+  property: string;
+  kind: 'merch'
 };
+
+export interface Cart {
+  items:{
+    ticketItem: CartTicketItem[],
+    merchItem: CartMerchItem[]
+  };
+  subTotal: number;
+}
+
+export interface CartTicketItem {
+  ticketId: string;
+  quantity: number;
+}
+
+export interface CartMerchItem {
+  merchId: string;
+  quantity: number;
+  property: string;
+}
