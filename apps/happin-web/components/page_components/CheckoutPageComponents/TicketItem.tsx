@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
-import NumberInput from '@components/page_components/NumberInput';
+import NumberInput from '@components/reusable/NumberInput';
 import { HStack, Tooltip } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
-import type { TicketItemDataProps, TicketItemFeaturesProps } from '../data';
+import type { TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
 import classNames from 'classnames';
 import { Right } from '@icon-park/react';
 import Link from 'next/link';

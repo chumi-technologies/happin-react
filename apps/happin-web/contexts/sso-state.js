@@ -1,19 +1,11 @@
 import { ESSOMode } from '@components/SSO';
-import { createContext, useContext, useState, useEffect } from 'react';
-import {useRouter} from "next/router";
+import { createContext, useContext, useState } from 'react';
 
-const AppContext = createContext();
+const ssoContext = createContext();
 
-export function AppState({ children }) {
+export function SSOState({ children }) {
   const [dimmed, setDimmed] = useState(false);
   const [ssoState, setSSOState] = useState({ visible: false, mode: ESSOMode.signIn });
-  const [fromHappin, setFromHappin] = useState(false);
-  const router = useRouter();
-  useEffect(() => {
-    if (router.query.fromHappin ==='true' && !fromHappin) {
-      setFromHappin(true);
-    }
-  }, [router.query.fromHappin])
 
   const showSSO = () => {
     setDimmed(true);
@@ -36,16 +28,15 @@ export function AppState({ children }) {
   }
 
   return (
-    <AppContext.Provider value={{
+    <ssoContext.Provider value={{
       dimmed,
-      fromHappin,
       ssoState, showSSO, showSSOSignUp, hideSSO,
     }}>
       {children}
-    </AppContext.Provider>
+    </ssoContext.Provider>
   );
 }
 
-export function useAppState() {
-  return useContext(AppContext);
+export function useSSOState() {
+  return useContext(ssoContext);
 }

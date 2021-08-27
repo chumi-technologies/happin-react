@@ -1,9 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
-import TicketItem, { TicketItemProps } from './components/TicketItem';
-import CheckoutHead from './components/CheckoutHead';
-import CheckoutSidebar from './components/CheckoutSidebar';
-import { MerchItemDataProps } from './data';
-import MerchItem from './components/MerchItem';
+import React, { useEffect, useState } from 'react';
+import TicketItem, { TicketItemProps } from '../../components/page_components/CheckoutPageComponents/TicketItem';
+import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
+import CheckoutSidebar from '../../components/page_components/CheckoutPageComponents/CheckoutSidebar';
+import { MerchItemDataProps } from '../../lib/model/checkout';
+import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 
@@ -143,7 +143,7 @@ const Checkout = () => {
               <div className="divide-y divide-gray-700">
                 <div id="livestream-tickets" className="divide-y divide-gray-700">
                   <div className="font-semibold py-5 sm:hidden">
-                    <div className="leading-5 mb-1">TWRP: Comin' Atcha Live at the Opera House</div>
+                    <div className="leading-5 mb-1">TWRP: Comin Atcha Live at the Opera House</div>
                     <div className="text-sm text-yellow-500">Event starts on Sat, Jul 17, 2021・8 PM</div>
                   </div>
                   {
