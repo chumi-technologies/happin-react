@@ -88,7 +88,9 @@ export default function EmailSignUp() {
         window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
       }
       actions.setSubmitting(false)
-      setProcessing(false);
+      setTimeout(()=> {
+        setProcessing(false)
+      }, 2000)
     } catch (error) {
       if (error.code.includes('auth/email-already-in-use')) {
         toast.error('Email exists, please try another one.')

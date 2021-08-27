@@ -31,10 +31,10 @@ export default function Home() {
       const provider = new firebaseClient.auth.GoogleAuthProvider();
       provider.addScope('profile');
       provider.addScope('email');
+      setProcessing(true)
       firebaseClient.auth()
         .signInWithPopup(provider)
         .then(async (res) => {
-          setProcessing(true)
           console.log('res', res);
           const firebaseToken = await res?.user?.getIdToken();
           const refreshToken = res?.user?.refreshToken;
@@ -45,8 +45,10 @@ export default function Home() {
             }
             window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
           }
+          setTimeout(()=> {
+            setProcessing(false)
+          }, 2000)
           resolve(res);
-          setProcessing(false)
         }, err => {
           console.log(err);
           setProcessing(false)

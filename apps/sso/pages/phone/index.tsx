@@ -71,7 +71,9 @@ export default function Phone() {
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
-      setProcessing(false);
+      setTimeout(()=> {
+        setProcessing(false)
+      }, 2000)
     } catch (err) {
       console.log(err);
       grecaptcha.reset(recaptchaWidgetId);
