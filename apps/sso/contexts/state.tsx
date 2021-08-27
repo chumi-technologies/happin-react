@@ -7,6 +7,8 @@ interface AppContextInterface {
   setOrigin: (arg0: string) => void;
   role: ERole;
   setRole: (arg0: ERole) => void;
+  processing: boolean,
+  setProcessing: (arg: boolean) => void;
 }
 const AppContext = createContext<AppContextInterface>({} as AppContextInterface);
 
@@ -24,6 +26,8 @@ function AppState({ children }: { children: any }) {
   const [origin, setOrigin] = useState('');
   const [role, setRole] = useState(ERole.fan);
 
+  const [processing, setProcessing] = useState(false);
+
   const toggleMode = () => {
     setSignin(s => !s);
   }
@@ -33,6 +37,7 @@ function AppState({ children }: { children: any }) {
       signin, toggleMode,
       origin, setOrigin,
       role, setRole,
+      processing, setProcessing
     }}>
       {children}
     </AppContext.Provider>

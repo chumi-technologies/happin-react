@@ -26,8 +26,7 @@ export default function EmailSignUp() {
   const [terms, setTerms] = useState(false);
   const [ageState, setAgeState] = useState(false);
   const [termsState, setTermsState] = useState(false);
-  const { origin, role } = useAppState();
-
+  const { origin, role, processing, setProcessing } = useAppState();
 
   useEffect(() => {
     age && setAgeState(false)
@@ -75,19 +74,21 @@ export default function EmailSignUp() {
         !terms && setTermsState(true);
         return
       }
+      setProcessing(true);
       const res = await firebaseClient.auth().createUserWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
       if (firebaseToken) {
         await signUpHappin(firebaseToken, { version: 2 });
-        if (origin.includes('ticketing')) {
+        if (origin.includes('ticketing.happin')) {
           const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
           window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
         }
         window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
       }
       actions.setSubmitting(false)
+      setProcessing(false);
     } catch (error) {
       if (error.code.includes('auth/email-already-in-use')) {
         toast.error('Email exists, please try another one.')
@@ -100,6 +101,7 @@ export default function EmailSignUp() {
       } else {
         toast.error('Failed to sign up, please contact support');
       }
+      setProcessing(false);
       console.log('Failed to sign up', error.message);
     }
   }
@@ -164,9 +166,9 @@ export default function EmailSignUp() {
                   </FormControl>
                 )}
               </Field>
-              <SubmitButton
+              <SubmitButton disabled={processing}
                 className="btn btn-dark w-full mt-4 mb-8"
-              >Continue</SubmitButton>
+              >{processing ? 'Processing..' : 'Continue'}</SubmitButton>
               {/*<Field name="ageTerms" validate={validateAgeTerms}>
                 {({ field, form }: FieldProps) => (
                   <FormControl isInvalid={!!form.errors.ageTerms && !!form.touched.ageTerms}>

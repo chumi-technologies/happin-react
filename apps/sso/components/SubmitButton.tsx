@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useFormikContext } from 'formik';
 
-export const SubmitButton = ({children, ...rest}:any) => {
+export const SubmitButton = ({children, disabled, ...rest}:any) => {
   const [validate, setValidate] = useState(false);
   const { isValid } = useFormikContext();
   const didMountRef = useRef(false);
@@ -17,7 +17,7 @@ export const SubmitButton = ({children, ...rest}:any) => {
   return (
     <button
       type="submit"
-      disabled={!validate}
+      disabled={!validate || disabled}
       {...rest}
     >
       {children}

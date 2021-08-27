@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 
 export default function EmailSignIn() {
   const [showPWD, setShowPWD] = useState(false)
-  const { origin, toggleMode, role } = useAppState();
+  const { origin, toggleMode, role, processing, setProcessing } = useAppState();
 
   function validateEmail(value: string) {
     if (!value) {
@@ -32,17 +32,20 @@ export default function EmailSignIn() {
 
   const onFormSubmit: FormikConfig<{ email: string, password: string }>['onSubmit'] = async ({ email, password }, actions) => {
     try {
+      setProcessing(true);
       const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
       if (!firebaseToken) throw new Error('no firebaseToken');
-      if (origin.includes('ticketing')) {
+      if (origin.includes('ticketing.happin')) {
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
       actions.setSubmitting(false)
+      setProcessing(false);
+
       // getHappinWebURL
     } catch (err) {
       if (err.code === 'auth/wrong-password') {
@@ -53,6 +56,7 @@ export default function EmailSignIn() {
         toast.error('Failed to sign in, please try again later');
       }
       console.error('failed to sign in', err);
+      setProcessing(false);
     }
 
   }
@@ -102,7 +106,7 @@ export default function EmailSignIn() {
                   </FormControl>
                 )}
               </Field>
-              <SubmitButton className="btn btn-dark w-full mt-4 mb-8">Continue</SubmitButton>
+              <SubmitButton disabled={processing} className="btn btn-dark w-full mt-4 mb-8" >{processing ? 'Processing..' : 'Continue'}</SubmitButton>
             </Form>
           )}
         </Formik>

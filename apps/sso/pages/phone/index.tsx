@@ -25,7 +25,7 @@ export default function Phone() {
   const [verificationSent, setVerificationSent] = useState(false)
   const [signinResult, setSigninResult] = useState<any | null>(null)
 
-  const { signin, toggleMode, origin, role } = useAppState();
+  const { signin, toggleMode, origin, role, processing, setProcessing } = useAppState();
 
 
   React.useEffect(() => {
@@ -58,6 +58,7 @@ export default function Phone() {
 
   const login = async () => {
     try {
+      setProcessing(true);
       const result = await signinResult.confirm(verificationCode)
       console.log('result', result)
       const firebaseToken = await result?.user?.getIdToken();
@@ -65,14 +66,16 @@ export default function Phone() {
       if (!signin) {
         await signUpHappin(firebaseToken, { version: 2, phone, areaCode: countryCode });
       }
-      if (origin.includes('ticketing')) {
+      if (origin.includes('ticketing.happin')) {
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
         window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
       }
       window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
+      setProcessing(false);
     } catch (err) {
       console.log(err);
       grecaptcha.reset(recaptchaWidgetId);
+      setProcessing(false);
     }
   }
 
@@ -137,7 +140,7 @@ export default function Phone() {
           <button className="btn btn-teal w-full flex-grow" hidden={!verificationSent} disabled={resendTimer > 0} onClick={resend}>
             Resend {resendTimer === 0 ? '' : '(' + resendTimer + ' seconds)'}
             </button>
-          <button className="btn btn-dark ml-4 !px-8" hidden={!verificationSent} onClick={login}>Confirm</button>
+          <button disabled={processing} className="btn btn-dark ml-4 !px-8" hidden={!verificationSent} onClick={login}>{processing ? 'Processing..' : 'Confirm'}</button>
         </div>
       </div>
       <div className="flex-grow" />

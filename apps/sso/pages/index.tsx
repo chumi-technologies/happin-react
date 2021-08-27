@@ -8,7 +8,7 @@ import { RoleToggle } from '@components/RoleToggle'
 
 
 export default function Home() {
-  const { signin, toggleMode, origin, setOrigin, role, setRole } = useAppState();
+  const { signin, toggleMode, origin, setOrigin, role, setRole, processing, setProcessing } = useAppState();
   const router = useRouter()
 
   useEffect(() => {
@@ -34,19 +34,22 @@ export default function Home() {
       firebaseClient.auth()
         .signInWithPopup(provider)
         .then(async (res) => {
+          setProcessing(true)
           console.log('res', res);
           const firebaseToken = await res?.user?.getIdToken();
           const refreshToken = res?.user?.refreshToken;
           if (firebaseToken) {
-            if (origin.includes('ticketing')) {
+            if (origin.includes('ticketing.happin')) {
               const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
               window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
             }
             window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
           }
           resolve(res);
+          setProcessing(false)
         }, err => {
           console.log(err);
+          setProcessing(false)
           reject(err);
         })
     })
@@ -55,11 +58,15 @@ export default function Home() {
   return (
     <>
       <div className="text-center">
-        {
+        {processing && 
+        <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Processing...</h2>
+        }
+        {!processing &&  <>{
           signin
           ? <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Login</h2>
           : <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Sign up</h2>
-        }
+        }</>}
+       
         <RoleToggle className="toggle-tab average w-52" />
       </div>
       <div className="w-full max-w-xs mx-auto mt-10">
