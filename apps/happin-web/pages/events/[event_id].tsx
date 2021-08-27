@@ -19,13 +19,10 @@ const Events = (props: EventData) => {
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
-
-  const [isFavorite, setFavorite] = useState(false);
-  const [showDownload, setShowDownload] = useState(false);
-
-  // TODO need to handle if event not exist, redirect?
+  
   const eventData = props;
   const groupEvents = props.groupEvents;
+
 
   useEffect(() => {
     const isVisitor = Boolean(localStorage.getItem('is_visitor'));
@@ -88,24 +85,13 @@ const Events = (props: EventData) => {
             setIsModalOpen={setIsRedeemModalOpen}
           >
             <div className="m-5">
-              <RedeemEventCode setIsRedeemModalOpen={setIsRedeemModalOpen} happinEID={eventData.event._id}/>
+              <RedeemEventCode setIsRedeemModalOpen={setIsRedeemModalOpen} happinEID={eventData.event._id} />
             </div>
           </PopUpModal>
         )}
         <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
           <ActionSideBar
             eventTitle={eventData?.event?.title}
-            showDownload={showDownload}
-            isFavorite={isFavorite}
-            onFavorite={() => {
-              setFavorite(s => !s)
-            }}
-            onShare={() => {
-              console.log('share');
-            }}
-            onDownload={() => {
-              setShowDownload(s => !s)
-            }}
             hasPFM={eventData.event.hasPFM}
           />
 
@@ -146,14 +132,27 @@ export default Events;
 
 // fetch data on server upon every request.. not using static page pre render
 export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
-  const res = await getEventDetail(context.params.event_id as string, 'crowdcore')
-  const props = res.data
-  if (res.data?.event?.groupAcid) {
-    const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
-    props.groupEvents = groupEvents;
-  }
-  return {
-    props,
+  try {
+    const res = await getEventDetail(context.params.event_id as string, 'crowdcore')
+    const props = res.data
+    if (res.data?.event?.groupAcid) {
+      const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
+      props.groupEvents = groupEvents;
+    }
+    if (!res.data) {
+      throw new Error('Event not found');
+    }
+    return {
+      props,
+    }
+  } catch(err) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/404",
+      },
+      props:{},
+    };
   }
 }
 

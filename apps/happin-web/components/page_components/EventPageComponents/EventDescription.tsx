@@ -107,4 +107,4 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
   );
 };
 
-export default EventDescription;
+export default React.memo(EventDescription);

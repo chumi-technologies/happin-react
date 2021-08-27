@@ -16,30 +16,28 @@ import {
 } from "react-share";
 
 type ActionSideBarProps = {
-  isFavorite: boolean;
-  showDownload: boolean;
+  //isFavorite: boolean;
+  //showDownload: boolean;
   eventTitle?: string;
-  onFavorite: () => void;
-  onDownload: () => void;
-  onShare: () => void;
+  //onFavorite: () => void;
+  //onDownload: () => void;
+  //onShare: () => void;
   hasPFM: boolean;
 };
 const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
-  const {
-    isFavorite,
-    showDownload,
+  const {    
     eventTitle = "",
-    onFavorite,
-    onShare,
-    onDownload,
     hasPFM
   } = props;
-  const [openShare, setOpenShare] = useState(false)
+  
+  const [openShare, setOpenShare] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [showDownload, setDownload] = useState(false)
   return (
     <div className="absolute right-4 top-4 sm:right-6 sm:top-6 lg:right-14 lg:top-14 z-20">
       <VStack>
         <div className={classNames('event-details__side-action', { 'favorite': isFavorite })}
-             onClick={onFavorite}
+             onClick={()=> {setIsFavorite(s=>!s)}}
         >
           <Like theme={isFavorite? 'filled' : 'outline'} size="1em" fill="currentColor" strokeWidth={2}/>
         </div>
@@ -94,7 +92,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
         <div className="relative">
           <div
             className={classNames('event-details__side-action relative z-10', { 'active': showDownload })}
-            onClick={onDownload}
+            onClick={()=>{setDownload(s=>!s)}}
           >
             {
               showDownload ? <CloseSmall theme="outline" size="1em" fill="currentColor" strokeWidth={2}/> : <DownTwo theme="outline" size="1em" fill="currentColor" strokeWidth={2}/>

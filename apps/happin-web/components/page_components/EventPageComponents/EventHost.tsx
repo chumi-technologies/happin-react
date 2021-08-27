@@ -1,4 +1,5 @@
 import { HStack, Avatar } from "@chakra-ui/react";
+import React from "react";
 
 type EventHostProps = {
   hostName?: string;
@@ -20,4 +21,4 @@ const EventHost = (props : EventHostProps) => {
   );
 };
 
-export default EventHost;
+export default React.memo(EventHost);
