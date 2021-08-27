@@ -64,7 +64,7 @@ const CheckoutHead = () => {
                           <div className="flex-1 min-w-0 ml-4 flex flex-col">
                             <div className="flex items-start mb-2">
                               <div className="text-white text-sm font-semibold w-2/3">Bubblegum Unisex Shirt</div>
-                              <div className="text-white font-bold w-1/3 text-right">CA$199.99</div>
+                              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">CA$199.99</div>
                             </div>
                             <div className="flex items-end justify-between flex-1">
                               <div className="flex items-center">
@@ -99,7 +99,7 @@ const CheckoutHead = () => {
                           <div className="flex-1 min-w-0 ml-4 flex flex-col">
                             <div className="flex items-start mb-2">
                               <div className="text-white text-sm font-semibold w-2/3">General Admission Livestream Ticket</div>
-                              <div className="text-white font-bold w-1/3 text-right">CA$99.99 </div>
+                              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">CA$99.99 </div>
                             </div>
                             <div className="flex items-end justify-between flex-1">
                               <NumberInput
@@ -123,7 +123,7 @@ const CheckoutHead = () => {
                           <div className="flex-1 min-w-0 ml-4 flex flex-col">
                             <div className="flex items-start mb-2">
                               <div className="text-white text-sm font-semibold w-2/3">VIP Pass + Merch Bundle Ticket</div>
-                              <div className="text-white font-bold w-1/3 text-right">CA$199.99</div>
+                              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">CA$199.99</div>
                             </div>
                             <div className="flex items-end justify-between flex-1">
                               <NumberInput
