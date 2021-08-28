@@ -1,20 +1,57 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import NumberInput from '@components/reusable/NumberInput';
 import { HStack, Tooltip } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
-import type { TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
+import { ETicketType, TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
 import classNames from 'classnames';
 import { Right } from '@icon-park/react';
 import Link from 'next/link';
+import { useCheckoutState } from 'contexts/checkout-state';
+import { TicketListAction } from 'pages/checkout/[event_id]';
+import { increaseTicketAmount } from './util/IncreseInput';
+import { decreaseTicketAmount } from './util/decreseInput';
 
 export type TicketItemProps = {
   data: TicketItemDataProps;
-  actionType: 'button' | 'input'; // number input or select button
   onSelect?: (data: any) => void;
+  onChange: (data: TicketListAction)=> void
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, actionType } = props;
+  const { data, onSelect, onChange } = props;
+  const { cart, addItem, removeItem } = useCheckoutState();
+
+  const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
+
+/*   function decrease(data: TicketItemDataProps) {
+    if (cart.items.ticketItem.length) {
+      if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === 0) {
+        return
+      }
+      //setCurrentAmount(s => s-1)
+      onChange({type:ActionKind.Increase, payload:data, quantity:1})
+      removeItem(data, 1);
+    }
+  } */
+/*   function increase(data: TicketItemDataProps) {
+    if (data.quantity >= 1) {
+      if (cart.items.ticketItem.length) {
+        if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity + 1 > maxPerOrder) {
+          return
+        } else if (!cart.items.ticketItem[ticketEditingIndex]) {
+          onChange({type:ActionKind.Decrease, payload:data, quantity: minPerOrder})
+          addItem(data, minPerOrder );
+        } else {
+          onChange({type:ActionKind.Decrease, payload:data, quantity: 1})
+          addItem(data, 1);
+        }
+      } else {
+        onChange({type:ActionKind.Decrease, payload:data, quantity: minPerOrder})
+        addItem(data, minPerOrder );
+      }
+    }
+  } */
+
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
@@ -28,14 +65,14 @@ const TicketItem = (props: TicketItemProps) => {
               ))
             }
           </div>
-          <div className="text-gray-400 text-xs">{data.time}</div>
+          <div className="text-gray-400 text-xs">{data.startTime?.toDateString()}</div>
         </div>
         {
-          actionType === 'button' ?
+          props.data.merch  ?
             <button
               onClick={() => onSelect?.(data)}
               className="btn checkout__ticket-select"
-              disabled={data.soldOut}
+              disabled={data.quantity <= 0}
             >
               Select
             </button> :
@@ -43,7 +80,10 @@ const TicketItem = (props: TicketItemProps) => {
               onChange={(value) => {
                 onSelect?.(value)
               }}
-              isDisabled={data.soldOut}
+              value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
+              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, onChange, removeItem)}}
+              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, onChange, addItem)}}
+              isDisabled={data.originalQuantity <= 0}
             />
         }
       </div>
@@ -71,7 +111,7 @@ const TicketItem = (props: TicketItemProps) => {
         data.introduction && <div className="text-white text-xs sm:text-sm">{data.introduction}</div>
       }
       {
-        data.helpText?.length && (
+        data.ticketType === ETicketType.PFM && (
           <div>
             <Link href="/">
               <a className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s

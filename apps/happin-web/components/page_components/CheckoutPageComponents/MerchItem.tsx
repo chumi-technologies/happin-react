@@ -18,7 +18,7 @@ const MerchItem = (props: MerchItemProps) => {
       <div className="text-xs text-gray-400 truncate mb-3">{data.introduction}</div>
       <button
         className="btn checkout__merch-select"
-        disabled={data.soldOut}
+        disabled={data.quantity <= 0}
         onClick={() => onSelect?.(data)}
       >
         Select

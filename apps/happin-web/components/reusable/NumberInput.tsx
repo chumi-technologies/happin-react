@@ -6,10 +6,12 @@ import { UseNumberInputProps } from '@chakra-ui/number-input/dist/types/use-numb
 
 export type NumberInputProps = {
   isDisabled?: boolean;
+  onDecreaseClick: ()=>void;
+  onIncreaseClick: ()=>void
   size?: 'sm' | 'md'
 } & UseNumberInputProps
 
-const NumberInput = ({ isDisabled, size, ...rest }: NumberInputProps) => {
+const NumberInput = ({ isDisabled, size, onDecreaseClick, onIncreaseClick, ...rest }: NumberInputProps) => {
   const {
     getInputProps,
     getIncrementButtonProps,
@@ -19,7 +21,6 @@ const NumberInput = ({ isDisabled, size, ...rest }: NumberInputProps) => {
     step: 1,
     defaultValue: 0,
     min: 0,
-    max: 999,
     precision: 0,
     isDisabled,
     ...rest
@@ -31,13 +32,13 @@ const NumberInput = ({ isDisabled, size, ...rest }: NumberInputProps) => {
   // const sizeClass = size && `number-input--${size}` || ''
   return (
     <div className={classNames('number-input', { 'disabled': isDisabled, [size && `number-input--${size}` || '']: true })}>
-      <button className="number-input-button minus" {...dec}>
+      <button onClick={onDecreaseClick} className="number-input-button minus" {...dec}>
         <Minus theme="outline" size="1em" fill="currentColor"/>
       </button>
-      <button className="number-input-button plus" {...inc}>
+      <button onClick={onIncreaseClick} className="number-input-button plus" {...inc}>
         <Plus theme="outline" size="1em" fill="currentColor"/>
       </button>
-      <input {...input}/>
+      <input disabled={true} {...input}/>
     </div>
   );
 };

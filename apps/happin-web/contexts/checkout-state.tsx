@@ -14,8 +14,8 @@ type Action = {
 
 interface CartContext {
   cart: Cart, 
-  addItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number, arg2: number)=> void,
-  removeItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number, arg2: number)=> void
+  addItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number)=> void,
+  removeItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number)=> void
 }
 
 const defaultCartState: Cart = {
@@ -36,16 +36,17 @@ function instanceOfTicket(arg: any): arg is TicketItemDataProps {
 
 const cartReducer = (state: Cart, action: Action) => {
   if (action.type === ActionKind.Increase) {
-    inreament(action, state)
+    return inreament(action, state)
   }
   if (action.type === ActionKind.Decrease) {
-    decreament(action, state);
+    return decreament(action, state);
   }
-  return state
+  return defaultCartState
 }
 
 
 const inreament = (action: Action, state: Cart) => {
+  let finalCart: Cart = defaultCartState;
   const updateSubTotal = state.subTotal + action.payload.price * action.quantity
   if (instanceOfTicket(action.payload)) {
     const existingCartTicketIndex = state.items.ticketItem.findIndex(item => item.ticketId === action.payload.id);
@@ -61,14 +62,13 @@ const inreament = (action: Action, state: Cart) => {
     } else {
       updateItems = state.items.ticketItem.concat({ticketId: action.payload.id, quantity: action.quantity});
     }
-    const finalCart: Cart = {
+    finalCart = {
       items: {
         merchItem: state.items.merchItem,
         ticketItem: updateItems
       },
       subTotal: updateSubTotal
     }
-    return finalCart
   } else if(instanceOfMerch(action.payload)) {
     const existingCartMerchIndex = state.items.merchItem.findIndex(item => item.merchId === action.payload.id);
     const existingCartMerchItem = state.items.merchItem[existingCartMerchIndex];
@@ -83,39 +83,39 @@ const inreament = (action: Action, state: Cart) => {
     } else {
       updateItems = state.items.merchItem.concat({merchId: action.payload.id, quantity: action.quantity, property: action.payload.property});
     }
-    const finalCart: Cart = {
+    finalCart = {
       items: {
         merchItem: updateItems,
         ticketItem: state.items.ticketItem
       },
       subTotal: updateSubTotal
     }
-    return finalCart
   }
+  return finalCart
 }
 
 
 const decreament = (action: Action, state: Cart) => {
+  let finalCart:Cart = defaultCartState 
   const updatedTotalAmount = state.subTotal - action.quantity * action.payload.price
   if (instanceOfTicket(action.payload)) {
     const existingCartTicketIndex = state.items.ticketItem.findIndex(item => item.ticketId === action.payload.id);
     const existingCartTicketItem = state.items.ticketItem[existingCartTicketIndex];
     let updateItems: CartTicketItem[];
-    if (existingCartTicketItem.quantity === 1) {
+    if (existingCartTicketItem.quantity === action.quantity) {
       updateItems = state.items.ticketItem.filter(item => item.ticketId !== action.payload.id);
     } else {
       const updateItem: CartTicketItem = {...existingCartTicketItem, quantity: existingCartTicketItem.quantity - action.quantity};
       updateItems = [...state.items.ticketItem];
       updateItems[existingCartTicketIndex] = updateItem;
     }
-    const finalCart: Cart = {
+    finalCart = {
       items: {
         merchItem: state.items.merchItem,
         ticketItem: updateItems
       },
       subTotal: updatedTotalAmount
     }
-    return finalCart
   } else if (instanceOfMerch(action.payload)) {
     const existingCartMerchIndex = state.items.merchItem.findIndex(item => item.merchId === action.payload.id);
     const existingCartMerchItem = state.items.merchItem[existingCartMerchIndex];
@@ -127,15 +127,15 @@ const decreament = (action: Action, state: Cart) => {
       updateItems = [...state.items.merchItem];
       updateItems[existingCartMerchIndex] = updateItem;
     }
-    const finalCart: Cart = {
+    finalCart =  {
       items: {
         merchItem: updateItems,
         ticketItem: state.items.ticketItem
       },
       subTotal: updatedTotalAmount
     }
-    return finalCart
   }
+  return finalCart
 }
 
 

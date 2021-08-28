@@ -17,7 +17,7 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
       localStorage.setItem('checkout_user_from_app', (router.query.happinUser as string))
     }
-  }, [])
+  }, [router.query])
 
   return (
     <>
