@@ -1,9 +1,7 @@
-import OriginalSelect from '@components/reusable/OriginalSelect';
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import PaymentHead from '../components/PaymentHead';
-import NumberInput from '@components/page_components/NumberInput';
-import Select from '@components/reusable/Select';
+import NumberInput from '@components/reusable/NumberInput';
+import PaymentHead from '@components/page_components/PaymentPageComponents/PaymentHead';
 import { Delete } from '@icon-park/react';
 import { Checkbox, HStack } from '@chakra-ui/react';
 import Link from 'next/link';
