@@ -3,15 +3,16 @@ const Checkbox = {
   baseStyle: {
     control: {
       border: '1px solid',
-      borderRadius: '3px',
-      _checked: {
-        bg: colors.gray['900'],
-        borderColor: colors.gray['900'],
-        _hover: {
-          bg: colors.gray['900'],
-          borderColor: colors.gray['900']
-        }
-      }
+      borderRadius: 'full',
+      borderColor: colors.gray['500'],
+      // _checked: {
+      //   bg: colors.gray['900'],
+      //   borderColor: colors.gray['900'],
+      //   _hover: {
+      //     bg: colors.gray['900'],
+      //     borderColor: colors.gray['900']
+      //   }
+      // }
     },
     label: {
       display: 'inline-flex'

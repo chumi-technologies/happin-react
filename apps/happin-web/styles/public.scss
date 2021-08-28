@@ -50,6 +50,25 @@
   display: none;
 }
 
+.divider-words {
+  @apply relative font-semibold leading-none text-center my-5 text-sm sm:text-base;
+  &:before, &:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    transform: translateY(-50%);
+  }
+  &:before {
+    right: 55%;
+    left: 0;
+  }
+  &:after {
+    right: 0;
+    left: 55%;
+  }
+}
+
 @keyframes fade-scale {
   0% {
     transform: scale(.9);
