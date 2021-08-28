@@ -6,18 +6,42 @@ import { SearchIcon } from "@chakra-ui/icons";
 import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
 import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
+import { useSSOState } from 'contexts/sso-state';
+import { useUserState } from 'contexts/user-state';
 
 export default function Header() {
+  const { user, clearUser } = useUserState();
+  const { dimmed, showSSO, showSSOSignUp } = useSSOState();
   const [showSearch, setSearch] = useState(false)
+  const [isEventPage, setIsEventPage] = useState(false)
   const router = useRouter();
+
   const searchRef = useRef<HTMLInputElement>(null!);
+
+  useEffect(() => {
+    if (router.asPath.includes('/events/')) {
+      setIsEventPage(true);
+    } else {
+      setIsEventPage(false);
+    }
+  }, [router.asPath])
+
   useEffect(() => {
     showSearch && searchRef.current.focus()
   }, [showSearch])
+
+  useEffect(() => {
+    if (dimmed) {
+      document.body.classList.add("body-overflow-hidden");
+    } else {
+      document.body.classList.remove("body-overflow-hidden");
+    }
+  }, [dimmed])
+
   return (
     <div className="relative z-50 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
       {/* Mobile Search Form */}
-      <form className={classNames('absolute top-full left-0 w-full z-10 hidden', {'!block': showSearch})}>
+      <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
         <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
       </form>
       <HStack w="100%" h="100%" justify="space-between">
@@ -31,7 +55,7 @@ export default function Header() {
             {({ open }) => (
               <>
                 <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-900', { 'bg-gray-800 text-white hover:bg-gray-800': open })}>
-                  <More theme="outline" size="24" fill="currentColor"/>
+                  <More theme="outline" size="24" fill="currentColor" />
                 </Menu.Button>
                 <Transition
                   show={open}
@@ -79,28 +103,31 @@ export default function Header() {
 
         {/* Central Block */}
         {/* Search */}
-        <div className="header__search">
+        {!isEventPage && <div className="header__search">
           <label htmlFor="search" className="absolute left-4 leading-none inline-flex transition">
             <SearchIcon w={4} h={4} color="currentColor" />
           </label>
           <input id="search" type="text" className="header__search-input" placeholder="Search..." />
-        </div>
+        </div>}
+
 
         {/* Right Block */}
         <div className="flex items-center">
-          <Link href="/">
+          <Link href="/" >
             <a className="header__link sm:hidden md:inline-flex">Host Event</a>
           </Link>
-          <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s) }>
+          {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
             <SearchIcon w={4} h={4} color="currentColor" />
-          </button>
+          </button>}
+
           {/* User Profile */}
           <Menu as="div" className="relative md:ml-5">
             {({ open }) => (
               <>
                 <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
-                  <HamburgerButton theme="outline" size="22" fill="currentColor"/>
-                  <Avatar size="sm" ml={2} bg="gray.600"/>
+                  <HamburgerButton theme="outline" size="22" fill="currentColor" />
+                  {!user && <Avatar size="sm" ml={2} bg="gray.600" />}
+                  {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
                 </Menu.Button>
                 <Transition
                   show={open}
@@ -116,30 +143,35 @@ export default function Header() {
                     <div className="py-1">
                       <Menu.Item>
                         <a className="header__menu-link" onClick={() => router.push('/')}>
-                          <International theme="outline" size="16" fill="currentColor"/>
+                          <International theme="outline" size="16" fill="currentColor" />
                           <span className="ml-2">Host Event Dashboard</span>
                         </a>
                       </Menu.Item>
                       <Menu.Item>
                         <Link href="/">
                           <a className="header__menu-link" onClick={() => router.push('/')}>
-                            <DownTwo theme="outline" size="16" fill="currentColor"/>
+                            <DownTwo theme="outline" size="16" fill="currentColor" />
                             <span className="ml-2">Download Happin</span>
                           </a>
                         </Link>
                       </Menu.Item>
                     </div>
                     <div className="py-1">
-                      <Menu.Item>
-                        <Link href="/">
-                          <a className="header__menu-link">Log in</a>
-                        </Link>
-                      </Menu.Item>
-                      <Menu.Item>
-                        <Link href="/">
-                          <a className="header__menu-link">Sign up</a>
-                        </Link>
-                      </Menu.Item>
+                      {!user && (
+                        <>
+                          <Menu.Item>
+                            <a className="header__menu-link" onClick={showSSO}>Log in</a>
+                          </Menu.Item>
+                          <Menu.Item>
+                            <a className="header__menu-link" onClick={showSSOSignUp}>Sign up</a>
+                          </Menu.Item>
+                        </>
+                      )}
+                      {user && (
+                        <Menu.Item>
+                        <a className="header__menu-link" onClick={clearUser}>Sign out</a>
+                        </Menu.Item>
+                      )}
                     </div>
                   </Menu.Items>
                 </Transition>

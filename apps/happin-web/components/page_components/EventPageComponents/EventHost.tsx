@@ -1,4 +1,5 @@
-import { Image, HStack } from "@chakra-ui/react";
+import { HStack, Avatar } from "@chakra-ui/react";
+import React from "react";
 
 type EventHostProps = {
   hostName?: string;
@@ -11,13 +12,8 @@ const EventHost = (props : EventHostProps) => {
       <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
       <HStack justify="space-between" mt={5}>
         <HStack spacing={{base: 3, sm: 5}}>
-          <Image
-            borderRadius="full"
-            boxSize={10}
-            src={`${props.hostProfileImageUrl || "/images/profile_pic.png"}`}
-            alt="profile picture"
-          />
-          <div className="font-medium">{props.hostName}</div>
+        <Avatar boxSize={10} src={props.hostProfileImageUrl} name={props.hostName} />
+        <div className="font-medium">{props.hostName}</div>
         </HStack>
         {/* <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full">Contact</button> */}
       </HStack>
@@ -25,4 +21,4 @@ const EventHost = (props : EventHostProps) => {
   );
 };
 
-export default EventHost;
+export default React.memo(EventHost);

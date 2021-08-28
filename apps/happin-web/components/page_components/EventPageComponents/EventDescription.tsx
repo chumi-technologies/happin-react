@@ -1,6 +1,5 @@
-import Link from 'next/link';
 import { Dialog, Transition } from '@headlessui/react';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useRef } from 'react';
 import { CloseSmall } from '@icon-park/react';
 
 type EventDescriptionProps = {
@@ -9,6 +8,7 @@ type EventDescriptionProps = {
 }
 
 const EventDescription = ({description, rawDescription = ""}: EventDescriptionProps) => {
+  let focuButtonRef = useRef(null)
 
   const [isOpen, setIsOpen] = useState(false)
   const closeModal = () => {
@@ -21,21 +21,22 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Description</div>
-      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 3 * 80)? "" : "max-h-20 overflow-hidden"}`}>
+      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80)? "" : "max-h-12 overflow-hidden"}`}>
         {rawDescription}
-        <div>
+       {/*  <div>
           <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
           <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>
           <Link href="#"><a className="link-blue">Spotify</a></Link>
-        </div>
+        </div> */}
 
       </div>
-      {!(rawDescription?.length < 3 * 80) && (
+      {!(rawDescription?.length < 80) && (
           <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
         )}
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
+          initialFocus={focuButtonRef}
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto"
           onClose={() => {
@@ -87,21 +88,23 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
                     {/*Description content here*/}
                     <div className="text-sm sm:text-base">
                       <div  dangerouslySetInnerHTML={{ __html: description || '' }}/>
-                      <div>
+                     {/*  <div>
                         <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
                         <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>
                         <Link href="#"><a className="link-blue">Spotify</a></Link>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
               </div>
             </Transition.Child>
           </div>
+          {/* dialog needs a element to focus, in case the description dont have a element that can be focus */}
+          <button hidden={true} ref={focuButtonRef}></button>
         </Dialog>
       </Transition>
     </>
   );
 };
 
-export default EventDescription;
+export default React.memo(EventDescription);

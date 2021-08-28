@@ -29,7 +29,7 @@ export default function Merch({ imgList }: { imgList: ImagesListType }) {
     draggable: false,
     nextArrow: <Arrow><Right theme="outline" size="14" fill="currentColor" /></Arrow>,
     prevArrow: <Arrow><Left theme="outline" size="14" fill="currentColor" /></Arrow>,
-    customPaging: () => <div className="slides-dot-item" />
+    customPaging: function paging(){ return <div className="slides-dot-item" />},
   };
 
   const gotoPrevious = () =>

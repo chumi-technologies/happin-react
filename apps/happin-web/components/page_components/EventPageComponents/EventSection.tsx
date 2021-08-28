@@ -4,7 +4,7 @@ import EventLineUp from "./EventLineUp";
 import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
 
-const EventSection = ({ setIsModalOpen, eventData, groupEvents }: any) => {
+const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: any) => {
   return (
     <>
       <EventTitle 
@@ -16,7 +16,8 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents }: any) => {
         eventEndDate={eventData?.event?.end_datetime}
         price={eventData?.event?.min_price}
         location={eventData?.event?.acInfo}
-        groupEvents={groupEvents}/>
+        groupEvents={groupEvents}
+        setIsRedeemModalOpen={setIsRedeemModalOpen}/>
       <div id="about" className="pt-6 sm:pt-10">
         <EventDescription 
           description={eventData?.event?.content}

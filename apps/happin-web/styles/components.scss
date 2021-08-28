@@ -292,3 +292,9 @@ button {
     @apply text-gray-400
   }
 }
+
+.cut-text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
