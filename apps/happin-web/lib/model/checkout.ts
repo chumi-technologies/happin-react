@@ -6,13 +6,21 @@ export enum ETicketType {
   PLAYBACK = 'playback'
 }
 
+export type EventBasicData = {
+  startTime: Date;
+  endTime: Date;
+  tags: string[];
+  title: string;
+  default_currency: string;
+}
+
 export type TicketItemDataProps = {
   id: string;
   title: string;
   price: number;
   subPrice?: string[]; // ?????? no where come from
-  startTime?: Date;
-  endTime?: Date;
+  start?: number;
+  end?: number;
   minPerOrder: number;
   maxPerOrder: number;
   features: TicketItemFeaturesProps[];
@@ -40,20 +48,30 @@ export const ETicketFeature = {
 
 export type MerchItemDataProps = {
   id: string;
-  cover: string;
-  title: string;
+  image: string[];
+  name: string;
   price: number;
-  introduction?: string;
-  quantity: number;
-  originalQuantity: number; // for keep track of sold out
-  property: string;
-  kind: 'merch'
+  description?: string;
+  property: MerchProperty[];
+  kind: 'merch',
+  max: number, // max per order
+  mail: boolean, // can be shipped
+  forApp: boolean // filter out for app gifts
+  show: boolean // deleted or not
+  tickets : string[] //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
 };
+
+export type MerchProperty = {
+  pName: string;
+  pValue: number;
+  originalPValue: number;
+}
 
 export interface Cart {
   items:{
     ticketItem: CartTicketItem[],
-    merchItem: CartMerchItem[]
+    merchItem: CartMerchItem[],
+    bundleItem: CartBundleItem[],
   };
   subTotal: number;
 }
@@ -61,10 +79,22 @@ export interface Cart {
 export interface CartTicketItem {
   ticketId: string;
   quantity: number;
+  price: number;
+}
+
+export interface CartBundleItem {
+  ticketId: string;
+  quantity: number;
+  identifier: string;
+  merchIdentifiers: string[];
+  price: number;
 }
 
 export interface CartMerchItem {
   merchId: string;
   quantity: number;
   property: string;
+  identifier: string;
+  price: number;
 }
+

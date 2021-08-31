@@ -7,18 +7,21 @@ import { SSOState } from '../contexts/sso-state'
 import { UserState } from '../contexts/user-state'
 import { SSO } from '@components/SSO'
 import { SEO } from "@components/SEO";
+import { CheckoutState } from "contexts/checkout-state"
 
 function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>
       <UserState>
-        <SSOState>
-          <SEO />
-          <SSO />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </SSOState>
+        <CheckoutState>
+          <SSOState>
+            <SEO />
+            <SSO />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </SSOState>
+        </CheckoutState>
       </UserState>
     </ChakraProvider>
   )

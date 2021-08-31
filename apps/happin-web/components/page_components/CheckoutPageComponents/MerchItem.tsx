@@ -4,21 +4,22 @@ import { MerchItemDataProps } from '../../../lib/model/checkout';
 export type MerchItemProps = {
   data: MerchItemDataProps;
   onSelect?: (data: any) => void;
+  disabled: boolean
 }
 
 const MerchItem = (props: MerchItemProps) => {
-  const { data, onSelect } = props;
+  const { data, onSelect, disabled = false } = props;
   return (
     <div className="bg-gray-800 p-2 sm:p-3 rounded-lg">
       <div className="aspect-w-1 aspect-h-1">
-        <img src={data.cover} alt={data.title} className="w-full h-full object-center object-cover rounded-md" />
+        <img src={data.image[0]} alt={data.name} className="w-full h-full object-center object-cover rounded-md" />
       </div>
       <div className="font-medium text-sm mt-3 mb-1">{data.price}</div>
-      <div className="font-medium text-xs">{data.title}</div>
-      <div className="text-xs text-gray-400 truncate mb-3">{data.introduction}</div>
+      <div className="font-medium text-xs">{data.name}</div>
+      <div className="text-xs text-gray-400 truncate mb-3">{data.description}</div>
       <button
         className="btn checkout__merch-select"
-        disabled={data.quantity <= 0}
+        disabled={disabled}
         onClick={() => onSelect?.(data)}
       >
         Select

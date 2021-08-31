@@ -10,48 +10,27 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import { TicketListAction } from 'pages/checkout/[event_id]';
 import { increaseTicketAmount } from './util/IncreseInput';
 import { decreaseTicketAmount } from './util/decreseInput';
+import moment from 'moment';
 
 export type TicketItemProps = {
   data: TicketItemDataProps;
   onSelect?: (data: any) => void;
-  onChange: (data: TicketListAction)=> void
+  onChange: (data: TicketListAction)=> void;
+  disabled?: boolean
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, onChange } = props;
+  const { data, onSelect, onChange, disabled = false } = props;
   const { cart, addItem, removeItem } = useCheckoutState();
-
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
-/*   function decrease(data: TicketItemDataProps) {
-    if (cart.items.ticketItem.length) {
-      if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === 0) {
-        return
-      }
-      //setCurrentAmount(s => s-1)
-      onChange({type:ActionKind.Increase, payload:data, quantity:1})
-      removeItem(data, 1);
+  const getMaxNumberInputQty = () => {
+    if (data?.originalQuantity > data?.maxPerOrder) {
+      return data?.maxPerOrder
+    } else {
+      return data?.originalQuantity;
     }
-  } */
-/*   function increase(data: TicketItemDataProps) {
-    if (data.quantity >= 1) {
-      if (cart.items.ticketItem.length) {
-        if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity + 1 > maxPerOrder) {
-          return
-        } else if (!cart.items.ticketItem[ticketEditingIndex]) {
-          onChange({type:ActionKind.Decrease, payload:data, quantity: minPerOrder})
-          addItem(data, minPerOrder );
-        } else {
-          onChange({type:ActionKind.Decrease, payload:data, quantity: 1})
-          addItem(data, 1);
-        }
-      } else {
-        onChange({type:ActionKind.Decrease, payload:data, quantity: minPerOrder})
-        addItem(data, minPerOrder );
-      }
-    }
-  } */
-
+  }
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
@@ -65,14 +44,15 @@ const TicketItem = (props: TicketItemProps) => {
               ))
             }
           </div>
-          <div className="text-gray-400 text-xs">{data.startTime?.toDateString()}</div>
+          {typeof data.start === 'number' && <div className="text-gray-400 text-xs">Sale start: {moment(data.start * 1000).format('MMMM Do, h:mma')}</div>}
         </div>
-        {
-          props.data.merch  ?
+        {data.originalQuantity <= 0 && <p style={{textAlign: 'center'}} className="btn checkout__ticket-select">SOLD OUT</p> }
+        {data.originalQuantity >0 && (
+          props.data.merch ?
             <button
               onClick={() => onSelect?.(data)}
               className="btn checkout__ticket-select"
-              disabled={data.quantity <= 0}
+              disabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000))))}
             >
               Select
             </button> :
@@ -80,12 +60,16 @@ const TicketItem = (props: TicketItemProps) => {
               onChange={(value) => {
                 onSelect?.(value)
               }}
+              min={0}
+              max={getMaxNumberInputQty()}
               value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
               onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, onChange, removeItem)}}
               onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, onChange, addItem)}}
-              isDisabled={data.originalQuantity <= 0}
+              // disabled if  1. out side the ticket sale time range, 2.the prop disblaed is pass in
+              isDisabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000)))) }
             />
-        }
+        )}
+
       </div>
       <HStack my={2}>
         {

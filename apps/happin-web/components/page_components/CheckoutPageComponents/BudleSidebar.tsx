@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import SvgIcon from '@components/SvgIcon';
 import { Check, CloseSmall } from '@icon-park/react';
 import Merch from './Merch';
@@ -10,11 +9,10 @@ import classNames from 'classnames';
 type CheckoutSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
-  type: 'bundle' | 'merch';
 }
 
-const CheckoutSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, onClose, type } = props;
+const BundleSidebar = (props: CheckoutSidebarProps) => {
+  const { isOpen, onClose } = props;
   const bundleList = [
     {
       name: 'Merch Name',
@@ -80,45 +78,28 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
     <div className={classNames('checkout__sidebar', { 'open': isOpen })}>
       <div className="flex flex-col flex-1 h-0">
         <div className="px-5 sm:px-6">
-          {
-            type === 'bundle' ? (
-              <div className="relative flex items-start py-4 sm:py-6 border-b border-solid border-gray-700">
-                <div className="w-full pr-7">
-                  <div className="leading-none mb-2 font-semibold text-white">VIP Pass + Merch Bundle B</div>
-                  <div className="font-medium text-xs text-gray-400">
-                    <span className="text-white text-sm">CA$199.99</span>
-                  </div>
-                  <div className="text-gray-400 text-xs">Sales end on Dec 2, 2019</div>
-                </div>
-                <div
-                  className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-                  onClick={onClose}>
-                  <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
-                </div>
+
+          <div className="relative flex items-start py-4 sm:py-6 border-b border-solid border-gray-700">
+            <div className="w-full pr-7">
+              <div className="leading-none mb-2 font-semibold text-white">VIP Pass + Merch Bundle B</div>
+              <div className="font-medium text-xs text-gray-400">
+                <span className="text-white text-sm">CA$199.99</span>
               </div>
-            ) : (
-              <div className="relative flex items-start py-6">
-                <div className="w-full pr-7">
-                  <div className="leading-none font-semibold text-white">Merch Details</div>
-                </div>
-                <div
-                  className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-                  onClick={onClose}>
-                  <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
-                </div>
-              </div>
-            )
-          }
+              <div className="text-gray-400 text-xs">Sales end on Dec 2, 2019</div>
+            </div>
+            <div
+              className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
+              onClick={onClose}>
+              <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+            </div>
+          </div>
         </div>
         <div className="flex-1 h-0 web-scroll overflow-y-auto px-5 sm:px-6">
-          {
-            type === 'bundle' && (
-              <div className="flex items-center text-green-500 font-bold uppercase py-5">
-                <Check theme="outline" size="16" fill="currentColor" strokeWidth={6} />
-                <span className="ml-2 text-sm">Bundle includes:</span>
-              </div>
-            )
-          }
+
+          <div className="flex items-center text-green-500 font-bold uppercase py-5">
+            <Check theme="outline" size="16" fill="currentColor" strokeWidth={6} />
+            <span className="ml-2 text-sm">Bundle includes:</span>
+          </div>
           {
             bundleList.map((item, index) => (
               <div className="checkout__goods-item" key={index}>
@@ -169,4 +150,4 @@ const CheckoutSidebar = (props: CheckoutSidebarProps) => {
   );
 };
 
-export default CheckoutSidebar;
+export default BundleSidebar;
