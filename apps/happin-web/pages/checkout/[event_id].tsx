@@ -48,7 +48,7 @@ const ticketDataList: TicketItemDataProps[] = [
     ],
     quantity: 12,
     introduction: 'An all-access ticket which includes food and drink, career fair, workshops, conference sessions and keynotes, slides and slack-channel.An all-access ticket which includes food and drink, career fair, workshops, conference',
-    merch: false,
+    merch: true,
     kind: 'ticket',
     sectionId: '123',
     minPerOrder: 3,
@@ -383,7 +383,7 @@ const Checkout = () => {
             <div className="checkout__container">
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
-                {(eventDataForCheckout && !eventDataForCheckout.tags.includes('Private')) &&
+                {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
                     {/* display public sale start time when sale not start */}
                     {saleStart === false &&
