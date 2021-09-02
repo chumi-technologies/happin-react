@@ -10,13 +10,14 @@ import { Input } from '@chakra-ui/react';
 import { ERole, ESSOMode, useAppState } from '../../contexts/state';
 import { signUpHappin } from 'api/happin-server';
 import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
+import { toast } from 'react-toastify';
 
 declare var grecaptcha: any
 
 export default function Phone() {
   const [countryCode, setCountryCode] = useState('us');
   const [phone, setPhone] = useState('')
-
+  const [phoneWithoutAreaCode, setPhoneWithoutAreaCode] = useState('');
   const [recaptchaVerifier, setRecaptchaVerifier] = useState<any | null>(null)
   const [recaptchaWidgetId, setRecaptchaWidgetId] = useState<any | null>(null)
 
@@ -49,6 +50,9 @@ export default function Phone() {
         setVerificationSent(true)
         setResendTimer(60)
       }, err => {
+        if(err.code === 'auth/too-many-requests') {
+          toast.error('Too many attempts, please try again later')
+        }
         console.log(err)
       })
     } catch (err) {
@@ -64,7 +68,7 @@ export default function Phone() {
       const firebaseToken = await result?.user?.getIdToken();
       const refreshToken = result?.user?.refreshToken;
       if (!signin) {
-        await signUpHappin(firebaseToken, { version: 2, phone, areaCode: countryCode });
+        await signUpHappin(firebaseToken, { version: 2, phone: phoneWithoutAreaCode, areaCode: countryCode });
       }
       if (origin.includes('ticketing.happin')) {
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
@@ -76,6 +80,9 @@ export default function Phone() {
       }, 2000)
     } catch (err) {
       console.log(err);
+      if (err.message.includes('already exist')) {
+        toast.error('User exists, please sign in');
+      }
       grecaptcha.reset(recaptchaWidgetId);
       setProcessing(false);
     }
@@ -106,8 +113,23 @@ export default function Phone() {
   }, [])
 
   const onPhoneChange = (phone: string, country: { name: string, dialCode: string, countryCode: string }) => {
-    setPhone("+"+phone);
+    setPhone('+'+phone);
+    setPhoneWithoutAreaCode(getDifference(country.dialCode, phone))
     setCountryCode(country.dialCode);
+  }
+
+  function getDifference(a:string, b:string) {
+    let i = 0;
+    let j = 0;
+    let result = '';
+    while (j < b.length) {
+      if (a[i] !== b[j] || i === a.length)
+        result += b[j];
+      else
+        i++;
+      j++;
+    }
+    return result;
   }
 
   return (

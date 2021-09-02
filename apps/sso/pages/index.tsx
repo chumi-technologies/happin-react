@@ -5,6 +5,8 @@ import { ERole, ESSOMode, useAppState } from '../contexts/state'
 import { useRouter } from 'next/dist/client/router'
 import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url'
 import { RoleToggle } from '@components/RoleToggle'
+import { signUpHappin } from 'api/happin-server'
+import { toast } from 'react-toastify';
 
 
 export default function Home() {
@@ -39,6 +41,17 @@ export default function Home() {
           const firebaseToken = await res?.user?.getIdToken();
           const refreshToken = res?.user?.refreshToken;
           if (firebaseToken) {
+            if (!signin) {
+              try {
+                await signUpHappin(firebaseToken, { version: 2 });
+              } catch(err) {
+                if (err.message.includes('already exist')) {
+                  setProcessing(false)
+                  toast.error('User exists, please sign in');
+                }
+                return
+              }
+            }
             if (origin.includes('ticketing.happin')) {
               const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
               window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
