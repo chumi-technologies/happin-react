@@ -2,133 +2,16 @@ import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import TicketItem from '../../components/page_components/CheckoutPageComponents/TicketItem';
 import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
 import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BudleSidebar';
-import { ETicketFeature, ETicketType, EventBasicData, MerchItemDataProps, TicketItemDataProps } from '../../lib/model/checkout';
+import { ETicketAvailability, ETicketFeature, ETicketType, ETicketVisibility, EventBasicData, GeneralTicketInfo, MerchItemDataProps, MerchProperty, TicketItemDataProps, TicketItemFeaturesProps } from '../../lib/model/checkout';
 import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
 import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { getEventDetailForCheckout } from 'lib/api';
+import { getEventDetailForCheckout, getEventMerchs, getGATickets } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
 
-const ticketDataList: TicketItemDataProps[] = [
-  {
-    id: '1',
-    title: 'General Pass',
-    price: 99,
-    subPrice: ['CA$11.60 Fee', 'CA$27.51 GST/HST'],//????
-    start: 1629670051,
-    end: 1630718220,
-    features: [
-      ETicketFeature.TICKET,
-      ETicketFeature.PLAYBACK,
-      ETicketFeature.MERCHBUNDLE,
-      ETicketFeature.VIP
-    ],
-    merch: false,
-    quantity: 12,
-    introduction: 'An all-access ticket which includes food and drink, career fair, workshops, conference sessions and keynotes, slides and slack-channel.An all-access ticket which includes food and drink, career fair, workshops, conference',
-    //helpText: 'What’s VIP room?',
-    kind: 'ticket',
-    sectionId: '123',
-    minPerOrder: 5,
-    maxPerOrder: 10,
-    originalQuantity: 12,
-    ticketType: ETicketType.LIVESTREAM,
-  },
-  {
-    id: '2',
-    title: 'General Pass + Merch Bundle A',
-    price: 99,
-    subPrice: ['CA$11.60 Fee', 'CA$27.51 GST/HST'],
-    features: [
-      ETicketFeature.TICKET,
-      ETicketFeature.PLAYBACK
-    ],
-    quantity: 12,
-    introduction: 'An all-access ticket which includes food and drink, career fair, workshops, conference sessions and keynotes, slides and slack-channel.An all-access ticket which includes food and drink, career fair, workshops, conference',
-    merch: true,
-    kind: 'ticket',
-    sectionId: '123',
-    minPerOrder: 3,
-    maxPerOrder: 5,
-    originalQuantity: 12,
-    ticketType: ETicketType.INPERSON,
-  }
-];
-const merchList: MerchItemDataProps[] = [
-  {
-    id: '1',
-    image: ['https://cdn.sspai.com/article/fe0d40a7-1a78-79f8-fb04-1fa0a3ccd358.jpg'],
-    name: 'Merch 1',
-    price: 50.00,
-    description: 'Merch DesMerch DesMerch DesMe...',
-    property: [{pName: 's', pValue: 4, originalPValue: 4}],
-    kind: 'merch',
-    max: 10,
-    mail: false, 
-    forApp: false,
-    show: false,
-    tickets : []
-  },
-  {
-    id: '2',
-    image: ['https://cdn.sspai.com/article/fe0d40a7-1a78-79f8-fb04-1fa0a3ccd358.jpg'],
-    name: 'Merch 2',
-    price: 50.00,
-    description: 'Merch DesMerch DesMerch DesMe...',
-    property: [{pName: 's', pValue: 4, originalPValue: 4}],
-    kind: 'merch',
-    max: 10,
-    mail: false, 
-    forApp: false,
-    show: true,
-    tickets : []
-  },
-  {
-    id: '3',
-    image: ['https://cdn.sspai.com/article/fe0d40a7-1a78-79f8-fb04-1fa0a3ccd358.jpg'],
-    name: 'Merch 3',
-    price: 50.00,
-    description: 'Merch DesMerch DesMerch DesMe...',
-    property: [{pName: 's', pValue: 4, originalPValue: 4},{pName: 'v', pValue: 0, originalPValue: 0}, {pName: 'c', pValue: 8, originalPValue: 8}],
-    kind: 'merch',
-    max: 6,
-    mail: false, 
-    forApp: false,
-    show: true,
-    tickets : []
-  },
-  {
-    id: '4',
-    image: ['https://cdn.sspai.com/article/fe0d40a7-1a78-79f8-fb04-1fa0a3ccd358.jpg'],
-    name: 'Merch 4',
-    price: 50.00,
-    description: 'Merch DesMerch DesMerch DesMe...',
-    property: [{pName: 's', pValue: 4, originalPValue: 4}],
-    kind: 'merch',
-    max: 10,
-    mail: false, 
-    forApp: true,
-    show: false,
-    tickets : []
-  },
-  {
-    id: '5',
-    image: ['https://cdn.sspai.com/article/fe0d40a7-1a78-79f8-fb04-1fa0a3ccd358.jpg'],
-    name: 'Merch 4',
-    price: 50.00,
-    description: 'Merch DesMerch DesMerch DesMe...',
-    property: [{pName: 's', pValue: 4, originalPValue: 4}],
-    kind: 'merch',
-    max: 10,
-    mail: false, 
-    forApp: false,
-    show: true,
-    tickets : ['123456688']
-  },
-];
 
 export enum ActionKind {
   Increase = 'INCREASE',
@@ -139,14 +22,14 @@ export enum ActionKind {
 export type TicketListAction = {
   type: ActionKind,
   payload?: TicketItemDataProps,
-  default?: TicketItemDataProps[],
+  initValue?: TicketItemDataProps[],
   quantity?: number;
 }
 
 export type MerchListAction = {
   type: ActionKind,
   payload?: MerchItemDataProps,
-  default?: MerchItemDataProps[],
+  initValue?: MerchItemDataProps[],
   quantity?: number;
   propertyIndex?: number;
 }
@@ -178,7 +61,7 @@ const ticketListReducer = (state: TicketItemDataProps[], action: TicketListActio
     }
   }
   if (action.type === ActionKind.Init) {
-    return [...action.default as TicketItemDataProps[]]
+    return [...action.initValue as TicketItemDataProps[]]
   }
   return finalTicketList
 }
@@ -206,38 +89,39 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
     }
   }
   if (action.type === ActionKind.Init) {
-    return [...action.default as MerchItemDataProps[]]
+    return [...action.initValue as MerchItemDataProps[]]
   }
   return finalTicketList
 }
 
 const Checkout = () => {
   const router = useRouter();
+  const windowWidth = useResize();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
   const [bundleSidebarOpen, setBundleSidebarOpen] = useState(false);
-  const [selectedRegularMerch, setSelectedRegularMerch] = useState<MerchItemDataProps | undefined>();
+
+  const [selectedRegularMerch, setSelectedRegularMerch] = useState<MerchItemDataProps>();
+  const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps>();
+
+
+  // ticket list & merch list, payment page dont need these, hence not store in context
   const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
   const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
 
-  const [saleStart, setSaleStart] = useState<boolean | undefined>();
-  const [saleStatTime, setSaleStartTime] = useState<number>();
-  const [inPresale, setInPresale] = useState<boolean | undefined>();
+  const [saleStart, setSaleStart] = useState<boolean>();
+  const [inPresale, setInPresale] = useState<boolean>();
 
-  const { setEventDataForCheckout, eventDataForCheckout, cart } = useCheckoutState();
+  const { setEventDataForCheckout, eventDataForCheckout, boxOfficeMode, setGeneralTicketInfo, generalTicketInfo } = useCheckoutState();
+
+  const ticketTypeHeaderId = new Set<string>()
 
   useEffect(() => {
     if (router?.query?.event_id) {
-      // do api call
-      getEventDetailAndSetState(router?.query?.event_id as string);
-      dispatchTicketListAction({ type: ActionKind.Init, default: ticketDataList })
-      dispatcMerchListAction({ type: ActionKind.Init, default: merchList })
-      checkSaleStarted(1632975969000);
-      // !!!!!!!!!!! if ticket has presale start and end
-      checkPresaleStarted(1630297569000, 1630556769000);
+      Promise.all([getEventDetailAndSetState(router.query.event_id as string),
+        getEventTicketsAndSetState(router.query.event_id as string),
+        getEventMerchAndSetState(router.query.event_id as string)])
     }
-
     // check code in url is valid or not
     if (router?.query?.presale_code) {
 
@@ -252,7 +136,17 @@ const Checkout = () => {
     });
   }, [router.query])
 
-  const getEventDetailAndSetState = async(eventId: string) => {
+  useEffect(() => {
+    checkSaleStarted(1630793982000)
+/*     if (generalTicketInfo?.saleStartTime) {
+      checkSaleStarted(generalTicketInfo.saleStartTime);
+    } */
+    if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
+      checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
+    }
+  }, [generalTicketInfo])
+
+  const getEventDetailAndSetState = async (eventId: string) => {
     try {
       const res = await getEventDetailForCheckout(eventId);
       console.log(res)
@@ -264,12 +158,113 @@ const Checkout = () => {
         default_currency: res.default_currency
       }
       setEventDataForCheckout(eventDetail)
-    } catch(err) {
+    } catch (err) {
       console.log(err)
     }
   }
 
-  const windowWidth = useResize();
+  const getEventTicketsAndSetState = async (eventId: string) => {
+    try {
+      const res = await getGATickets(eventId);
+      const ticketList: TicketItemDataProps[] = res.tickets.map((t: any) => {
+        let features: TicketItemFeaturesProps[] = [];
+        switch (t.ticketType) {
+          case 'paid':
+            features = [ETicketFeature.TICKET]
+            break;
+          case 'free':
+            features = [ETicketFeature.TICKET]
+            break;
+          case 'live':
+            features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK]
+            break;
+          case 'pfm':
+            features = [ETicketFeature.TICKET,
+            ETicketFeature.PLAYBACK,
+            ETicketFeature.VIP]
+            break;
+          case 'playback':
+            features = [ETicketFeature.TICKET,
+            ETicketFeature.PLAYBACK]
+            break;
+          default:
+            break;
+        }
+
+        if (t.isBundle) {
+          features.push(ETicketFeature.MERCHBUNDLE);
+        }
+
+        const ticket: TicketItemDataProps = {
+          id: t.id,
+          sectionId: t.sectionId,
+          title: t.name,
+          start: t.start,
+          end: t.end,
+          minPerOrder: t.minPerOrder,
+          maxPerOrder: t.maxPerOrder,
+          quantity: t.quantity,
+          originalQuantity: t.quantity,
+          ticketType: t.ticketType,
+          merch: t.isBundle,
+          price: t.price,
+          notes: t.notes,
+          features,
+          kind: 'ticket',
+          visibility: t.visibility,
+          availability: t.availability
+        }
+        return ticket
+      })
+      dispatchTicketListAction({ type: ActionKind.Init, initValue: ticketList })
+      const gerneralTicketInfo: GeneralTicketInfo = {
+        absorbFee: res.generalInfo.absorbFee,
+        saleStartTime: res.generalInfo.onSaleCounter,
+        presaleStart: res.generalInfo.presaleStartTime,
+        presaleEnd: res.generalInfo.presaleEndTime,
+        taxNeeded: res.generalInfo.taxNeeded
+      }
+      setGeneralTicketInfo(gerneralTicketInfo);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const getEventMerchAndSetState = async (eventId: string) => {
+    try {
+      const res = await getEventMerchs(eventId);
+      let merchList: MerchItemDataProps[] = []
+      if (res.length) {
+         merchList = res.map((m: any) => {
+          const property: MerchProperty[] = m.properties.map((p: any)=> ({
+            ...p,
+            originalPValue: p.pValue
+          }))
+          const bindTickets =  m.activities.filter((a: any) => eventId === a.activityId)
+          .map((a: any)=> a.tickets.map((t:any)=>t.ticketId))
+          const merch: MerchItemDataProps = {
+            id: m._id,
+            image: m.image,
+            name: m.name,
+            max: m.max,
+            forApp: m.forApp,
+            description: m.description,
+            price: m.price,
+            kind:'merch',
+            mail: m.mail,
+            show: m.show,
+            property,
+            tickets: bindTickets
+          }
+          return merch
+        })
+      }
+      dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
 
   const onTicketSelect = (value: any) => {
     if (typeof value === 'object') {
@@ -278,37 +273,95 @@ const Checkout = () => {
     }
   }
 
-  const ticketTypeHeaderId = new Set<string>()
-  ticketListState.forEach(t => {
-    switch (t.ticketType) {
-      case ETicketType.LIVESTREAM:
-        ticketTypeHeaderId.add('Livestream-Tickets');
-        break;
-      case ETicketType.PFM:
-        ticketTypeHeaderId.add('Livestream-Tickets');
-        break;
-      case ETicketType.INPERSON:
-        // not generate the tab for in person when the event is past
-        if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-          return;
-        }
-        ticketTypeHeaderId.add('In-Person-Tickets');
-        break;
-      case ETicketType.FREEINPERSON:
-        // not generate the tab for in person when the event is past
-        if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-          return;
-        }
-        ticketTypeHeaderId.add('In-Person-Tickets');
-        break;
-      case ETicketType.PLAYBACK:
-        ticketTypeHeaderId.add('Livestream-Tickets');
-        break;
-      default:
-        break;
+  const checkSaleStarted = (unixTime: number) => {
+    // need to add condition if a presale code is entered and is valid (validate on server),
+    if (new Date(unixTime) < new Date()) {
+      setSaleStart(true)
+    } else {
+      setSaleStart(false)
     }
-  })
+  }
 
+  const checkPresaleStarted = (start: number, end: number) => {
+    if (moment(new Date()).isBetween(moment(start), moment(end))) {
+      setInPresale(true)
+    } else {
+      setInPresale(false)
+    }
+  }
+
+  const onPresaleCodeValidate = () => {
+    setSaleStart(true)
+  }
+
+  const renderTicketBaseOnAvailability = (item: TicketItemDataProps, disabledFlag: boolean): JSX.Element => {
+    // in box office mode, only display at door and every-where tickets
+    // otherwise display every-where && online tickets
+    if (boxOfficeMode && (item.availability === ETicketAvailability.AT_DOOR
+      || item.availability === ETicketAvailability.EVERY_WHERE)) {
+      return <TicketItem
+        key={item.id}
+        data={item}
+        onSelect={onTicketSelect}
+        onChange={dispatchTicketListAction}
+        currency={eventDataForCheckout?.default_currency || ''}
+        absorbFee={generalTicketInfo?.absorbFee || false}
+        taxNeeded={generalTicketInfo?.taxNeeded || 0}
+        disabled={disabledFlag}
+      />
+    } else if (boxOfficeMode) {
+      return <Fragment key={item.id}></Fragment>
+    }
+    if (!boxOfficeMode && (item.availability === ETicketAvailability.EVERY_WHERE
+      || item.availability === ETicketAvailability.ONLINE)) {
+      return <TicketItem
+        key={item.id}
+        data={item}
+        onSelect={onTicketSelect}
+        onChange={dispatchTicketListAction}
+        currency={eventDataForCheckout?.default_currency || ''}
+        taxNeeded={generalTicketInfo?.taxNeeded || 0}
+        absorbFee={generalTicketInfo?.absorbFee || false}
+        disabled={disabledFlag}
+      />
+    } else if (!boxOfficeMode) {
+      return <Fragment key={item.id}></Fragment>
+    }
+    return <Fragment key={item.id}></Fragment>
+  }
+
+
+  if (ticketListState.length) {
+    ticketListState.forEach(t => {
+      switch (t.ticketType) {
+        case ETicketType.LIVESTREAM:
+          ticketTypeHeaderId.add('Livestream-Tickets');
+          break;
+        case ETicketType.PFM:
+          ticketTypeHeaderId.add('Livestream-Tickets');
+          break;
+        case ETicketType.INPERSON:
+          // not generate the tab for in person when the event is past
+          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+            return;
+          }
+          ticketTypeHeaderId.add('In-Person-Tickets');
+          break;
+        case ETicketType.FREEINPERSON:
+          // not generate the tab for in person when the event is past
+          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+            return;
+          }
+          ticketTypeHeaderId.add('In-Person-Tickets');
+          break;
+        case ETicketType.PLAYBACK:
+          ticketTypeHeaderId.add('Livestream-Tickets');
+          break;
+        default:
+          break;
+      }
+    })
+  }
 
   const ticketTypeHeaderArray = Array.from(ticketTypeHeaderId).map(id => (
     <Link
@@ -327,33 +380,19 @@ const Checkout = () => {
     </Link>
   ))
 
-
-  const checkSaleStarted = (unixTime: number) => {
-    // need to add condition if a presale code is entered and is valid (validate on server),
-    if (new Date(unixTime) < new Date()) {
-      setSaleStart(true)
-    } else {
-      setSaleStart(false)
-      setSaleStartTime(unixTime);
-    }
+const hasRegularMerch = () => {
+  let hasRegularMerch = false
+  if (merchListState.length) {
+    merchListState.forEach(m=> {
+      if (!m.tickets.length) {
+        hasRegularMerch = true;
+      }
+    })
   }
+  return hasRegularMerch;
+}
 
-  const checkPresaleStarted = (start: number, end: number) => {
-    if (moment(new Date()).isBetween(moment(start), moment(end))) {
-      setInPresale(true)
-    } else {
-      setInPresale(false)
-    }
-  }
-
-  const onPresaleCodeValidate = () => {
-    setSaleStart(true)
-  }
-
-  console.log(cart);
-  console.log(merchListState)
-
-
+console.log(merchListState)
   return (
     <div className="checkout__page">
       <div className="flex flex-col-reverse md:flex-col h-full">
@@ -363,7 +402,7 @@ const Checkout = () => {
             <div className="container">
               <div className="flex">
                 {ticketTypeHeaderArray}
-                {merchListState.length ?
+                {(merchListState.length && hasRegularMerch()) ?
                   <Link
                     className="checkout__head-tab"
                     activeClass="active"
@@ -390,26 +429,20 @@ const Checkout = () => {
                       (
                         <div className="sm:text-lg" style={{ fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
                           <h1>Public sale start on</h1>
-                          <h1>{moment(saleStatTime).format('MMMM Do, h:mma')}</h1>
+                          <h1>{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</h1>
                         </div>
                       )}
                     <div id="Livestream-Tickets" className="divide-y divide-gray-700">
                       {
                         ticketListState.map((item) => {
-                          if (item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM) {
+                          if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
+                            || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE) {
+
                             let disabledFlag = false;
                             if (!saleStart) {
                               disabledFlag = true
                             }
-                            return (
-                              <TicketItem
-                                key={item.id}
-                                data={item}
-                                onSelect={onTicketSelect}
-                                onChange={dispatchTicketListAction}
-                                disabled={disabledFlag}
-                              />
-                            )
+                            return renderTicketBaseOnAvailability(item, disabledFlag);
                           } else return <Fragment key={item.id}></Fragment>
                         })
                       }
@@ -417,7 +450,9 @@ const Checkout = () => {
                     <div id="In-Person-Tickets" className="divide-y divide-gray-700">
                       {
                         ticketListState.map((item) => {
-                          if (item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON) {
+                          if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
+                            && item.visibility !== ETicketVisibility.INVISIBLE) {
+
                             // for inperson ticket, if event has started, disable all the in person tickets,
                             // by passing the disabled into ticketItem
                             let disabledFlag = false;
@@ -431,22 +466,14 @@ const Checkout = () => {
                             if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
                               return <Fragment key={item.id}></Fragment>
                             }
-                            return (
-                              <TicketItem
-                                key={item.id}
-                                data={item}
-                                onSelect={onTicketSelect}
-                                onChange={dispatchTicketListAction}
-                                disabled={disabledFlag}
-                              />
-                            )
+                            return renderTicketBaseOnAvailability(item, disabledFlag);
                           } else return <Fragment key={item.id}></Fragment>
                         })
                       }
                     </div>
 
                     {/* merch items start */}
-                    {merchListState.length && (<div id="merch" className="py-5 sm:py-8 text-white">
+                    {(merchListState.length > 0 && hasRegularMerch()) && (<div id="merch" className="py-5 sm:py-8 text-white">
                       <div className="mb-3 font-semibold text-lg">Adds On</div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
@@ -484,12 +511,12 @@ const Checkout = () => {
             isOpen={bundleSidebarOpen}
             onClose={() => setBundleSidebarOpen(false)}
           />
-           <MerchSidebar
+          <MerchSidebar
             onChange={dispatcMerchListAction}
             merch={selectedRegularMerch as MerchItemDataProps}
             isOpen={sidebarOpen}
             setIsOpen={setSidebarOpen}
-            onClose={() => {setSidebarOpen(false); setSelectedRegularMerch(undefined)}}
+            onClose={() => { setSidebarOpen(false); setSelectedRegularMerch(undefined) }}
           />
         </div>
       </div>

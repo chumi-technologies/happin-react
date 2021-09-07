@@ -3,10 +3,14 @@ import Head from "next/head";
 import Header from "./Header";
 import MobileAppBar from "../components/MobileAppBar";
 import { useRouter } from "next/router";
+import { useCheckoutState } from "contexts/checkout-state";
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
+
+  const { setHappinUserID, setBoxOfficeMode } = useCheckoutState();
+
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
@@ -15,7 +19,10 @@ const Layout = ({ children }: { children: any }) => {
     if (router?.query?.happinUser && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false)
       setShowHeader(false);
-      localStorage.setItem('checkout_user_from_app', (router.query.happinUser as string))
+      setHappinUserID(router?.query?.happinUser as string);
+    }
+    if (router?.query?.role === 'boxoffice') {
+      setBoxOfficeMode(true);
     }
   }, [router.query])
 

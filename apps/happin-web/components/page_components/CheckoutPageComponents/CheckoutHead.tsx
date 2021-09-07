@@ -71,9 +71,9 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
                       <div className="checkout__cart-list web-scroll">
                         {/*  start the loop  */}
                         <div className="flex p-4">
-                         {/*  <div className="w-16 h-16 rounded-md overflow-hidden">
+                          <div className="w-16 h-16 rounded-md overflow-hidden">
                             <img className="w-full h-full object-cover" src="https://cdn.sspai.com/2021/08/04/ead81f219cd73b7070124c69eefe9923.jpg" alt="" />
-                          </div> */}
+                          </div>
                           <div className="flex-1 min-w-0 ml-4 flex flex-col">
                             <div className="flex items-start mb-2">
                               <div className="text-white text-sm font-semibold w-2/3">Bubblegum Unisex Shirt</div>

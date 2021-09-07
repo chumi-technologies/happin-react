@@ -14,11 +14,19 @@ export type EventBasicData = {
   default_currency: string;
 }
 
+export type GeneralTicketInfo = {
+  absorbFee: boolean,
+  saleStartTime: number,
+  taxNeeded: number,
+  presaleStart: number,
+  presaleEnd: number,
+}
+
 export type TicketItemDataProps = {
   id: string;
   title: string;
   price: number;
-  subPrice?: string[]; // ?????? no where come from
+  //subPrice?: string[]; // ?????? no where come from
   start?: number;
   end?: number;
   minPerOrder: number;
@@ -27,11 +35,25 @@ export type TicketItemDataProps = {
   quantity: number;
   originalQuantity: number; // for keep track of sold out
   ticketType: ETicketType;
-  introduction: string;
+  notes: string;
   merch?: boolean; // Merch Details
   kind: 'ticket';
   sectionId: string;
+  visibility: ETicketVisibility;
+  availability: ETicketAvailability;
 };
+
+export enum ETicketVisibility {
+  VISIBLE = 'visible',
+  INVISIBLE = 'invisible',
+  SCHEDULE = 'schedule'
+}
+
+export enum ETicketAvailability  {
+  EVERY_WHERE = 'everywhere',
+  ONLINE = 'online',
+  AT_DOOR = 'atdoor'
+}
 
 export type TicketItemFeaturesProps = {
   type: string
@@ -78,6 +100,7 @@ export interface Cart {
 
 export interface CartTicketItem {
   ticketId: string;
+  sectionId: string;
   quantity: number;
   price: number;
 }
@@ -86,7 +109,7 @@ export interface CartBundleItem {
   ticketId: string;
   quantity: number;
   identifier: string;
-  merchIdentifiers: string[];
+  merchs: CartMerchItem[];
   price: number;
 }
 

@@ -1,4 +1,4 @@
-import { Cart, CartMerchItem, CartTicketItem, EventBasicData, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
+import { Cart, CartMerchItem, CartTicketItem, EventBasicData, GeneralTicketInfo, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
 import { createContext, useContext, useReducer, useState } from "react";
 
 enum ActionKind {
@@ -18,6 +18,10 @@ interface CheckoutContext {
   eventDataForCheckout: EventBasicData | undefined,
   happinUserID: string | undefined,
   codeUsed: string | undefined,
+  boxOfficeMode: boolean,
+  generalTicketInfo: GeneralTicketInfo | undefined,
+  setGeneralTicketInfo: (arg: GeneralTicketInfo)=>void,
+  setBoxOfficeMode: (arg: boolean)=>void,
   setCodeUsed: (arg: string)=> void,
   setHappinUserID: (arg: string)=> void,
   setEventDataForCheckout: (arg: EventBasicData)=>void,
@@ -72,7 +76,7 @@ const inreament = (action: Action, state: Cart) => {
       updateItems = [...state.items.ticketItem];
       updateItems[existingCartTicketIndex] = updateItem
     } else {
-      updateItems = state.items.ticketItem.concat({ticketId: action.payload.id, quantity: action.quantity, price: action.payload.price});
+      updateItems = state.items.ticketItem.concat({ticketId: action.payload.id, sectionId: action.payload.sectionId, quantity: action.quantity, price: action.payload.price});
     }
     finalCart = {
       items: {
@@ -171,8 +175,13 @@ export function CheckoutState({ children }: {children: any}) {
   );
   
   const [eventDataForCheckout, setEventDataForCheckout] = useState<EventBasicData>();
+  // happinUserID will be set when the userID is passed in url(mobile app logged in and open the checkout page)
   const [happinUserID, setHappinUserID] = useState<string>();
-  const [codeUsed, setCodeUsed] = useState<string>()
+  // discount code or presale code or thirdParty code
+  const [codeUsed, setCodeUsed] = useState<string>();
+
+  const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
+  const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
   const addItemToCartHandler = (item: TicketItemDataProps | MerchItemDataProps, quantity: number, property?: string) => {
     dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property });
@@ -188,6 +197,10 @@ export function CheckoutState({ children }: {children: any}) {
     eventDataForCheckout: eventDataForCheckout,
     happinUserID: happinUserID,
     codeUsed: codeUsed,
+    boxOfficeMode: boxOfficeMode,
+    generalTicketInfo: generalTicketInfo,
+    setGeneralTicketInfo: setGeneralTicketInfo,
+    setBoxOfficeMode: setBoxOfficeMode,
     setCodeUsed: setCodeUsed,
     setHappinUserID: setHappinUserID,
     setEventDataForCheckout: setEventDataForCheckout,
