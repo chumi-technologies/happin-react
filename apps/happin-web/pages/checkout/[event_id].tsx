@@ -102,8 +102,8 @@ const Checkout = () => {
   const [bundleSidebarOpen, setBundleSidebarOpen] = useState(false);
 
   const [selectedRegularMerch, setSelectedRegularMerch] = useState<MerchItemDataProps>();
-  const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps>();
-
+  const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps[]>();
+  const [selectedBundleTicket, setSelectedBundleTicket] = useState<TicketItemDataProps>();
 
   // ticket list & merch list, payment page dont need these, hence not store in context
   const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
@@ -254,7 +254,7 @@ const Checkout = () => {
             mail: m.mail,
             show: m.show,
             property,
-            tickets: bindTickets
+            tickets: bindTickets[0] || []
           }
           return merch
         })
@@ -266,10 +266,12 @@ const Checkout = () => {
   }
 
 
-  const onTicketSelect = (value: any) => {
+  const onTicketBundleSelect = (value: any) => {
     console.log(value)
     if (typeof value === 'object') {
       // set selected bundle items here
+      filterBundleMerchForSelectedTicket(value.id)
+      setSelectedBundleTicket(value)
       setBundleSidebarOpen(true);
     }
   }
@@ -295,6 +297,17 @@ const Checkout = () => {
     setSaleStart(true)
   }
 
+  const filterBundleMerchForSelectedTicket = (ticketId: string)=> {
+    console.log(ticketId)
+    console.log(merchListState)
+    const filterMerchs = merchListState.filter(m => {
+      if (m.tickets.includes(ticketId)) {
+        return true
+      }
+    })
+    setSelectedBundleMerch(filterMerchs);
+  }
+
   const renderTicketBaseOnAvailability = (item: TicketItemDataProps, disabledFlag: boolean): JSX.Element => {
     // in box office mode, only display at door and every-where tickets
     // otherwise display every-where && online tickets
@@ -303,7 +316,7 @@ const Checkout = () => {
       return <TicketItem
         key={item.id}
         data={item}
-        onSelect={onTicketSelect}
+        onSelect={onTicketBundleSelect}
         onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         absorbFee={generalTicketInfo?.absorbFee || false}
@@ -318,7 +331,7 @@ const Checkout = () => {
       return <TicketItem
         key={item.id}
         data={item}
-        onSelect={onTicketSelect}
+        onSelect={onTicketBundleSelect}
         onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
@@ -508,8 +521,10 @@ const Checkout = () => {
             </div>
           </div>
           <BundleSidebar
+            ticket={selectedBundleTicket}
             isOpen={bundleSidebarOpen}
-            onClose={() => setBundleSidebarOpen(false)}
+            merchs={selectedBundleMerch as MerchItemDataProps[]}
+            onClose={() => {setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined)}}
           />
           <MerchSidebar
             onChange={dispatcMerchListAction}

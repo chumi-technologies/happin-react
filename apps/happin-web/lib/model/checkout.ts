@@ -26,7 +26,6 @@ export type TicketItemDataProps = {
   id: string;
   title: string;
   price: number;
-  //subPrice?: string[]; // ?????? no where come from
   start?: number;
   end?: number;
   minPerOrder: number;
@@ -36,7 +35,7 @@ export type TicketItemDataProps = {
   originalQuantity: number; // for keep track of sold out
   ticketType: ETicketType;
   notes: string;
-  merch?: boolean; // Merch Details
+  merch?: boolean; //includes merch as a bundle
   kind: 'ticket';
   sectionId: string;
   visibility: ETicketVisibility;
