@@ -6,8 +6,8 @@ import { UseNumberInputProps } from '@chakra-ui/number-input/dist/types/use-numb
 
 export type NumberInputProps = {
   isDisabled?: boolean;
-  onDecreaseClick: ()=>void;
-  onIncreaseClick: ()=>void;
+  onDecreaseClick?: ()=>void;
+  onIncreaseClick?: ()=>void;
   size?: 'sm' | 'md'
   max?: number;
 } & UseNumberInputProps
@@ -34,12 +34,13 @@ const NumberInput = ({ isDisabled, size, max, min, onDecreaseClick, onIncreaseCl
   // const sizeClass = size && `number-input--${size}` || ''
   return (
     <div className={classNames('number-input', { 'disabled': isDisabled, [size && `number-input--${size}` || '']: true })}>
-      <button onClick={onDecreaseClick} className="number-input-button minus" {...dec}>
+      <button disabled={isDisabled} onClick={onDecreaseClick} className="number-input-button minus" {...dec}>
         <Minus theme="outline" size="1em" fill="currentColor"/>
       </button>
-      <button onClick={onIncreaseClick} className="number-input-button plus" {...inc}>
+      <button disabled={isDisabled} onClick={onIncreaseClick} className="number-input-button plus" {...inc}>
         <Plus theme="outline" size="1em" fill="currentColor"/>
       </button>
+      {/* always not allow enter number */} 
       <input type='number' disabled={true} {...input}/>
     </div>
   );

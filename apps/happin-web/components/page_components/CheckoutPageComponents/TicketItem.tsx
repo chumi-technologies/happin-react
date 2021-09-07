@@ -13,7 +13,7 @@ import moment from 'moment';
 
 export type TicketItemProps = {
   data: TicketItemDataProps;
-  onSelect?: (data: any) => void;
+  onSelect: (data: any) => void;
   onChange: (data: TicketListAction)=> void;
   disabled?: boolean,
   currency: string,
@@ -48,16 +48,13 @@ const TicketItem = (props: TicketItemProps) => {
         {data.originalQuantity >0 && (
           data.merch ?
             <button
-              onClick={() => onSelect?.(data)}
+              onClick={() => onSelect(data)}
               className="btn checkout__ticket-select"
               disabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000))))}
             >
               Select
             </button> :
             <NumberInput
-              onChange={(value) => {
-                onSelect?.(value)
-              }}
               min={0}
               max={getMaxNumberInputQty()}
               value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}

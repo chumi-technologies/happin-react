@@ -119,8 +119,8 @@ const Checkout = () => {
   useEffect(() => {
     if (router?.query?.event_id) {
       Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-        getEventTicketsAndSetState(router.query.event_id as string),
-        getEventMerchAndSetState(router.query.event_id as string)])
+      getEventTicketsAndSetState(router.query.event_id as string),
+      getEventMerchAndSetState(router.query.event_id as string)])
     }
     // check code in url is valid or not
     if (router?.query?.presale_code) {
@@ -138,9 +138,9 @@ const Checkout = () => {
 
   useEffect(() => {
     checkSaleStarted(1630793982000)
-/*     if (generalTicketInfo?.saleStartTime) {
-      checkSaleStarted(generalTicketInfo.saleStartTime);
-    } */
+    /*  if (generalTicketInfo?.saleStartTime) {
+       checkSaleStarted(generalTicketInfo.saleStartTime);
+     } */
     if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
       checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
     }
@@ -235,13 +235,13 @@ const Checkout = () => {
       const res = await getEventMerchs(eventId);
       let merchList: MerchItemDataProps[] = []
       if (res.length) {
-         merchList = res.map((m: any) => {
-          const property: MerchProperty[] = m.properties.map((p: any)=> ({
+        merchList = res.map((m: any) => {
+          const property: MerchProperty[] = m.properties.map((p: any) => ({
             ...p,
             originalPValue: p.pValue
           }))
-          const bindTickets =  m.activities.filter((a: any) => eventId === a.activityId)
-          .map((a: any)=> a.tickets.map((t:any)=>t.ticketId))
+          const bindTickets = m.activities.filter((a: any) => eventId === a.activityId)
+            .map((a: any) => a.tickets.map((t: any) => t.ticketId))
           const merch: MerchItemDataProps = {
             id: m._id,
             image: m.image,
@@ -250,7 +250,7 @@ const Checkout = () => {
             forApp: m.forApp,
             description: m.description,
             price: m.price,
-            kind:'merch',
+            kind: 'merch',
             mail: m.mail,
             show: m.show,
             property,
@@ -260,16 +260,17 @@ const Checkout = () => {
         })
       }
       dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   }
 
 
   const onTicketSelect = (value: any) => {
+    console.log(value)
     if (typeof value === 'object') {
+      // set selected bundle items here
       setBundleSidebarOpen(true);
-    } else {
     }
   }
 
@@ -380,19 +381,18 @@ const Checkout = () => {
     </Link>
   ))
 
-const hasRegularMerch = () => {
-  let hasRegularMerch = false
-  if (merchListState.length) {
-    merchListState.forEach(m=> {
-      if (!m.tickets.length) {
-        hasRegularMerch = true;
-      }
-    })
+  const hasRegularMerch = () => {
+    let hasRegularMerch = false
+    if (merchListState.length) {
+      merchListState.forEach(m => {
+        if (!m.tickets.length) {
+          hasRegularMerch = true;
+        }
+      })
+    }
+    return hasRegularMerch;
   }
-  return hasRegularMerch;
-}
 
-console.log(merchListState)
   return (
     <div className="checkout__page">
       <div className="flex flex-col-reverse md:flex-col h-full">

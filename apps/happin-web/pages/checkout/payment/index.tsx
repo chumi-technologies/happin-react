@@ -203,6 +203,7 @@ const Payment = () => {
                             <div className="flex items-end justify-between flex-1">
                               <div className="flex items-center">
                                 <NumberInput
+                                  isDisabled={true}
                                   defaultValue={1}
                                   size="sm"
                                   min={1}
@@ -228,6 +229,7 @@ const Payment = () => {
                             </div>
                             <div className="flex items-end justify-between flex-1">
                               <NumberInput
+                                isDisabled={true}
                                 defaultValue={3}
                                 size="sm"
                                 min={1}
@@ -252,6 +254,7 @@ const Payment = () => {
                             </div>
                             <div className="flex items-end justify-between flex-1">
                               <NumberInput
+                                isDisabled={true}
                                 defaultValue={1}
                                 size="sm"
                                 min={1}
@@ -274,14 +277,8 @@ const Payment = () => {
                         <button className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">Apply</button>
                       </div>
                     </div>
-                    <div className="pt-4 pb-4 sm:pb-5 px-4 sm:px-5">
-                      <div className="sm:text-lg font-semibold mb-4">Currency</div>
-                      <select className="payment-currency-select" defaultValue="CAD">
-                        <option value="USD">USD - United States Dollar</option>
-                        <option value="CAD">CAD - Canadian Dollar</option>
-                        <option value="CNY">CNY - Chinese Yuan</option>
-                      </select>
-                    </div>
+                    
+
                     <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
                       <div className="text-white font-medium text-sm py-4">
                         <div className="flex justify-between py-1">
