@@ -267,12 +267,15 @@ const Checkout = () => {
 
 
   const onTicketBundleSelect = (value: any) => {
-    console.log(value)
     if (typeof value === 'object') {
-      // set selected bundle items here
+      // set selected bundle merch
       filterBundleMerchForSelectedTicket(value.id)
+      // set selceted bundle ticket
       setSelectedBundleTicket(value)
-      setBundleSidebarOpen(true);
+      // give a delay to allow the selected merch and ticket are updated
+      setTimeout(()=> {
+        setBundleSidebarOpen(true);
+      }, 50)
     }
   }
 

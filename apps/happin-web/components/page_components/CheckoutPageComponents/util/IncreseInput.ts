@@ -65,9 +65,6 @@ export function increaseBundleTicketAmount(
 
   const propertyNames = properties.map(p=>p.pname);
   const propertyIndex = properties.map(p=>p.index);
-  console.log(properties)
-  console.log(propertyNames);
-  console.log(propertyIndex);
 
   bundleMerchs.forEach((m, index)=> {
     onChangeMerchList({type: ActionKind.Decrease, payload: m, quantity, propertyIndex: propertyIndex[index] });
