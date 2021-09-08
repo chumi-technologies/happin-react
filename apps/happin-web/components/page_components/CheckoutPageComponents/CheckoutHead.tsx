@@ -6,12 +6,35 @@ import NumberInput from '@components/reusable/NumberInput';
 import Select from '@components/reusable/Select';
 import classNames from 'classnames';
 import moment from 'moment'
-import { EventBasicData } from 'lib/model/checkout';
+import { CartTicketItem, EventBasicData, MerchItemDataProps, TicketItemDataProps } from 'lib/model/checkout';
 import { useCheckoutState } from 'contexts/checkout-state';
+import { useToast } from '@chakra-ui/react';
+import { decreaseTicketAmount } from './util/decreseInput';
+import { increaseTicketAmount } from './util/IncreseInput';
+import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
+import { currencyFormatter } from './util/currencyFormat';
+import { deleteTicketFromCart } from './util/deleteInput';
 
-const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleStart: any, inPresale: any, onPresaleCodeValidate: () => void }) => {
+const CheckoutHead = ({
+  saleStart,
+  inPresale,
+  ticketList,
+  merchList,
+  onPresaleCodeValidate,
+  onChangeTicketList,
+  onChangeMerchList,
+}: {
+  saleStart: any,
+  inPresale: any,
+  ticketList: TicketItemDataProps[],
+  merchList: MerchItemDataProps[],
+  onPresaleCodeValidate: () => void,
+  onChangeTicketList: (data: TicketListAction) => void;
+  onChangeMerchList: (data: MerchListAction) => void;
+}) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem } = useCheckoutState();
+  const toast = useToast()
   const closeModal = () => {
     setIsOpen(false)
   }
@@ -24,13 +47,98 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
     onPresaleCodeValidate();
   }
 
-  
+  const cartItemCount = () => {
+    let count = cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length
+    return count
+  }
 
-  const select = [
-    { value: 'xl', label: 'xl' },
-    { value: 'm', label: 'm', disabled: true },
-    { value: 'xs', label: 'xs' },
-  ]
+  const nextButtonHandler = () => {
+    console.log(cart);
+    if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
+      console.log('No item in cart');
+      generateToast('No item in cart');
+      return
+    }
+  }
+
+
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
+
+  const getMaxNumberInputQty = (data: TicketItemDataProps) => {
+    if (data?.originalQuantity > data?.maxPerOrder) {
+      return data?.maxPerOrder
+    } else {
+      return data?.originalQuantity;
+    }
+  }
+
+  const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
+    return ticketList.find(item => item.id === t.ticketId) as TicketItemDataProps
+  }
+
+  const getEditingTicketCartIndex = (t: CartTicketItem) => {
+    return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
+  }
+
+  const generateCartTicketsTemplate = () => {
+    return cart.items.ticketItem.map(t => {
+      return (
+        <div className="flex p-4" key={t.ticketId}>
+          {/*   <div className="w-16 h-16 rounded-md overflow-hidden">
+            <img className="w-full h-full object-cover" src="https://cdn.sspai.com/2021/08/04/ead81f219cd73b7070124c69eefe9923.jpg" alt="" />
+          </div> */}
+          <div className="flex-1 min-w-0 ml-4 flex flex-col">
+            <div className="flex items-start mb-2">
+              <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
+              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+            </div>
+            <div className="flex items-end justify-between flex-1">
+              <div className="flex items-center">
+                <NumberInput
+                  min={0}
+                  max={getMaxNumberInputQty(getEdtingTicketListItem(t))}
+                  value={cart?.items?.ticketItem[getEditingTicketCartIndex(t)]?.quantity || 0}
+                  size="sm"
+                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
+                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, addItem) }}
+                />
+              </div>
+              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
+                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                <Delete theme="outline" size="14" fill="currentColor" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    })
+  }
+
+  const generateCartMerchsTemplate = () => {
+    cart.items.ticketItem.map(t => {
+
+    })
+  }
+
+  const generateCartBundleTemplate = () => {
+    cart.items.ticketItem.map(t => {
+
+    })
+  }
+
+  /*   const select = [
+      { value: 'xl', label: 'xl', index: 0 },
+      { value: 'm', label: 'm', disabled: true, index: 1 },
+      { value: 'xs', label: 'xs', index: 2 },
+    ] */
+
+
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
@@ -47,7 +155,7 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
                   className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
                 >
                   <SvgIcon id="buy" className="text-xl" />
-                  <div className="badge-count">3</div>
+                  <div className="badge-count">{cartItemCount()}</div>
                 </Popover.Button>
                 <Transition
                   as={Fragment}
@@ -70,41 +178,12 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
                       </div>
                       <div className="checkout__cart-list web-scroll">
                         {/*  start the loop  */}
-                        <div className="flex p-4">
-                          <div className="w-16 h-16 rounded-md overflow-hidden">
-                            <img className="w-full h-full object-cover" src="https://cdn.sspai.com/2021/08/04/ead81f219cd73b7070124c69eefe9923.jpg" alt="" />
+                        {generateCartTicketsTemplate()}
+                        {cartItemCount() === 0 && (
+                          <div style={{justifyContent:'center',display:'flex',alignItems:'center', height:'100%'}}>
+                            <h1 className="font-semibold text-lg">Shopping cart is empty</h1>
                           </div>
-                          <div className="flex-1 min-w-0 ml-4 flex flex-col">
-                            <div className="flex items-start mb-2">
-                              <div className="text-white text-sm font-semibold w-2/3">Bubblegum Unisex Shirt</div>
-                              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">CA$199.99</div>
-                            </div>
-                            <div className="flex items-end justify-between flex-1">
-                              <div className="flex items-center">
-                                <NumberInput
-                                  defaultValue={1}
-                                  size="sm"
-                                  min={1}
-                                  onChange={(value) => {
-                                    console.log(value);
-                                  }}
-                                />
-                                <div className="w-24 ml-3">
-                                  <Select
-                                    data={select}
-                                    defaultValue="xl"
-                                    onChange={(data) => {
-                                      console.log(data);
-                                    }}
-                                  />
-                                </div>
-                              </div>
-                              <div className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
-                                <Delete theme="outline" size="14" fill="currentColor" />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        )}
                       </div>
                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
                         <input type="text" className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
@@ -112,7 +191,7 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
                       </div>
                       <div className="px-5 pb-5 flex justify-between mt-5">
                         <div className="font-semibold text-lg">Subtotal</div>
-                        <div className="font-semibold text-lg">CAD$225.98</div>
+                        <div className="font-semibold text-lg">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(cart.subTotal)} </div>
                       </div>
                     </div>
                   </Popover.Panel>
@@ -122,7 +201,7 @@ const CheckoutHead = ({ saleStart, inPresale, onPresaleCodeValidate }: { saleSta
           </Popover>
           {/* show presale only when in presale duration and sale not start */}
           {(saleStart === false && inPresale) && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>}
-          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" >Next Step</button>}
+          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={() => { nextButtonHandler() }} >Next Step</button>}
         </div>
       </div>
       {/*Dialog*/}

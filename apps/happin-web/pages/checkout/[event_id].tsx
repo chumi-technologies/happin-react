@@ -137,10 +137,10 @@ const Checkout = () => {
   }, [router.query])
 
   useEffect(() => {
-    checkSaleStarted(1630793982000)
-    /*  if (generalTicketInfo?.saleStartTime) {
+    // checkSaleStarted(1630793982000)
+     if (generalTicketInfo?.saleStartTime) {
        checkSaleStarted(generalTicketInfo.saleStartTime);
-     } */
+     }
     if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
       checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
     }
@@ -414,7 +414,14 @@ const Checkout = () => {
   return (
     <div className="checkout__page">
       <div className="flex flex-col-reverse md:flex-col h-full">
-        <CheckoutHead saleStart={saleStart} inPresale={inPresale} onPresaleCodeValidate={onPresaleCodeValidate} />
+        <CheckoutHead 
+        saleStart={saleStart} 
+        inPresale={inPresale}
+        ticketList={ticketListState}
+        merchList={merchListState}
+        onChangeTicketList={dispatchTicketListAction}
+        onChangeMerchList={dispatcMerchListAction}
+        onPresaleCodeValidate={onPresaleCodeValidate} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">

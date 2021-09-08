@@ -102,6 +102,7 @@ export interface CartTicketItem {
   sectionId: string;
   quantity: number;
   price: number;
+  name: string;
 }
 
 export interface CartBundleItem {
@@ -111,6 +112,7 @@ export interface CartBundleItem {
   identifier: string;
   merchs: CartMerchItem[];
   price: number;
+  name: string;
 }
 
 export interface CartMerchItem {
@@ -119,5 +121,6 @@ export interface CartMerchItem {
   property: string;
   identifier: string;
   price: number;
+  name: string;
 }
 

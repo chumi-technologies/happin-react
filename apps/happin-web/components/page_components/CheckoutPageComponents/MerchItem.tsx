@@ -1,5 +1,6 @@
 import React from 'react';
 import { MerchItemDataProps } from '../../../lib/model/checkout';
+import { currencyFormatter } from './util/currencyFormat';
 
 export type MerchItemProps = {
   data: MerchItemDataProps;
@@ -15,7 +16,7 @@ const MerchItem = (props: MerchItemProps) => {
       <div className="aspect-w-1 aspect-h-1">
         <img src={data.image[0]} alt={data.name} className="w-full h-full object-center object-cover rounded-md" />
       </div>
-      <div className="font-medium text-sm mt-3 mb-1">{currency} {data.price}</div>
+      <div className="font-medium text-sm mt-3 mb-1">{currencyFormatter(currency as string).format(data.price)}</div>
       <div className="font-medium text-xs">{data.name}</div>
       <div className="text-xs text-gray-400 truncate mb-3">{data.description}</div>
       <button

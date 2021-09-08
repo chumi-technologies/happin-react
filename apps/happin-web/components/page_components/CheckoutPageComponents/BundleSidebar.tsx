@@ -10,6 +10,7 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
 import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
+import { currencyFormatter } from './util/currencyFormat';
 
 
 export interface SelectedProperty {
@@ -110,7 +111,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
               <div className="font-medium text-xs text-gray-400">
               {generalTicketInfo && (
               generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
-               : <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)}
+               : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)}
               </div>
               <div className="text-gray-400 text-xs">{ticket?.notes}</div>
             </div>

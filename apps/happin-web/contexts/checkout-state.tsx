@@ -88,7 +88,13 @@ const inreament = (action: Action, state: Cart) => {
       updateItems = [...state.items.ticketItem];
       updateItems[existingCartTicketIndex] = updateItem
     } else {
-      updateItems = state.items.ticketItem.concat({ticketId: action.payload.id, sectionId: action.payload.sectionId, quantity: action.quantity, price: action.payload.price});
+      updateItems = state.items.ticketItem.concat({
+        name: action.payload.title, 
+        ticketId: action.payload.id, 
+        sectionId: action.payload.sectionId, 
+        quantity: action.quantity, 
+        price: action.payload.price
+      });
     }
     finalCart = {
       items: {
@@ -113,7 +119,9 @@ const inreament = (action: Action, state: Cart) => {
       updateItems = state.items.merchItem.concat(
         {merchId: action.payload.id,
         quantity: action.quantity, property: (action.property as string), 
-        identifier: action.payload.id + action.property, price: action.payload.price});
+        identifier: action.payload.id + action.property, price: action.payload.price,
+        name: action.payload.name
+      });
     }
     finalCart = {
       items: {
@@ -129,12 +137,14 @@ const inreament = (action: Action, state: Cart) => {
     const bundleMerchs: CartMerchItem[] = action.bundleMerchPayload?.map((m, index)=> ({
       merchId: m.id,
       property: (action.bundleMerchProperty as string[])[index],
+      name: m.name,
       quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
       identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
       price: m.price, // not important for bundles, bundle price should be ticket's price
     })) || [];
 
     const bundleTicket: CartBundleItem = {
+      name: (action.payload as TicketItemDataProps).title,
       ticketId: (action.payload as TicketItemDataProps).id,
       sectionId: (action.payload as TicketItemDataProps).sectionId, 
       quantity: action.quantity, price: (action.payload as TicketItemDataProps).price,
