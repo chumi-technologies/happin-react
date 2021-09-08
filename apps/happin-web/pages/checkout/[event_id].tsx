@@ -258,6 +258,10 @@ const Checkout = () => {
           }
           return merch
         })
+        // fake dup 
+        // const newmerch = {...merchList[0]}
+        // newmerch.id='123456789'
+        // merchList = [newmerch,merchList[0]];
       }
       dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
     } catch (err) {
@@ -275,7 +279,7 @@ const Checkout = () => {
       // give a delay to allow the selected merch and ticket are updated
       setTimeout(()=> {
         setBundleSidebarOpen(true);
-      }, 50)
+      }, 100)
     }
   }
 
