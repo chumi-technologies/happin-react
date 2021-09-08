@@ -81,8 +81,6 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
                     data={merch.property.map((p,index) => ({ label: p.pName, value: p.pValue, index }))}
                     onChange={data => {
                       setSelectedPropertyIndex(data.index)
-                      /* const merchEditingIndex = cart.items.merchItem.findIndex(item=>item.identifier === merch.id + data.pName);
-                      setMerchEditingIndex(merchEditingIndex); */
                       setInputValue(0)
                     }}
                   />

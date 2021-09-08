@@ -120,7 +120,8 @@ const inreament = (action: Action, state: Cart) => {
         {merchId: action.payload.id,
         quantity: action.quantity, property: (action.property as string), 
         identifier: action.payload.id + action.property, price: action.payload.price,
-        name: action.payload.name
+        name: action.payload.name,
+        image: action.payload.image
       });
     }
     finalCart = {
@@ -138,6 +139,7 @@ const inreament = (action: Action, state: Cart) => {
       merchId: m.id,
       property: (action.bundleMerchProperty as string[])[index],
       name: m.name,
+      image: m.image,
       quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
       identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
       price: m.price, // not important for bundles, bundle price should be ticket's price

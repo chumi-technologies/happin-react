@@ -3,17 +3,16 @@ import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall, Delete } from '@icon-park/react';
 import NumberInput from '@components/reusable/NumberInput';
-import Select from '@components/reusable/Select';
 import classNames from 'classnames';
 import moment from 'moment'
-import { CartTicketItem, EventBasicData, MerchItemDataProps, TicketItemDataProps } from 'lib/model/checkout';
+import { CartMerchItem, CartTicketItem, MerchItemDataProps, TicketItemDataProps } from 'lib/model/checkout';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { useToast } from '@chakra-ui/react';
-import { decreaseTicketAmount } from './util/decreseInput';
-import { increaseTicketAmount } from './util/IncreseInput';
+import { decreaseMerchAmount, decreaseTicketAmount } from './util/decreseInput';
+import { increaseMerchAmount, increaseTicketAmount } from './util/IncreseInput';
 import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { currencyFormatter } from './util/currencyFormat';
-import { deleteTicketFromCart } from './util/deleteInput';
+import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
+import { generateToast } from './util/toast';
 
 const CheckoutHead = ({
   saleStart,
@@ -34,7 +33,7 @@ const CheckoutHead = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { eventDataForCheckout, cart, addItem, removeItem } = useCheckoutState();
-  const toast = useToast()
+
   const closeModal = () => {
     setIsOpen(false)
   }
@@ -54,6 +53,7 @@ const CheckoutHead = ({
 
   const nextButtonHandler = () => {
     console.log(cart);
+    console.log(merchList);
     if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
       console.log('No item in cart');
       generateToast('No item in cart');
@@ -61,16 +61,7 @@ const CheckoutHead = ({
     }
   }
 
-
-  const generateToast = (message: string) => {
-    toast({
-      title: message,
-      position: 'top',
-      isClosable: true,
-    })
-  }
-
-  const getMaxNumberInputQty = (data: TicketItemDataProps) => {
+  const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
     if (data?.originalQuantity > data?.maxPerOrder) {
       return data?.maxPerOrder
     } else {
@@ -78,21 +69,40 @@ const CheckoutHead = ({
     }
   }
 
+  const getMaxMerchNumberInputQty = (merch: MerchItemDataProps, property: string) => {
+    const selectedPropertyIndex = merch.property.findIndex(p => p.pName === property);
+    if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
+      return merch?.max
+    } else {
+      return merch?.property[selectedPropertyIndex]?.pValue + merch?.property[selectedPropertyIndex]?.originalPValue
+    }
+  }
+
+  const getEditingMerchListItem = (merch: CartMerchItem): MerchItemDataProps => {
+    return merchList.find(item => item.id === merch.merchId) as MerchItemDataProps;
+  }
+
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
     return ticketList.find(item => item.id === t.ticketId) as TicketItemDataProps
   }
 
+
+
   const getEditingTicketCartIndex = (t: CartTicketItem) => {
     return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
+  }
+
+  const getEditingMerchCartIndex = (t: CartMerchItem) => {
+    return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
   }
 
   const generateCartTicketsTemplate = () => {
     return cart.items.ticketItem.map(t => {
       return (
         <div className="flex p-4" key={t.ticketId}>
-          {/*   <div className="w-16 h-16 rounded-md overflow-hidden">
-            <img className="w-full h-full object-cover" src="https://cdn.sspai.com/2021/08/04/ead81f219cd73b7070124c69eefe9923.jpg" alt="" />
-          </div> */}
+           <div className="w-16 h-16 rounded-md overflow-hidden">
+            <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/'+ eventDataForCheckout?.cover } alt='' />
+          </div>
           <div className="flex-1 min-w-0 ml-4 flex flex-col">
             <div className="flex items-start mb-2">
               <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
@@ -102,14 +112,14 @@ const CheckoutHead = ({
               <div className="flex items-center">
                 <NumberInput
                   min={0}
-                  max={getMaxNumberInputQty(getEdtingTicketListItem(t))}
+                  max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
                   value={cart?.items?.ticketItem[getEditingTicketCartIndex(t)]?.quantity || 0}
                   size="sm"
                   onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
                   onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, addItem) }}
                 />
               </div>
-              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
+              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, onChangeTicketList, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -121,8 +131,36 @@ const CheckoutHead = ({
   }
 
   const generateCartMerchsTemplate = () => {
-    cart.items.ticketItem.map(t => {
-
+    return cart.items.merchItem.map(m => {
+      return (
+        <div className="flex p-4" key={m.identifier}>
+          <div className="w-16 h-16 rounded-md overflow-hidden">
+            <img className="w-full h-full object-cover" src={m.image[0]} alt={m.name} />
+          </div>
+          <div className="flex-1 min-w-0 ml-4 flex flex-col">
+            <div className="flex items-start mb-2">
+              <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+            </div>
+            <div className="flex items-end justify-between flex-1">
+              <div className="flex items-center">
+                <NumberInput
+                  min={0}
+                  max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
+                  value={cart?.items?.merchItem[getEditingMerchCartIndex(m)]?.quantity || 0}
+                  size="sm"
+                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, removeItem, m.property) }}
+                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, addItem, m.property, 1) }}
+                />
+              </div>
+              <div onClick={() => {deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, onChangeMerchList, removeItem)}}
+                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                <Delete theme="outline" size="14" fill="currentColor" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )
     })
   }
 
@@ -179,8 +217,9 @@ const CheckoutHead = ({
                       <div className="checkout__cart-list web-scroll">
                         {/*  start the loop  */}
                         {generateCartTicketsTemplate()}
+                        {generateCartMerchsTemplate()}
                         {cartItemCount() === 0 && (
-                          <div style={{justifyContent:'center',display:'flex',alignItems:'center', height:'100%'}}>
+                          <div style={{ justifyContent: 'center', display: 'flex', alignItems: 'center', height: '100%' }}>
                             <h1 className="font-semibold text-lg">Shopping cart is empty</h1>
                           </div>
                         )}

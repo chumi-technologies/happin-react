@@ -138,9 +138,9 @@ const Checkout = () => {
 
   useEffect(() => {
     // checkSaleStarted(1630793982000)
-     if (generalTicketInfo?.saleStartTime) {
-       checkSaleStarted(generalTicketInfo.saleStartTime);
-     }
+    if (generalTicketInfo?.saleStartTime) {
+      checkSaleStarted(generalTicketInfo.saleStartTime);
+    }
     if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
       checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
     }
@@ -149,13 +149,13 @@ const Checkout = () => {
   const getEventDetailAndSetState = async (eventId: string) => {
     try {
       const res = await getEventDetailForCheckout(eventId);
-      console.log(res)
       const eventDetail: EventBasicData = {
         tags: res.tags,
         title: res.title,
         startTime: res.startTime,
         endTime: res.endTime,
-        default_currency: res.default_currency
+        default_currency: res.default_currency,
+        cover: res.cover,
       }
       setEventDataForCheckout(eventDetail)
     } catch (err) {
@@ -259,9 +259,13 @@ const Checkout = () => {
           return merch
         })
         // fake dup 
-        // const newmerch = {...merchList[0]}
-        // newmerch.id='123456789'
-        // merchList = [newmerch,merchList[0]];
+        /* const newmerch = {
+          ...merchList[0],
+          id: '123456789',
+          name: 'Sample 2',
+          property: [{ pName: 'sm', pValue: 5, originalPValue: 5 }, { pName: 'md', pValue: 10, originalPValue: 10 }]
+        }
+        merchList = [newmerch, merchList[0]]; */
       }
       dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
     } catch (err) {
@@ -277,7 +281,7 @@ const Checkout = () => {
       // set selceted bundle ticket
       setSelectedBundleTicket(value)
       // give a delay to allow the selected merch and ticket are updated
-      setTimeout(()=> {
+      setTimeout(() => {
         setBundleSidebarOpen(true);
       }, 100)
     }
@@ -304,7 +308,7 @@ const Checkout = () => {
     setSaleStart(true)
   }
 
-  const filterBundleMerchForSelectedTicket = (ticketId: string)=> {
+  const filterBundleMerchForSelectedTicket = (ticketId: string) => {
     const filterMerchs = merchListState.filter(m => {
       if (m.tickets.includes(ticketId)) {
         return true
@@ -414,14 +418,14 @@ const Checkout = () => {
   return (
     <div className="checkout__page">
       <div className="flex flex-col-reverse md:flex-col h-full">
-        <CheckoutHead 
-        saleStart={saleStart} 
-        inPresale={inPresale}
-        ticketList={ticketListState}
-        merchList={merchListState}
-        onChangeTicketList={dispatchTicketListAction}
-        onChangeMerchList={dispatcMerchListAction}
-        onPresaleCodeValidate={onPresaleCodeValidate} />
+        <CheckoutHead
+          saleStart={saleStart}
+          inPresale={inPresale}
+          ticketList={ticketListState}
+          merchList={merchListState}
+          onChangeTicketList={dispatchTicketListAction}
+          onChangeMerchList={dispatcMerchListAction}
+          onPresaleCodeValidate={onPresaleCodeValidate} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">
@@ -540,7 +544,7 @@ const Checkout = () => {
             onChangeMerchList={dispatcMerchListAction}
             onChangeTicketList={dispatchTicketListAction}
             merchs={selectedBundleMerch as MerchItemDataProps[]}
-            onClose={() => {setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined)}}
+            onClose={() => { setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined) }}
           />
           <MerchSidebar
             onChange={dispatcMerchListAction}

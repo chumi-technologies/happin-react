@@ -12,6 +12,7 @@ export type EventBasicData = {
   tags: string[];
   title: string;
   default_currency: string;
+  cover: string;
 }
 
 export type GeneralTicketInfo = {
@@ -122,5 +123,6 @@ export interface CartMerchItem {
   identifier: string;
   price: number;
   name: string;
+  image: string[];
 }
 

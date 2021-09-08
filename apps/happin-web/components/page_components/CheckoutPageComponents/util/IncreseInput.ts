@@ -18,14 +18,14 @@ export function increaseTicketAmount(data: TicketItemDataProps,
       if (cart.items.ticketItem[editingIndex]) {
         // item in cart already, add one at a time
         onChange({ type: ActionKind.Decrease, payload: data, quantity: 1 })
-        addItem({item:data, quantity:1});
+        addItem({ item: data, quantity: 1 });
         return
       }
     }
     // other case, add min per order
     if (data.quantity >= data.minPerOrder) {
       onChange({ type: ActionKind.Decrease, payload: data, quantity: data.minPerOrder })
-      addItem({item:data, quantity:data.minPerOrder});
+      addItem({ item: data, quantity: data.minPerOrder });
     }
   }
 }
@@ -35,10 +35,16 @@ export function increaseMerchAmount(
   data: MerchItemDataProps,
   onChange: (arg1: MerchListAction) => void,
   addItem: (arg1: AddItemHandlerParam) => void,
-  propertyIndex: number,
+  propertyIndexOrName: number | string,
   quantity: number) {
-  onChange({ type: ActionKind.Decrease, payload: data, quantity, propertyIndex });
-  addItem({item: data, quantity, property: data.property[propertyIndex].pName});
+  if (typeof propertyIndexOrName === 'number') {
+    onChange({ type: ActionKind.Decrease, payload: data, quantity, propertyIndex: propertyIndexOrName });
+    addItem({ item: data, quantity, property: data.property[propertyIndexOrName].pName });
+  } else if (typeof propertyIndexOrName === 'string') {
+    const propertyIndex = data.property.findIndex(p=> p.pName === propertyIndexOrName);
+    onChange({ type: ActionKind.Decrease, payload: data, quantity, propertyIndex });
+    addItem({ item: data, quantity, property: data.property[propertyIndex].pName });
+  }
 }
 
 
@@ -55,19 +61,19 @@ export function increaseMerchAmount(
 export function increaseBundleTicketAmount(
   ticket: TicketItemDataProps,
   bundleMerchs: MerchItemDataProps[],
-  onChangeTicketList: (arg1: TicketListAction) =>void,
-  onChangeMerchList: (arg1: MerchListAction) =>void,
+  onChangeTicketList: (arg1: TicketListAction) => void,
+  onChangeMerchList: (arg1: MerchListAction) => void,
   quantity: number,
-  addItem:(arg: AddItemHandlerParam) => void,
+  addItem: (arg: AddItemHandlerParam) => void,
   properties: SelectedProperty[],
-) { 
-  onChangeTicketList({type: ActionKind.Decrease, payload: ticket, quantity});
+) {
+  onChangeTicketList({ type: ActionKind.Decrease, payload: ticket, quantity });
 
-  const propertyNames = properties.map(p=>p.pname);
-  const propertyIndex = properties.map(p=>p.index);
+  const propertyNames = properties.map(p => p.pname);
+  const propertyIndex = properties.map(p => p.index);
 
-  bundleMerchs.forEach((m, index)=> {
-    onChangeMerchList({type: ActionKind.Decrease, payload: m, quantity, propertyIndex: propertyIndex[index] });
+  bundleMerchs.forEach((m, index) => {
+    onChangeMerchList({ type: ActionKind.Decrease, payload: m, quantity, propertyIndex: propertyIndex[index] });
   })
-  addItem({item: ticket, quantity: quantity, bundleMerchPayload: bundleMerchs, bundleMerchProperty: propertyNames})
+  addItem({ item: ticket, quantity: quantity, bundleMerchPayload: bundleMerchs, bundleMerchProperty: propertyNames })
 }

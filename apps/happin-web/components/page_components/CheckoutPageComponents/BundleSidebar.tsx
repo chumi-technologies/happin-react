@@ -76,10 +76,8 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
       const maxPerOrderList = merchs.map(m=>m.max);
       maxPerOrder = Math.min(...maxPerOrderList);
 
-      // finally compare propertyMin & maxPerOrder, reassign maxAllowNumber
-      if (propertyMin < maxPerOrder) {
-        maxAllowNumber = propertyMin
-      } else { maxAllowNumber = maxPerOrder};
+      // finally compare propertyMin & maxPerOrder & ticket.quantity, reassign maxAllowNumber
+      maxAllowNumber = Math.min(maxPerOrder, propertyMin, ticket.quantity);
     }
     return maxAllowNumber
   }
