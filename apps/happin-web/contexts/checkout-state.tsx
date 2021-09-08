@@ -1,5 +1,14 @@
-import { Cart, CartMerchItem, CartTicketItem, EventBasicData, GeneralTicketInfo, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
+import { Cart, CartBundleItem, CartMerchItem, CartTicketItem, EventBasicData, GeneralTicketInfo, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
 import { createContext, useContext, useReducer, useState } from "react";
+
+
+export interface AddItemHandlerParam {
+  item: TicketItemDataProps | MerchItemDataProps,
+  quantity: number, 
+  property?: string, 
+  bundleMerchPayload?: MerchItemDataProps[],
+  bundleMerchProperty? : string[]
+}
 
 enum ActionKind {
   Increase = 'INCREASE',
@@ -11,6 +20,9 @@ type Action = {
   payload: TicketItemDataProps | MerchItemDataProps
   quantity: number;
   property? : string;
+  bundleMerchPayload?: MerchItemDataProps[];
+  bundleMerchProperty? : string[];
+  bundleIdentifier?: string;
 }
 
 interface CheckoutContext {
@@ -25,7 +37,7 @@ interface CheckoutContext {
   setCodeUsed: (arg: string)=> void,
   setHappinUserID: (arg: string)=> void,
   setEventDataForCheckout: (arg: EventBasicData)=>void,
-  addItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number)=> void,
+  addItem: (arg: AddItemHandlerParam)=> void,
   removeItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number)=> void
 }
 
@@ -112,7 +124,34 @@ const inreament = (action: Action, state: Cart) => {
       subTotal: updateSubTotal
     }
   } else if (instanceOfBundle(action.payload)) {
+    // for bundle, every ticket is unique
+    let updateItems: CartBundleItem[];
+    const bundleMerchs: CartMerchItem[] = action.bundleMerchPayload?.map((m, index)=> ({
+      merchId: m.id,
+      property: (action.bundleMerchProperty as string[])[index],
+      quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
+      identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
+      price: m.price, // not important for bundles, bundle price should be ticket's price
+    })) || [];
 
+    const bundleTicket: CartBundleItem = {
+      ticketId: (action.payload as TicketItemDataProps).id,
+      sectionId: (action.payload as TicketItemDataProps).sectionId, 
+      quantity: action.quantity, price: (action.payload as TicketItemDataProps).price,
+      identifier: (action.payload as TicketItemDataProps).id + new Date().getTime(), // unique for every bundle ticket
+      merchs: bundleMerchs
+    }
+
+    updateItems = state.items.bundleItem.concat(bundleTicket);
+
+    finalCart = {
+      items: {
+        merchItem: state.items.merchItem,
+        ticketItem: state.items.ticketItem,
+        bundleItem: updateItems
+      },
+      subTotal: updateSubTotal
+    }
   }
   return finalCart
 }
@@ -160,7 +199,15 @@ const decreament = (action: Action, state: Cart) => {
       subTotal: updatedTotalAmount
     }
   } else if (instanceOfBundle(action.payload)) {
-
+    const updateItems: CartBundleItem[] = state.items.bundleItem.filter(item => item.identifier !== action.bundleIdentifier);
+    finalCart =  {
+      items: {
+        merchItem: state.items.merchItem,
+        ticketItem: state.items.ticketItem,
+        bundleItem: updateItems
+      },
+      subTotal: updatedTotalAmount
+    }
   }
   return finalCart
 }
@@ -183,8 +230,10 @@ export function CheckoutState({ children }: {children: any}) {
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
-  const addItemToCartHandler = (item: TicketItemDataProps | MerchItemDataProps, quantity: number, property?: string) => {
-    dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property });
+  const addItemToCartHandler = ({item,
+     quantity, property, bundleMerchPayload,
+     bundleMerchProperty}: AddItemHandlerParam) => {
+    dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property, bundleMerchPayload, bundleMerchProperty});
   };
 
   const removeItemFromCartHandler = (item: TicketItemDataProps | MerchItemDataProps,  quantity: number, property?: string) => {

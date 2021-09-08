@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useReducer, useState } from 'react';
 import TicketItem from '../../components/page_components/CheckoutPageComponents/TicketItem';
 import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
-import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BudleSidebar';
+import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BundleSidebar';
 import { ETicketAvailability, ETicketFeature, ETicketType, ETicketVisibility, EventBasicData, GeneralTicketInfo, MerchItemDataProps, MerchProperty, TicketItemDataProps, TicketItemFeaturesProps } from '../../lib/model/checkout';
 import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
 import { Link, animateScroll as scroll } from 'react-scroll';
@@ -67,7 +67,7 @@ const ticketListReducer = (state: TicketItemDataProps[], action: TicketListActio
 }
 
 const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) => {
-  let finalTicketList = state;
+  let finalMerchList = state;
   const propertyIndex = action.propertyIndex as number
   if (action.type === ActionKind.Increase) {
     const targetIndex = state.findIndex(t => t.id === action.payload?.id);
@@ -75,7 +75,7 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
       }
-      finalTicketList = [...state];
+      finalMerchList = [...state];
     }
   }
   if (action.type === ActionKind.Decrease) {
@@ -85,13 +85,13 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
       }
-      finalTicketList = [...state];
+      finalMerchList = [...state];
     }
   }
   if (action.type === ActionKind.Init) {
     return [...action.initValue as MerchItemDataProps[]]
   }
-  return finalTicketList
+  return finalMerchList
 }
 
 const Checkout = () => {
@@ -210,7 +210,7 @@ const Checkout = () => {
           price: t.price,
           notes: t.notes,
           features,
-          kind: 'ticket',
+          kind: t.isBundle ? 'bundle' : 'ticket',
           visibility: t.visibility,
           availability: t.availability
         }
@@ -298,8 +298,6 @@ const Checkout = () => {
   }
 
   const filterBundleMerchForSelectedTicket = (ticketId: string)=> {
-    console.log(ticketId)
-    console.log(merchListState)
     const filterMerchs = merchListState.filter(m => {
       if (m.tickets.includes(ticketId)) {
         return true
@@ -503,6 +501,7 @@ const Checkout = () => {
                             return (
                               <MerchItem
                                 key={item.id}
+                                currency={eventDataForCheckout.default_currency}
                                 data={item}
                                 disabled={disabledFlag}
                                 onSelect={() => {
@@ -521,8 +520,11 @@ const Checkout = () => {
             </div>
           </div>
           <BundleSidebar
-            ticket={selectedBundleTicket}
+            ticket={selectedBundleTicket as TicketItemDataProps}
             isOpen={bundleSidebarOpen}
+            setIsOpen={setBundleSidebarOpen}
+            onChangeMerchList={dispatcMerchListAction}
+            onChangeTicketList={dispatchTicketListAction}
             merchs={selectedBundleMerch as MerchItemDataProps[]}
             onClose={() => {setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined)}}
           />

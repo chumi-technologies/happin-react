@@ -35,6 +35,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     increaseMerchAmount(merch, onChange, addItem, selectedPropertyIndex, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
+    setSelectedPropertyIndex(0)
   }
 
   const getMaxNumberInputQty = () => {
@@ -55,7 +56,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
             </div>
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-              onClick={()=>{onClose(); setInputValue(0)}}>
+              onClick={()=>{onClose(); setInputValue(0); setSelectedPropertyIndex(0)}}>
               <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
             </div>
           </div>
@@ -74,7 +75,8 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
               <div className="text-white font-semibold mb-1">{merch?.name}</div>
               <div className="text-gray-400 text-tiny mb-3">{merch?.description}</div>
               {
-                merch?.property && (
+                // isOpen is added here to ensure the select component is reset after close 
+                (merch?.property && isOpen) && (
                   <Select
                     data={merch.property.map((p,index) => ({ label: p.pName, value: p.pValue, index }))}
                     onChange={data => {
@@ -91,7 +93,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
               value = {inputValue}
               max={getMaxNumberInputQty()}
               min={0}
-              size='sm' onChange={() => {}} onDecreaseClick = {()=>{setInputValue(s=>s-=1)}}
+              size='sm' onDecreaseClick = {()=>{setInputValue(s=>s-=1)}}
               onIncreaseClick = {()=>{setInputValue(s=>s+=1)}} />
             </div>
           </div>

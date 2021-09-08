@@ -33,6 +33,7 @@ const TicketItem = (props: TicketItemProps) => {
       return data?.originalQuantity;
     }
   }
+  console.log(cart);
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">

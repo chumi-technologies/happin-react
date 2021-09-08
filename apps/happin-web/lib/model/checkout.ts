@@ -36,7 +36,7 @@ export type TicketItemDataProps = {
   ticketType: ETicketType;
   notes: string;
   merch?: boolean; //includes merch as a bundle
-  kind: 'ticket';
+  kind: 'ticket'| 'bundle';
   sectionId: string;
   visibility: ETicketVisibility;
   availability: ETicketAvailability;
@@ -106,6 +106,7 @@ export interface CartTicketItem {
 
 export interface CartBundleItem {
   ticketId: string;
+  sectionId: string;
   quantity: number;
   identifier: string;
   merchs: CartMerchItem[];
