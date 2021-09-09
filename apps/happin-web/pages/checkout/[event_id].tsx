@@ -172,21 +172,21 @@ const Checkout = () => {
       const ticketList: TicketItemDataProps[] = res.tickets.map((t: any) => {
         let features: TicketItemFeaturesProps[] = [];
         switch (t.ticketType) {
-          case 'paid':
+          case ETicketType.INPERSON:
             features = [ETicketFeature.TICKET]
             break;
-          case 'free':
+          case ETicketType.FREEINPERSON:
             features = [ETicketFeature.TICKET]
             break;
-          case 'live':
+          case ETicketType.LIVESTREAM:
             features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK]
             break;
-          case 'pfm':
+          case ETicketType.PFM:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK,
             ETicketFeature.VIP]
             break;
-          case 'playback':
+          case ETicketType.PLAYBACK:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK]
             break;

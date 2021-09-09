@@ -2,7 +2,7 @@ export enum ETicketType {
   INPERSON = 'paid',
   FREEINPERSON = 'free',
   LIVESTREAM = 'live',
-  PFM = 'pfm',
+  PFM = 'PFM',
   PLAYBACK = 'playback'
 }
 
