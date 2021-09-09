@@ -32,7 +32,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseMerchAmount(merch, onChange, addItem, selectedPropertyIndex, inputValue);
+    increaseMerchAmount(merch, onChange, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
     setSelectedPropertyIndex(0)

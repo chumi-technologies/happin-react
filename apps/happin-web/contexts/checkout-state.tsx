@@ -4,10 +4,18 @@ import { createContext, useContext, useReducer, useState } from "react";
 
 export interface AddItemHandlerParam {
   item: TicketItemDataProps | MerchItemDataProps,
-  quantity: number, 
-  property?: string, 
+  quantity: number,
+  property?: string,
   bundleMerchPayload?: MerchItemDataProps[],
-  bundleMerchProperty? : string[]
+  bundleMerchProperty?: string[]
+  bundleIdentifier?: string
+}
+
+export interface RemoveItemHandlerParam {
+  item: TicketItemDataProps | MerchItemDataProps,
+  quantity: number, 
+  property?: string,
+  bundleIdentifier?: string;
 }
 
 enum ActionKind {
@@ -19,26 +27,26 @@ type Action = {
   type: ActionKind,
   payload: TicketItemDataProps | MerchItemDataProps
   quantity: number;
-  property? : string;
+  property?: string;
   bundleMerchPayload?: MerchItemDataProps[];
-  bundleMerchProperty? : string[];
+  bundleMerchProperty?: string[];
   bundleIdentifier?: string;
 }
 
 interface CheckoutContext {
-  cart: Cart, 
+  cart: Cart,
   eventDataForCheckout: EventBasicData | undefined,
   happinUserID: string | undefined,
   codeUsed: string | undefined,
   boxOfficeMode: boolean,
   generalTicketInfo: GeneralTicketInfo | undefined,
-  setGeneralTicketInfo: (arg: GeneralTicketInfo)=>void,
-  setBoxOfficeMode: (arg: boolean)=>void,
-  setCodeUsed: (arg: string)=> void,
-  setHappinUserID: (arg: string)=> void,
-  setEventDataForCheckout: (arg: EventBasicData)=>void,
-  addItem: (arg: AddItemHandlerParam)=> void,
-  removeItem: (arg0: MerchItemDataProps| TicketItemDataProps, arg1: number)=> void
+  setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
+  setBoxOfficeMode: (arg: boolean) => void,
+  setCodeUsed: (arg: string) => void,
+  setHappinUserID: (arg: string) => void,
+  setEventDataForCheckout: (arg: EventBasicData) => void,
+  addItem: (arg: AddItemHandlerParam) => void,
+  removeItem: (arg0: RemoveItemHandlerParam) => void
 }
 
 const defaultCartState: Cart = {
@@ -89,10 +97,10 @@ const inreament = (action: Action, state: Cart) => {
       updateItems[existingCartTicketIndex] = updateItem
     } else {
       updateItems = state.items.ticketItem.concat({
-        name: action.payload.title, 
-        ticketId: action.payload.id, 
-        sectionId: action.payload.sectionId, 
-        quantity: action.quantity, 
+        name: action.payload.title,
+        ticketId: action.payload.id,
+        sectionId: action.payload.sectionId,
+        quantity: action.quantity,
         price: action.payload.price
       });
     }
@@ -117,12 +125,13 @@ const inreament = (action: Action, state: Cart) => {
       updateItems[existingCartMerchIndex] = updateItem
     } else {
       updateItems = state.items.merchItem.concat(
-        {merchId: action.payload.id,
-        quantity: action.quantity, property: (action.property as string), 
-        identifier: action.payload.id + action.property, price: action.payload.price,
-        name: action.payload.name,
-        image: action.payload.image
-      });
+        {
+          merchId: action.payload.id,
+          quantity: action.quantity, property: (action.property as string),
+          identifier: action.payload.id + action.property, price: action.payload.price,
+          name: action.payload.name,
+          image: action.payload.image
+        });
     }
     finalCart = {
       items: {
@@ -133,28 +142,41 @@ const inreament = (action: Action, state: Cart) => {
       subTotal: updateSubTotal
     }
   } else if (instanceOfBundle(action.payload)) {
-    // for bundle, every ticket is unique
-    let updateItems: CartBundleItem[];
-    const bundleMerchs: CartMerchItem[] = action.bundleMerchPayload?.map((m, index)=> ({
-      merchId: m.id,
-      property: (action.bundleMerchProperty as string[])[index],
-      name: m.name,
-      image: m.image,
-      quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
-      identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
-      price: m.price, // not important for bundles, bundle price should be ticket's price
-    })) || [];
+    // for bundle, every ticket is unique if identifier not provided, otherwise we will alter the 
+    // bundle ticket and include merchs for that identifier
+    let updateItems: CartBundleItem[] = state.items.bundleItem;
+    if (!action.bundleIdentifier) {
+      const bundleMerchs: CartMerchItem[] = action.bundleMerchPayload?.map((m, index) => ({
+        merchId: m.id,
+        property: (action.bundleMerchProperty as string[])[index],
+        name: m.name,
+        image: m.image,
+        quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
+        identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
+        price: m.price, // not important for bundles, bundle price should be ticket's price
+      })) || [];
 
-    const bundleTicket: CartBundleItem = {
-      name: (action.payload as TicketItemDataProps).title,
-      ticketId: (action.payload as TicketItemDataProps).id,
-      sectionId: (action.payload as TicketItemDataProps).sectionId, 
-      quantity: action.quantity, price: (action.payload as TicketItemDataProps).price,
-      identifier: (action.payload as TicketItemDataProps).id + new Date().getTime(), // unique for every bundle ticket
-      merchs: bundleMerchs
+      const bundleTicket: CartBundleItem = {
+        name: (action.payload as TicketItemDataProps).title,
+        ticketId: (action.payload as TicketItemDataProps).id,
+        sectionId: (action.payload as TicketItemDataProps).sectionId,
+        quantity: action.quantity, price: (action.payload as TicketItemDataProps).price,
+        identifier: (action.payload as TicketItemDataProps).id + new Date().getTime(), // unique for every bundle ticket
+        merchs: bundleMerchs
+      }
+      updateItems = state.items.bundleItem.concat(bundleTicket);
+    } else {
+      const existingCartBundleIndex = state.items.bundleItem.findIndex(item => item.identifier === action.bundleIdentifier);
+      const existingCartBundleItem = state.items.bundleItem[existingCartBundleIndex];
+      const updateMerchs: CartMerchItem[] = existingCartBundleItem.merchs.map(m => ({ ...m, quantity: existingCartBundleItem.quantity + action.quantity }))
+      const updateItem: CartBundleItem = {
+        ...existingCartBundleItem,
+        quantity: existingCartBundleItem.quantity + action.quantity,
+        merchs: updateMerchs
+      }
+      updateItems = [...state.items.bundleItem];
+      updateItems[existingCartBundleIndex] = updateItem
     }
-
-    updateItems = state.items.bundleItem.concat(bundleTicket);
 
     finalCart = {
       items: {
@@ -170,7 +192,7 @@ const inreament = (action: Action, state: Cart) => {
 
 
 const decreament = (action: Action, state: Cart) => {
-  let finalCart:Cart = defaultCartState 
+  let finalCart: Cart = defaultCartState
   const updatedTotalAmount = state.subTotal - action.quantity * action.payload.price
   if (instanceOfTicket(action.payload)) {
     const existingCartTicketIndex = state.items.ticketItem.findIndex(item => item.ticketId === action.payload.id);
@@ -179,7 +201,7 @@ const decreament = (action: Action, state: Cart) => {
     if (existingCartTicketItem.quantity === action.quantity) {
       updateItems = state.items.ticketItem.filter(item => item.ticketId !== action.payload.id);
     } else {
-      const updateItem: CartTicketItem = {...existingCartTicketItem, quantity: existingCartTicketItem.quantity - action.quantity};
+      const updateItem: CartTicketItem = { ...existingCartTicketItem, quantity: existingCartTicketItem.quantity - action.quantity };
       updateItems = [...state.items.ticketItem];
       updateItems[existingCartTicketIndex] = updateItem;
     }
@@ -198,11 +220,11 @@ const decreament = (action: Action, state: Cart) => {
     if (existingCartMerchItem.quantity === action.quantity) {
       updateItems = state.items.merchItem.filter(item => item.identifier !== (action.payload.id + action.property));
     } else {
-      const updateItem: CartMerchItem = {...existingCartMerchItem, quantity: existingCartMerchItem.quantity - action.quantity};
+      const updateItem: CartMerchItem = { ...existingCartMerchItem, quantity: existingCartMerchItem.quantity - action.quantity };
       updateItems = [...state.items.merchItem];
       updateItems[existingCartMerchIndex] = updateItem;
     }
-    finalCart =  {
+    finalCart = {
       items: {
         merchItem: updateItems,
         ticketItem: state.items.ticketItem,
@@ -211,8 +233,18 @@ const decreament = (action: Action, state: Cart) => {
       subTotal: updatedTotalAmount
     }
   } else if (instanceOfBundle(action.payload)) {
-    const updateItems: CartBundleItem[] = state.items.bundleItem.filter(item => item.identifier !== action.bundleIdentifier);
-    finalCart =  {
+    const existingCartBundleIndex = state.items.bundleItem.findIndex(item => item.identifier === action.bundleIdentifier);
+    const existingCartBundleItem = state.items.bundleItem[existingCartBundleIndex];
+    let updateItems: CartBundleItem[];
+    if (existingCartBundleItem.quantity === action.quantity) {
+      updateItems = state.items.bundleItem.filter(item => item.identifier !== action.bundleIdentifier);
+    } else {
+      const updateMerchs: CartMerchItem[] = existingCartBundleItem.merchs.map(m => ({ ...m, quantity: existingCartBundleItem.quantity - action.quantity }))
+      const updateItem: CartBundleItem = { ...existingCartBundleItem, merchs:updateMerchs, quantity: existingCartBundleItem.quantity - action.quantity };
+      updateItems = [...state.items.bundleItem];
+      updateItems[existingCartBundleIndex] = updateItem;
+    }
+    finalCart = {
       items: {
         merchItem: state.items.merchItem,
         ticketItem: state.items.ticketItem,
@@ -227,12 +259,12 @@ const decreament = (action: Action, state: Cart) => {
 
 const checkoutCtx = createContext({} as CheckoutContext);
 
-export function CheckoutState({ children }: {children: any}) {
+export function CheckoutState({ children }: { children: any }) {
   const [cartState, dispatchCartAction] = useReducer(
     cartReducer,
     defaultCartState
   );
-  
+
   const [eventDataForCheckout, setEventDataForCheckout] = useState<EventBasicData>();
   // happinUserID will be set when the userID is passed in url(mobile app logged in and open the checkout page)
   const [happinUserID, setHappinUserID] = useState<string>();
@@ -242,14 +274,14 @@ export function CheckoutState({ children }: {children: any}) {
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
-  const addItemToCartHandler = ({item,
-     quantity, property, bundleMerchPayload,
-     bundleMerchProperty}: AddItemHandlerParam) => {
-    dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property, bundleMerchPayload, bundleMerchProperty});
+  const addItemToCartHandler = ({ item,
+    quantity, property, bundleMerchPayload,
+    bundleMerchProperty, bundleIdentifier }: AddItemHandlerParam) => {
+    dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property, bundleMerchPayload, bundleMerchProperty, bundleIdentifier });
   };
 
-  const removeItemFromCartHandler = (item: TicketItemDataProps | MerchItemDataProps,  quantity: number, property?: string) => {
-    dispatchCartAction({ type: ActionKind.Decrease, payload: item, quantity, property });
+  const removeItemFromCartHandler = ({item, quantity, property, bundleIdentifier}: RemoveItemHandlerParam) => {
+    dispatchCartAction({ type: ActionKind.Decrease, payload: item, quantity, property, bundleIdentifier });
   };
 
 

@@ -13,11 +13,6 @@ import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
 
 
-export interface SelectedProperty {
-  pname: string,
-  index: number
-}
-
 type CheckoutSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -33,19 +28,18 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
   const { eventDataForCheckout, generalTicketInfo, addItem } = useCheckoutState();
   const [inputValue, setInputValue] = useState(0)
 
-  // array of the selected merchs property name & index inside this bundle 
-  // (eg. [{name:'small', index:2}, {pname:'large', index:0}] means {pname:'small', index:0} is the selected property 
-  // for first mech with property name 'small', and index of 2 in the merch's property array) 
-   
-  const [selectedProperties, setSelectedProperties] = useState<SelectedProperty[]>([]);
+  // array of the selected merchs property name inside this bundle 
+  // (eg. ['small', 'medium'] means 'small' is the selected property 
+  // for first mech with property name 'small' and so on
+  const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
   
   useEffect(()=> {
     if (merchs) {
       if (!selectedProperties.length){
-        const init: SelectedProperty[] = Array(merchs.length);
+        const init: string[] = Array(merchs.length);
         merchs.forEach((m,index)=> {
           // the init array should be the 0 property index of every merch
-          init[index] = {pname: m.property[0].pName, index: 0}
+          init[index] =  m.property[0].pName
         })
         setSelectedProperties(init)
       }
@@ -56,30 +50,39 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     setInputValue(0)
     setSelectedProperties(s => {
       const newSelectedProperties = [...s];
-      newSelectedProperties[outerIndex] = {pname: data.label, index: data.index}
+      newSelectedProperties[outerIndex] =  data.label
       return newSelectedProperties
     })
   }
 
-  const getMaxAllowNumber = ()=> {
+/*   const getMaxAllowNumber = ()=> {
     let maxAllowNumber = 0;
-
-    let propertyMin = 0;
-    let maxPerOrder = 0;
+    //let propertyMin = 0;
+   // let maxPerOrder = 0;
     if (merchs && merchs.length && selectedProperties && selectedProperties.length) {
       // from the merch list, get the selected properties , then optain the min pValue among them
-      const selectedProperty = merchs.map((m, index)=> m.property.find(p=>p.pName === selectedProperties[index].pname));
-      const values = selectedProperty.map(p=>{return p?.pValue || 0});
-      propertyMin = Math.min(...values);
+      //const selectedProperty = merchs.map((m, index)=> m.property.find(p=>p.pName === selectedProperties[index]));
+      //const values = selectedProperty.map(p=>{return p?.pValue || 0});
+      //propertyMin = Math.min(...values);
       
-      //get merch list max per order list, then obtain the min value among them
-      const maxPerOrderList = merchs.map(m=>m.max);
-      maxPerOrder = Math.min(...maxPerOrderList);
+      // get merch list max per order list, then obtain the min value among them
+      // const maxPerOrderList = merchs.map(m=>m.max);
+      // maxPerOrder = Math.min(...maxPerOrderList);
 
-      // finally compare propertyMin & maxPerOrder & ticket.quantity, reassign maxAllowNumber
-      maxAllowNumber = Math.min(maxPerOrder, propertyMin, ticket.quantity);
+      // finally compare propertyMin & ticket.quantity, reassign maxAllowNumber
+      // maxAllowNumber = Math.min(propertyMin, ticket.quantity);
+
     }
+    maxAllowNumber = ticket.quantity;
     return maxAllowNumber
+  } */
+
+  const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
+    if (data?.originalQuantity > data?.maxPerOrder) {
+      return data?.maxPerOrder
+    } else {
+      return data?.originalQuantity;
+    }
   }
 
   const checkSoldOut = () => {
@@ -96,6 +99,22 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
     setSelectedProperties([]);
+  }
+
+  const increaseBundleAmount = ()=> {
+    if (ticket.quantity >= ticket.minPerOrder && inputValue === 0) {
+      setInputValue(ticket.minPerOrder)
+    } else {
+      setInputValue(s=>s+1)
+    }
+  }
+
+  const decreaseBundleAmount = ()=> {
+    if (inputValue === ticket.minPerOrder) {
+      setInputValue(0)
+    } else {
+      setInputValue(s=>s-1)
+    }
   }
 
   return (
@@ -163,9 +182,9 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         </div>
       </div>
       <div className="flex items-center px-5 sm:px-6 py-4 border-t border-solid border-gray-700">
-        <NumberInput min={0} max={getMaxAllowNumber()}  value = {inputValue}
-         onDecreaseClick = {()=>{setInputValue(s=>s-=1)}}
-         onIncreaseClick = {()=>{setInputValue(s=>s+=1)}}
+        <NumberInput min={0} max={getMaxTicketNumberInputQty(ticket)}  value = {inputValue}
+         onDecreaseClick = {()=>decreaseBundleAmount()}
+         onIncreaseClick = {()=>increaseBundleAmount()}
         />
         <div className="flex-1 ml-4 sm:ml-6">
           {checkSoldOut() ?  <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">

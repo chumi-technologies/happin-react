@@ -31,7 +31,7 @@ export type MerchListAction = {
   payload?: MerchItemDataProps,
   initValue?: MerchItemDataProps[],
   quantity?: number;
-  propertyIndex?: number;
+  property?: string;
 }
 
 const ticketListReducer = (state: TicketItemDataProps[], action: TicketListAction) => {
@@ -68,10 +68,11 @@ const ticketListReducer = (state: TicketItemDataProps[], action: TicketListActio
 
 const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) => {
   let finalMerchList = state;
-  const propertyIndex = action.propertyIndex as number
+  //const propertyIndex =  action.propertyIndex as number
   if (action.type === ActionKind.Increase) {
     const targetIndex = state.findIndex(t => t.id === action.payload?.id);
     if (targetIndex !== -1) {
+      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
       }
@@ -81,6 +82,7 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
   if (action.type === ActionKind.Decrease) {
     const targetIndex = state.findIndex(t => t.id === action.payload?.id);
     if (targetIndex !== -1) {
+      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
       // if merch has property alter the quantity inside this property
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
