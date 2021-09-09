@@ -37,7 +37,7 @@ const CheckoutHead = ({
   const toast = useToast()
 
   const nextButtonHandler = () => {
-    console.log('Cart: ',cart);
+    console.log('Cart: ', cart);
     console.log('Merch List: ', merchList);
     console.log('Ticket List: ', ticketList)
     if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
@@ -208,14 +208,40 @@ const CheckoutHead = ({
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
                   value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => {bundleRemoveHandler(t)}}
-                  onIncreaseClick={() => {bundleIncreaseHandler(t)}}
+                  onDecreaseClick={() => { bundleRemoveHandler(t) }}
+                  onIncreaseClick={() => { bundleIncreaseHandler(t) }}
                 />
               </div>
-              <div onClick={() => { }}
+              <div onClick={() => { bundleDeleteHandler(t) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
+            </div>
+
+            {/* bundle merchs */}
+            <div className="flex justify-between flex-1 mt-5 " style={{flexDirection: 'column'}}>
+            <div className="text-white text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
+              {t.merchs.map(m => (
+                <div className="flex p-4 border-l border-solid border-white border-opacity-20"  key={m.identifier}>
+                  <div className="w-16 h-16 rounded-md overflow-hidden">
+                    <img className="w-full h-full object-cover" src={m.image[0].startsWith('https') ? m.image[0] : 'https://images.chumi.co/' + m.image[0]} alt='' />
+                  </div>
+                  <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                    <div className="flex items-start mb-2">
+                      <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                    </div>
+                    <div className="flex items-end justify-between flex-1">
+                      <div className="flex items-center">
+                        <NumberInput
+                          isDisabled={true}
+                          value={t.quantity || 0}
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -240,7 +266,7 @@ const CheckoutHead = ({
     let quantity = 1;
     const ticket: TicketItemDataProps = getEdtingTicketListItem(t)
 
-    if ( ticket.minPerOrder === t.quantity) {
+    if (ticket.minPerOrder === t.quantity) {
       quantity = t.quantity
     }
     decreaseBundleTicketAmount(
@@ -249,6 +275,18 @@ const CheckoutHead = ({
       onChangeTicketList,
       onChangeMerchList,
       quantity,
+      removeItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
+
+  const bundleDeleteHandler = (t: CartBundleItem) => {
+    decreaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      onChangeTicketList,
+      onChangeMerchList,
+      t.quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
       t.identifier)
