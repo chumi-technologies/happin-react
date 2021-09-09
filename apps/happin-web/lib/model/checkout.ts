@@ -7,6 +7,7 @@ export enum ETicketType {
 }
 
 export type EventBasicData = {
+  id: string;
   startTime: Date;
   endTime: Date;
   tags: string[];

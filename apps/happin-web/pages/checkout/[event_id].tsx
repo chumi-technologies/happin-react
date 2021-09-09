@@ -152,6 +152,7 @@ const Checkout = () => {
     try {
       const res = await getEventDetailForCheckout(eventId);
       const eventDetail: EventBasicData = {
+        id: res._id,
         tags: res.tags,
         title: res.title,
         startTime: res.startTime,
