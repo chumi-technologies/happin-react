@@ -37,6 +37,9 @@
 .link-white {
   @apply text-white underline hover:text-rose-500 transition;
 }
+.link-normal {
+  @apply hover:underline hover:text-rose-500 transition;
+}
 
 .ellipsis-2 {
   @include ellipsis(2)
