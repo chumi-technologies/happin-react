@@ -27,6 +27,9 @@ const TicketItem = (props: TicketItemProps) => {
   const { cart, addItem, removeItem } = useCheckoutState();
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
+  // the input number is read from Cart , so the max input must use original quantity,
+  // (quantity will keep decreasing as item add to cart, if quantity is used here, 
+  // the max will never reach the correct amount)
   const getMaxNumberInputQty = () => {
     if (data?.originalQuantity > data?.maxPerOrder) {
       return data?.maxPerOrder

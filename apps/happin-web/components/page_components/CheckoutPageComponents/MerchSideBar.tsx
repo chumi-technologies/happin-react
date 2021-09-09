@@ -38,6 +38,9 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     setSelectedPropertyIndex(0)
   }
 
+   // the input number is not read from Cart , so the max input can be quantity,
+  // quantity or cart will not change when the number input changed, it will only changed when the 
+  // add to cart button is clicked
   const getMaxNumberInputQty = () => {
     if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
       return merch?.max

@@ -13,6 +13,7 @@ import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { currencyFormatter } from './util/currencyFormat';
 import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
+import { useToast } from '@chakra-ui/react';
 
 const CheckoutHead = ({
   saleStart,
@@ -33,14 +34,15 @@ const CheckoutHead = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { eventDataForCheckout, cart, addItem, removeItem } = useCheckoutState();
+  const toast = useToast()
 
   const nextButtonHandler = () => {
-    console.log(cart);
-    console.log(merchList);
-    console.log(ticketList)
+    console.log('Cart: ',cart);
+    console.log('Merch List: ', merchList);
+    console.log('Ticket List: ', ticketList)
     if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
       console.log('No item in cart');
-      generateToast('No item in cart');
+      generateToast('No item in cart', toast);
       return
     }
   }
@@ -78,6 +80,10 @@ const CheckoutHead = ({
     return count
   }
 
+
+  // the input number is read from Cart , so the max input must use original quantity,
+  // (quantity will keep decreasing as item add to cart, if quantity is used here, 
+  // the max will never reach the correct amount) same for getMaxMerchNumberInputQty()
   const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
     if (data?.originalQuantity > data?.maxPerOrder) {
       return data?.maxPerOrder
@@ -87,11 +93,12 @@ const CheckoutHead = ({
   }
 
   const getMaxMerchNumberInputQty = (merch: MerchItemDataProps, property: string) => {
+    console.log(merch)
     const selectedPropertyIndex = merch.property.findIndex(p => p.pName === property);
-    if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
+    if (merch?.property[selectedPropertyIndex]?.originalPValue > merch?.max) {
       return merch?.max
     } else {
-      return merch?.property[selectedPropertyIndex]?.pValue + merch?.property[selectedPropertyIndex]?.originalPValue
+      return merch?.property[selectedPropertyIndex]?.originalPValue
     }
   }
 
@@ -113,9 +120,6 @@ const CheckoutHead = ({
     return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
   }
 
-  const getEditingBundleCartIndex = (t: CartBundleItem) => {
-    return cart.items.bundleItem.findIndex(item => item.identifier === t.identifier)
-  }
 
   const generateCartTicketsTemplate = () => {
     return cart.items.ticketItem.map(t => {
@@ -188,7 +192,7 @@ const CheckoutHead = ({
   const generateCartBundleTemplate = () => {
     return cart.items.bundleItem.map(t => {
       return (
-        <div className="flex p-4" key={t.ticketId}>
+        <div className="flex p-4" key={t.identifier}>
           <div className="w-16 h-16 rounded-md overflow-hidden">
             <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
           </div>
@@ -202,30 +206,10 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
-                  value={cart?.items?.bundleItem[getEditingBundleCartIndex(t)]?.quantity || 0}
+                  value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => {
-                    decreaseBundleTicketAmount(
-                      getEdtingTicketListItem(t),
-                      filterBundleMerchForSelectedTicket(t.ticketId),
-                      onChangeTicketList,
-                      onChangeMerchList,
-                      1,
-                      removeItem,
-                      getPropertiesForMerchBundle(t.merchs),
-                      t.identifier)
-                  }}
-                  onIncreaseClick={() => {
-                    increaseBundleTicketAmount(
-                      getEdtingTicketListItem(t),
-                      filterBundleMerchForSelectedTicket(t.ticketId),
-                      onChangeTicketList,
-                      onChangeMerchList,
-                      1,
-                      addItem,
-                      getPropertiesForMerchBundle(t.merchs),
-                      t.identifier)
-                  }}
+                  onDecreaseClick={() => {bundleRemoveHandler(t)}}
+                  onIncreaseClick={() => {bundleIncreaseHandler(t)}}
                 />
               </div>
               <div onClick={() => { }}
@@ -239,6 +223,36 @@ const CheckoutHead = ({
     })
   }
 
+  const bundleIncreaseHandler = (t: CartBundleItem) => {
+    increaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      onChangeTicketList,
+      onChangeMerchList,
+      1,
+      addItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
+
+
+  const bundleRemoveHandler = (t: CartBundleItem,) => {
+    let quantity = 1;
+    const ticket: TicketItemDataProps = getEdtingTicketListItem(t)
+
+    if ( ticket.minPerOrder === t.quantity) {
+      quantity = t.quantity
+    }
+    decreaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      onChangeTicketList,
+      onChangeMerchList,
+      quantity,
+      removeItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
 
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
