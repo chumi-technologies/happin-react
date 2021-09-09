@@ -287,14 +287,11 @@ button {
   @apply text-gray-300 text-sm
 }
 .form-field {
-  @apply block w-full py-2 px-3 mt-1 bg-transparent text-white border-2 border-solid border-gray-600 rounded-lg transition placeholder-gray-500 focus:bg-gray-900 hover:border-gray-500;
+  @apply block w-full py-2 px-3 mt-1 bg-transparent text-white border-2 border-solid border-gray-600 rounded-lg transition placeholder-gray-500 focus:bg-gray-900 hover:border-gray-500 focus:outline-none;
   &.is-placeholder {
     @apply text-gray-400
   }
 }
-
-.cut-text {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+textarea.form-field {
+  resize: none;
 }

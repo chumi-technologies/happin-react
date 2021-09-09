@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import NumberInput from '@components/reusable/NumberInput';
 import PaymentHead from '@components/page_components/PaymentPageComponents/PaymentHead';
 import { Delete } from '@icon-park/react';
-import { Checkbox, HStack } from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack } from '@chakra-ui/react';
 import Link from 'next/link';
+import { StringOrNumber } from '@chakra-ui/utils/dist/types/types';
+import { useEffect } from 'react';
 type FormData = {
   email: string;
   country: string;
@@ -16,18 +18,25 @@ type FormData = {
   province: string;
   postcode: string;
   message: string;
+  radio: string;
+  radio2: string;
+  checkbox: StringOrNumber[];
+  textarea: string;
 };
 const Payment = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
     reset,
   } = useForm<FormData>();
-
   const onSubmit = async (data: any) => {
     console.log(data);
   };
+  useEffect(() => {
+    register('checkbox');
+  }, [register]);
   return (
     <div className="checkout__page">
       <div className="flex flex-col h-full">
@@ -162,6 +171,61 @@ const Payment = () => {
                               />
                             </div>
                           </div>
+                        </div>
+                        <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
+                        <div className="lg:col-span-6">
+                          <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
+                          <RadioGroup defaultValue="1" colorScheme="rose">
+                            <Stack className="radio-pointer text-gray-300">
+                              <Radio value="radio1" {...register('radio')}>
+                                <span className="text-sm">Radio 1</span>
+                              </Radio>
+                              <Radio value="radio2" {...register('radio')}>
+                                <span className="text-sm">Radio 2</span>
+                              </Radio>
+                            </Stack>
+                          </RadioGroup>
+                        </div>
+                        <div className="lg:col-span-6">
+                          <div className="font-semibold mb-2">2. General Admission Livestream Tickets</div>
+                          <RadioGroup defaultValue="1" colorScheme="rose">
+                            <HStack className="radio-pointer text-gray-300">
+                              <Radio value="radio1" {...register('radio2')}>
+                                <span className="text-sm">Radio 1</span>
+                              </Radio>
+                              <Radio value="radio2" {...register('radio2')}>
+                                <span className="text-sm">Radio 2</span>
+                              </Radio>
+                            </HStack>
+                          </RadioGroup>
+                        </div>
+                        <div className="lg:col-span-6">
+                          <div className="font-semibold mb-2">3. General Admission Livestream Tickets</div>
+                          <CheckboxGroup
+                            colorScheme="rose"
+                            defaultValue={['checkbox01']}
+                            onChange={(value) => {
+                              setValue('checkbox', value)
+                            }}
+                          >
+                            <Stack className="text-gray-300">
+                              <Checkbox value="checkbox01">
+                                <span className="text-sm">checkbox 1</span>
+                              </Checkbox>
+                              <Checkbox value="checkbox02">
+                                <span className="text-sm">checkbox 2</span>
+                              </Checkbox>
+                            </Stack>
+                          </CheckboxGroup>
+                        </div>
+                        <div className="lg:col-span-6">
+                          <div className="font-semibold mb-2">4. General Admission Livestream Tickets</div>
+                          <textarea
+                            className="form-field"
+                            rows={3}
+                            placeholder="请输入"
+                            {...register('textarea')}
+                          />
                         </div>
                         {/*<label className="block">*/}
                         {/*  <span className="form-label">Industry Type</span>*/}

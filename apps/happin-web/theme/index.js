@@ -7,6 +7,7 @@ import Badge from "./components/badge";
 import Input from "./components/input";
 import Checkbox from "./components/checkbox";
 import FormError from "./components/form";
+import Radio from './components/radio';
 
 const theme = extendTheme({
   initialColorMode: "dark",
@@ -61,6 +62,7 @@ const theme = extendTheme({
     Input,
     FormError,
     Checkbox,
+    Radio
   },
   breakpoints: createBreakpoints({
     sm: "640px",
