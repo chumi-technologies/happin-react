@@ -93,7 +93,6 @@ const CheckoutHead = ({
   }
 
   const getMaxMerchNumberInputQty = (merch: MerchItemDataProps, property: string) => {
-    console.log(merch)
     const selectedPropertyIndex = merch.property.findIndex(p => p.pName === property);
     if (merch?.property[selectedPropertyIndex]?.originalPValue > merch?.max) {
       return merch?.max
