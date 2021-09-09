@@ -124,5 +124,6 @@ export interface CartMerchItem {
   price: number;
   name: string;
   image: string[];
+  shipping: boolean;
 }
 
