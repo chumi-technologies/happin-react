@@ -1,5 +1,5 @@
-import { getEventDetail, getGroupEvents } from "./events";
-import { checkinTicket } from "./tickets";
+import { getEventDetail, getEventDetailForCheckout, getGroupEvents } from "./events";
+import { checkinTicket, getGATickets, getEventMerchs } from "./tickets";
 import { getUserInfo } from "./user";
 
-export { getEventDetail, getGroupEvents, getUserInfo, checkinTicket };
+export { getEventDetail, getGroupEvents, getUserInfo, checkinTicket, getEventDetailForCheckout, getGATickets, getEventMerchs };

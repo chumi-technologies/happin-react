@@ -1,18 +1,28 @@
 import { checkinTicket } from "lib/api";
 import { useState } from "react"
 import { Button } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react"
 
 const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID }: { setIsRedeemModalOpen: (arg: boolean) => void, happinEID: string }) => {
   const [codeInput, setCodeInput] = useState<string | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const toast = useToast();
+  
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
 
   const onConfirmHandler = async () => {
     if (!codeInput) {
-      console.log('Missing required field');
+      generateToast('Missing required field');
       return
     }
     if (codeInput.trim() === '') {
-      console.log('Missing required field')
+      generateToast('Missing required field')
       return
     }
     try {
@@ -22,20 +32,20 @@ const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID }: { setIsRedeemModal
       const checkinRes = await checkinTicket(paylaod);
       if (checkinRes.code !== 200) {
         if (checkinRes.message.includes('checked already')) {
-          console.log('This invitation code has been used')
+          generateToast('This invitation code has been used')
         } else if (checkinRes.message.includes('checked in with a regular ticket')) {
-          console.log('You have already checked in with one ticket')
+          generateToast('You have already checked in with one ticket')
         } else if (checkinRes.message.includes('Ticket not exist')) {
-          console.log('Ticket code not exists');
+          generateToast('Ticket code not exists');
         }
         return
       }
       if (checkinRes.data.alreadyChecked) {
-        console.log('The invitation code already redeemed by you.')
+        generateToast('The invitation code already redeemed by you.')
         return
       }
 
-      console.log('Redeem successful')
+      generateToast('Redeem successful')
       setIsRedeemModalOpen(false)
     } catch (err) {
       console.log(err)

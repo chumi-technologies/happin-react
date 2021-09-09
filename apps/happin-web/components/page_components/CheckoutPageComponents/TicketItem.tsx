@@ -1,51 +1,71 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import NumberInput from '@components/reusable/NumberInput';
 import { HStack, Tooltip } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
-import type { TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
+import { ETicketType, TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
 import classNames from 'classnames';
-import { Right } from '@icon-park/react';
 import Link from 'next/link';
+import { useCheckoutState } from 'contexts/checkout-state';
+import { TicketListAction } from 'pages/checkout/[event_id]';
+import { increaseTicketAmount } from './util/IncreseInput';
+import { decreaseTicketAmount } from './util/decreseInput';
+import moment from 'moment';
+import { currencyFormatter } from './util/currencyFormat';
 
 export type TicketItemProps = {
   data: TicketItemDataProps;
-  actionType: 'button' | 'input'; // number input or select button
-  onSelect?: (data: any) => void;
+  onSelect: (data: any) => void;
+  onChange: (data: TicketListAction)=> void;
+  disabled?: boolean,
+  currency: string,
+  absorbFee: boolean,
+  taxNeeded: number
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, actionType } = props;
+  const { data, onSelect, onChange, currency, absorbFee = false, taxNeeded, disabled = false } = props;
+  const { cart, addItem, removeItem } = useCheckoutState();
+  const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
+
+  const getMaxNumberInputQty = () => {
+    if (data?.originalQuantity > data?.maxPerOrder) {
+      return data?.maxPerOrder
+    } else {
+      return data?.originalQuantity;
+    }
+  }
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
         <div className="flex-1">
           <div className="sm:text-lg leading-none mb-1 font-semibold text-white">{data.title}</div>
           <div className="font-medium text-xs text-gray-400">
-            <span className="text-white text-sm">{data.price}</span>
-            {
-              data.subPrice && data.subPrice.map((item: string, index) => (
-                <span className="ml-1" key={index}>+ {item}</span>
-              ))
-            }
+            <span className="text-white text-sm">{currencyFormatter(currency as string).format(data.price)}</span>
+            {taxNeeded ? <span className="ml-1">{absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span> : <span className="ml-1">{absorbFee ? '' : '+ Fee'}</span>}
           </div>
-          <div className="text-gray-400 text-xs">{data.time}</div>
+          {(typeof data.start === 'number' && typeof data.end === 'number') && <div className="text-gray-400 text-xs">On sale from: {moment(data.start * 1000).format('MMMM Do, h:mma')} ~ {moment(data.end * 1000).format('MMMM Do, h:mma')}</div>}
         </div>
-        {
-          actionType === 'button' ?
+        {data.originalQuantity <= 0 && <p style={{textAlign: 'center'}} className="btn checkout__ticket-select">SOLD OUT</p> }
+        {data.originalQuantity >0 && (
+          data.merch ?
             <button
-              onClick={() => onSelect?.(data)}
+              onClick={() => onSelect(data)}
               className="btn checkout__ticket-select"
-              disabled={data.soldOut}
+              disabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000))))}
             >
               Select
             </button> :
             <NumberInput
-              onChange={(value) => {
-                onSelect?.(value)
-              }}
-              isDisabled={data.soldOut}
+              min={0}
+              max={getMaxNumberInputQty()}
+              value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
+              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, onChange, removeItem)}}
+              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, onChange, addItem)}}
+              // disabled if  1. out side the ticket sale time range, 2.the prop disblaed is pass in
+              isDisabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000)))) }
             />
-        }
+        )}
+
       </div>
       <HStack my={2}>
         {
@@ -68,10 +88,10 @@ const TicketItem = (props: TicketItemProps) => {
         }
       </HStack>
       {
-        data.introduction && <div className="text-white text-xs sm:text-sm">{data.introduction}</div>
+        data.notes && <div className="text-white text-xs sm:text-sm">{data.notes}</div>
       }
       {
-        data.helpText?.length && (
+        data.ticketType === ETicketType.PFM && (
           <div>
             <Link href="/">
               <a className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s
@@ -80,14 +100,14 @@ const TicketItem = (props: TicketItemProps) => {
           </div>
         )
       }
-      {
+{/*       {
         data.merch && (
           <div className="inline-flex items-center text-blue-500 font-medium text-sm">
             <span className="mr-1 cursor-pointer hover:mr-2 transition-margin">Merch Details</span>
             <Right theme="outline" size="16" fill="currentColor" />
           </div>
         )
-      }
+      } */}
     </div>
   );
 };

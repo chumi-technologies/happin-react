@@ -12,6 +12,7 @@ type SelectProps = {
 type SelectItemProps = {
   value: string | number;
   label: string | number;
+  index: number;
   disabled?: boolean;
 };
 const getArrIndex = (arr: SelectItemProps[], value: any) => {
