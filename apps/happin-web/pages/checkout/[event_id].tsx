@@ -9,7 +9,7 @@ import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { getEventDetailForCheckout, getEventMerchs, getGATickets } from 'lib/api';
+import { getEventDetailForCheckout, getEventMerchs, getGATickets, validateCode } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
 
 
@@ -72,7 +72,7 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
   if (action.type === ActionKind.Increase) {
     const targetIndex = state.findIndex(t => t.id === action.payload?.id);
     if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
+      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
       }
@@ -82,7 +82,7 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
   if (action.type === ActionKind.Decrease) {
     const targetIndex = state.findIndex(t => t.id === action.payload?.id);
     if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
+      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
       // if merch has property alter the quantity inside this property
       if (propertyIndex >= 0) {
         state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
@@ -114,24 +114,34 @@ const Checkout = () => {
   const [saleStart, setSaleStart] = useState<boolean>();
   const [inPresale, setInPresale] = useState<boolean>();
 
-  const { setEventDataForCheckout, eventDataForCheckout, boxOfficeMode, setGeneralTicketInfo, generalTicketInfo } = useCheckoutState();
+  // indicate presale code from url param is valid
+  const [presaleCodeUsed, setPresaleCodeUsed] = useState<boolean>(false);
+
+  const { setEventDataForCheckout, eventDataForCheckout, boxOfficeMode, setGeneralTicketInfo, generalTicketInfo, setAffiliate, setCodeUsed } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
 
   useEffect(() => {
-    if (router?.query?.event_id) {
-      Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-      getEventTicketsAndSetState(router.query.event_id as string),
-      getEventMerchAndSetState(router.query.event_id as string)])
-    }
-    // check code in url is valid or not
-    if (router?.query?.presale_code) {
+    (async () => {
+      if (router?.query?.event_id) {
+        // check code in url is valid or not
+        if (router?.query?.code || router?.query?.affiliate) {
+          // affilate code could be 100% discount code, hence need to check
+          // if the affilate code is valid disocunt code, then store in the context if valid (codeUsed)
+          if (router?.query?.affiliate) {
+            // store affiliate code into context regardless, server will check validity on final step
+            setAffiliate(router?.query?.affiliate as string)
+          }
+          // two code appear at same time is not possible
+          await validateUrlCodeAndSetState(router?.query?.event_id as string, ((router?.query?.code || router?.query?.affiliate) as string));
+        }
+        
+        Promise.all([getEventDetailAndSetState(router.query.event_id as string),
+        getEventTicketsAndSetState(router.query.event_id as string),
+        getEventMerchAndSetState(router.query.event_id as string)])
+      }
+    })()
 
-    }
-
-    if (router?.query?.code) {
-
-    }
     // hack react-scroll初加载拿不到offset的问题
     scroll.scrollTo(1, {
       containerId: 'checkout-scroll-body'
@@ -139,14 +149,28 @@ const Checkout = () => {
   }, [router.query])
 
   useEffect(() => {
-    // checkSaleStarted(1630793982000)
     if (generalTicketInfo?.saleStartTime) {
       checkSaleStarted(generalTicketInfo.saleStartTime);
     }
     if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
       checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
     }
-  }, [generalTicketInfo])
+  }, [generalTicketInfo, presaleCodeUsed])
+
+  const validateUrlCodeAndSetState = async (eventId: string, code: string) => {
+    try {
+      const res = await validateCode(eventId, code)
+      if (res.valid) {
+        if (res.type === 'discount') {
+          setCodeUsed(res.code)
+        } else if (res.type === 'presale') {
+          setPresaleCodeUsed(true);
+        }
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const getEventDetailAndSetState = async (eventId: string) => {
     try {
@@ -302,13 +326,12 @@ const Checkout = () => {
   const checkPresaleStarted = (start: number, end: number) => {
     if (moment(new Date()).isBetween(moment(start), moment(end))) {
       setInPresale(true)
+      if (presaleCodeUsed) {
+        setSaleStart(true);
+      }
     } else {
       setInPresale(false)
     }
-  }
-
-  const onPresaleCodeValidate = () => {
-    setSaleStart(true)
   }
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
@@ -428,7 +451,7 @@ const Checkout = () => {
           merchList={merchListState}
           onChangeTicketList={dispatchTicketListAction}
           onChangeMerchList={dispatcMerchListAction}
-          onPresaleCodeValidate={onPresaleCodeValidate} />
+          onPresaleCodeValidate={setSaleStart} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">

@@ -14,6 +14,7 @@ import { currencyFormatter } from './util/currencyFormat';
 import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
 import { useToast } from '@chakra-ui/react';
+import { validateCode } from 'lib/api';
 
 const CheckoutHead = ({
   saleStart,
@@ -28,22 +29,83 @@ const CheckoutHead = ({
   inPresale: any,
   ticketList: TicketItemDataProps[],
   merchList: MerchItemDataProps[],
-  onPresaleCodeValidate: () => void,
+  onPresaleCodeValidate: (arg: boolean) => void,
   onChangeTicketList: (data: TicketListAction) => void;
   onChangeMerchList: (data: MerchListAction) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, setCodeUsed, affiliate } = useCheckoutState();
+  const [discountInput, setDiscountInput] = useState<string>('');
+  const [presaleInput, setPresaleInput] = useState<string>('');
+  const [validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
   const toast = useToast()
 
   const nextButtonHandler = () => {
     console.log('Cart: ', cart);
     console.log('Merch List: ', merchList);
     console.log('Ticket List: ', ticketList)
+    console.log('Code Used', codeUsed);
+    console.log('Affiliate', affiliate)
+
     if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
       console.log('No item in cart');
       generateToast('No item in cart', toast);
       return
+    }
+  }
+
+  const onDiscountCodeChangeHandler = (event: any) => {
+    setDiscountInput(event.target.value)
+  }
+
+  const onPresaleCodeChangeHandler = (event: any)=> {
+    setPresaleInput(event.target.value)
+  }
+
+  const onApplyDiscountCodeClicked = async ()=> {
+    if(!discountInput) {
+      return
+    }
+    try {
+      setValidateCodeLoading(true)
+      const res= await validateCode(eventDataForCheckout?.id as string, discountInput as string)
+      if (res.valid) {
+        if (res.type === 'discount') {
+          setCodeUsed(res.code)
+        } else { generateToast('Invalid code', toast); return}
+      } else {
+        generateToast('Invalid code', toast)
+        return
+      }
+      generateToast('Code applied, final amount will be shown on next page', toast);
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setValidateCodeLoading(false)
+    }
+  }
+
+  const onApplyPresaleCodeClicked = async() => {
+    if(!presaleInput) {
+      return
+    }
+    try {
+      setValidateCodeLoading(true)
+      const res= await validateCode(eventDataForCheckout?.id as string, presaleInput as string)
+      if (res.valid) {
+        if (res.type === 'presale') {
+          closeModal();
+          onPresaleCodeValidate(true);
+        } else { generateToast('Invalid code', toast); return}
+      } else {
+        generateToast('Invalid code', toast)
+        return
+      }
+      generateToast('Pre-sale code applied', toast);
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setValidateCodeLoading(false)
     }
   }
 
@@ -54,10 +116,6 @@ const CheckoutHead = ({
     setIsOpen(true)
   }
 
-  const enterPresaleCode = () => {
-    closeModal();
-    onPresaleCodeValidate();
-  }
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
     return merchList.filter(m => {
@@ -114,9 +172,9 @@ const CheckoutHead = ({
     return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
   }
 
-/*   const getEditingMerchCartIndex = (t: CartMerchItem) => {
-    return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
-  } */
+  /*   const getEditingMerchCartIndex = (t: CartMerchItem) => {
+      return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
+    } */
 
 
   const generateCartTicketsTemplate = () => {
@@ -217,10 +275,10 @@ const CheckoutHead = ({
             </div>
 
             {/* bundle merchs */}
-            <div className="flex justify-between flex-1 mt-5 " style={{flexDirection: 'column'}}>
-            <div className="text-white text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
+            <div className="flex justify-between flex-1 mt-5 " style={{ flexDirection: 'column' }}>
+              <div className="text-white text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
               {t.merchs.map(m => (
-                <div className="flex p-4 border-l border-solid border-white border-opacity-20"  key={m.identifier}>
+                <div className="flex p-4 border-l border-solid border-white border-opacity-20" key={m.identifier}>
                   <div className="w-16 h-16 rounded-md overflow-hidden">
                     <img className="w-full h-full object-cover" src={m.image[0].startsWith('https') ? m.image[0] : 'https://images.chumi.co/' + m.image[0]} alt='' />
                   </div>
@@ -339,8 +397,16 @@ const CheckoutHead = ({
                         )}
                       </div>
                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
-                        <input type="text" className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
-                        <button className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Apply</button>
+                        {!codeUsed && (
+                          <>
+                            <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                            <button onClick={onApplyDiscountCodeClicked} className="btn btn-rose !py-0 w-32 h-11 !font-semibold">{validateCodeLoading? 'Processing': 'Apply'}</button>
+                          </>)}
+                        {codeUsed &&
+                          (
+                            <>
+                              <input type="text" readOnly={true} value={codeUsed} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" ></input>
+                              <button disabled className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Applied</button></>)}
                       </div>
                       <div className="px-5 pb-5 flex justify-between mt-5">
                         <div className="font-semibold text-lg">Subtotal</div>
@@ -406,14 +472,14 @@ const CheckoutHead = ({
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
-                <p className="mt-6 text-sm text-gray-400">Invitation code is case sensitive, you will reicive the code from the host.</p>
+                <input value={presaleInput} onChange={onPresaleCodeChangeHandler} type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
+                <p className="mt-6 text-sm text-gray-400">Pre-sale code is case sensitive, you will reicive the code from the host.</p>
                 <button
                   type="button"
                   className="mt-6 btn btn-rose w-full !rounded-full"
-                  onClick={enterPresaleCode}
+                  onClick={onApplyPresaleCodeClicked}
                 >
-                  Confirm
+                  {validateCodeLoading? 'Processing...': 'Confirm'}
                 </button>
               </div>
             </Transition.Child>

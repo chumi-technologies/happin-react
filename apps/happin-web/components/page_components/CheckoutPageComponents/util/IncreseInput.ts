@@ -14,6 +14,7 @@ export function increaseTicketAmount(data: TicketItemDataProps,
   cart: Cart, editingIndex: number, onChange: (arg1: TicketListAction) => void, addItem: (arg1: AddItemHandlerParam) => void) {
   if (data.quantity >= 1) {
     if (cart.items.ticketItem.length) {
+      // TODO the ticketEditingIndex can be ticketId instead, 
       if (cart.items.ticketItem[editingIndex]) {
         // item in cart already, add one at a time
         onChange({ type: ActionKind.Decrease, payload: data, quantity: 1 })

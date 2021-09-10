@@ -7,7 +7,7 @@ import { ActionKind, MerchListAction, TicketListAction } from "pages/checkout/[e
  * Utility function to handle the remove ticket logic
  * @param data TicketItemDataProps
  * @param cart Cart
- * @param editingIndex the index of the editing item in Cart
+ * @param ticketEditingIndex the index of the editing item in Cart
  * @param onChange function to modify the ticket list quantity (passed from checkout index filr)
  * @param removeItem function to remove item from the cart (passed from the checkout context)
  */
@@ -16,6 +16,7 @@ export function decreaseTicketAmount(data: TicketItemDataProps, cart: Cart,
   if (cart.items.ticketItem.length) {
     // the remaining amount is equal to the min per order, decrease to zero
     if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === data.minPerOrder) {
+      // TODO the ticketEditingIndex can be ticketId instead, 
       onChange({ type: ActionKind.Increase, payload: data, quantity: data.minPerOrder })
       removeItem({item: data, quantity:data.minPerOrder});
       return

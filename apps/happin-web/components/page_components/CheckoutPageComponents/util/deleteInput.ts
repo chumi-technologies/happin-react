@@ -6,7 +6,6 @@ import { TicketListAction, ActionKind, MerchListAction } from "pages/checkout/[e
  * Utility function to handle the delete ticket in cart logic
  * @param data TicketItemDataProps
  * @param quantity
- * @param editingIndex the index of the editing item in Cart
  * @param onChange function to modify the ticket list quantity (passed from checkout index filr)
  * @param removeItem function to remove item from the cart (passed from the checkout context)
  */

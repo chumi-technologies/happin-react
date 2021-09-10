@@ -40,6 +40,8 @@ interface CheckoutContext {
   codeUsed: string | undefined,
   boxOfficeMode: boolean,
   generalTicketInfo: GeneralTicketInfo | undefined,
+  affiliate: string| undefined,
+  setAffiliate: (arg: string) => void,
   setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
   setBoxOfficeMode: (arg: boolean) => void,
   setCodeUsed: (arg: string) => void,
@@ -270,8 +272,10 @@ export function CheckoutState({ children }: { children: any }) {
   const [eventDataForCheckout, setEventDataForCheckout] = useState<EventBasicData>();
   // happinUserID will be set when the userID is passed in url(mobile app logged in and open the checkout page)
   const [happinUserID, setHappinUserID] = useState<string>();
-  // discount code or presale code or thirdParty code
+  // valid discount code 
   const [codeUsed, setCodeUsed] = useState<string>();
+  // affiliate code, should be pass into the final step request body
+  const [affiliate, setAffiliate] = useState<string>();
 
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
@@ -294,6 +298,8 @@ export function CheckoutState({ children }: { children: any }) {
     codeUsed: codeUsed,
     boxOfficeMode: boxOfficeMode,
     generalTicketInfo: generalTicketInfo,
+    affiliate: affiliate,
+    setAffiliate: setAffiliate,
     setGeneralTicketInfo: setGeneralTicketInfo,
     setBoxOfficeMode: setBoxOfficeMode,
     setCodeUsed: setCodeUsed,

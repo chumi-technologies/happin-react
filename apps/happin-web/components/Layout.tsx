@@ -16,13 +16,19 @@ const Layout = ({ children }: { children: any }) => {
   const router = useRouter()
   
   useEffect(() => {
-    if (router?.query?.happinUser && router.asPath.includes('/checkout/')) {
-      setIsMobileBarOpen(false)
-      setShowHeader(false);
-      setHappinUserID(router?.query?.happinUser as string);
+    if (router?.query?.happinUID && router.asPath.includes('/checkout/')) {
+      setHappinUserID(router?.query?.happinUID as string);
     }
+    //box office mode is only opened in 2b app, hide the header
     if (router?.query?.role === 'boxoffice') {
+      setIsMobileBarOpen(false);
+      setShowHeader(false);
       setBoxOfficeMode(true);
+    }
+    
+    if (router?.query?.fromApp) {
+      setIsMobileBarOpen(false);
+      setShowHeader(false);
     }
   }, [router.query])
 
