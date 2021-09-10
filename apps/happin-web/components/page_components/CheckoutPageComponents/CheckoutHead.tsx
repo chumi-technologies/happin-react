@@ -80,7 +80,6 @@ const CheckoutHead = ({
     return count
   }
 
-
   // the input number is read from Cart , so the max input must use original quantity,
   // (quantity will keep decreasing as item add to cart, if quantity is used here, 
   // the max will never reach the correct amount) same for getMaxMerchNumberInputQty()
@@ -115,9 +114,9 @@ const CheckoutHead = ({
     return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
   }
 
-  const getEditingMerchCartIndex = (t: CartMerchItem) => {
+/*   const getEditingMerchCartIndex = (t: CartMerchItem) => {
     return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
-  }
+  } */
 
 
   const generateCartTicketsTemplate = () => {
@@ -137,7 +136,7 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
-                  value={cart?.items?.ticketItem[getEditingTicketCartIndex(t)]?.quantity || 0}
+                  value={t.quantity || 0}
                   size="sm"
                   onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
                   onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, addItem) }}
@@ -171,7 +170,7 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
-                  value={cart?.items?.merchItem[getEditingMerchCartIndex(m)]?.quantity || 0}
+                  value={m.quantity || 0}
                   size="sm"
                   onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, removeItem, m.property) }}
                   onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, addItem, m.property, 1) }}
