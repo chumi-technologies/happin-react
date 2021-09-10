@@ -35,7 +35,7 @@ const CheckoutHead = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, setCodeUsed, affiliate } = useCheckoutState();
-  const [discountInput, setDiscountInput] = useState<string>('');
+  // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
   const [validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
   const toast = useToast()
@@ -54,15 +54,15 @@ const CheckoutHead = ({
     }
   }
 
-  const onDiscountCodeChangeHandler = (event: any) => {
+/*   const onDiscountCodeChangeHandler = (event: any) => {
     setDiscountInput(event.target.value)
-  }
+  } */
 
   const onPresaleCodeChangeHandler = (event: any)=> {
     setPresaleInput(event.target.value)
   }
 
-  const onApplyDiscountCodeClicked = async ()=> {
+/*   const onApplyDiscountCodeClicked = async ()=> {
     if(!discountInput) {
       return
     }
@@ -83,7 +83,7 @@ const CheckoutHead = ({
     } finally {
       setValidateCodeLoading(false)
     }
-  }
+  } */
 
   const onApplyPresaleCodeClicked = async() => {
     if(!presaleInput) {
@@ -392,11 +392,11 @@ const CheckoutHead = ({
                         {generateCartBundleTemplate()}
                         {cartItemCount() === 0 && (
                           <div style={{ justifyContent: 'center', display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <h1 className="font-semibold text-lg">Shopping cart is empty</h1>
+                            <h1 className="font-semibold text-lg">Your shopping cart is empty</h1>
                           </div>
                         )}
                       </div>
-                      <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
+{/*                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
                         {!codeUsed && (
                           <>
                             <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
@@ -407,8 +407,8 @@ const CheckoutHead = ({
                             <>
                               <input type="text" readOnly={true} value={codeUsed} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" ></input>
                               <button disabled className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Applied</button></>)}
-                      </div>
-                      <div className="px-5 pb-5 flex justify-between mt-5">
+                      </div> */}
+                      <div className="px-5 pb-5 flex justify-between mt-5 pt-5 border-t border-solid border-white border-opacity-10">
                         <div className="font-semibold text-lg">Subtotal</div>
                         <div className="font-semibold text-lg">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(cart.subTotal)} </div>
                       </div>
