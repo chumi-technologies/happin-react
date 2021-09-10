@@ -96,7 +96,7 @@ const TicketItem = (props: TicketItemProps) => {
       {
         data.ticketType === ETicketType.PFM && (
           <div>
-              <a href='https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting' target='_blank'
+              <a href='https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting' rel="noreferrer" target='_blank'
               className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s
                 VIP room?</a>
           </div>

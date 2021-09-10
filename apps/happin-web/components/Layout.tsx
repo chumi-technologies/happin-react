@@ -17,6 +17,8 @@ const Layout = ({ children }: { children: any }) => {
   
   useEffect(() => {
     if (router?.query?.happinUID && router.asPath.includes('/checkout/')) {
+      setIsMobileBarOpen(false);
+      setShowHeader(false);
       setHappinUserID(router?.query?.happinUID as string);
     }
     //box office mode is only opened in 2b app, hide the header
@@ -25,12 +27,7 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
       setBoxOfficeMode(true);
     }
-    
-    if (router?.query?.fromApp) {
-      setIsMobileBarOpen(false);
-      setShowHeader(false);
-    }
-  }, [router.query])
+  }, [router.query, router.asPath, setBoxOfficeMode, setHappinUserID])
 
   return (
     <>
