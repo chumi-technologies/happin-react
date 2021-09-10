@@ -133,9 +133,10 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             <div className="w-full pr-7">
               <div className="leading-none mb-2 font-semibold text-white">{ticket?.title}</div>
               <div className="font-medium text-xs text-gray-400">
-                {generalTicketInfo && (
+              <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
+               {/*  {generalTicketInfo && (
                   generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
-                    : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)}
+                    : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)} */}
               </div>
               <div className="text-gray-400 text-xs">{ticket?.notes}</div>
             </div>

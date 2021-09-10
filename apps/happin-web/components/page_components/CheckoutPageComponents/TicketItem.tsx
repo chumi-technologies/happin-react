@@ -44,7 +44,7 @@ const TicketItem = (props: TicketItemProps) => {
           <div className="sm:text-lg leading-none mb-1 font-semibold text-white">{data.title}</div>
           <div className="font-medium text-xs text-gray-400">
             <span className="text-white text-sm">{currencyFormatter(currency as string).format(data.price)}</span>
-            {taxNeeded ? <span className="ml-1">{absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span> : <span className="ml-1">{absorbFee ? '' : '+ Fee'}</span>}
+            {data.price!==0 && (taxNeeded  ? <span className="ml-1">{absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span> : <span className="ml-1">{absorbFee ? '' : '+ Fee'}</span>)}
           </div>
           {(typeof data.start === 'number' && typeof data.end === 'number') && <div className="text-gray-400 text-xs">On sale from: {moment(data.start * 1000).format('MMMM Do, h:mma')} ~ {moment(data.end * 1000).format('MMMM Do, h:mma')}</div>}
         </div>
