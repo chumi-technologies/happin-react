@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import { MerchItemDataProps, TicketItemDataProps } from 'lib/model/checkout';
 import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
-import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
 
@@ -19,13 +18,11 @@ type CheckoutSidebarProps = {
   merchs: MerchItemDataProps[],
   ticket: TicketItemDataProps,
   setIsOpen: (arg: any) => void,
-  onChangeTicketList: (data: TicketListAction) => void;
-  onChangeMerchList: (data: MerchListAction) => void;
 }
 
 const BundleSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, setIsOpen, onClose, merchs, ticket, onChangeTicketList, onChangeMerchList } = props;
-  const { eventDataForCheckout, generalTicketInfo, addItem } = useCheckoutState();
+  const { isOpen, setIsOpen, onClose, merchs, ticket } = props;
+  const { eventDataForCheckout, addItem, dispatcMerchListAction, dispatchTicketListAction } = useCheckoutState();
   const [inputValue, setInputValue] = useState(0)
 
   // array of the selected merchs property name inside this bundle 
@@ -98,7 +95,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseBundleTicketAmount(ticket, merchs, onChangeTicketList, onChangeMerchList, inputValue, addItem, selectedProperties);
+    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatcMerchListAction, inputValue, addItem, selectedProperties);
     setIsOpen((s: boolean) => !s);
     setInputValue(0)
     setSelectedProperties([]);

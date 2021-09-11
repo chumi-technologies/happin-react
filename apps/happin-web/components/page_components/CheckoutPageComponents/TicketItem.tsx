@@ -4,9 +4,7 @@ import { HStack, Tooltip } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
 import { ETicketType, TicketItemDataProps, TicketItemFeaturesProps } from '../../../lib/model/checkout';
 import classNames from 'classnames';
-import Link from 'next/link';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { TicketListAction } from 'pages/checkout/[event_id]';
 import { increaseTicketAmount } from './util/IncreseInput';
 import { decreaseTicketAmount } from './util/decreseInput';
 import moment from 'moment';
@@ -15,7 +13,6 @@ import { currencyFormatter } from './util/currencyFormat';
 export type TicketItemProps = {
   data: TicketItemDataProps;
   onSelect: (data: any) => void;
-  onChange: (data: TicketListAction)=> void;
   disabled?: boolean,
   currency: string,
   absorbFee: boolean,
@@ -23,8 +20,8 @@ export type TicketItemProps = {
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, onChange, currency, absorbFee = false, taxNeeded, disabled = false } = props;
-  const { cart, addItem, removeItem } = useCheckoutState();
+  const { data, onSelect, currency, absorbFee = false, taxNeeded, disabled = false } = props;
+  const { cart, addItem, removeItem, dispatchTicketListAction } = useCheckoutState();
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
   // the input number is read from Cart , so the max input must use original quantity,
@@ -62,8 +59,8 @@ const TicketItem = (props: TicketItemProps) => {
               min={0}
               max={getMaxNumberInputQty()}
               value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
-              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, onChange, removeItem)}}
-              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, onChange, addItem)}}
+              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, dispatchTicketListAction, removeItem)}}
+              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, dispatchTicketListAction, addItem)}}
               // disabled if  1. out side the ticket sale time range, 2.the prop disblaed is pass in
               isDisabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000)))) }
             />

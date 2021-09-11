@@ -8,93 +8,9 @@ import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
-import { useCheckoutState } from 'contexts/checkout-state';
+import { TicketAndMerchListActionKind, useCheckoutState } from 'contexts/checkout-state';
 import { getEventDetailForCheckout, getEventMerchs, getGATickets, validateCode } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
-
-
-export enum ActionKind {
-  Increase = 'INCREASE',
-  Decrease = 'DECREASE',
-  Init = 'INIT'
-}
-
-export type TicketListAction = {
-  type: ActionKind,
-  payload?: TicketItemDataProps,
-  initValue?: TicketItemDataProps[],
-  quantity?: number;
-}
-
-export type MerchListAction = {
-  type: ActionKind,
-  payload?: MerchItemDataProps,
-  initValue?: MerchItemDataProps[],
-  quantity?: number;
-  property?: string;
-}
-
-const ticketListReducer = (state: TicketItemDataProps[], action: TicketListAction) => {
-  let finalTicketList = state
-  if (action.type === ActionKind.Increase) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const targetSection = state[targetIndex].sectionId;
-      state.forEach(t => {
-        if (t.sectionId === targetSection) {
-          t.quantity += (action.quantity || 0);
-        }
-      })
-      finalTicketList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Decrease) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const targetSection = state[targetIndex].sectionId;
-      state.forEach(t => {
-        if (t.sectionId === targetSection) {
-          t.quantity -= (action.quantity || 0);
-        }
-      })
-      finalTicketList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Init) {
-    return [...action.initValue as TicketItemDataProps[]]
-  }
-  return finalTicketList
-}
-
-const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) => {
-  let finalMerchList = state;
-  //const propertyIndex =  action.propertyIndex as number
-  if (action.type === ActionKind.Increase) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
-      if (propertyIndex >= 0) {
-        state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
-      }
-      finalMerchList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Decrease) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
-      // if merch has property alter the quantity inside this property
-      if (propertyIndex >= 0) {
-        state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
-      }
-      finalMerchList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Init) {
-    return [...action.initValue as MerchItemDataProps[]]
-  }
-  return finalMerchList
-}
 
 const Checkout = () => {
   const router = useRouter();
@@ -107,17 +23,22 @@ const Checkout = () => {
   const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps[]>();
   const [selectedBundleTicket, setSelectedBundleTicket] = useState<TicketItemDataProps>();
 
-  // ticket list & merch list, payment page dont need these, hence not store in context
-  const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
-  const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
-
   const [saleStart, setSaleStart] = useState<boolean>();
   const [inPresale, setInPresale] = useState<boolean>();
 
   // indicate presale code from url param is valid
   const [presaleCodeUsed, setPresaleCodeUsed] = useState<boolean>(false);
 
-  const { setEventDataForCheckout, eventDataForCheckout, boxOfficeMode, setGeneralTicketInfo, generalTicketInfo, setAffiliate, setCodeUsed } = useCheckoutState();
+  const { setEventDataForCheckout, 
+          eventDataForCheckout, 
+          boxOfficeMode, 
+          setGeneralTicketInfo, 
+          generalTicketInfo, 
+          setAffiliate, 
+          setCodeUsed, merchListState, 
+          dispatcMerchListAction, 
+          ticketListState, 
+          dispatchTicketListAction } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
 
@@ -243,7 +164,7 @@ const Checkout = () => {
         }
         return ticket
       })
-      dispatchTicketListAction({ type: ActionKind.Init, initValue: ticketList })
+      dispatchTicketListAction({ type: TicketAndMerchListActionKind.Init, initValue: ticketList })
       const gerneralTicketInfo: GeneralTicketInfo = {
         absorbFee: res.generalInfo.absorbFee,
         saleStartTime: res.generalInfo.onSaleCounter,
@@ -294,7 +215,7 @@ const Checkout = () => {
         }
         merchList = [newmerch, merchList[0]]; */
       }
-      dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
+      dispatcMerchListAction({ type: TicketAndMerchListActionKind.Init, initValue: merchList })
     } catch (err) {
       console.log(err);
     }
@@ -352,7 +273,6 @@ const Checkout = () => {
         key={item.id}
         data={item}
         onSelect={onTicketBundleSelect}
-        onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         absorbFee={generalTicketInfo?.absorbFee || false}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
@@ -367,7 +287,6 @@ const Checkout = () => {
         key={item.id}
         data={item}
         onSelect={onTicketBundleSelect}
-        onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
         absorbFee={generalTicketInfo?.absorbFee || false}
@@ -447,10 +366,6 @@ const Checkout = () => {
         <CheckoutHead
           saleStart={saleStart}
           inPresale={inPresale}
-          ticketList={ticketListState}
-          merchList={merchListState}
-          onChangeTicketList={dispatchTicketListAction}
-          onChangeMerchList={dispatcMerchListAction}
           onPresaleCodeValidate={setSaleStart} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
@@ -567,13 +482,10 @@ const Checkout = () => {
             ticket={selectedBundleTicket as TicketItemDataProps}
             isOpen={bundleSidebarOpen}
             setIsOpen={setBundleSidebarOpen}
-            onChangeMerchList={dispatcMerchListAction}
-            onChangeTicketList={dispatchTicketListAction}
             merchs={selectedBundleMerch as MerchItemDataProps[]}
             onClose={() => { setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined) }}
           />
           <MerchSidebar
-            onChange={dispatcMerchListAction}
             merch={selectedRegularMerch as MerchItemDataProps}
             isOpen={sidebarOpen}
             setIsOpen={setSidebarOpen}

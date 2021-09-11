@@ -1,13 +1,12 @@
-import { AddItemHandlerParam } from "contexts/checkout-state";
+import { AddItemHandlerParam, MerchListAction, TicketAndMerchListActionKind, TicketListAction } from "contexts/checkout-state";
 import { Cart, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
-import { ActionKind, MerchListAction, TicketListAction } from "pages/checkout/[event_id]";
 
 /**
  * Utility function to handle the add ticket logic
  * @param data TicketItemDataProps
  * @param cart Cart
  * @param editingIndex the index of the editing item in Cart
- * @param onChange function to modify the ticket list quantity (passed from the checkout index file)
+ * @param onChange function to modify the ticket list quantity (passed from the checkout context)
  * @param addItem function to add item to the cart (passed from the checkout context)
  */
 export function increaseTicketAmount(data: TicketItemDataProps,
@@ -17,14 +16,14 @@ export function increaseTicketAmount(data: TicketItemDataProps,
       // TODO the ticketEditingIndex can be ticketId instead, 
       if (cart.items.ticketItem[editingIndex]) {
         // item in cart already, add one at a time
-        onChange({ type: ActionKind.Decrease, payload: data, quantity: 1 })
+        onChange({ type: TicketAndMerchListActionKind.Decrease, payload: data, quantity: 1 })
         addItem({ item: data, quantity: 1 });
         return
       }
     }
     // other case, add min per order
     if (data.quantity >= data.minPerOrder) {
-      onChange({ type: ActionKind.Decrease, payload: data, quantity: data.minPerOrder })
+      onChange({ type: TicketAndMerchListActionKind.Decrease, payload: data, quantity: data.minPerOrder })
       addItem({ item: data, quantity: data.minPerOrder });
     }
   }
@@ -38,7 +37,7 @@ export function increaseMerchAmount(
   propertyName: string,
   quantity: number) {
   const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
-  onChange({ type: ActionKind.Decrease, payload: data, quantity, property: propertyName });
+  onChange({ type: TicketAndMerchListActionKind.Decrease, payload: data, quantity, property: propertyName });
   addItem({ item: data, quantity, property: data.property[propertyIndex].pName });
 }
 
@@ -47,8 +46,8 @@ export function increaseMerchAmount(
  * Utility function to handle the add bundle logic
  * @param ticket TicketItemDataProps
  * @param bundleMerchs MerchItemDataProps[]
- * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout index file)
- * @param onChangeTicketList function to modify the ticket list quantity (passed from the checkout index file)
+ * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout context)
+ * @param onChangeTicketList function to modify the ticket list quantity (passed from the checkout context)
  * @param quantity number to add
  * @param addItem function to add item to the cart (passed from the checkout context)
  * @param properties array of selected properties name
@@ -65,9 +64,9 @@ export function increaseBundleTicketAmount(
   identifier?: string,
 ) {
   if (ticket.quantity >= 1) {
-    onChangeTicketList({ type: ActionKind.Decrease, payload: ticket, quantity });
+    onChangeTicketList({ type: TicketAndMerchListActionKind.Decrease, payload: ticket, quantity });
     bundleMerchs.forEach((m, index) => {
-      onChangeMerchList({ type: ActionKind.Decrease, payload: m, quantity, property: properties[index] });
+      onChangeMerchList({ type: TicketAndMerchListActionKind.Decrease, payload: m, quantity, property: properties[index] });
     })
     addItem({ item: ticket, quantity: quantity, bundleMerchPayload: bundleMerchs, bundleMerchProperty: properties, bundleIdentifier: identifier })
   }

@@ -8,20 +8,18 @@ import classNames from 'classnames';
 import { MerchItemDataProps } from 'lib/model/checkout';
 import { useState } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { MerchListAction } from 'pages/checkout/[event_id]';
 import { increaseMerchAmount } from './util/IncreseInput';
 
 type CheckoutSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
   merch: MerchItemDataProps,
-  onChange: (data: MerchListAction)=> void;
   setIsOpen: (arg: any)=>void
 }
 
 const MerchSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, onClose, merch, onChange, setIsOpen } = props;
-  const { addItem } = useCheckoutState();
+  const { isOpen, onClose, merch, setIsOpen } = props;
+  const { addItem, dispatcMerchListAction } = useCheckoutState();
   //const [merchEditingIndex, setMerchEditingIndex] = useState(0);
 
   const [inputValue, setInputValue] = useState(0)
@@ -32,7 +30,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseMerchAmount(merch, onChange, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
+    increaseMerchAmount(merch, dispatcMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
     setSelectedPropertyIndex(0)

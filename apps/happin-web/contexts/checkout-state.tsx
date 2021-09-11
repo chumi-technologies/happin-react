@@ -1,6 +1,26 @@
 import { Cart, CartBundleItem, CartMerchItem, CartTicketItem, EventBasicData, GeneralTicketInfo, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
 import { createContext, useContext, useReducer, useState } from "react";
 
+export enum TicketAndMerchListActionKind {
+  Increase = 'INCREASE',
+  Decrease = 'DECREASE',
+  Init = 'INIT'
+}
+
+export type TicketListAction = {
+  type: TicketAndMerchListActionKind,
+  payload?: TicketItemDataProps,
+  initValue?: TicketItemDataProps[],
+  quantity?: number;
+}
+
+export type MerchListAction = {
+  type: TicketAndMerchListActionKind,
+  payload?: MerchItemDataProps,
+  initValue?: MerchItemDataProps[],
+  quantity?: number;
+  property?: string;
+}
 
 export interface AddItemHandlerParam {
   item: TicketItemDataProps | MerchItemDataProps,
@@ -13,7 +33,7 @@ export interface AddItemHandlerParam {
 
 export interface RemoveItemHandlerParam {
   item: TicketItemDataProps | MerchItemDataProps,
-  quantity: number, 
+  quantity: number,
   property?: string,
   bundleIdentifier?: string;
 }
@@ -40,7 +60,11 @@ interface CheckoutContext {
   codeUsed: string | undefined,
   boxOfficeMode: boolean,
   generalTicketInfo: GeneralTicketInfo | undefined,
-  affiliate: string| undefined,
+  affiliate: string | undefined,
+  merchListState: MerchItemDataProps[],
+  ticketListState: TicketItemDataProps[],
+  dispatcMerchListAction: (arg:any)=> void,
+  dispatchTicketListAction: (arg:any)=> void,
   setAffiliate: (arg: string) => void,
   setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
   setBoxOfficeMode: (arg: boolean) => void,
@@ -244,7 +268,7 @@ const decreament = (action: Action, state: Cart) => {
       updateItems = state.items.bundleItem.filter(item => item.identifier !== action.bundleIdentifier);
     } else {
       const updateMerchs: CartMerchItem[] = existingCartBundleItem.merchs.map(m => ({ ...m, quantity: existingCartBundleItem.quantity - action.quantity }))
-      const updateItem: CartBundleItem = { ...existingCartBundleItem, merchs:updateMerchs, quantity: existingCartBundleItem.quantity - action.quantity };
+      const updateItem: CartBundleItem = { ...existingCartBundleItem, merchs: updateMerchs, quantity: existingCartBundleItem.quantity - action.quantity };
       updateItems = [...state.items.bundleItem];
       updateItems[existingCartBundleIndex] = updateItem;
     }
@@ -260,6 +284,68 @@ const decreament = (action: Action, state: Cart) => {
   return finalCart
 }
 
+
+const ticketListReducer = (state: TicketItemDataProps[], action: TicketListAction) => {
+  let finalTicketList = state
+  if (action.type === TicketAndMerchListActionKind.Increase) {
+    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
+    if (targetIndex !== -1) {
+      const targetSection = state[targetIndex].sectionId;
+      state.forEach(t => {
+        if (t.sectionId === targetSection) {
+          t.quantity += (action.quantity || 0);
+        }
+      })
+      finalTicketList = [...state];
+    }
+  }
+  if (action.type === TicketAndMerchListActionKind.Decrease) {
+    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
+    if (targetIndex !== -1) {
+      const targetSection = state[targetIndex].sectionId;
+      state.forEach(t => {
+        if (t.sectionId === targetSection) {
+          t.quantity -= (action.quantity || 0);
+        }
+      })
+      finalTicketList = [...state];
+    }
+  }
+  if (action.type === TicketAndMerchListActionKind.Init) {
+    return [...action.initValue as TicketItemDataProps[]]
+  }
+  return finalTicketList
+}
+
+const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) => {
+  let finalMerchList = state;
+  //const propertyIndex =  action.propertyIndex as number
+  if (action.type === TicketAndMerchListActionKind.Increase) {
+    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
+    if (targetIndex !== -1) {
+      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
+      if (propertyIndex >= 0) {
+        state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
+      }
+      finalMerchList = [...state];
+    }
+  }
+  if (action.type === TicketAndMerchListActionKind.Decrease) {
+    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
+    if (targetIndex !== -1) {
+      const propertyIndex = state[targetIndex].property.findIndex(p => p.pName === action.property)
+      // if merch has property alter the quantity inside this property
+      if (propertyIndex >= 0) {
+        state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
+      }
+      finalMerchList = [...state];
+    }
+  }
+  if (action.type === TicketAndMerchListActionKind.Init) {
+    return [...action.initValue as MerchItemDataProps[]]
+  }
+  return finalMerchList
+}
 
 const checkoutCtx = createContext({} as CheckoutContext);
 
@@ -280,13 +366,17 @@ export function CheckoutState({ children }: { children: any }) {
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
+
+  const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
+  const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
+
   const addItemToCartHandler = ({ item,
     quantity, property, bundleMerchPayload,
     bundleMerchProperty, bundleIdentifier }: AddItemHandlerParam) => {
     dispatchCartAction({ type: ActionKind.Increase, payload: item, quantity, property, bundleMerchPayload, bundleMerchProperty, bundleIdentifier });
   };
 
-  const removeItemFromCartHandler = ({item, quantity, property, bundleIdentifier}: RemoveItemHandlerParam) => {
+  const removeItemFromCartHandler = ({ item, quantity, property, bundleIdentifier }: RemoveItemHandlerParam) => {
     dispatchCartAction({ type: ActionKind.Decrease, payload: item, quantity, property, bundleIdentifier });
   };
 
@@ -299,6 +389,10 @@ export function CheckoutState({ children }: { children: any }) {
     boxOfficeMode: boxOfficeMode,
     generalTicketInfo: generalTicketInfo,
     affiliate: affiliate,
+    merchListState: merchListState,
+    ticketListState: ticketListState,
+    dispatcMerchListAction: dispatcMerchListAction,
+    dispatchTicketListAction: dispatchTicketListAction,
     setAffiliate: setAffiliate,
     setGeneralTicketInfo: setGeneralTicketInfo,
     setBoxOfficeMode: setBoxOfficeMode,

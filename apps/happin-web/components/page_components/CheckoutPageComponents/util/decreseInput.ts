@@ -1,6 +1,5 @@
-import { RemoveItemHandlerParam } from "contexts/checkout-state";
+import { MerchListAction, RemoveItemHandlerParam, TicketAndMerchListActionKind, TicketListAction } from "contexts/checkout-state";
 import { Cart, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
-import { ActionKind, MerchListAction, TicketListAction } from "pages/checkout/[event_id]";
 
 
 /**
@@ -8,7 +7,7 @@ import { ActionKind, MerchListAction, TicketListAction } from "pages/checkout/[e
  * @param data TicketItemDataProps
  * @param cart Cart
  * @param ticketEditingIndex the index of the editing item in Cart
- * @param onChange function to modify the ticket list quantity (passed from checkout index filr)
+ * @param onChange function to modify the ticket list quantity (passed from the checkout context)
  * @param removeItem function to remove item from the cart (passed from the checkout context)
  */
 export function decreaseTicketAmount(data: TicketItemDataProps, cart: Cart,
@@ -17,12 +16,12 @@ export function decreaseTicketAmount(data: TicketItemDataProps, cart: Cart,
     // the remaining amount is equal to the min per order, decrease to zero
     if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === data.minPerOrder) {
       // TODO the ticketEditingIndex can be ticketId instead, 
-      onChange({ type: ActionKind.Increase, payload: data, quantity: data.minPerOrder })
+      onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: data.minPerOrder })
       removeItem({item: data, quantity:data.minPerOrder});
       return
     }
 
-    onChange({ type: ActionKind.Increase, payload: data, quantity: 1 })
+    onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1 })
     removeItem({item: data, quantity: 1});
   }
 }
@@ -35,7 +34,7 @@ export function decreaseMerchAmount(
   propertyName: string,
 ) {
   const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
-  onChange({ type: ActionKind.Increase, payload: data, quantity: 1, property: propertyName })
+  onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1, property: propertyName })
   removeItem({item: data, quantity: 1, property: data.property[propertyIndex].pName})
 }
 
@@ -45,8 +44,8 @@ export function decreaseMerchAmount(
  * @param ticket TicketItemDataProps
  * @param cart Cart
  * @param bundleMerchs MerchItemDataProps[]
- * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout index file)
- * @param onChangeTicketList function to modify the ticket list quantity (passed from the checkout index file)
+ * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout context)
+ * @param onChangeTicketList function to modify the ticket list quantity passed from the checkout context)
  * @param quantity number to add
  * @param removeItem function to remove item to the cart (passed from the checkout context)
  * @param properties array of selected properties name
@@ -62,9 +61,9 @@ export function decreaseMerchAmount(
   properties: string[],
   identifier?: string,
 ) {
-  onChangeTicketList({ type: ActionKind.Increase, payload: ticket, quantity });
+  onChangeTicketList({ type: TicketAndMerchListActionKind.Increase, payload: ticket, quantity });
   bundleMerchs.forEach((m, index) => {
-    onChangeMerchList({ type: ActionKind.Increase, payload: m, quantity, property: properties[index] });
+    onChangeMerchList({ type: TicketAndMerchListActionKind.Increase, payload: m, quantity, property: properties[index] });
   })
   removeItem({item: ticket, quantity, bundleIdentifier: identifier});
 }

@@ -9,7 +9,6 @@ import { CartBundleItem, CartMerchItem, CartTicketItem, MerchItemDataProps, Tick
 import { useCheckoutState } from 'contexts/checkout-state';
 import { decreaseBundleTicketAmount, decreaseMerchAmount, decreaseTicketAmount } from './util/decreseInput';
 import { increaseBundleTicketAmount, increaseMerchAmount, increaseTicketAmount } from './util/IncreseInput';
-import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { currencyFormatter } from './util/currencyFormat';
 import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
@@ -19,22 +18,14 @@ import { validateCode } from 'lib/api';
 const CheckoutHead = ({
   saleStart,
   inPresale,
-  ticketList,
-  merchList,
   onPresaleCodeValidate,
-  onChangeTicketList,
-  onChangeMerchList,
 }: {
   saleStart: any,
   inPresale: any,
-  ticketList: TicketItemDataProps[],
-  merchList: MerchItemDataProps[],
   onPresaleCodeValidate: (arg: boolean) => void,
-  onChangeTicketList: (data: TicketListAction) => void;
-  onChangeMerchList: (data: MerchListAction) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, setCodeUsed, affiliate } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState } = useCheckoutState();
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
   const [validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
@@ -42,8 +33,8 @@ const CheckoutHead = ({
 
   const nextButtonHandler = () => {
     console.log('Cart: ', cart);
-    console.log('Merch List: ', merchList);
-    console.log('Ticket List: ', ticketList)
+    console.log('Merch List: ', merchListState);
+    console.log('Ticket List: ', ticketListState)
     console.log('Code Used', codeUsed);
     console.log('Affiliate', affiliate)
 
@@ -118,7 +109,7 @@ const CheckoutHead = ({
 
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
-    return merchList.filter(m => {
+    return merchListState.filter(m => {
       if (m.tickets.includes(ticketId)) {
         return true
       }
@@ -159,11 +150,11 @@ const CheckoutHead = ({
   }
 
   const getEditingMerchListItem = (merch: CartMerchItem): MerchItemDataProps => {
-    return merchList.find(item => item.id === merch.merchId) as MerchItemDataProps;
+    return merchListState.find(item => item.id === merch.merchId) as MerchItemDataProps;
   }
 
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
-    return ticketList.find(item => item.id === t.ticketId) as TicketItemDataProps
+    return ticketListState.find(item => item.id === t.ticketId) as TicketItemDataProps
   }
 
 
@@ -196,11 +187,11 @@ const CheckoutHead = ({
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
                   value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
-                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, addItem) }}
+                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), dispatchTicketListAction, removeItem) }}
+                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), dispatchTicketListAction, addItem) }}
                 />
               </div>
-              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, onChangeTicketList, removeItem) }}
+              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -230,11 +221,11 @@ const CheckoutHead = ({
                   max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
                   value={m.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, removeItem, m.property) }}
-                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, addItem, m.property, 1) }}
+                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, removeItem, m.property) }}
+                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, addItem, m.property, 1) }}
                 />
               </div>
-              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, onChangeMerchList, removeItem) }}
+              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -309,8 +300,8 @@ const CheckoutHead = ({
     increaseBundleTicketAmount(
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
-      onChangeTicketList,
-      onChangeMerchList,
+      dispatchTicketListAction,
+      dispatcMerchListAction,
       1,
       addItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -328,8 +319,8 @@ const CheckoutHead = ({
     decreaseBundleTicketAmount(
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
-      onChangeTicketList,
-      onChangeMerchList,
+      dispatchTicketListAction,
+      dispatcMerchListAction,
       quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -340,8 +331,8 @@ const CheckoutHead = ({
     decreaseBundleTicketAmount(
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
-      onChangeTicketList,
-      onChangeMerchList,
+      dispatchTicketListAction,
+      dispatcMerchListAction,
       t.quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -354,7 +345,7 @@ const CheckoutHead = ({
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
           <div className="flex-1 font-semibold min-w-0 hidden sm:block">
             <div className="truncate">{eventDataForCheckout?.title}</div>
-            <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
+            {eventDataForCheckout?.startTime && <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>}
           </div>
           <Popover className="flex md:relative sm:ml-4">
             {({ open }) => (
