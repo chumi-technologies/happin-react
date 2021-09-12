@@ -5,16 +5,16 @@ import { Cart, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkou
  * Utility function to handle the add ticket logic
  * @param data TicketItemDataProps
  * @param cart Cart
- * @param editingIndex the index of the editing item in Cart
+ * @param ticketId the id of the editing ticket item in Cart
  * @param onChange function to modify the ticket list quantity (passed from the checkout context)
  * @param addItem function to add item to the cart (passed from the checkout context)
  */
 export function increaseTicketAmount(data: TicketItemDataProps,
-  cart: Cart, editingIndex: number, onChange: (arg1: TicketListAction) => void, addItem: (arg1: AddItemHandlerParam) => void) {
+  cart: Cart, ticketId: string, onChange: (arg1: TicketListAction) => void, addItem: (arg1: AddItemHandlerParam) => void) {
   if (data.quantity >= 1) {
     if (cart.items.ticketItem.length) {
-      // TODO the ticketEditingIndex can be ticketId instead, 
-      if (cart.items.ticketItem[editingIndex]) {
+      const index = cart.items.ticketItem.findIndex(t=>t.ticketId === ticketId)
+      if (index >= 0) {
         // item in cart already, add one at a time
         onChange({ type: TicketAndMerchListActionKind.Decrease, payload: data, quantity: 1 })
         addItem({ item: data, quantity: 1 });
@@ -36,9 +36,9 @@ export function increaseMerchAmount(
   addItem: (arg1: AddItemHandlerParam) => void,
   propertyName: string,
   quantity: number) {
-  const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
+  // const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
   onChange({ type: TicketAndMerchListActionKind.Decrease, payload: data, quantity, property: propertyName });
-  addItem({ item: data, quantity, property: data.property[propertyIndex].pName });
+  addItem({ item: data, quantity, property: propertyName });
 }
 
 

@@ -59,8 +59,8 @@ const TicketItem = (props: TicketItemProps) => {
               min={0}
               max={getMaxNumberInputQty()}
               value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
-              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, ticketEditingIndex, dispatchTicketListAction, removeItem)}}
-              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, ticketEditingIndex, dispatchTicketListAction, addItem)}}
+              onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, data.id, dispatchTicketListAction, removeItem)}}
+              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, data.id, dispatchTicketListAction, addItem)}}
               // disabled if  1. out side the ticket sale time range, 2.the prop disblaed is pass in
               isDisabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000)))) }
             />

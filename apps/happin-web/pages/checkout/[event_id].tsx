@@ -56,10 +56,11 @@ const Checkout = () => {
           // two code appear at same time is not possible
           await validateUrlCodeAndSetState(router?.query?.event_id as string, ((router?.query?.code || router?.query?.affiliate) as string));
         }
-        
-        Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-        getEventTicketsAndSetState(router.query.event_id as string),
-        getEventMerchAndSetState(router.query.event_id as string)])
+        if (!eventDataForCheckout && !ticketListState.length && !merchListState.length) {
+          Promise.all([getEventDetailAndSetState(router.query.event_id as string),
+            getEventTicketsAndSetState(router.query.event_id as string),
+            getEventMerchAndSetState(router.query.event_id as string)])
+        }
       }
     })()
 

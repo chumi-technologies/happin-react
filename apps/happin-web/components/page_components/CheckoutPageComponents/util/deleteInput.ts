@@ -25,7 +25,7 @@ export function deleteTicketFromCart(data: TicketItemDataProps, quantity: number
  */
 export function deleteMerchFromCart(data: MerchItemDataProps, quantity: number,
   propertyName: string, onChange: (arg1: MerchListAction) => void, removeItem: (arg1: RemoveItemHandlerParam) => void) {
-  const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
+  //const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
   onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity, property: propertyName })
-  removeItem({item: data, quantity, property: data.property[propertyIndex].pName})
+  removeItem({item: data, quantity, property: propertyName})
 }

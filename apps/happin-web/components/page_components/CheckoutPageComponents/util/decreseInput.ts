@@ -6,16 +6,16 @@ import { Cart, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkou
  * Utility function to handle the remove ticket logic
  * @param data TicketItemDataProps
  * @param cart Cart
- * @param ticketEditingIndex the index of the editing item in Cart
+ * @param ticketEditingId the id of the editing ticket in Cart
  * @param onChange function to modify the ticket list quantity (passed from the checkout context)
  * @param removeItem function to remove item from the cart (passed from the checkout context)
  */
 export function decreaseTicketAmount(data: TicketItemDataProps, cart: Cart,
-  ticketEditingIndex: number, onChange: (arg1: TicketListAction) => void, removeItem: (arg1: RemoveItemHandlerParam) => void) {
+  ticketEditingId: string, onChange: (arg1: TicketListAction) => void, removeItem: (arg1: RemoveItemHandlerParam) => void) {
   if (cart.items.ticketItem.length) {
     // the remaining amount is equal to the min per order, decrease to zero
-    if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === data.minPerOrder) {
-      // TODO the ticketEditingIndex can be ticketId instead, 
+    const index = cart.items.ticketItem.findIndex(t=>t.ticketId === ticketEditingId)
+    if (cart.items.ticketItem[index] && cart.items.ticketItem[index].quantity === data.minPerOrder) {
       onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: data.minPerOrder })
       removeItem({item: data, quantity:data.minPerOrder});
       return
@@ -33,9 +33,9 @@ export function decreaseMerchAmount(
   removeItem: (arg1: RemoveItemHandlerParam) => void,
   propertyName: string,
 ) {
-  const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
+  //const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
   onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1, property: propertyName })
-  removeItem({item: data, quantity: 1, property: data.property[propertyIndex].pName})
+  removeItem({item: data, quantity: 1, property: propertyName})
 }
 
 

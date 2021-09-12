@@ -160,12 +160,6 @@ const CheckoutHead = ({
     return ticketListState.find(item => item.id === t.ticketId) as TicketItemDataProps
   }
 
-
-
-  const getEditingTicketCartIndex = (t: CartTicketItem) => {
-    return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
-  }
-
   /*   const getEditingMerchCartIndex = (t: CartMerchItem) => {
       return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
     } */
@@ -190,8 +184,8 @@ const CheckoutHead = ({
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
                   value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), dispatchTicketListAction, removeItem) }}
-                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), dispatchTicketListAction, addItem) }}
+                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, t.ticketId, dispatchTicketListAction, removeItem) }}
+                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, t.ticketId, dispatchTicketListAction, addItem) }}
                 />
               </div>
               <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
@@ -472,6 +466,7 @@ const CheckoutHead = ({
                   type="button"
                   className="mt-6 btn btn-rose w-full !rounded-full"
                   onClick={onApplyPresaleCodeClicked}
+                  disabled={validateCodeLoading}
                 >
                   {validateCodeLoading? 'Processing...': 'Confirm'}
                 </button>
