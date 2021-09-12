@@ -14,6 +14,7 @@ import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
 import { useToast } from '@chakra-ui/react';
 import { validateCode } from 'lib/api';
+import { useRouter } from 'next/router';
 
 const CheckoutHead = ({
   saleStart,
@@ -29,6 +30,7 @@ const CheckoutHead = ({
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
   const [validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
+  const router = useRouter()
   const toast = useToast()
 
   const nextButtonHandler = () => {
@@ -43,6 +45,7 @@ const CheckoutHead = ({
       generateToast('No item in cart', toast);
       return
     }
+    router.push('/checkout/payment');
   }
 
 /*   const onDiscountCodeChangeHandler = (event: any) => {
