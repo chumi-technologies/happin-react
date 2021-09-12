@@ -22,6 +22,7 @@ export type MerchListAction = {
   property?: string;
 }
 
+
 export interface AddItemHandlerParam {
   item: TicketItemDataProps | MerchItemDataProps,
   quantity: number,
@@ -63,8 +64,8 @@ interface CheckoutContext {
   affiliate: string | undefined,
   merchListState: MerchItemDataProps[],
   ticketListState: TicketItemDataProps[],
-  dispatcMerchListAction: (arg:any)=> void,
-  dispatchTicketListAction: (arg:any)=> void,
+  dispatcMerchListAction: (arg: MerchListAction)=> void,
+  dispatchTicketListAction: (arg: TicketListAction)=> void,
   setAffiliate: (arg: string) => void,
   setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
   setBoxOfficeMode: (arg: boolean) => void,
@@ -350,10 +351,7 @@ const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) 
 const checkoutCtx = createContext({} as CheckoutContext);
 
 export function CheckoutState({ children }: { children: any }) {
-  const [cartState, dispatchCartAction] = useReducer(
-    cartReducer,
-    defaultCartState
-  );
+  const [cartState, dispatchCartAction] = useReducer(cartReducer,defaultCartState);
 
   const [eventDataForCheckout, setEventDataForCheckout] = useState<EventBasicData>();
   // happinUserID will be set when the userID is passed in url(mobile app logged in and open the checkout page)
