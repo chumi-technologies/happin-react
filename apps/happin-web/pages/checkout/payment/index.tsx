@@ -19,6 +19,7 @@ import { deleteTicketFromCart } from '../../../components/page_components/Checko
 import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
 import { validateCode, lockCheckoutTickets } from '../../../lib/api';
+import { useUserState } from 'contexts/user-state';
 
 type FormData = {
   email: string;
@@ -53,6 +54,7 @@ const Payment = () => {
   const toast = useToast()
 
   const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction,dispatcMerchListAction, removeItem, ticketListState, merchListState} = useCheckoutState();
+  const { updateCrowdCoreUserInfo } = useUserState();
   const [ promoCode, setPromoCode ] = useState<string>('');
   const [ validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
 
@@ -82,6 +84,10 @@ const Payment = () => {
     console.log(data);
   } 
 
+  const onCountdownCompleted = ()=> {
+    console.log('countdown complete redirect user');
+  }
+
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
     return ticketListState.find(item => item.id === t.ticketId) as TicketItemDataProps
   }
@@ -110,24 +116,27 @@ const Payment = () => {
     // this list will contain all properties  (user cannot skip merch inside a bundle)
     return merchs.map(m => m.property);
   }
-
+  
   useEffect(() => {
-    // lock the payment and set timer
-        lockCheckoutTicketsAndSetTimer({
-          cart: cart.items,
-          discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id || ""
-      });    
+    //  set crowdcore user info
+      updateCrowdCoreUserInfo();
   }, []);
+
+  // useEffect(() => {
+  //   // lock the payment and set timer
+  //       lockCheckoutTicketsAndSetTimer({
+  //         cart: cart.items,
+  //         discountCode: codeUsed || "",
+  //         activityId: eventDataForCheckout?.id || ""
+  //     });    
+  // }, []);
+
+
+
 
   const lockCheckoutTicketsAndSetTimer = async (orderItem: OrderItem)=> {
       try {
-        const reqBody = {
-          cart: cart.items,
-          discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id
-      }
-      const res = await lockCheckoutTickets(reqBody);
+      const res = await lockCheckoutTickets(orderItem);
       console.log('start 7 minutes timer');
       console.log(res?.orderId,'order ID');
       }
@@ -146,7 +155,10 @@ const Payment = () => {
   return (
     <div className="checkout__page">
       <div className="flex flex-col h-full">
-        <PaymentHead/>
+        <PaymentHead
+        countdownCompleted = {onCountdownCompleted}
+        date = {20000}
+        />
         <div className="flex-1 h-0 web-scroll overflow-y-auto">
           <div className="container">
             <div className="flex flex-col md:flex-row w-full py-2 md:py-8">

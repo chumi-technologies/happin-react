@@ -1,10 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getUserInfo } from "lib/api";
+import { getUserInfo, setCrowdCoreUserInfo } from "lib/api";
 import { User } from 'lib/model/user';
 
 interface UserContext {
   setUserInfo: ()=> Promise<void>,
   clearUser: ()=> void,
+  updateCrowdCoreUserInfo: ()=>Promise<void>,
   user: User|undefined
 }
 
@@ -33,6 +34,18 @@ export function UserState({ children }: {children: any}) {
     }
   }
 
+  const updateCrowdCoreUserInfo = async ()=> {
+    if (typeof window !== undefined) {
+      try {
+          const response = await setCrowdCoreUserInfo();
+          const token = response?.data?.token;
+          localStorage.setItem('chumi_jwt',token);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
   const clearUser = () => {
     setUser(undefined);
     localStorage.removeItem('happin_refresh_token');
@@ -41,7 +54,7 @@ export function UserState({ children }: {children: any}) {
 
 
   return (
-    <userContext.Provider value={{ user, setUserInfo, clearUser }}>
+    <userContext.Provider value={{ user, setUserInfo, clearUser, updateCrowdCoreUserInfo }}>
       {children}
     </userContext.Provider>
   );
