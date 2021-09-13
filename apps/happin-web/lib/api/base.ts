@@ -60,6 +60,49 @@ instanceHappin.interceptors.request.use(
   }
 )
 
+instanceCrowCore.interceptors.request.use(
+  (config) => {
+    const idToken = getLocalStorageIDToken();
+    if (idToken) {
+      config.headers['authorization'] = `Bearer ${idToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
+
+instanceCrowCore.interceptors.response.use(
+  (res)=> {
+    return res;
+  },
+  async (err) => {
+    const oringinalConfig = err.config;
+    if (err.response) {
+      if (err.response.data.message.includes('expired') && !oringinalConfig._retry) {
+        oringinalConfig._retry = true;
+        try {
+          const response = await refreshToken();
+          const {id_token, refresh_token} = response;
+          window.localStorage.setItem('happin_jwt', id_token);
+          window.localStorage.setItem('happin_refresh_token', refresh_token);
+          instanceHappin.defaults.headers.common['authorization'] = `Bearer ${id_token}`;
+          return instanceHappin(oringinalConfig)
+        } catch (_error) {
+          if(_error.response && _error.response.data) {
+            return Promise.reject(_error.response.data)
+          }
+
+          return Promise.reject(_error);
+        }
+      }
+      return Promise.reject(err.response)
+    }
+    return Promise.reject(err)
+  }
+)
+
 instanceHappin.interceptors.response.use(
   (res)=> {
     return res;
@@ -91,8 +134,6 @@ instanceHappin.interceptors.response.use(
 )
 
 
-
-
 const refreshToken = async (): Promise<refreshTokenResponse> => {
   const refreshToken = getLocalStorageRefreshToken();
   const params = new URLSearchParams();
@@ -121,7 +162,14 @@ export const postToHappin = async(path:string, payload: any) => {
   }
 }
 
-
+export const postToCrowdCore = async(path:string, payload: any) => {
+  try {
+    const result = await instanceCrowCore.post(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
 
 export const getFromCrowdCore = async<T = any>(path: string) => {
   try {

@@ -128,3 +128,12 @@ export interface CartMerchItem {
   shipping: boolean;
 }
 
+export interface OrderItem {
+  cart:{
+    ticketItem: CartTicketItem[],
+    merchItem: CartMerchItem[],
+    bundleItem: CartBundleItem[],
+  };
+  discountCode: string;
+  activityId: string;
+}
