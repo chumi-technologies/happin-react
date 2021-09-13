@@ -45,6 +45,12 @@ const CheckoutHead = ({
       generateToast('No item in cart', toast);
       return
     }
+    // check chumi_jwt in localstorage or not
+/*     if(!localStorage.getItem('chumi_jwt')) {
+      generateToast('To continue, please log in or sign up ', toast);
+      return
+    } */
+
     router.push('/checkout/payment');
   }
 
@@ -112,11 +118,10 @@ const CheckoutHead = ({
 
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
-    return merchListState.filter(m => {
-      if (m.tickets.includes(ticketId)) {
-        return true
-      }
-    })
+    const bundleMerchs = merchListState.filter(m => m.tickets.includes(ticketId));
+    /* const merchBundleIds = bundleMerchs.map(merch =>merch.id);
+    ticket.merchs.sort((a,b)=> merchBundleIds.indexOf(a.merchId) - merchBundleIds.indexOf(b.merchId)); */
+    return bundleMerchs
   }
 
   // array of the selected merchs property name inside this bundle 
@@ -128,8 +133,7 @@ const CheckoutHead = ({
   }
 
   const cartItemCount = () => {
-    let count = cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length
-    return count
+    return cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length
   }
 
   // the input number is read from Cart , so the max input must use original quantity,

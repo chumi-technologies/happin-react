@@ -57,7 +57,6 @@ type Action = {
 interface CheckoutContext {
   cart: Cart,
   eventDataForCheckout: EventBasicData | undefined,
-  happinUserID: string | undefined,
   codeUsed: string | undefined,
   boxOfficeMode: boolean,
   generalTicketInfo: GeneralTicketInfo | undefined,
@@ -70,7 +69,6 @@ interface CheckoutContext {
   setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
   setBoxOfficeMode: (arg: boolean) => void,
   setCodeUsed: (arg: string) => void,
-  setHappinUserID: (arg: string) => void,
   setEventDataForCheckout: (arg: EventBasicData) => void,
   addItem: (arg: AddItemHandlerParam) => void,
   removeItem: (arg0: RemoveItemHandlerParam) => void
@@ -354,8 +352,6 @@ export function CheckoutState({ children }: { children: any }) {
   const [cartState, dispatchCartAction] = useReducer(cartReducer,defaultCartState);
 
   const [eventDataForCheckout, setEventDataForCheckout] = useState<EventBasicData>();
-  // happinUserID will be set when the userID is passed in url(mobile app logged in and open the checkout page)
-  const [happinUserID, setHappinUserID] = useState<string>();
   // valid discount code 
   const [codeUsed, setCodeUsed] = useState<string>();
   // affiliate code, should be pass into the final step request body
@@ -382,7 +378,6 @@ export function CheckoutState({ children }: { children: any }) {
   const context: CheckoutContext = {
     cart: cartState,
     eventDataForCheckout: eventDataForCheckout,
-    happinUserID: happinUserID,
     codeUsed: codeUsed,
     boxOfficeMode: boxOfficeMode,
     generalTicketInfo: generalTicketInfo,
@@ -395,7 +390,6 @@ export function CheckoutState({ children }: { children: any }) {
     setGeneralTicketInfo: setGeneralTicketInfo,
     setBoxOfficeMode: setBoxOfficeMode,
     setCodeUsed: setCodeUsed,
-    setHappinUserID: setHappinUserID,
     setEventDataForCheckout: setEventDataForCheckout,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,

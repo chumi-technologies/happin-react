@@ -9,17 +9,19 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
-  const { setHappinUserID, setBoxOfficeMode } = useCheckoutState();
+  const { setBoxOfficeMode } = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
   
   useEffect(() => {
-    if (router?.query?.happinUID && router.asPath.includes('/checkout/')) {
+    if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
-      setHappinUserID(router?.query?.happinUID as string);
+      if (typeof window !== undefined) {
+        localStorage.setItem('chumi_jwt', router?.query?.token as string);
+      }
     }
     //box office mode is only opened in 2b app, hide the header
     if (router?.query?.role === 'boxoffice') {
@@ -27,7 +29,7 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
       setBoxOfficeMode(true);
     }
-  }, [router.query, router.asPath, setBoxOfficeMode, setHappinUserID])
+  }, [router.query, router.asPath, setBoxOfficeMode])
 
   return (
     <>
