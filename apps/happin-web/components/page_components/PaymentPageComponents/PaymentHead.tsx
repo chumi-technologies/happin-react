@@ -7,7 +7,7 @@ const PaymentHead = ({
   countdownCompleted,
   date
  }:{
-  countdownCompleted: ()=>void,
+  countdownCompleted: (arg:any)=>void,
   date:number
   }
   ) => {
@@ -24,7 +24,6 @@ const PaymentHead = ({
           {/*<Countdown date={Date.now() + 420000} renderer={renderer} />*/}
           <Countdown
             controlled = {true}
-            autoStart = {true}
             onComplete = {countdownCompleted}
             date = {date}
           />

@@ -18,7 +18,7 @@ import countryList from 'react-select-country-list';
 import { deleteTicketFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
 import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
-import { validateCode, lockCheckoutTickets } from '../../../lib/api';
+import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from '../../../lib/api';
 import { useUserState } from 'contexts/user-state';
 
 type FormData = {
@@ -51,12 +51,13 @@ const Payment = () => {
 
   const options = useMemo(() => countryList().getData(), [])
   const router = useRouter();
-  const toast = useToast()
+  const toast = useToast();
 
   const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction,dispatcMerchListAction, removeItem, ticketListState, merchListState} = useCheckoutState();
   const { updateCrowdCoreUserInfo } = useUserState();
   const [ promoCode, setPromoCode ] = useState<string>('');
   const [ validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
+  const [ timer,setTimer ] = useState<number>(420000);
 
   const ApplyPromoCode = async (e:any)=> {
     try {
@@ -84,8 +85,32 @@ const Payment = () => {
     console.log(data);
   } 
 
-  const onCountdownCompleted = ()=> {
-    console.log('countdown complete redirect user');
+  const releaseLock = async () => {
+    const orderId = localStorage.getItem('orderId');
+    if (orderId) {
+      try {
+          const res = await releaseLockCheckoutTickets(orderId);
+          // router.push(`/checkout/${eventDataForCheckout?.id}`)
+          console.log('release tickets')
+        }
+      catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  const onCountDownCompleted = async ()=> {
+    const orderId = localStorage.getItem('orderId');
+    if (orderId) {
+      try {
+          const res = await releaseLockCheckoutTickets(orderId);
+          console.log('count down complete')
+          router.push(`https://happin.app`);
+        }
+      catch (err) {
+        console.log(err)
+      }
+    }
   }
 
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
@@ -116,48 +141,55 @@ const Payment = () => {
     // this list will contain all properties  (user cannot skip merch inside a bundle)
     return merchs.map(m => m.property);
   }
-  
-  useEffect(() => {
-    //  set crowdcore user info
-      updateCrowdCoreUserInfo();
-  }, []);
-
-  // useEffect(() => {
-  //   // lock the payment and set timer
-  //       lockCheckoutTicketsAndSetTimer({
-  //         cart: cart.items,
-  //         discountCode: codeUsed || "",
-  //         activityId: eventDataForCheckout?.id || ""
-  //     });    
-  // }, []);
-
-
-
 
   const lockCheckoutTicketsAndSetTimer = async (orderItem: OrderItem)=> {
-      try {
-      const res = await lockCheckoutTickets(orderItem);
-      console.log('start 7 minutes timer');
-      console.log(res?.orderId,'order ID');
-      }
-      catch (err) {
-        console.log(err)
-      }
+    try {
+    const res = await lockCheckoutTickets(orderItem);
+    console.log(res?.orderId,'order ID');
+    localStorage.setItem('orderId',res?.orderId);
+    }
+    catch (err) {
+      console.log(err)
+    }
   }
+
+  useEffect(() => {
+    const orderId = localStorage.getItem('orderId');
+    if (!eventDataForCheckout) {
+      if (orderId) {
+        console.log('here')
+        releaseLock();
+        localStorage.removeItem('orderId');
+      } 
+      router.push(`https://happin.app`);
+    }
+      // set crowdcore user info and set timer
+      Promise.all([
+        updateCrowdCoreUserInfo(),
+        lockCheckoutTicketsAndSetTimer({
+        cart: cart.items,
+        discountCode: codeUsed || "",
+        activityId: eventDataForCheckout?.id || "" })
+        ])
+    }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(timer => timer - 1000);
+    }, 1000);
+    return () => clearInterval(interval);   
+  }, []);
 
   useEffect(() => {
     register('checkbox');
   }, [register]);
 
-  console.log(cart,'cart')
-  console.log(eventDataForCheckout,"eventDataForCheckout")
-
   return (
     <div className="checkout__page">
       <div className="flex flex-col h-full">
         <PaymentHead
-        countdownCompleted = {onCountdownCompleted}
-        date = {20000}
+        countdownCompleted = {onCountDownCompleted}
+        date = {timer}
         />
         <div className="flex-1 h-0 web-scroll overflow-y-auto">
           <div className="container">
@@ -410,11 +442,6 @@ const Payment = () => {
                                             size="sm"
                                           />
                                         </div>
-                                          {t.merchs && t.merchs.map(m => (
-                                            <div key={m.identifier}>
-                                              <div className="text-white text-sm font-semibold w-2/3">{`Bundle items: ${m.quantity} ${m.name}`}</div>
-                                            </div>
-                                          ))}
                                           <div onClick={() => { bundleDeleteHandler(t) }}
                                             className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                             <Delete theme="outline" size="14" fill="currentColor" />
@@ -425,6 +452,20 @@ const Payment = () => {
                                 )
                               })
                             }
+                            {cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                              return (
+                                <div className="flex p-4 text-white font-bold" key={t.identifier}>
+                                  {t.merchs && `Bundle items:`}
+                                    {t.merchs && t.merchs.map(m => (
+                                      <div key={m.identifier}>
+                                        <div className="text-white font-bold text-right whitespace-nowrap">{`${m.quantity} ${m.name}`}</div>
+                                      </div>
+                                  ))}
+                                </div>
+                                )
+                              })
+                            }
+
                             {cart.items.ticketItem && cart.items.ticketItem.map(t => {
                                 return (
                                   <div className="flex p-4" key={t.ticketId}>
@@ -480,13 +521,21 @@ const Payment = () => {
                           return (
                             <div className="flex justify-between py-1" key={t.identifier}>
                               <div className="text-gray-300">{`${t.quantity} x ${t.name}`} </div>
-                                  {t.merchs && t.merchs.map(m => (
-                                    <div key={m.identifier}>
-                                          <div className="text-gray-300">{`Bundle items: ${m.quantity} ${m.name}`}</div>
-                                      </div>
-                                  ))}
                               <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
                             </div>
+                          )
+                          })
+                        }
+                        { cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                          return (
+                            <div className="text-white font-medium text-sm py-4" key={t.identifier}>
+                                {t.merchs && `Bundle items: `}
+                                {t.merchs && t.merchs.map(m => (
+                                    <div key={m.identifier}>
+                                          <div className="text-gray-300">{`${m.quantity} ${m.name}`}</div>
+                                      </div>
+                                  ))}
+                             </div>
                           )
                           })
                         }
