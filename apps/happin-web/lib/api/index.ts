@@ -1,12 +1,12 @@
 import { getEventDetail, getEventDetailForCheckout, getGroupEvents } from "./events";
 import { checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from "./tickets";
-import { getUserInfo, setCrowdCoreUserInfo } from "./user";
+import { getUserInfo, exchangeCrowdcoreToken } from "./user";
 
 export { 
 	getEventDetail, 
 	getGroupEvents, 
 	getUserInfo,
-	setCrowdCoreUserInfo,
+	exchangeCrowdcoreToken,
 	checkinTicket, 
 	getEventDetailForCheckout,
 	getGATickets, 

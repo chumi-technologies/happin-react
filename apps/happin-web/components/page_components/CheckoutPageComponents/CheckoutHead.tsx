@@ -15,6 +15,7 @@ import { generateToast } from './util/toast';
 import { useToast } from '@chakra-ui/react';
 import { validateCode } from 'lib/api';
 import { useRouter } from 'next/router';
+import { useUserState } from 'contexts/user-state';
 
 const CheckoutHead = ({
   saleStart,
@@ -27,13 +28,15 @@ const CheckoutHead = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState } = useCheckoutState();
+  const { user, exchangeForCrowdCoreToken } = useUserState()
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
-  const [validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+
   const router = useRouter()
   const toast = useToast()
 
-  const nextButtonHandler = () => {
+  const nextButtonHandler = async () => {
     console.log('Cart: ', cart);
     console.log('Merch List: ', merchListState);
     console.log('Ticket List: ', ticketListState)
@@ -45,67 +48,78 @@ const CheckoutHead = ({
       generateToast('No item in cart', toast);
       return
     }
-    // check chumi_jwt in localstorage or not
-/*     if(!localStorage.getItem('chumi_jwt')) {
-      generateToast('To continue, please log in or sign up ', toast);
-      return
-    } */
+    try {
+      setButtonLoading(true)
+      // check login or not
+      if (!user) {
+        generateToast('To continue, please log in or sign up ', toast);
+        return
+      } else {
+        // exchange token & store the crowdcore server token in local stoarge
+        await exchangeForCrowdCoreToken();
+        setButtonLoading(false)
+      }
 
-    router.push('/checkout/payment');
+      router.push('/checkout/payment');
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setButtonLoading(false)
+    }
   }
 
-/*   const onDiscountCodeChangeHandler = (event: any) => {
-    setDiscountInput(event.target.value)
-  } */
+  /*   const onDiscountCodeChangeHandler = (event: any) => {
+      setDiscountInput(event.target.value)
+    } */
 
-  const onPresaleCodeChangeHandler = (event: any)=> {
+  const onPresaleCodeChangeHandler = (event: any) => {
     setPresaleInput(event.target.value)
   }
 
-/*   const onApplyDiscountCodeClicked = async ()=> {
-    if(!discountInput) {
-      return
-    }
-    try {
-      setValidateCodeLoading(true)
-      const res= await validateCode(eventDataForCheckout?.id as string, discountInput as string)
-      if (res.valid) {
-        if (res.type === 'discount') {
-          setCodeUsed(res.code)
-        } else { generateToast('Invalid code', toast); return}
-      } else {
-        generateToast('Invalid code', toast)
+  /*   const onApplyDiscountCodeClicked = async ()=> {
+      if(!discountInput) {
         return
       }
-      generateToast('Code applied, final amount will be shown on next page', toast);
-    } catch(err) {
-      console.log(err)
-    } finally {
-      setValidateCodeLoading(false)
-    }
-  } */
+      try {
+        setValidateCodeLoading(true)
+        const res= await validateCode(eventDataForCheckout?.id as string, discountInput as string)
+        if (res.valid) {
+          if (res.type === 'discount') {
+            setCodeUsed(res.code)
+          } else { generateToast('Invalid code', toast); return}
+        } else {
+          generateToast('Invalid code', toast)
+          return
+        }
+        generateToast('Code applied, final amount will be shown on next page', toast);
+      } catch(err) {
+        console.log(err)
+      } finally {
+        setValidateCodeLoading(false)
+      }
+    } */
 
-  const onApplyPresaleCodeClicked = async() => {
-    if(!presaleInput) {
+  const onApplyPresaleCodeClicked = async () => {
+    if (!presaleInput) {
       return
     }
     try {
-      setValidateCodeLoading(true)
-      const res= await validateCode(eventDataForCheckout?.id as string, presaleInput as string)
+      setButtonLoading(true)
+      const res = await validateCode(eventDataForCheckout?.id as string, presaleInput as string)
       if (res.valid) {
         if (res.type === 'presale') {
           closeModal();
           onPresaleCodeValidate(true);
-        } else { generateToast('Invalid code', toast); return}
+        } else { generateToast('Invalid code', toast); return }
       } else {
         generateToast('Invalid code', toast)
         return
       }
       generateToast('Pre-sale code applied', toast);
-    } catch(err) {
+    } catch (err) {
       console.log(err)
     } finally {
-      setValidateCodeLoading(false)
+      setButtonLoading(false)
     }
   }
 
@@ -133,7 +147,11 @@ const CheckoutHead = ({
   }
 
   const cartItemCount = () => {
-    return cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length
+    const bundleItems = cart.items.bundleItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
+    const ticketItems = cart.items.ticketItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
+    const merchItems = cart.items.merchItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
+
+    return bundleItems + ticketItems + merchItems
   }
 
   // the input number is read from Cart , so the max input must use original quantity,
@@ -388,7 +406,7 @@ const CheckoutHead = ({
                           </div>
                         )}
                       </div>
-{/*                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
+                      {/*                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
                         {!codeUsed && (
                           <>
                             <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
@@ -412,7 +430,7 @@ const CheckoutHead = ({
           </Popover>
           {/* show presale only when in presale duration and sale not start */}
           {(saleStart === false && inPresale) && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>}
-          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={() => { nextButtonHandler() }} >Next Step</button>}
+          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" disabled={buttonLoading} onClick={() => { nextButtonHandler() }} >{buttonLoading ? 'Processing...' : 'Next Step'}</button>}
         </div>
       </div>
       {/*Dialog*/}
@@ -470,9 +488,9 @@ const CheckoutHead = ({
                   type="button"
                   className="mt-6 btn btn-rose w-full !rounded-full"
                   onClick={onApplyPresaleCodeClicked}
-                  disabled={validateCodeLoading}
+                  disabled={buttonLoading}
                 >
-                  {validateCodeLoading? 'Processing...': 'Confirm'}
+                  {buttonLoading ? 'Processing...' : 'Confirm'}
                 </button>
               </div>
             </Transition.Child>

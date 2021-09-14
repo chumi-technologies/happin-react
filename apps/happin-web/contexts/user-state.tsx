@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getUserInfo, setCrowdCoreUserInfo } from "lib/api";
+import { exchangeCrowdcoreToken, getUserInfo } from "lib/api";
 import { User } from 'lib/model/user';
 
 interface UserContext {
   setUserInfo: ()=> Promise<void>,
   clearUser: ()=> void,
-  updateCrowdCoreUserInfo: ()=>Promise<void>,
+  exchangeForCrowdCoreToken: ()=>Promise<void>,
   user: User|undefined
 }
 
@@ -34,10 +34,10 @@ export function UserState({ children }: {children: any}) {
     }
   }
 
-  const updateCrowdCoreUserInfo = async ()=> {
+  const exchangeForCrowdCoreToken = async ()=> {
     if (typeof window !== undefined) {
       try {
-          const response = await setCrowdCoreUserInfo();
+          const response = await exchangeCrowdcoreToken();
           const token = response?.data?.token;
           localStorage.setItem('chumi_jwt',token);
       } catch (err) {
@@ -50,11 +50,12 @@ export function UserState({ children }: {children: any}) {
     setUser(undefined);
     localStorage.removeItem('happin_refresh_token');
     localStorage.removeItem('happin_jwt');
+    localStorage.removeItem('chumi_jwt')
   }
 
 
   return (
-    <userContext.Provider value={{ user, setUserInfo, clearUser, updateCrowdCoreUserInfo }}>
+    <userContext.Provider value={{ user, setUserInfo, clearUser, exchangeForCrowdCoreToken }}>
       {children}
     </userContext.Provider>
   );

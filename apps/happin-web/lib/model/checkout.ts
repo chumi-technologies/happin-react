@@ -79,6 +79,7 @@ export type MerchItemDataProps = {
   kind: 'merch',
   max: number, // max per order
   mail: boolean, // can be shipped
+  shippingCountry: string[],
   forApp: boolean // filter out for app gifts
   show: boolean // deleted or not
   tickets : string[] //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
@@ -126,6 +127,7 @@ export interface CartMerchItem {
   name: string;
   image: string[];
   shipping: boolean;
+  shippingCountry: string[];
 }
 
 export interface OrderItem {

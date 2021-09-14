@@ -198,6 +198,7 @@ const Checkout = () => {
             max: m.max,
             forApp: m.forApp,
             description: m.description,
+            shippingCountry: m.shippingCost.map((shipping: any)=>shipping.destination),
             price: m.price,
             kind: 'merch',
             mail: m.mail,
@@ -207,14 +208,6 @@ const Checkout = () => {
           }
           return merch
         })
-        // fake dup 
-        /* const newmerch = {
-          ...merchList[0],
-          id: '123456789',
-          name: 'Sample 2',
-          property: [{ pName: 'sm', pValue: 5, originalPValue: 5 }, { pName: 'md', pValue: 10, originalPValue: 10 }]
-        }
-        merchList = [newmerch, merchList[0]]; */
       }
       dispatcMerchListAction({ type: TicketAndMerchListActionKind.Init, initValue: merchList })
     } catch (err) {

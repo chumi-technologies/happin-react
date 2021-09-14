@@ -19,7 +19,6 @@ import { deleteTicketFromCart } from '../../../components/page_components/Checko
 import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
 import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from '../../../lib/api';
-import { useUserState } from 'contexts/user-state';
 
 type FormData = {
   email: string;
@@ -38,6 +37,28 @@ type FormData = {
   textarea: string;
 };
 
+const customStyles = {
+  option: (provided: any, state: any) => ({
+    ...provided,
+    color: state.isSelected ? 'gray' : 'white',
+    background: state.isSelected ? 'black' :  state.isFocused ? 'orange' : 'gray',
+    padding: 20,
+  }),
+  control: (provided: any, state: any) => ({
+    // none of react-select's styles are passed to <Control />
+   ...provided,
+    background: 'black',
+    marginTop: '0.25rem',
+    border: '2px solid gray',
+    borderRadius: '0.5rem',
+    padding: '0.1rem 0.75rem',
+  }),
+  dropdownIndicator: (provided: any, state: any)=>({
+    ...provided,
+
+  })
+}
+
 const Payment = () => {
   const {
     register,
@@ -54,7 +75,6 @@ const Payment = () => {
   const toast = useToast();
 
   const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction,dispatcMerchListAction, removeItem, ticketListState, merchListState} = useCheckoutState();
-  const { updateCrowdCoreUserInfo } = useUserState();
   const [ promoCode, setPromoCode ] = useState<string>('');
   const [ validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
   const [ timer,setTimer ] = useState<number>(420000);
@@ -163,14 +183,11 @@ const Payment = () => {
       } 
       router.push(`https://happin.app`);
     }
-      // set crowdcore user info and set timer
-      Promise.all([
-        updateCrowdCoreUserInfo(),
-        lockCheckoutTicketsAndSetTimer({
-        cart: cart.items,
-        discountCode: codeUsed || "",
-        activityId: eventDataForCheckout?.id || "" })
-        ])
+    // set timer
+    lockCheckoutTicketsAndSetTimer({
+      cart: cart.items,
+      discountCode: codeUsed || "",
+      activityId: eventDataForCheckout?.id || "" })
     }, []);
 
   useEffect(() => {
@@ -268,6 +285,7 @@ const Payment = () => {
                             control={control}
                             render={({ field: { onChange, onBlur, value} }) => (
                                       <Select
+                                      styles={customStyles}
                                         options={options}
                                         onChange={onSelectCountryChange}
                                         onBlur={onBlur}
