@@ -19,6 +19,7 @@ import { deleteTicketFromCart } from '../../../components/page_components/Checko
 import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
 import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from '../../../lib/api';
+import _ from "lodash";
 
 type FormData = {
   email: string;
@@ -41,7 +42,7 @@ const customStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
     color: state.isSelected ? 'gray' : 'white',
-    background: state.isSelected ? 'black' :  state.isFocused ? 'orange' : 'gray',
+    background: state.isSelected ? '#E8F0FE' : state.isFocused ? 'black' : 'gray',
     padding: 20,
   }),
   control: (provided: any, state: any) => ({
@@ -55,7 +56,6 @@ const customStyles = {
   }),
   dropdownIndicator: (provided: any, state: any)=>({
     ...provided,
-
   })
 }
 
@@ -70,14 +70,27 @@ const Payment = () => {
   } = useForm<FormData>();
 
 
-  const options = useMemo(() => countryList().getData(), [])
   const router = useRouter();
   const toast = useToast();
 
   const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction,dispatcMerchListAction, removeItem, ticketListState, merchListState} = useCheckoutState();
   const [ promoCode, setPromoCode ] = useState<string>('');
   const [ validateCodeLoading, setValidateCodeLoading ] = useState<boolean>(false);
-  const [ timer,setTimer ] = useState<number>(420000);
+  // const [ timer,setTimer ] = useState<number>(420000);
+  const [ timer, setTimer ] = useState<number>(111420000);
+  const [ shippingOptions, setShippingOptions] = useState<any[]>([]);
+  
+  const generateShippingOptions = ():any[]=> {
+    const shippings = merchListState.filter(m=>m.tickets.length>0).map(m=>m.shippingCountry);
+    const shippingOptionsUnion = _.union(shippings[0]);
+    if (shippingOptionsUnion.length == 0) {
+      generateToast('No Shipping Options', toast);
+    }
+    if (shippingOptionsUnion.includes("ROW")) {
+      return countryList().getData()
+    }
+    return countryList().getData().filter(list => shippingOptionsUnion.includes(list.value));
+  }
 
   const ApplyPromoCode = async (e:any)=> {
     try {
@@ -110,7 +123,7 @@ const Payment = () => {
     if (orderId) {
       try {
           const res = await releaseLockCheckoutTickets(orderId);
-          // router.push(`/checkout/${eventDataForCheckout?.id}`)
+          localStorage.removeItem('orderId');
           console.log('release tickets')
         }
       catch (err) {
@@ -125,7 +138,7 @@ const Payment = () => {
       try {
           const res = await releaseLockCheckoutTickets(orderId);
           console.log('count down complete')
-          router.push(`https://happin.app`);
+          router.push(`/checkout/${eventDataForCheckout?.id}`);
         }
       catch (err) {
         console.log(err)
@@ -165,7 +178,6 @@ const Payment = () => {
   const lockCheckoutTicketsAndSetTimer = async (orderItem: OrderItem)=> {
     try {
     const res = await lockCheckoutTickets(orderItem);
-    console.log(res?.orderId,'order ID');
     localStorage.setItem('orderId',res?.orderId);
     }
     catch (err) {
@@ -177,18 +189,22 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (!eventDataForCheckout) {
       if (orderId) {
-        console.log('here')
-        releaseLock();
-        localStorage.removeItem('orderId');
+         releaseLock();
       } 
       router.push(`https://happin.app`);
     }
     // set timer
-    lockCheckoutTicketsAndSetTimer({
-      cart: cart.items,
-      discountCode: codeUsed || "",
-      activityId: eventDataForCheckout?.id || "" })
-    }, []);
+    if (!orderId) {
+      lockCheckoutTicketsAndSetTimer({
+        cart: cart.items,
+        discountCode: codeUsed || "",
+        activityId: eventDataForCheckout?.id || "" })
+    }
+    // clean up to release order Id 
+    return () => {
+        releaseLock();
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -196,6 +212,26 @@ const Payment = () => {
     }, 1000);
     return () => clearInterval(interval);   
   }, []);
+
+  useEffect(() => {
+    const options = generateShippingOptions();
+    setShippingOptions(options);
+  }, []);
+
+  // in case user close window or tab, release the lock 
+  useEffect(() => {
+    window.addEventListener('beforeunload', (event) => {
+    // Cancel the event as stated by the standard.
+    event.preventDefault();
+    // Chrome requires returnValue to be set.
+    event.returnValue = '';
+    releaseLock();
+  })
+    return () => {
+        window.removeEventListener('unload', releaseLock)
+    }
+  }, []);
+
 
   useEffect(() => {
     register('checkbox');
@@ -268,31 +304,21 @@ const Payment = () => {
                             <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
                           )}
                         </div>
-{/*                        <div className="lg:col-span-3">
-                          <label htmlFor="country" className="form-label required">Country</label>
-                          <input
-                            id="country"
-                            type="text"
-                            className="form-field"
-                            placeholder="Country"
-                            {...register('country',{ required: true })}
-                          />
-                        </div>*/}
                         <div className="lg:col-span-3">
                         <label htmlFor="country" className="form-label required">Country</label>
                         <Controller
-                            name="country"
-                            control={control}
-                            render={({ field: { onChange, onBlur, value} }) => (
-                                      <Select
+                          name="country"
+                          control={control}
+                          render={({ field: { onChange, onBlur, value} }) => (
+                                    <Select
                                       styles={customStyles}
-                                        options={options}
-                                        onChange={onSelectCountryChange}
-                                        onBlur={onBlur}
-                                        selected={value}
-                                      />
-                                    )}
-                            rules={{
+                                      options={shippingOptions}
+                                      onChange={onSelectCountryChange}
+                                      onBlur={onBlur}
+                                      selected={value}
+                                    />
+                                  )}
+                          rules={{
                             required: true
                           }}
                         />
@@ -413,23 +439,6 @@ const Payment = () => {
                             {...register('textarea')}
                           />
                         </div>
-                        {/*<label className="block">*/}
-                        {/*  <span className="form-label">Industry Type</span>*/}
-                        {/*  <OriginalSelect*/}
-                        {/*    {...register('industry')}*/}
-                        {/*    placeholder="Select Industry Type"*/}
-                        {/*    options={*/}
-                        {/*      [*/}
-                        {/*        { value: 'Arts / Entertainment', text: 'Arts / Entertainment' },*/}
-                        {/*        { value: 'Festivals', text: 'Festivals' },*/}
-                        {/*        { value: 'Sports', text: 'Sports' },*/}
-                        {/*        { value: 'Business Events / Conferences', text: 'Business Events / Conferences' },*/}
-                        {/*        { value: 'Venues', text: 'Venues' },*/}
-                        {/*        { value: 'Other', text: 'Other' }*/}
-                        {/*      ]*/}
-                        {/*    }*/}
-                        {/*  />*/}
-                        {/*</label>*/}
                       </div>
                     </div>
                   </form>
