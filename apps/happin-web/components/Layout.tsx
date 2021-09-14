@@ -20,6 +20,7 @@ const Layout = ({ children }: { children: any }) => {
       setIsMobileBarOpen(false);
       setShowHeader(false);
       if (typeof window !== undefined) {
+        localStorage.setItem('open_from_app', '1');
         localStorage.setItem('chumi_jwt', router?.query?.token as string);
       }
     }

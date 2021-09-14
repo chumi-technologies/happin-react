@@ -51,13 +51,13 @@ const CheckoutHead = ({
     try {
       setButtonLoading(true)
       // check login or not
-      if (!user) {
+      if (!user && !localStorage.getItem('open_from_app')) {
         generateToast('To continue, please log in or sign up ', toast);
         return
-      } else {
+      } 
+      if (user) {
         // exchange token & store the crowdcore server token in local stoarge
         await exchangeForCrowdCoreToken();
-        setButtonLoading(false)
       }
 
       router.push('/checkout/payment');
