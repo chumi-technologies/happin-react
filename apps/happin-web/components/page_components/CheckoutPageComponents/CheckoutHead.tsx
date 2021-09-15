@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall, Delete } from '@icon-park/react';
@@ -31,10 +31,14 @@ const CheckoutHead = ({
   const { user, exchangeForCrowdCoreToken } = useUserState()
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const [buttonLoading, setButtonLoading] = useState<boolean>();
 
   const router = useRouter()
   const toast = useToast()
+
+  useEffect(()=> {
+    setButtonLoading(false)
+  }, [])
 
   const nextButtonHandler = async () => {
     console.log('Cart: ', cart);
@@ -53,6 +57,7 @@ const CheckoutHead = ({
       // check login or not
       if (!user && !localStorage.getItem('open_from_other_source')) {
         generateToast('To continue, please log in or sign up ', toast);
+        setButtonLoading(false)
         return
       } 
       if (user) {
@@ -60,11 +65,9 @@ const CheckoutHead = ({
         await exchangeForCrowdCoreToken();
       }
 
-      router.push('/checkout/payment');
+      await router.push('/checkout/payment');
     } catch (err) {
       console.log(err)
-    } finally {
-      setButtonLoading(false)
     }
   }
 
