@@ -10,13 +10,13 @@ import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
 import moment from 'moment';
 import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
-import { CartTicketItem, TicketItemDataProps, CartBundleItem, CartMerchItem, OrderItem } from '../../../lib/model/checkout';
+import { CartTicketItem, TicketItemDataProps,MerchItemDataProps, CartBundleItem, CartMerchItem, OrderItem } from '../../../lib/model/checkout';
 import {useRouter} from 'next/router';
 import { useToast } from '@chakra-ui/react';
 import Select from "react-select";
 import countryList from 'react-select-country-list';
-import { deleteTicketFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
-import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
+import { deleteTicketFromCart, deleteMerchFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
+import { decreaseBundleTicketAmount} from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
 import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from '../../../lib/api';
 import _ from "lodash";
@@ -42,13 +42,13 @@ const customStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
     color: state.isSelected ? 'gray' : 'white',
-    background: state.isSelected ? '#E8F0FE' : state.isFocused ? 'black' : 'gray',
+    background: state.isSelected ? 'white' : state.isFocused ? 'black' : 'gray',
     padding: 20,
   }),
   control: (provided: any, state: any) => ({
     // none of react-select's styles are passed to <Control />
    ...provided,
-    background: 'black',
+    background: state.isSelected ?'#E8F0FE' : 'black',
     marginTop: '0.25rem',
     border: '2px solid gray',
     borderRadius: '0.5rem',
@@ -56,7 +56,11 @@ const customStyles = {
   }),
   dropdownIndicator: (provided: any, state: any)=>({
     ...provided,
-  })
+  }),
+  singleValue: (provided: any, state: any) => ({
+    ...provided,
+    color: state.isSelected ? 'black' : 'white',
+  }),
 }
 
 const Payment = () => {
@@ -68,7 +72,6 @@ const Payment = () => {
     reset,
     control,
   } = useForm<FormData>();
-
 
   const router = useRouter();
   const toast = useToast();
@@ -111,6 +114,7 @@ const Payment = () => {
   }
 
   const onSubmit = async (data: any) => {
+
     console.log(data);
   };
 
@@ -124,6 +128,7 @@ const Payment = () => {
       try {
           const res = await releaseLockCheckoutTickets(orderId);
           localStorage.removeItem('orderId');
+          localStorage.removeItem('activityId');
           console.log('release tickets')
         }
       catch (err) {
@@ -137,6 +142,8 @@ const Payment = () => {
     if (orderId) {
       try {
           const res = await releaseLockCheckoutTickets(orderId);
+          localStorage.removeItem('orderId');
+          localStorage.removeItem('activityId');
           console.log('count down complete')
           router.push(`/checkout/${eventDataForCheckout?.id}`);
         }
@@ -148,6 +155,10 @@ const Payment = () => {
 
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
     return ticketListState.find(item => item.id === t.ticketId) as TicketItemDataProps
+  }
+
+  const getEditingMerchListItem = (merch: CartMerchItem): MerchItemDataProps => {
+    return merchListState.find(item => item.id === merch.merchId) as MerchItemDataProps;
   }
 
   const bundleDeleteHandler = (t: CartBundleItem) => {
@@ -187,22 +198,28 @@ const Payment = () => {
 
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
+    const activityId = localStorage.getItem('activityId');
     if (!eventDataForCheckout) {
       if (orderId) {
-         releaseLock();
-      } 
-      router.push(`https://happin.app`);
-    }
-    // set timer
-    if (!orderId) {
-      lockCheckoutTicketsAndSetTimer({
-        cart: cart.items,
-        discountCode: codeUsed || "",
-        activityId: eventDataForCheckout?.id || "" })
-    }
-    // clean up to release order Id 
-    return () => {
-        releaseLock();
+        if (activityId) {
+          releaseLock();
+          router.push(`/checkout/${activityId}`);
+        } else {
+          releaseLock();
+          router.push(`https://happin.app`);
+        }     
+      } else{
+        router.push(`https://happin.app`);
+      }
+    } else {
+       // set timer
+      if (!orderId) {
+        localStorage.setItem('activityId',eventDataForCheckout.id);
+        lockCheckoutTicketsAndSetTimer({
+          cart: cart.items,
+          discountCode: codeUsed || "",
+          activityId: eventDataForCheckout?.id || "" })
+      }
     }
   }, []);
 
@@ -218,20 +235,27 @@ const Payment = () => {
     setShippingOptions(options);
   }, []);
 
-  // in case user close window or tab, release the lock 
+  // // in case user close window or tab, release the lock 
+  // useEffect(() => {
+  //   window.addEventListener('unload', (event) => {
+  //     releaseLock();
+  // })
+  //   return () => {
+  //       window.removeEventListener('unload', releaseLock)
+  //   }
+  // }, []);
+
   useEffect(() => {
     window.addEventListener('beforeunload', (event) => {
     // Cancel the event as stated by the standard.
     event.preventDefault();
     // Chrome requires returnValue to be set.
     event.returnValue = '';
-    releaseLock();
   })
     return () => {
-        window.removeEventListener('unload', releaseLock)
+        window.removeEventListener('beforeunload', releaseLock)
     }
   }, []);
-
 
   useEffect(() => {
     register('checkbox');
@@ -313,7 +337,7 @@ const Payment = () => {
                                     <Select
                                       styles={customStyles}
                                       options={shippingOptions}
-                                      onChange={onSelectCountryChange}
+                                      onChange = {(val) => {onChange(val.value);onSelectCountryChange(val)}}
                                       onBlur={onBlur}
                                       selected={value}
                                     />
@@ -322,6 +346,9 @@ const Payment = () => {
                             required: true
                           }}
                         />
+                         {errors.country && (
+                            <div className="text-rose-500 text-sm mt-1">Country is required.</div>
+                          )}
                          </div>
                         <div className="lg:col-span-4">
                           <label htmlFor="province" className="form-label required">State / Province</label>
@@ -449,7 +476,68 @@ const Payment = () => {
                   <div className="divide-y divide-white divide-opacity-10">
                     <div className="py-2 sm:py-3 sm:px-1">
                       <div className="text-lg font-semibold px-4 py-1">Your cart</div>
-                          { cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                            {cart.items.ticketItem && cart.items.ticketItem.map(t => {
+                                return (
+                                  <div className="flex p-4" key={t.ticketId}>
+                                    <div className="w-16 h-16 rounded-md overflow-hidden">
+                                      <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
+                                    </div>
+                                    <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                                      <div className="flex items-start mb-2">
+                                        <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
+                                        <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                      </div>
+                                      <div className="flex items-end justify-between flex-1">
+                                        <div className="flex items-center">
+                                          <NumberInput
+                                            min={0}
+                                            max={t.quantity}
+                                            value={t.quantity || 0}
+                                            size="sm"
+                                            isDisabled={true}
+                                          />
+                                        </div>
+                                          <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
+                                            className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                            <Delete theme="outline" size="14" fill="currentColor" />
+                                          </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })
+                            }
+                            {cart.items.merchItem.map(m => {
+                                return (
+                                  <div className="flex p-4" key={m.identifier}>
+                                    <div className="w-16 h-16 rounded-md overflow-hidden">
+                                      <img className="w-full h-full object-cover" src={m.image[0]} alt={m.name} />
+                                    </div>
+                                    <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                                      <div className="flex items-start mb-2">
+                                        <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                                        <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+                                      </div>
+                                      <div className="flex items-end justify-between flex-1">
+                                        <div className="flex items-center">
+                                          <NumberInput
+                                            min={0}
+                                            max={m.quantity}
+                                            value={m.quantity || 0}
+                                            size="sm"
+                                            isDisabled={true}
+                                          />
+                                        </div>
+                                        <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+                                          className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                          <Delete theme="outline" size="14" fill="currentColor" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                              { cart.items.bundleItem && cart.items.bundleItem.map(t => {
                                 return (
                                   <div className="flex p-4" key={t.identifier}>
                                     <div className="w-16 h-16 rounded-md overflow-hidden">
@@ -467,6 +555,7 @@ const Payment = () => {
                                             max={t.quantity}
                                             value={t.quantity || 0}
                                             size="sm"
+                                            isDisabled={true}
                                           />
                                         </div>
                                           <div onClick={() => { bundleDeleteHandler(t) }}
@@ -492,37 +581,6 @@ const Payment = () => {
                                 )
                               })
                             }
-
-                            {cart.items.ticketItem && cart.items.ticketItem.map(t => {
-                                return (
-                                  <div className="flex p-4" key={t.ticketId}>
-                                    <div className="w-16 h-16 rounded-md overflow-hidden">
-                                      <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
-                                    </div>
-                                    <div className="flex-1 min-w-0 ml-4 flex flex-col">
-                                      <div className="flex items-start mb-2">
-                                        <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-                                        <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                                      </div>
-                                      <div className="flex items-end justify-between flex-1">
-                                        <div className="flex items-center">
-                                          <NumberInput
-                                            min={0}
-                                            max={t.quantity}
-                                            value={t.quantity || 0}
-                                            size="sm"
-                                          />
-                                        </div>
-                                          <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
-                                            className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
-                                            <Delete theme="outline" size="14" fill="currentColor" />
-                                          </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )
-                              })
-                            }
                     </div>
                     <div className="pt-4 pb-4 sm:pb-5 px-4 sm:px-5">
                       <div className="sm:text-lg font-semibold mb-4">Payment</div>
@@ -544,6 +602,24 @@ const Payment = () => {
 
                     <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
                       <div className="text-white font-medium text-sm py-4">
+                        { cart.items.ticketItem && cart.items.ticketItem.map(t => {
+                          return (
+                            <div className="flex justify-between py-1" key={t.ticketId}>
+                              <div className="text-gray-300">{`${t.quantity} x ${t.name}`}</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                            </div>
+                          )
+                          })
+                        }
+                        { cart.items.merchItem && cart.items.merchItem.map(m => {
+                          return (
+                            <div className="flex justify-between py-1" key={m.identifier}>
+                              <div className="text-gray-300">{`${m.quantity} x ${m.name}`}</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+                            </div>
+                          )
+                          })
+                        }
                         { cart.items.bundleItem && cart.items.bundleItem.map(t => {
                           return (
                             <div className="flex justify-between py-1" key={t.identifier}>
@@ -563,15 +639,6 @@ const Payment = () => {
                                       </div>
                                   ))}
                              </div>
-                          )
-                          })
-                        }
-                        { cart.items.ticketItem && cart.items.ticketItem.map(t => {
-                          return (
-                            <div className="flex justify-between py-1" key={t.ticketId}>
-                              <div className="text-gray-300">{`${t.quantity} x ${t.name}`}</div>
-                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                            </div>
                           )
                           })
                         }
