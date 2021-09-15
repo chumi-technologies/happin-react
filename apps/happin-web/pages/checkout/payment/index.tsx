@@ -83,6 +83,7 @@ const Payment = () => {
   const [ timer, setTimer ] = useState<number>(111420000);
   const [ shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [ priceBreakDown, setPriceBreakDown] = useState<any>({});
+  const [shippingCountry,setShippingCountry] = useState<string>('');
   
   const generateShippingOptions = ():any[]=> {
     const shippings = merchListState.filter(m=>m.tickets.length>0).map(m=>m.shippingCountry);
@@ -114,29 +115,22 @@ const Payment = () => {
     }
   }
 
-  const handleDeleteTicketFromCart = async ()=> {
-    console.log('here delete ticket from cart')
+  const handleDeleteFromCart = async ()=> {
+    console.log(cart,'cartItem')
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        const res = await updateOrderFromCart(orderId,{});
-    }
-    catch (err) {
-      console.log(err)
-    }
-    }
-  }
-
-  const handleDeleteMerchFromCart = async()=> {
-    console.log('here delete merch from cart')
-    const orderId = localStorage.getItem('orderId');
-    if (orderId) {
-      try {
-        const res = await updateOrderFromCart(orderId,{});
-    }
-    catch (err) {
-      console.log(err)
-    }
+      caculatePriceBreakDown(orderId,
+        {
+          cart: cart.items,
+          discountCode: codeUsed || "",
+          activityId: eventDataForCheckout?.id || "",
+          shippingCountry:shippingCountry
+        });
+      }
+      catch (err) {
+        console.log(err)
+      }
     }
   }
 
@@ -146,8 +140,7 @@ const Payment = () => {
   };
 
   const onSelectCountryChange =  async (data:any) => {
-    console.log(data.value,'country')
-    console.log(data,'country Data')
+    setShippingCountry(data.value);
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       caculatePriceBreakDown(orderId,
@@ -164,13 +157,14 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-          localStorage.removeItem('orderId');
-          localStorage.removeItem('activityId');
-          const res = await releaseLockCheckoutTickets(orderId);
-          console.log('release tickets')
+          const res = await releaseLockCheckoutTickets(orderId);          
         }
       catch (err) {
         console.log(err)
+      }
+      finally {
+        localStorage.removeItem('orderId');
+        localStorage.removeItem('activityId');
       }
     }
   }
@@ -179,14 +173,15 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-          localStorage.removeItem('orderId');
-          localStorage.removeItem('activityId');
           const res = await releaseLockCheckoutTickets(orderId);
-          console.log('count down complete')
           router.push(`/checkout/${eventDataForCheckout?.id}`);
         }
       catch (err) {
         console.log(err)
+      }
+      finally {
+        localStorage.removeItem('orderId');
+        localStorage.removeItem('activityId');
       }
     }
   }
@@ -200,16 +195,6 @@ const Payment = () => {
   }
 
   const bundleDeleteHandler = async(t: CartBundleItem) => {
-    const orderId = localStorage.getItem('orderId');
-    console.log('here delete bundle');
-    if (orderId) {
-      try {
-        const res = await updateOrderFromCart(orderId,{});
-    }
-    catch (err) {
-      console.log(err)
-    }
-    }
     decreaseBundleTicketAmount(
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
@@ -251,7 +236,6 @@ const Payment = () => {
   }
 
   const caculatePriceBreakDown = async(orderId:string,orderItem:OrderItem)=> {
-    console.log('here',orderItem)
     try {
       const res = await updateOrderFromCart(orderId,orderItem);
       setPriceBreakDown(res?.priceBreakDown);
@@ -285,6 +269,8 @@ const Payment = () => {
           discountCode: codeUsed || "",
           activityId: eventDataForCheckout?.id || "",
           shippingCountry:"" })
+      } else {
+        releaseLock();
       }
     }
   }, []);
@@ -301,15 +287,23 @@ const Payment = () => {
     setShippingOptions(options);
   }, []);
 
-  // in case user close window or tab, release the lock 
   useEffect(() => {
-    window.addEventListener('unload', (event) => {
-      releaseLock();
-  })
-    return () => {
-        window.removeEventListener('unload', releaseLock)
-    }
-  }, []);
+    handleDeleteFromCart();
+  }, [cart]);
+
+  //in case user close window or tab, release the lock 
+  // TODO
+  // useEffect(() => {
+  //   window.addEventListener('unload', (event) => {
+  //     event.preventDefault();
+  //     if(event.returnValue) {
+  //       releaseLock();
+  //     } 
+  // })
+  //   return () => {
+  //       window.removeEventListener('unload', releaseLock)
+  //   }
+  // }, []);
 
   useEffect(() => {
     window.addEventListener('beforeunload', (event) => {
@@ -327,8 +321,6 @@ const Payment = () => {
     register('checkbox');
   }, [register]);
 
-
-  console.log(priceBreakDown,'price break down')
   return (
     <div className="checkout__page">
       <div className="flex flex-col h-full">
@@ -565,7 +557,7 @@ const Payment = () => {
                                             isDisabled={true}
                                           />
                                         </div>
-                                          <div onClick={() => { handleDeleteTicketFromCart(); deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
+                                          <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem)}}
                                             className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                             <Delete theme="outline" size="14" fill="currentColor" />
                                           </div>
@@ -596,7 +588,7 @@ const Payment = () => {
                                             isDisabled={true}
                                           />
                                         </div>
-                                        <div onClick={() => { handleDeleteMerchFromCart(); deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+                                        <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem)}}
                                           className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                           <Delete theme="outline" size="14" fill="currentColor" />
                                         </div>
