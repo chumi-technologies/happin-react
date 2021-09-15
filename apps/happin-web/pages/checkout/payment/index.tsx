@@ -221,14 +221,9 @@ const Payment = () => {
 
   const lockCheckoutTicketsAndSetTimer = async (orderItem: OrderItem)=> {
     try {
-    const res = await lockCheckoutTickets(orderItem);
-    localStorage.setItem('orderId',res?.orderId);
-    caculatePriceBreakDown(res?.orderId,{
-        cart: cart.items,
-        discountCode: codeUsed || "",
-        activityId: eventDataForCheckout?.id || "",
-        shippingCountry: ""
-      });
+      const res = await lockCheckoutTickets(orderItem);
+      localStorage.setItem('orderId',res?.orderId);
+      setPriceBreakDown(res?.priceBreakDown)
     }
     catch (err) {
       console.log(err)
