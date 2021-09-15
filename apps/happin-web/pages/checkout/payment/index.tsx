@@ -18,7 +18,7 @@ import countryList from 'react-select-country-list';
 import { deleteTicketFromCart, deleteMerchFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
 import { decreaseBundleTicketAmount} from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
-import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from '../../../lib/api';
+import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, updateOrderFromCart } from '../../../lib/api';
 import _ from "lodash";
 
 type FormData = {
@@ -82,6 +82,7 @@ const Payment = () => {
   // const [ timer,setTimer ] = useState<number>(420000);
   const [ timer, setTimer ] = useState<number>(111420000);
   const [ shippingOptions, setShippingOptions] = useState<any[]>([]);
+  const [ priceBreakDown, setPriceBreakDown] = useState<any>({});
   
   const generateShippingOptions = ():any[]=> {
     const shippings = merchListState.filter(m=>m.tickets.length>0).map(m=>m.shippingCountry);
@@ -113,22 +114,59 @@ const Payment = () => {
     }
   }
 
+  const handleDeleteTicketFromCart = async ()=> {
+    console.log('here delete ticket from cart')
+    const orderId = localStorage.getItem('orderId');
+    if (orderId) {
+      try {
+        const res = await updateOrderFromCart(orderId,{});
+    }
+    catch (err) {
+      console.log(err)
+    }
+    }
+  }
+
+  const handleDeleteMerchFromCart = async()=> {
+    console.log('here delete merch from cart')
+    const orderId = localStorage.getItem('orderId');
+    if (orderId) {
+      try {
+        const res = await updateOrderFromCart(orderId,{});
+    }
+    catch (err) {
+      console.log(err)
+    }
+    }
+  }
+
   const onSubmit = async (data: any) => {
 
     console.log(data);
   };
 
   const onSelectCountryChange =  async (data:any) => {
-    console.log(data);
+    console.log(data.value,'country')
+    console.log(data,'country Data')
+    const orderId = localStorage.getItem('orderId');
+    if (orderId) {
+      caculatePriceBreakDown(orderId,
+        {
+          cart: cart.items,
+          discountCode: codeUsed || "",
+          activityId: eventDataForCheckout?.id || "",
+          shippingCountry:data.value
+        });
+      }
   } 
 
   const releaseLock = async () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-          const res = await releaseLockCheckoutTickets(orderId);
           localStorage.removeItem('orderId');
           localStorage.removeItem('activityId');
+          const res = await releaseLockCheckoutTickets(orderId);
           console.log('release tickets')
         }
       catch (err) {
@@ -141,9 +179,9 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-          const res = await releaseLockCheckoutTickets(orderId);
           localStorage.removeItem('orderId');
           localStorage.removeItem('activityId');
+          const res = await releaseLockCheckoutTickets(orderId);
           console.log('count down complete')
           router.push(`/checkout/${eventDataForCheckout?.id}`);
         }
@@ -161,7 +199,17 @@ const Payment = () => {
     return merchListState.find(item => item.id === merch.merchId) as MerchItemDataProps;
   }
 
-  const bundleDeleteHandler = (t: CartBundleItem) => {
+  const bundleDeleteHandler = async(t: CartBundleItem) => {
+    const orderId = localStorage.getItem('orderId');
+    console.log('here delete bundle');
+    if (orderId) {
+      try {
+        const res = await updateOrderFromCart(orderId,{});
+    }
+    catch (err) {
+      console.log(err)
+    }
+    }
     decreaseBundleTicketAmount(
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
@@ -190,8 +238,25 @@ const Payment = () => {
     try {
     const res = await lockCheckoutTickets(orderItem);
     localStorage.setItem('orderId',res?.orderId);
+    caculatePriceBreakDown(res?.orderId,{
+        cart: cart.items,
+        discountCode: codeUsed || "",
+        activityId: eventDataForCheckout?.id || "",
+        shippingCountry: ""
+      });
     }
     catch (err) {
+      console.log(err)
+    }
+  }
+
+  const caculatePriceBreakDown = async(orderId:string,orderItem:OrderItem)=> {
+    console.log('here',orderItem)
+    try {
+      const res = await updateOrderFromCart(orderId,orderItem);
+      setPriceBreakDown(res?.priceBreakDown);
+    }
+      catch (err) {
       console.log(err)
     }
   }
@@ -218,7 +283,8 @@ const Payment = () => {
         lockCheckoutTicketsAndSetTimer({
           cart: cart.items,
           discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id || "" })
+          activityId: eventDataForCheckout?.id || "",
+          shippingCountry:"" })
       }
     }
   }, []);
@@ -235,15 +301,15 @@ const Payment = () => {
     setShippingOptions(options);
   }, []);
 
-  // // in case user close window or tab, release the lock 
-  // useEffect(() => {
-  //   window.addEventListener('unload', (event) => {
-  //     releaseLock();
-  // })
-  //   return () => {
-  //       window.removeEventListener('unload', releaseLock)
-  //   }
-  // }, []);
+  // in case user close window or tab, release the lock 
+  useEffect(() => {
+    window.addEventListener('unload', (event) => {
+      releaseLock();
+  })
+    return () => {
+        window.removeEventListener('unload', releaseLock)
+    }
+  }, []);
 
   useEffect(() => {
     window.addEventListener('beforeunload', (event) => {
@@ -261,6 +327,8 @@ const Payment = () => {
     register('checkbox');
   }, [register]);
 
+
+  console.log(priceBreakDown,'price break down')
   return (
     <div className="checkout__page">
       <div className="flex flex-col h-full">
@@ -497,7 +565,7 @@ const Payment = () => {
                                             isDisabled={true}
                                           />
                                         </div>
-                                          <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
+                                          <div onClick={() => { handleDeleteTicketFromCart(); deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
                                             className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                             <Delete theme="outline" size="14" fill="currentColor" />
                                           </div>
@@ -528,7 +596,7 @@ const Payment = () => {
                                             isDisabled={true}
                                           />
                                         </div>
-                                        <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+                                        <div onClick={() => { handleDeleteMerchFromCart(); deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
                                           className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                           <Delete theme="outline" size="14" fill="currentColor" />
                                         </div>
@@ -568,19 +636,19 @@ const Payment = () => {
                                 )
                               })
                             }
-                            {cart.items.bundleItem && cart.items.bundleItem.map(t => {
-                              return (
-                                <div className="flex p-4 text-white font-bold" key={t.identifier}>
-                                  {t.merchs && `Bundle items:`}
-                                    {t.merchs && t.merchs.map(m => (
-                                      <div key={m.identifier}>
-                                        <div className="text-white font-bold text-right whitespace-nowrap">{`${m.quantity} ${m.name}`}</div>
+                        { cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                          return (
+                            <div className="flex p-4 text-white justify-between font-medium text-sm" key={t.identifier}>
+                                {t.merchs && `Bundle items: `}
+                                {t.merchs && t.merchs.map(m => (
+                                    <div key={m.identifier}>
+                                          <div className="text-gray-300">{`${m.quantity} ${m.name}`}</div>
                                       </div>
                                   ))}
-                                </div>
-                                )
-                              })
-                            }
+                             </div>
+                          )
+                          })
+                        }
                     </div>
                     <div className="pt-4 pb-4 sm:pb-5 px-4 sm:px-5">
                       <div className="sm:text-lg font-semibold mb-4">Payment</div>
@@ -646,24 +714,28 @@ const Payment = () => {
                       <div className="text-gray-100 font-medium text-sm py-4">
                         <div className="flex justify-between py-1">
                           <div className="text-gray-300">Sub-total</div>
-                          <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(cart.subTotal)}</div>
+                          <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.faceValue)/100)}</div>
                         </div>
                         <div className="flex justify-between py-1">
                           <div className="text-gray-300">Service Fee</div>
-                          <div>CA$6.00</div>
+                          <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.stripeFee + priceBreakDown.happinProcessFee)/100)}</div>
+                        </div>
+                          <div className="flex justify-between py-1">
+                           <div className="text-gray-300">Extra Charge</div>
+                           <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.extraCharge)/100)}</div>
                         </div>
                         <div className="flex justify-between py-1">
                           <div className="text-gray-300">Shipping</div>
-                          <div>CA$0.00</div>
+                          <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.shippingCost)/100)}</div>
                         </div>
                         <div className="flex justify-between py-1">
                           <div className="text-gray-300">Sales Tax</div>
-                          <div>CA$20.00</div>
+                          <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.tax)/100)}</div>
                         </div>
                       </div>
                       <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
                         <div>Subtotal</div>
-                        <div>CAD$225.98</div>
+                        <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown.total)/100)}</div>
                       </div>
                     </div>
                   </div>

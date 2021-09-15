@@ -148,6 +148,15 @@ export const postToCrowdCore = async(path:string, payload: any) => {
   }
 }
 
+export const updateToCrowdCore = async(path:string, payload: any) => {
+  try {
+    const result = await instanceCrowCore.put(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
+
 export const deleteFromCrowdCore = async(path:string) => {
   try {
     const result = await instanceCrowCore.delete(path);

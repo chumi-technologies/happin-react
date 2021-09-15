@@ -138,4 +138,5 @@ export interface OrderItem {
   };
   discountCode: string;
   activityId: string;
+  shippingCountry:string;
 }

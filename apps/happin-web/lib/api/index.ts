@@ -1,5 +1,5 @@
 import { getEventDetail, getEventDetailForCheckout, getGroupEvents } from "./events";
-import { checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets } from "./tickets";
+import { checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, updateOrderFromCart } from "./tickets";
 import { getUserInfo, exchangeCrowdcoreToken } from "./user";
 
 export { 
@@ -13,5 +13,6 @@ export {
 	getEventMerchs, 
 	validateCode, 
 	lockCheckoutTickets,
-	releaseLockCheckoutTickets
+	releaseLockCheckoutTickets,
+	updateOrderFromCart
 };
