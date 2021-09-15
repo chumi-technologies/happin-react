@@ -14,6 +14,7 @@ export type EventBasicData = {
   title: string;
   default_currency: string;
   cover: string;
+  paymentMethod: string[];
 }
 
 export type GeneralTicketInfo = {

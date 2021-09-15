@@ -51,7 +51,7 @@ const CheckoutHead = ({
     try {
       setButtonLoading(true)
       // check login or not
-      if (!user && !localStorage.getItem('open_from_app')) {
+      if (!user && !localStorage.getItem('open_from_other_source')) {
         generateToast('To continue, please log in or sign up ', toast);
         return
       } 
