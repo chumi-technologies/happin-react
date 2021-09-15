@@ -105,6 +105,7 @@ const Checkout = () => {
         endTime: res.endTime,
         default_currency: res.default_currency,
         cover: res.cover,
+        paymentMethod: res.paymentMethod
       }
       setEventDataForCheckout(eventDetail)
     } catch (err) {
