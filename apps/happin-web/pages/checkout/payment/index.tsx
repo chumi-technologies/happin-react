@@ -108,7 +108,7 @@ const Payment = () => {
   const focusButtonRef = useRef(null);
   const router = useRouter();
   const toast = useToast();
-  const [billingAddress, setBillingAddress] = useState()
+  const [billingAddress, setBillingAddress] = useState('')
   const [chooseStripe, setChooseStripe] = useState(false);
   const [isPorcessing, setIsProcessing] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(1)
@@ -134,6 +134,9 @@ const Payment = () => {
   }
 
   const ApplyPromoCode = async (e: any) => {
+    if (!promoteCode) {
+      return
+    }
     try {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)

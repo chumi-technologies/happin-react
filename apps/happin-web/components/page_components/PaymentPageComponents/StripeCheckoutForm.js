@@ -98,7 +98,13 @@ const CheckoutForm = ({ address, setAddress, error, setError }) => {
           type="text"
           required={true}
           value={address}
-          onChange={(val)=>{setAddress(val.target.value)}}
+          onChange={(val)=>{
+            setAddress(val.target.value);
+            if(error){
+              if(error.message === 'Address is required') {
+                setError(null)
+              }
+            }}}
           autoComplete="street-address"
         />
       </fieldset>
