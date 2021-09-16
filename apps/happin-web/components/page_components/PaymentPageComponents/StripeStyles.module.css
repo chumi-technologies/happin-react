@@ -72,8 +72,8 @@
     font-size: 13px;
     margin-top: 5px;
     width: 100%;
-    transform: translateY(-15px);
-    opacity: 0;
+    transform: translateY(-10px);
+    opacity: 1;
     /* animation: fade 150ms ease-out;
     animation-delay: 50ms;
     animation-fill-mode: forwards;*/
