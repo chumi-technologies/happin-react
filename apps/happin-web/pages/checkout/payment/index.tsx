@@ -377,7 +377,7 @@ const Payment = () => {
     if (cart && cart.items && cart.items.merchItem.length && (cart.items.merchItem.map(m => m.shipping)).some(v => v === true)) {
       setShowShipping(true);
     }
-    if (cart && cart.items && cart.items.bundleItem.length && cart.items.bundleItem.map(t => t.merchs.map(m => m.shipping).some(v => v === true))) {
+    if (cart && cart.items && cart.items.bundleItem.length && cart.items.bundleItem.map(t => t.merchs.map(m => m.shipping).some(v => v === true)).some(v => v === true)) {
       setShowShipping(true);
     }
     try {
