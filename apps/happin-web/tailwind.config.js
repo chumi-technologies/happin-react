@@ -62,5 +62,7 @@ module.exports = {
     container: false,
     preflight: false, // 已经用了chakra的reset
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/aspect-ratio')
+  ],
 }

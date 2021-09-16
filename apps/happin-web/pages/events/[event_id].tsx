@@ -19,7 +19,7 @@ const Events = (props: EventData) => {
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
-  
+
   const eventData = props;
   const groupEvents = props.groupEvents;
 
@@ -98,7 +98,7 @@ const Events = (props: EventData) => {
           {/* Event Image */}
           <div className="lg:sticky lg:top-0 w-full lg:w-5/12 xl:w-1/2 lg:h-full overflow-hidden">
             <Box
-              className="sm:hidden lg:block"
+              className="hidden lg:block"
               w="100%"
               h="100%"
               position="absolute"
