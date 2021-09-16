@@ -16,12 +16,14 @@ const Layout = ({ children }: { children: any }) => {
   const router = useRouter()
   
   useEffect(() => {
-    if (router?.query?.token && router.asPath.includes('/checkout/')) {
+    if (router?.query?.token && router.asPath.includes('/checkout/') || localStorage.getItem('open_from_other_source')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
       if (typeof window !== undefined) {
         localStorage.setItem('open_from_other_source', '1');
-        localStorage.setItem('chumi_jwt', router?.query?.token as string);
+        if (!localStorage.getItem('chumi_jwt')) {
+          localStorage.setItem('chumi_jwt', router?.query?.token as string);
+        }
       }
     }
     //box office mode is only opened in 2b app, hide the header

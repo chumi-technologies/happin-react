@@ -57,14 +57,14 @@ type FormData = {
 const customStyles = {
   option: (provided: any, state: any) => ({
     ...provided,
-    color: state.isSelected ? 'gray' : 'white',
-    background: state.isSelected ? 'white' : state.isFocused ? 'black' : 'gray',
+    color: state.isSelected ? '#1a1a1a' : '#fff',
+    background: state.isSelected ? '#fff' : state.isFocused ? '#000' : '#1a1a1a',
     padding: 20,
   }),
   control: (provided: any, state: any) => ({
     // none of react-select's styles are passed to <Control />
     ...provided,
-    background: state.isSelected ? '#E8F0FE' : 'black',
+    background: state.isSelected ? '#E8F0FE' : '#000',
     marginTop: '0.25rem',
     border: '2px solid gray',
     borderRadius: '0.5rem',
@@ -75,7 +75,7 @@ const customStyles = {
   }),
   singleValue: (provided: any, state: any) => ({
     ...provided,
-    color: state.isSelected ? 'black' : 'white',
+    color: state.isSelected ? '#000' : '#fff',
   }),
 }
 
@@ -122,13 +122,11 @@ const Payment = () => {
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
+  const [promoteCode, setPromoteCode] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
     const shippings = merchListState.filter(m => m.tickets.length > 0).map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
-    /*     if (shippingOptionsUnion.length == 0) {
-          generateToast('No Shipping Options', toast);
-        } */
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
     }
@@ -138,10 +136,10 @@ const Payment = () => {
   const ApplyPromoCode = async (e: any) => {
     try {
       setValidateCodeLoading(true)
-      const res = await validateCode(eventDataForCheckout?.id as string, codeUsed as string)
+      const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
       if (res.valid) {
         generateToast('Promo code applied', toast);
-        //setCodeUsed(codeUsed);
+        setCodeUsed(promoteCode as string);
       } else {
         generateToast('Invalid code', toast)
         return;
@@ -376,10 +374,10 @@ const Payment = () => {
   }
 
   const lockCheckoutTicketsHandle = async (orderItem: OrderItem) => {
-    if (cart && cart.items && cart.items.merchItem && (cart.items.merchItem.map(m => m.shipping)).some(v => v === true)) {
+    if (cart && cart.items && cart.items.merchItem.length && (cart.items.merchItem.map(m => m.shipping)).some(v => v === true)) {
       setShowShipping(true);
     }
-    if (cart && cart.items && cart.items.bundleItem  && cart.items.bundleItem.map(t => t.merchs.map(m => m.shipping).some(v => v === true))) {
+    if (cart && cart.items && cart.items.bundleItem.length && cart.items.bundleItem.map(t => t.merchs.map(m => m.shipping).some(v => v === true))) {
       setShowShipping(true);
     }
     try {
@@ -456,33 +454,7 @@ const Payment = () => {
 
   useEffect(() => {
     handleCartUpdateAndApplyPromoCode();
-  }, [cart,codeUsed]);
-  // in case user close window or tab, release the lock 
-  /*  useEffect(() => {
-     window.addEventListener('unload', (event) => {
-       releaseLock();
-     })
-     return () => {
-       window.removeEventListener('unload', releaseLock)
-     }
-   }, []); */
-
-  /*   useEffect(() => {
-      const beforeUnloadHandle = (event: any) => {
-        // Cancel the event as stated by the standard.
-        event.preventDefault();
-        // Chrome requires returnValue to be set.
-        //event.returnValue = '';
-      }
-      window.addEventListener('beforeunload', beforeUnloadHandle)
-      return () => {
-        window.removeEventListener('beforeunload', beforeUnloadHandle)
-      }
-    }, []); */
-
-  /*   useEffect(() => {
-      register('checkbox');
-    }, [register]); */
+  }, [cart, codeUsed]);
 
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
@@ -591,7 +563,108 @@ const Payment = () => {
   }
 
 
-  console.log(showShipping)
+  const generateShippingFormTemplate = () => {
+    return (
+      <>
+        <div className="lg:col-span-3">
+          <label htmlFor="tel" className="form-label required">Phone number</label>
+          <input
+            id="tel"
+            type="tel"
+            className="form-field"
+            placeholder="Phone number"
+            {...register('phone', { required: true })}
+          />
+          {errors.phone && (
+            <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
+          )}
+        </div>
+        <div className="lg:col-span-3">
+          <label htmlFor="country" className="form-label required">Country</label>
+          <Controller
+            name="country"
+            control={control}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <Select
+                styles={customStyles}
+                options={shippingOptions}
+                onChange={(val) => { onChange(val.value); onSelectCountryChange(val) }}
+                onBlur={onBlur}
+                selected={value}
+              />
+            )}
+            rules={{
+              required: true
+            }}
+          />
+          {errors.country && (
+            <div className="text-rose-500 text-sm mt-1">Country is required.</div>
+          )}
+        </div>
+        <div className="lg:col-span-4">
+          <label htmlFor="province" className="form-label required">State / Province</label>
+          <input
+            id="province"
+            type="text"
+            className="form-field"
+            placeholder="State / Province"
+            {...register('province', { required: true })}
+          />
+          {errors.province && (
+            <div className="text-rose-500 text-sm mt-1">State / Province is required.</div>
+          )}
+        </div>
+        <div className="lg:col-span-2">
+          <label htmlFor="province" className="form-label required">Postcode</label>
+          <input
+            id="postcode"
+            type="text"
+            className="form-field"
+            placeholder="Postcode"
+            {...register('postcode', { required: true })}
+          />
+          {errors.postcode && (
+            <div className="text-rose-500 text-sm mt-1">Postcode is required.</div>
+          )}
+        </div>
+        <div className="lg:col-span-6">
+          <label htmlFor="city" className="form-label required">Town / City</label>
+          <input
+            id="city"
+            type="text"
+            className="form-field"
+            placeholder="Town / City"
+            {...register('city', { required: true })}
+          />
+          {errors.city && (
+            <div className="text-rose-500 text-sm mt-1">Town / City is required.</div>
+          )}
+        </div>
+        <div className="lg:col-span-6">
+          <label htmlFor="house" className="form-label">Street address</label>
+          <div className="grid grid-cols-1 gap-2 lg:gap-5 lg:grid-cols-2">
+            <div>
+              <input
+                id="house"
+                type="text"
+                className="form-field"
+                placeholder="House number and street name"
+                {...register('house')}
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                className="form-field"
+                placeholder="Apartment, suite, unit, etc. (optional)"
+                {...register('apartment')}
+              />
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
@@ -649,103 +722,8 @@ const Payment = () => {
                                 <div className="text-rose-500 text-sm mt-1">Email is invalid.</div>
                               )}
                             </div>
-                            <div className="lg:col-span-3">
-                              <label htmlFor="tel" className="form-label required">Phone number</label>
-                              <input
-                                id="tel"
-                                type="tel"
-                                className="form-field"
-                                placeholder="Phone number"
-                                {...register('phone', { required: true })}
-                              />
-                              {errors.phone && (
-                                <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
-                              )}
-                            </div>
-                            <div className="lg:col-span-3">
-                              <label htmlFor="country" className="form-label required">Country</label>
-                              <Controller
-                                name="country"
-                                control={control}
-                                render={({ field: { onChange, onBlur, value } }) => (
-                                  <Select
-                                    styles={customStyles}
-                                    options={shippingOptions}
-                                    onChange={(val) => { onChange(val.value); onSelectCountryChange(val) }}
-                                    onBlur={onBlur}
-                                    selected={value}
-                                  />
-                                )}
-                                rules={{
-                                  required: true
-                                }}
-                              />
-                              {errors.country && (
-                                <div className="text-rose-500 text-sm mt-1">Country is required.</div>
-                              )}
-                            </div>
-                            <div className="lg:col-span-4">
-                              <label htmlFor="province" className="form-label required">State / Province</label>
-                              <input
-                                id="province"
-                                type="text"
-                                className="form-field"
-                                placeholder="State / Province"
-                                {...register('province', { required: true })}
-                              />
-                              {errors.province && (
-                                <div className="text-rose-500 text-sm mt-1">State / Province is required.</div>
-                              )}
-                            </div>
-                            <div className="lg:col-span-2">
-                              <label htmlFor="province" className="form-label required">Postcode</label>
-                              <input
-                                id="postcode"
-                                type="text"
-                                className="form-field"
-                                placeholder="Postcode"
-                                {...register('postcode', { required: true })}
-                              />
-                              {errors.postcode && (
-                                <div className="text-rose-500 text-sm mt-1">Postcode is required.</div>
-                              )}
-                            </div>
-                            <div className="lg:col-span-6">
-                              <label htmlFor="city" className="form-label required">Town / City</label>
-                              <input
-                                id="city"
-                                type="text"
-                                className="form-field"
-                                placeholder="Town / City"
-                                {...register('city', { required: true })}
-                              />
-                              {errors.city && (
-                                <div className="text-rose-500 text-sm mt-1">Town / City is required.</div>
-                              )}
-                            </div>
-                            <div className="lg:col-span-6">
-                              <label htmlFor="house" className="form-label">Street address</label>
-                              <div className="grid grid-cols-1 gap-2 lg:gap-5 lg:grid-cols-2">
-                                <div>
-                                  <input
-                                    id="house"
-                                    type="text"
-                                    className="form-field"
-                                    placeholder="House number and street name"
-                                    {...register('house')}
-                                  />
-                                </div>
-                                <div>
-                                  <input
-                                    type="text"
-                                    className="form-field"
-                                    placeholder="Apartment, suite, unit, etc. (optional)"
-                                    {...register('apartment')}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                            {/*                         <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
+                            {generateShippingFormTemplate()}
+                            {/* <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
                         <div className="lg:col-span-6">
                           <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
                           <RadioGroup defaultValue="1" colorScheme="rose">
@@ -857,7 +835,7 @@ const Payment = () => {
                                 <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
                               )}
                             </div>
-                            {/*                         <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
+                            {/* <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
                       <div className="lg:col-span-6">
                         <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
                         <RadioGroup defaultValue="1" colorScheme="rose">
@@ -1035,7 +1013,7 @@ const Payment = () => {
                           <input
                             defaultValue={codeUsed}
                             onChange={(e) => {
-                              setCodeUsed(e.target.value)
+                              setPromoteCode(e.target.value)
                             }}
                             type="text"
                             className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
@@ -1112,6 +1090,11 @@ const Payment = () => {
                             <div className="text-gray-300">Sales Tax</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.tax || 0) / 100)}</div>
                           </div>
+                          {priceBreakDown?.discount ? <div className="flex justify-between py-1">
+                            <div className="text-gray-300">Discount</div>
+                            <div>- {currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
+                          </div> : <></>
+                          }
                         </div>
                         <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
                           <div>Total</div>
