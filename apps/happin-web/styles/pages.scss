@@ -320,3 +320,15 @@
     @apply text-white bg-rose-500
   }
 }
+
+// My Event Details
+.my-event-details__intro {
+  @apply mr-5 md:mr-6 lg:mr-10;
+  width: 100%;
+  @media (min-width: 768px) {
+    width: 360px;
+  }
+  @media (min-width: 900px) {
+    width: 450px;
+  }
+}

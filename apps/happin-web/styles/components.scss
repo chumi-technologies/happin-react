@@ -295,3 +295,16 @@ button {
 textarea.form-field {
   resize: none;
 }
+
+
+// Tickets
+.ticket-wrapper {
+  @apply w-full mx-auto;
+  max-width: 600px;
+}
+.tickets-cover {
+  @apply relative w-full bg-white;
+  height: 220px;
+  -webkit-mask: radial-gradient( circle at 66.6%, red 2px, transparent 0) 50% 50% / 100% 10px, radial-gradient(circle at 10px, transparent 10px, red 0) -10px / 100% 30px;
+  -webkit-mask-composite: xor;
+}

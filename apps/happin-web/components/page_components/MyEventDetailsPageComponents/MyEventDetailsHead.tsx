@@ -1,7 +1,7 @@
 import { Left } from '@icon-park/react';
 import React from 'react';
 
-const EventDetailsHead = () => {
+const MyEventDetailsHead = () => {
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
@@ -20,4 +20,4 @@ const EventDetailsHead = () => {
   );
 };
 
-export default EventDetailsHead;
+export default MyEventDetailsHead;
