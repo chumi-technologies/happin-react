@@ -126,9 +126,9 @@ const Payment = () => {
   const generateShippingOptions = (): any[] => {
     const shippings = merchListState.filter(m => m.tickets.length > 0).map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
-/*     if (shippingOptionsUnion.length == 0) {
-      generateToast('No Shipping Options', toast);
-    } */
+    /*     if (shippingOptionsUnion.length == 0) {
+          generateToast('No Shipping Options', toast);
+        } */
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
     }
@@ -585,6 +585,7 @@ const Payment = () => {
   }
 
 
+  console.log(showShipping)
 
   if (showShipping) {
     return (
@@ -602,141 +603,143 @@ const Payment = () => {
                       <div className="text-lg leading-5 mb-1">{eventDataForCheckout?.title}</div>
                       <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
                     </div>
-                    <div className="md:flex-1 min-w-0">
-                      <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
-                        <div className="sm:text-lg md:text-xl font-semibold mb-3">Shipping</div>
-                        <form>
-                          <div className="max-w-4xl mx-auto">
-                            <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
-                              <div className="lg:col-span-3">
-                                <label htmlFor="fullName" className="form-label required">Full name</label>
-                                <input
-                                  id="fullName"
-                                  type="text"
-                                  className="form-field"
-                                  placeholder="Full name"
-                                  {...register('fullName', { required: true })}
-                                />
-                                {errors.fullName && (
-                                  <div className="text-rose-500 text-sm mt-1">Full name is required.</div>
+                    <div className="text-sm text-gray-300 mb-5">Please check out within <span className="font-medium text-white">5 minutes 51 seconds</span>.</div>
+                  </div>
+                  <div className="md:flex-1 min-w-0">
+                    <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
+                      <div className="sm:text-lg md:text-xl font-semibold mb-3">Shipping</div>
+                      <form>
+                        <div className="max-w-4xl mx-auto">
+                          <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
+                            <div className="lg:col-span-3">
+                              <label htmlFor="fullName" className="form-label required">Full name</label>
+                              <input
+                                id="fullName"
+                                type="text"
+                                className="form-field"
+                                placeholder="Full name"
+                                {...register('fullName', { required: true })}
+                              />
+                              {errors.fullName && (
+                                <div className="text-rose-500 text-sm mt-1">Full name is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-3">
+                              <label htmlFor="email" className="form-label required">Email</label>
+                              <input
+                                id="email"
+                                type="email"
+                                className="form-field"
+                                placeholder="Email"
+                                {...register('email', {
+                                  required: true,
+                                  pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
+                                })}
+                              />
+                              {errors.email && errors.email.type === 'required' && (
+                                <div className="text-rose-500 text-sm mt-1">Email is required.</div>
+                              )}
+                              {errors.email && errors.email.type === 'pattern' && (
+                                <div className="text-rose-500 text-sm mt-1">Email is invalid.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-3">
+                              <label htmlFor="tel" className="form-label required">Phone number</label>
+                              <input
+                                id="tel"
+                                type="tel"
+                                className="form-field"
+                                placeholder="Phone number"
+                                {...register('phone', { required: true })}
+                              />
+                              {errors.phone && (
+                                <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-3">
+                              <label htmlFor="country" className="form-label required">Country</label>
+                              <Controller
+                                name="country"
+                                control={control}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                  <Select
+                                    styles={customStyles}
+                                    options={shippingOptions}
+                                    onChange={(val) => { onChange(val.value); onSelectCountryChange(val) }}
+                                    onBlur={onBlur}
+                                    selected={value}
+                                  />
                                 )}
-                              </div>
-                              <div className="lg:col-span-3">
-                                <label htmlFor="email" className="form-label required">Email</label>
-                                <input
-                                  id="email"
-                                  type="email"
-                                  className="form-field"
-                                  placeholder="Email"
-                                  {...register('email', {
-                                    required: true,
-                                    pattern: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i
-                                  })}
-                                />
-                                {errors.email && errors.email.type === 'required' && (
-                                  <div className="text-rose-500 text-sm mt-1">Email is required.</div>
-                                )}
-                                {errors.email && errors.email.type === 'pattern' && (
-                                  <div className="text-rose-500 text-sm mt-1">Email is invalid.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-3">
-                                <label htmlFor="tel" className="form-label required">Phone number</label>
-                                <input
-                                  id="tel"
-                                  type="tel"
-                                  className="form-field"
-                                  placeholder="Phone number"
-                                  {...register('phone', { required: true })}
-                                />
-                                {errors.phone && (
-                                  <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-3">
-                                <label htmlFor="country" className="form-label required">Country</label>
-                                <Controller
-                                  name="country"
-                                  control={control}
-                                  render={({ field: { onChange, onBlur, value } }) => (
-                                    <Select
-                                      styles={customStyles}
-                                      options={shippingOptions}
-                                      onChange={(val) => { onChange(val.value); onSelectCountryChange(val) }}
-                                      onBlur={onBlur}
-                                      selected={value}
-                                    />
-                                  )}
-                                  rules={{
-                                    required: true
-                                  }}
-                                />
-                                {errors.country && (
-                                  <div className="text-rose-500 text-sm mt-1">Country is required.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-4">
-                                <label htmlFor="province" className="form-label required">State / Province</label>
-                                <input
-                                  id="province"
-                                  type="text"
-                                  className="form-field"
-                                  placeholder="State / Province"
-                                  {...register('province', { required: true })}
-                                />
-                                {errors.province && (
-                                  <div className="text-rose-500 text-sm mt-1">State / Province is required.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-2">
-                                <label htmlFor="province" className="form-label required">Postcode</label>
-                                <input
-                                  id="postcode"
-                                  type="text"
-                                  className="form-field"
-                                  placeholder="Postcode"
-                                  {...register('postcode', { required: true })}
-                                />
-                                {errors.postcode && (
-                                  <div className="text-rose-500 text-sm mt-1">Postcode is required.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-6">
-                                <label htmlFor="city" className="form-label required">Town / City</label>
-                                <input
-                                  id="city"
-                                  type="text"
-                                  className="form-field"
-                                  placeholder="Town / City"
-                                  {...register('city', { required: true })}
-                                />
-                                {errors.city && (
-                                  <div className="text-rose-500 text-sm mt-1">Town / City is required.</div>
-                                )}
-                              </div>
-                              <div className="lg:col-span-6">
-                                <label htmlFor="house" className="form-label">Street address</label>
-                                <div className="grid grid-cols-1 gap-2 lg:gap-5 lg:grid-cols-2">
-                                  <div>
-                                    <input
-                                      id="house"
-                                      type="text"
-                                      className="form-field"
-                                      placeholder="House number and street name"
-                                      {...register('house')}
-                                    />
-                                  </div>
-                                  <div>
-                                    <input
-                                      type="text"
-                                      className="form-field"
-                                      placeholder="Apartment, suite, unit, etc. (optional)"
-                                      {...register('apartment')}
-                                    />
-                                  </div>
+                                rules={{
+                                  required: true
+                                }}
+                              />
+                              {errors.country && (
+                                <div className="text-rose-500 text-sm mt-1">Country is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-4">
+                              <label htmlFor="province" className="form-label required">State / Province</label>
+                              <input
+                                id="province"
+                                type="text"
+                                className="form-field"
+                                placeholder="State / Province"
+                                {...register('province', { required: true })}
+                              />
+                              {errors.province && (
+                                <div className="text-rose-500 text-sm mt-1">State / Province is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-2">
+                              <label htmlFor="province" className="form-label required">Postcode</label>
+                              <input
+                                id="postcode"
+                                type="text"
+                                className="form-field"
+                                placeholder="Postcode"
+                                {...register('postcode', { required: true })}
+                              />
+                              {errors.postcode && (
+                                <div className="text-rose-500 text-sm mt-1">Postcode is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-6">
+                              <label htmlFor="city" className="form-label required">Town / City</label>
+                              <input
+                                id="city"
+                                type="text"
+                                className="form-field"
+                                placeholder="Town / City"
+                                {...register('city', { required: true })}
+                              />
+                              {errors.city && (
+                                <div className="text-rose-500 text-sm mt-1">Town / City is required.</div>
+                              )}
+                            </div>
+                            <div className="lg:col-span-6">
+                              <label htmlFor="house" className="form-label">Street address</label>
+                              <div className="grid grid-cols-1 gap-2 lg:gap-5 lg:grid-cols-2">
+                                <div>
+                                  <input
+                                    id="house"
+                                    type="text"
+                                    className="form-field"
+                                    placeholder="House number and street name"
+                                    {...register('house')}
+                                  />
+                                </div>
+                                <div>
+                                  <input
+                                    type="text"
+                                    className="form-field"
+                                    placeholder="Apartment, suite, unit, etc. (optional)"
+                                    {...register('apartment')}
+                                  />
                                 </div>
                               </div>
-                              {/*                         <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
+                            </div>
+                            {/*                         <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
                         <div className="lg:col-span-6">
                           <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
                           <RadioGroup defaultValue="1" colorScheme="rose">
@@ -791,111 +794,172 @@ const Payment = () => {
                             {...register('textarea')}
                           />
                         </div> */}
-                            </div>
                           </div>
-                        </form>
-                      </div>
+                        </div>
+                      </form>
                     </div>
-                    <div className="payment--cart">
-                      <div className="rounded-lg bg-gray-900 mb-5">
-                        <div className="divide-y divide-white divide-opacity-10">
-                          <div className="py-2 sm:py-3 sm:px-1">
-                            <div className="text-lg font-semibold px-4 py-1">Your cart</div>
+                  </div>
+                  <div className="payment--cart">
+                    <div className="rounded-lg bg-gray-900 mb-5">
+                      <div className="divide-y divide-white divide-opacity-10">
+                        <div className="py-2 sm:py-3 sm:px-1">
+                          <div className="text-lg font-semibold px-4 py-1">Your cart</div>
+                          {cart.items.ticketItem && cart.items.ticketItem.map(t => {
+                            return (
+                              <div className="flex p-4" key={t.ticketId}>
+                                <div className="w-16 h-16 rounded-md overflow-hidden">
+                                  <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
+                                </div>
+                                <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                                  <div className="flex items-start mb-2">
+                                    <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
+                                    <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                  </div>
+                                  <div className="flex items-end justify-between flex-1">
+                                    <div className="flex items-center">
+                                      <NumberInput
+                                        min={0}
+                                        max={t.quantity}
+                                        value={t.quantity || 0}
+                                        size="sm"
+                                        isDisabled={true}
+                                      />
+                                    </div>
+                                    <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
+                                      className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                      <Delete theme="outline" size="14" fill="currentColor" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })
+                          }
+                          {cart.items.merchItem.map(m => {
+                            return (
+                              <div className="flex p-4" key={m.identifier}>
+                                <div className="w-16 h-16 rounded-md overflow-hidden">
+                                  <img className="w-full h-full object-cover" src={m.image[0]} alt={m.name} />
+                                </div>
+                                <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                                  <div className="flex items-start mb-2">
+                                    <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                                    <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+                                  </div>
+                                  <div className="flex items-end justify-between flex-1">
+                                    <div className="flex items-center">
+                                      <NumberInput
+                                        min={0}
+                                        max={m.quantity}
+                                        value={m.quantity || 0}
+                                        size="sm"
+                                        isDisabled={true}
+                                      />
+                                    </div>
+                                    <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+                                      className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                      <Delete theme="outline" size="14" fill="currentColor" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })}
+                          {cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                            return (
+                              <div className="flex p-4" key={t.identifier}>
+                                <div className="w-16 h-16 rounded-md overflow-hidden">
+                                  <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
+                                </div>
+                                <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                                  <div className="flex items-start mb-2">
+                                    <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
+                                    <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                  </div>
+                                  <div className="flex items-end justify-between flex-1">
+                                    <div className="flex items-center">
+                                      <NumberInput
+                                        min={0}
+                                        max={t.quantity}
+                                        value={t.quantity || 0}
+                                        size="sm"
+                                        isDisabled={true}
+                                      />
+                                    </div>
+                                    <div onClick={() => { bundleDeleteHandler(t) }}
+                                      className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                      <Delete theme="outline" size="14" fill="currentColor" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )
+                          })
+                          }
+                          {cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                            return (
+                              <div className="flex p-4 text-white justify-between font-medium text-sm" key={t.identifier}>
+                                {t.merchs && `Bundle items: `}
+                                {t.merchs && t.merchs.map(m => (
+                                  <div key={m.identifier}>
+                                    <div className="text-gray-300">{`${m.quantity} ${m.name}`}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )
+                          })
+                          }
+                        </div>
+                        <div className="pt-4 pb-4 sm:pb-5 px-4 sm:px-5">
+                          <div className="sm:text-lg font-semibold mb-4">Discount Code</div>
+                          <div className="flex">
+                            <input
+                              defaultValue={codeUsed}
+                              onChange={(e) => {
+                                setCodeUsed(e.target.value)
+                              }}
+                              type="text"
+                              className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                            <button
+                              onClick={ApplyPromoCode}
+                              className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">Apply
+                            </button>
+                          </div>
+                          <div className="sm:text-lg font-semibold mb-4">{validateCodeLoading ? 'Processing...' : ''}</div>
+                        </div>
+
+                        <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
+                          <div className="text-white font-medium text-sm py-4">
                             {cart.items.ticketItem && cart.items.ticketItem.map(t => {
                               return (
-                                <div className="flex p-4" key={t.ticketId}>
-                                  <div className="w-16 h-16 rounded-md overflow-hidden">
-                                    <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
-                                  </div>
-                                  <div className="flex-1 min-w-0 ml-4 flex flex-col">
-                                    <div className="flex items-start mb-2">
-                                      <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-                                      <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                                    </div>
-                                    <div className="flex items-end justify-between flex-1">
-                                      <div className="flex items-center">
-                                        <NumberInput
-                                          min={0}
-                                          max={t.quantity}
-                                          value={t.quantity || 0}
-                                          size="sm"
-                                          isDisabled={true}
-                                        />
-                                      </div>
-                                      <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
-                                        className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
-                                        <Delete theme="outline" size="14" fill="currentColor" />
-                                      </div>
-                                    </div>
-                                  </div>
+                                <div className="flex justify-between py-1" key={t.ticketId}>
+                                  <div className="text-gray-300">{`${t.quantity} x ${t.name}`}</div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
                                 </div>
                               )
                             })
                             }
-                            {cart.items.merchItem.map(m => {
+                            {cart.items.merchItem && cart.items.merchItem.map(m => {
                               return (
-                                <div className="flex p-4" key={m.identifier}>
-                                  <div className="w-16 h-16 rounded-md overflow-hidden">
-                                    <img className="w-full h-full object-cover" src={m.image[0]} alt={m.name} />
-                                  </div>
-                                  <div className="flex-1 min-w-0 ml-4 flex flex-col">
-                                    <div className="flex items-start mb-2">
-                                      <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
-                                      <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
-                                    </div>
-                                    <div className="flex items-end justify-between flex-1">
-                                      <div className="flex items-center">
-                                        <NumberInput
-                                          min={0}
-                                          max={m.quantity}
-                                          value={m.quantity || 0}
-                                          size="sm"
-                                          isDisabled={true}
-                                        />
-                                      </div>
-                                      <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
-                                        className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
-                                        <Delete theme="outline" size="14" fill="currentColor" />
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              )
-                            })}
-                            {cart.items.bundleItem && cart.items.bundleItem.map(t => {
-                              return (
-                                <div className="flex p-4" key={t.identifier}>
-                                  <div className="w-16 h-16 rounded-md overflow-hidden">
-                                    <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
-                                  </div>
-                                  <div className="flex-1 min-w-0 ml-4 flex flex-col">
-                                    <div className="flex items-start mb-2">
-                                      <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-                                      <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                                    </div>
-                                    <div className="flex items-end justify-between flex-1">
-                                      <div className="flex items-center">
-                                        <NumberInput
-                                          min={0}
-                                          max={t.quantity}
-                                          value={t.quantity || 0}
-                                          size="sm"
-                                          isDisabled={true}
-                                        />
-                                      </div>
-                                      <div onClick={() => { bundleDeleteHandler(t) }}
-                                        className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
-                                        <Delete theme="outline" size="14" fill="currentColor" />
-                                      </div>
-                                    </div>
-                                  </div>
+                                <div className="flex justify-between py-1" key={m.identifier}>
+                                  <div className="text-gray-300">{`${m.quantity} x ${m.name}`}</div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
                                 </div>
                               )
                             })
                             }
                             {cart.items.bundleItem && cart.items.bundleItem.map(t => {
                               return (
-                                <div className="flex p-4 text-white justify-between font-medium text-sm" key={t.identifier}>
+                                <div className="flex justify-between py-1" key={t.identifier}>
+                                  <div className="text-gray-300">{`${t.quantity} x ${t.name}`} </div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                </div>
+                              )
+                            })
+                            }
+                            {cart.items.bundleItem && cart.items.bundleItem.map(t => {
+                              return (
+                                <div className="text-white font-medium text-sm py-4" key={t.identifier}>
                                   {t.merchs && `Bundle items: `}
                                   {t.merchs && t.merchs.map(m => (
                                     <div key={m.identifier}>
@@ -907,157 +971,95 @@ const Payment = () => {
                             })
                             }
                           </div>
-                          <div className="pt-4 pb-4 sm:pb-5 px-4 sm:px-5">
-                            <div className="sm:text-lg font-semibold mb-4">Discount Code</div>
-                            <div className="flex">
-                              <input
-                                defaultValue={codeUsed}
-                                onChange={(e) => {
-                                  setCodeUsed(e.target.value)
-                                }}
-                                type="text"
-                                className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
-                              <button
-                                onClick={ApplyPromoCode}
-                                className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">Apply
-                              </button>
+                          <div className="text-gray-100 font-medium text-sm py-4">
+                            <div className="flex justify-between py-1">
+                              <div className="text-gray-300">Sub-total</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.faceValue || 0) / 100)}</div>
                             </div>
-                            <div className="sm:text-lg font-semibold mb-4">{validateCodeLoading ? 'Processing...' : ''}</div>
+                            <div className="flex justify-between py-1">
+                              <div className="text-gray-300">Service Fee</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
+                            </div>
+                            <div className="flex justify-between py-1">
+                              <div className="text-gray-300">Extra Charge</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.extraCharge || 0) / 100)}</div>
+                            </div>
+                            <div className="flex justify-between py-1">
+                              <div className="text-gray-300">Shipping</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.shippingCost || 0) / 100)}</div>
+                            </div>
+                            <div className="flex justify-between py-1">
+                              <div className="text-gray-300">Sales Tax</div>
+                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.tax || 0) / 100)}</div>
+                            </div>
                           </div>
-
-                          <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
-                            <div className="text-white font-medium text-sm py-4">
-                              {cart.items.ticketItem && cart.items.ticketItem.map(t => {
-                                return (
-                                  <div className="flex justify-between py-1" key={t.ticketId}>
-                                    <div className="text-gray-300">{`${t.quantity} x ${t.name}`}</div>
-                                    <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                                  </div>
-                                )
-                              })
-                              }
-                              {cart.items.merchItem && cart.items.merchItem.map(m => {
-                                return (
-                                  <div className="flex justify-between py-1" key={m.identifier}>
-                                    <div className="text-gray-300">{`${m.quantity} x ${m.name}`}</div>
-                                    <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
-                                  </div>
-                                )
-                              })
-                              }
-                              {cart.items.bundleItem && cart.items.bundleItem.map(t => {
-                                return (
-                                  <div className="flex justify-between py-1" key={t.identifier}>
-                                    <div className="text-gray-300">{`${t.quantity} x ${t.name}`} </div>
-                                    <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
-                                  </div>
-                                )
-                              })
-                              }
-                              {cart.items.bundleItem && cart.items.bundleItem.map(t => {
-                                return (
-                                  <div className="text-white font-medium text-sm py-4" key={t.identifier}>
-                                    {t.merchs && `Bundle items: `}
-                                    {t.merchs && t.merchs.map(m => (
-                                      <div key={m.identifier}>
-                                        <div className="text-gray-300">{`${m.quantity} ${m.name}`}</div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                )
-                              })
-                              }
-                            </div>
-                            <div className="text-gray-100 font-medium text-sm py-4">
-                              <div className="flex justify-between py-1">
-                                <div className="text-gray-300">Sub-total</div>
-                                <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.faceValue || 0) / 100)}</div>
-                              </div>
-                              <div className="flex justify-between py-1">
-                                <div className="text-gray-300">Service Fee</div>
-                                <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
-                              </div>
-                              <div className="flex justify-between py-1">
-                                <div className="text-gray-300">Extra Charge</div>
-                                <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.extraCharge || 0) / 100)}</div>
-                              </div>
-                              <div className="flex justify-between py-1">
-                                <div className="text-gray-300">Shipping</div>
-                                <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.shippingCost || 0) / 100)}</div>
-                              </div>
-                              <div className="flex justify-between py-1">
-                                <div className="text-gray-300">Sales Tax</div>
-                                <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.tax || 0) / 100)}</div>
-                              </div>
-                            </div>
-                            <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
-                              <div>Total</div>
-                              <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.total || 0) / 100)}</div>
-                            </div>
+                          <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
+                            <div>Total</div>
+                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.total || 0) / 100)}</div>
                           </div>
                         </div>
+                      </div>
 
-                        {/* not showing this block if subtotal is 0 after server calculation */}
-                        {(priceBreakDown && priceBreakDown.total) ?
-                          (<>
-                            <div className="rounded-lg bg-gray-900 mb-5">
-                              <div className="p-4 sm:p-5">
-                                <div className="flex items-center justify-between mb-4">
-                                  <div className="font-semibold sm:text-lg">Payment</div>
-                                  <HStack>
-                                    <img className="h-5" src="/images/amex-sm.svg" alt="amex" />
-                                    <img className="h-5" src="/images/mastercard-sm.svg" alt="mastercard" />
-                                    <img className="h-5" src="/images/visa-sm.svg" alt="visa" />
-                                  </HStack>
-                                </div>
-                                {chooseStripe ? (
-                                  <CheckoutForm error={stripeInputError} setError={setStripeInputError} address={billingAddress} setAddress={setBillingAddress}></CheckoutForm>
-                                ) : <button onClick={() => setChooseStripe(true)} className="btn btn-white w-full">
-                                  Pay With Credit Card
-                                </button>}
-                                {!chooseStripe &&
-                                  <><div className="divider-words">OR</div>
-                                    {(scriptLoaded && eventDataForCheckout?.paymentMethod.includes('PayPal')) &&
-                                      <PayPalButton
-                                        createOrder={(data: any, actions: any) => createPayPalOrder(data, actions)}
-                                        onApprove={(data: any, actions: any) => onPayPalApprove(data, actions)} />
-                                    }</>
-                                }
-
-                                <div className="mt-5 text-center">
-                                  <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                                    <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
-                                  </Checkbox>
-                                </div>
+                      {/* not showing this block if subtotal is 0 after server calculation */}
+                      {(priceBreakDown && priceBreakDown.total) ?
+                        (<>
+                          <div className="rounded-lg bg-gray-900 mb-5">
+                            <div className="p-4 sm:p-5">
+                              <div className="flex items-center justify-between mb-4">
+                                <div className="font-semibold sm:text-lg">Payment</div>
+                                <HStack>
+                                  <img className="h-5" src="/images/amex-sm.svg" alt="amex" />
+                                  <img className="h-5" src="/images/mastercard-sm.svg" alt="mastercard" />
+                                  <img className="h-5" src="/images/visa-sm.svg" alt="visa" />
+                                </HStack>
                               </div>
-                            </div>
-                            {chooseStripe && (
-                              <>
-                                <button className="btn btn-rose w-full !rounded-full !font-semibold hidden sm:block" onClick={() => { handleSubmit(onPaidTicketSubmit)() }}>Place Order</button>
-                                <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
-                                  <button className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onPaidTicketSubmit)() }}>Place Order</button>
-                                </div>
-                              </>
-                            )}
+                              {chooseStripe ? (
+                                <CheckoutForm error={stripeInputError} setError={setStripeInputError} address={billingAddress} setAddress={setBillingAddress}></CheckoutForm>
+                              ) : <button onClick={() => setChooseStripe(true)} className="btn btn-white w-full">
+                                Pay With Credit Card
+                              </button>}
+                              {!chooseStripe &&
+                                <><div className="divider-words">OR</div>
+                                  {(scriptLoaded && eventDataForCheckout?.paymentMethod.includes('PayPal')) &&
+                                    <PayPalButton
+                                      createOrder={(data: any, actions: any) => createPayPalOrder(data, actions)}
+                                      onApprove={(data: any, actions: any) => onPayPalApprove(data, actions)} />
+                                  }</>
+                              }
 
-                          </>) :
-                          (
-                            <>
                               <div className="mt-5 text-center">
                                 <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
                                   <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
                                 </Checkbox>
                               </div>
-                              <br></br>
-                              <div className="h-12 sm:hidden" />
-                              <button form="stripe-form" className="btn btn-rose w-full !rounded-full !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            </div>
+                          </div>
+                          {chooseStripe && (
+                            <>
+                              <button className="btn btn-rose w-full !rounded-full !font-semibold hidden sm:block" onClick={() => { handleSubmit(onPaidTicketSubmit)() }}>Place Order</button>
                               <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
-                                <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                                <button className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onPaidTicketSubmit)() }}>Place Order</button>
                               </div>
                             </>
-                          )
-                        }
-                      </div>
+                          )}
+
+                        </>) :
+                        (
+                          <>
+                            <div className="mt-5 text-center">
+                              <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
+                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                              </Checkbox>
+                            </div>
+                            <br></br>
+                            <div className="h-12 sm:hidden" />
+                            <button form="stripe-form" className="btn btn-rose w-full !rounded-full !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
+                              <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            </div>
+                          </>
+                        )
+                      }
                     </div>
                   </div>
                 </div>
