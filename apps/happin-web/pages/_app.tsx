@@ -8,6 +8,10 @@ import { UserState } from '../contexts/user-state'
 import { SSO } from '@components/SSO'
 import { SEO } from "@components/SEO";
 import { CheckoutState } from "contexts/checkout-state"
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_test_A7jK4iCYHL045qgjjfzAfPxu');
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -18,7 +22,9 @@ function App({ Component, pageProps }: AppProps) {
             <SEO />
             <SSO />
             <Layout>
+              <Elements stripe={stripePromise}>
               <Component {...pageProps} />
+              </Elements>
             </Layout>
           </SSOState>
         </CheckoutState>

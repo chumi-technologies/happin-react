@@ -1,17 +1,25 @@
 import { useCheckoutState } from 'contexts/checkout-state';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
 import Countdown from 'react-countdown';
 
 
 const PaymentHead = ({ 
   countdownCompleted,
-  date
  }:{
-  countdownCompleted: (arg:any)=>void,
-  date:number
+  countdownCompleted: (arg:any)=>void
   }
   ) => {
   const { eventDataForCheckout } = useCheckoutState();
+  // const [ timer,setTimer ] = useState<number>(420000);
+  const [timer, setTimer] = useState<number>(111420000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(timer => timer - 1000);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700 hidden md:block">
       <div className="container">
@@ -25,7 +33,7 @@ const PaymentHead = ({
           <Countdown
             controlled = {true}
             onComplete = {countdownCompleted}
-            date = {date}
+            date = {timer}
           />
           </span>.</div>
         </div>

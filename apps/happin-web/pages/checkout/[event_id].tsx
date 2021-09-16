@@ -11,6 +11,7 @@ import moment from 'moment';
 import { TicketAndMerchListActionKind, useCheckoutState } from 'contexts/checkout-state';
 import { getEventDetailForCheckout, getEventMerchs, getGATickets, validateCode } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
+import { releaseLock } from './payment';
 
 const Checkout = () => {
   const router = useRouter();
@@ -64,6 +65,9 @@ const Checkout = () => {
       }
     })()
 
+    if (localStorage.getItem('orderId')) {
+      releaseLock()
+    }
     // hack react-scroll初加载拿不到offset的问题
     scroll.scrollTo(1, {
       containerId: 'checkout-scroll-body'
