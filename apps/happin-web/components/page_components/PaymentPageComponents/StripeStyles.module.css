@@ -1,4 +1,4 @@
-  
+/*   
   @keyframes fade {
     from {
       opacity: 0;
@@ -8,10 +8,6 @@
       opacity: 1;
       transform: scale3D(1, 1, 1);
     }
-  }
-  
-  .Form {
-    animation: fade 200ms ease-out;
   }
   
   .FormGroup {
@@ -55,7 +51,6 @@
   }
   .FormRowInput:-webkit-autofill {
     -webkit-text-fill-color: #fff;
-    /* Hack to hide the default webkit autofill */
     transition: background-color 100000000s;
     animation: 1ms void-animation-out;
   }
@@ -78,12 +73,6 @@
     background: transparent !important;
   }
   
-  .StripeElement {
-    width: 100%;
-    padding: 11px 15px 11px 0;
-  }
-  
-  
   .ErrorMessage {
     color: rgba(254, 67, 101);
     display: flex;
@@ -101,6 +90,6 @@
   
   .ErrorMessage svg {
     margin-right: 10px;
-  }
+  } */
   
   

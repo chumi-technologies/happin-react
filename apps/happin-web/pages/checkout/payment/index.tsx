@@ -99,8 +99,8 @@ const Payment = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
-    setValue,
-    reset,
+    //setValue,
+    //reset,
     control,
     getValues
   } = useForm<FormData>({ mode: 'all' });
@@ -137,7 +137,7 @@ const Payment = () => {
     try {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
-      if (res.valid) {
+      if (res.valid && res.type === 'discount') {
         generateToast('Promo code applied', toast);
         setCodeUsed(promoteCode as string);
       } else {
@@ -519,6 +519,7 @@ const Payment = () => {
         generateToast('Incomplete ZIP code, please check your card input', toast)
         break;
       default:
+        generateToast('Unknown error, please contact us', toast)
         break
     }
   }
@@ -533,9 +534,9 @@ const Payment = () => {
           setIsProcessing(false)
           generateToast('Thank you, your order is placed', toast);
           postCloseMessageForApp()
-          /*   setTimeout(() => {
-              router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
-            }, 1000) */
+          setTimeout(() => {
+            router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+          }, 1000)
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
           setIsProcessing(false);

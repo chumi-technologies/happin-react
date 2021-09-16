@@ -1,10 +1,7 @@
-import { BackgroundColor } from "@icon-park/react";
 import {
   CardElement,
-  useElements,
-  useStripe
 } from "@stripe/react-stripe-js";
-import React, { useState } from "react";
+import React from "react";
 import styles from './StripeStyles.module.css'
 
 
