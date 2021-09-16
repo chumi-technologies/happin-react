@@ -390,9 +390,10 @@ const Payment = () => {
       const res = await lockCheckoutTickets(orderItem);
       if (res.orderId) {
         localStorage.setItem('orderId', res?.orderId);
-      } else {
-        generateToast('Filed to generate an order, please try again later', toast);
+      } else if(res.status === 'failed') {
+        generateToast('Item(s) no longer available, please try again later', toast);
         router.push(`/checkout/${eventDataForCheckout?.id}`);
+        return
       }
       setPriceBreakDown(res?.priceBreakDown)
     }

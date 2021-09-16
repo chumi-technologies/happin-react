@@ -47,7 +47,7 @@ const Checkout = () => {
 
   useEffect(() => {
     (async () => {
-      if (router.query.event_id) {
+      if (router.query.event_id && router.query.event_id !== 'undefined') {
         // check code in url is valid or not
         if (router.query.code || router.query.affiliate) {
           // affilate code could be 100% discount code, hence need to check
@@ -59,11 +59,9 @@ const Checkout = () => {
           // two code appear at same time is not possible
           await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
         }
-        if (!eventDataForCheckout && !ticketListState.length && !merchListState.length && router.query.event_id !== 'undefined') {
-          Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-            getEventTicketsAndSetState(router.query.event_id as string),
-            getEventMerchAndSetState(router.query.event_id as string)])
-        }
+        Promise.all([getEventDetailAndSetState(router.query.event_id as string),
+          getEventTicketsAndSetState(router.query.event_id as string),
+          getEventMerchAndSetState(router.query.event_id as string)])
       }
     })()
 
