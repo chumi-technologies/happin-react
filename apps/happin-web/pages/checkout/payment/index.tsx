@@ -388,7 +388,12 @@ const Payment = () => {
     }
     try {
       const res = await lockCheckoutTickets(orderItem);
-      localStorage.setItem('orderId', res?.orderId);
+      if (res.orderId) {
+        localStorage.setItem('orderId', res?.orderId);
+      } else {
+        generateToast('Filed to generate an order, please try again later', toast);
+        router.push(`/checkout/${eventDataForCheckout?.id}`);
+      }
       setPriceBreakDown(res?.priceBreakDown)
     }
     catch (err) {
@@ -456,11 +461,13 @@ const Payment = () => {
 
 
   useEffect(() => {
-    handleCartUpdateAndApplyPromoCode();
     // last item in cart deleted, go back to first page
     if (!cart.items.bundleItem.length && !cart.items.merchItem.length && !cart.items.ticketItem.length) {
       router.push(`/checkout/${eventDataForCheckout?.id}`);
+      return
     }
+    handleCartUpdateAndApplyPromoCode();
+    
   }, [cart, codeUsed]);
 
 
