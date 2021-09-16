@@ -153,8 +153,7 @@ const Payment = () => {
     }
   }
 
-  const handleDeleteFromCart = async () => {
-    console.log(cart, 'cartItem')
+  const handleCartUpdateAndApplyPromoCode = async () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
@@ -380,6 +379,9 @@ const Payment = () => {
     if (cart && cart.items && cart.items.merchItem && (cart.items.merchItem.map(m => m.shipping)).some(v => v === true)) {
       setShowShipping(true);
     }
+    if (cart && cart.items && cart.items.bundleItem  && cart.items.bundleItem.map(t => t.merchs.map(m => m.shipping).some(v => v === true))) {
+      setShowShipping(true);
+    }
     try {
       const res = await lockCheckoutTickets(orderItem);
       localStorage.setItem('orderId', res?.orderId);
@@ -451,6 +453,10 @@ const Payment = () => {
     setShippingOptions(options);
   }, []);
 
+
+  useEffect(() => {
+    handleCartUpdateAndApplyPromoCode();
+  }, [cart,codeUsed]);
   // in case user close window or tab, release the lock 
   /*  useEffect(() => {
      window.addEventListener('unload', (event) => {
