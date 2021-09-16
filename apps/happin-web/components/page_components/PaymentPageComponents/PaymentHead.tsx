@@ -11,8 +11,8 @@ const PaymentHead = ({
   }
   ) => {
   const { eventDataForCheckout } = useCheckoutState();
-  // const [ timer,setTimer ] = useState<number>(420000);
-  const [timer, setTimer] = useState<number>(111420000);
+  const [ timer,setTimer ] = useState<number>(420000);
+  // const [timer, setTimer] = useState<number>(111420000);
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer(timer => timer - 1000);
