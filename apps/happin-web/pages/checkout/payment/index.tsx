@@ -9,7 +9,7 @@ import {
   useStripe
 } from "@stripe/react-stripe-js";
 import { Delete } from '@icon-park/react';
-import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack } from '@chakra-ui/react';
+import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack, useEditable } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
 import moment from 'moment';
@@ -116,13 +116,16 @@ const Payment = () => {
   const stripe = useStripe();
   const elements = useElements();
   const [stripeInputError, setStripeInputError] = useState<any>(null);
-  const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction, dispatcMerchListAction, removeItem, ticketListState, merchListState, affiliate } = useCheckoutState();
+  const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction, dispatcMerchListAction, removeItem, ticketListState, merchListState, affiliate, openInApp } = useCheckoutState();
   const [validateCodeLoading, setValidateCodeLoading] = useState<boolean>(false);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
   const [promoteCode, setPromoteCode] = useState<string>();
+
+  // for stripe, in case stripe payment failed , can pay again with this secret
+  const [clientSecret, setClientSecret] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
     const shippings = merchListState.filter(m => m.tickets.length > 0).map(m => m.shippingCountry);
@@ -223,7 +226,7 @@ const Payment = () => {
             value: priceBreakDown.total / 100
           },
           payee: {
-            email_address: '385857413@qq.com'
+            email_address: eventDataForCheckout?.paypalEmail || process.env.NEXT_PUBLIC_PAYPAL_HAPPIN_PAYEE
           }
         }
       ],
@@ -330,7 +333,7 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        const res = await releaseLockCheckoutTickets(orderId);
+        await releaseLockCheckoutTickets(orderId);
         router.push(`/checkout/${eventDataForCheckout?.id}`);
       }
       catch (err) {
@@ -419,7 +422,6 @@ const Payment = () => {
         router.push(`https://happin.app`);
       }
     } else {
-      // set timer
       if (!orderId) {
         localStorage.setItem('activityId', eventDataForCheckout.id);
         lockCheckoutTicketsHandle({
@@ -428,8 +430,6 @@ const Payment = () => {
           activityId: eventDataForCheckout?.id || "",
           shippingCountry: ""
         })
-      } else {
-        releaseLock();
       }
     }
 
@@ -457,20 +457,34 @@ const Payment = () => {
 
   useEffect(() => {
     handleCartUpdateAndApplyPromoCode();
+    // last item in cart deleted, go back to first page
+    if (!cart.items.bundleItem.length && !cart.items.merchItem.length && !cart.items.ticketItem.length) {
+      router.push(`/checkout/${eventDataForCheckout?.id}`);
+    }
   }, [cart, codeUsed]);
 
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
     try {
       setIsProcessing(true);
-      const response = await submitPayment(form);
-      console.log('stripe method => post payment to crowdcore ', response);
+      let result: any;
+      if (chooseStripe) {
+        // any following pay button click will use state client secret for strip api
+        if (!clientSecret) {
+          // acquire clientSecret
+          result = await submitPayment(form);
+        }
+      } else {
+        result = await submitPayment(form);
+      }
+      console.log('stripe method => post payment to crowdcore ', result);
       // after post payment, if it's stripe , need extra steps
       if (chooseStripe) {
-        const clientSecret = response.client_secret;
-        console.log('client secret', clientSecret);
+        if (!clientSecret) {
+          setClientSecret(result?.clientSecret)
+        }
         if (stripe && elements) {
-          const response = await stripe.confirmCardPayment(clientSecret, {
+          const response = await stripe.confirmCardPayment((result?.clientSecret || clientSecret), {
             payment_method: {
               card: elements.getElement(CardElement) as StripeCardElement,
               billing_details: {
@@ -491,26 +505,24 @@ const Payment = () => {
         }
       } else {
         generateToast('Thank you, your order is placed', toast);
-        postCloseMessageForApp()
-        setTimeout(() => {
-          router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
-        }, 1000)
+        if (openInApp) {
+          postCloseMessageForApp()
+        } else {
+          setTimeout(() => {
+            router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+          }, 1000)
+        }
       }
     } catch (err) {
-      console.log(typeof err)
-      if (typeof err === 'string') {
-        handleStripeConfirmPaymentError(err);
-      } else {
-        generateToast('Unknow error, please contact us if problem persists', toast)
-      }
-      console.log(err)
+      console.log(err.message)
+      handlePaymentError(err.message);
     } finally {
       setIsProcessing(false);
     }
   }
 
-  const handleStripeConfirmPaymentError = (errCode: string) => {
-    console.log('stripe confirm payment error: ', errCode)
+  const handlePaymentError = (errCode: string) => {
+    console.log('payment error: ', errCode)
     switch (errCode) {
       case 'incorrect_cvc':
         generateToast('Incorrect CVC code, please check your card input', toast)
@@ -520,6 +532,9 @@ const Payment = () => {
         break;
       case 'incomplete_zip':
         generateToast('Incomplete ZIP code, please check your card input', toast)
+        break;
+      case 'expired_card':
+        generateToast('Your card has expired.', toast)
         break;
       default:
         generateToast('Unknown error, please contact us', toast)
@@ -536,19 +551,27 @@ const Payment = () => {
         if (orderStatus.status === EOrderStatus.PAID) {
           setIsProcessing(false)
           generateToast('Thank you, your order is placed', toast);
-          postCloseMessageForApp()
-          setTimeout(() => {
-            router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
-          }, 1000)
+          if (openInApp) {
+            postCloseMessageForApp()
+          } else {
+            setTimeout(() => {
+              router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+            }, 1000)
+          }
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
           setIsProcessing(false);
           generateToast('Failed to process order, please try again later', toast);
-          await releaseLock()
-          await router.push(`/checkout/${eventDataForCheckout?.id}`)
+          router.push(`/checkout/${eventDataForCheckout?.id}`)
           return
+        } else {
+          console.log('Order status: ', orderStatus.status)
         }
         retryTimes += 1;
+      }
+      if (retryTimes === 10) {
+        generateToast('Server time out, please try again later', toast);
+        router.push(`/checkout/${eventDataForCheckout?.id}`)
       }
     } catch (err) {
       console.log(err);

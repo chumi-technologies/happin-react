@@ -11,8 +11,8 @@ import { CheckoutState } from "contexts/checkout-state"
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('pk_test_A7jK4iCYHL045qgjjfzAfPxu');
-
+const stripePromise = loadStripe('pk_test_rOjv2jSQZRDSKTgc6pTan9jJ');
+//pk_test_A7jK4iCYHL045qgjjfzAfPxu
 function App({ Component, pageProps }: AppProps) {
   return (
     <ChakraProvider theme={theme}>

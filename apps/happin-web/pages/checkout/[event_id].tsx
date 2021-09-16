@@ -47,19 +47,19 @@ const Checkout = () => {
 
   useEffect(() => {
     (async () => {
-      if (router?.query?.event_id) {
+      if (router.query.event_id) {
         // check code in url is valid or not
-        if (router?.query?.code || router?.query?.affiliate) {
+        if (router.query.code || router.query.affiliate) {
           // affilate code could be 100% discount code, hence need to check
           // if the affilate code is valid disocunt code, then store in the context if valid (codeUsed)
-          if (router?.query?.affiliate) {
+          if (router.query.affiliate) {
             // store affiliate code into context regardless, server will check validity on final step
-            setAffiliate(router?.query?.affiliate as string)
+            setAffiliate(router.query.affiliate as string)
           }
           // two code appear at same time is not possible
-          await validateUrlCodeAndSetState(router?.query?.event_id as string, ((router?.query?.code || router?.query?.affiliate) as string));
+          await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
         }
-        if (!eventDataForCheckout && !ticketListState.length && !merchListState.length) {
+        if (!eventDataForCheckout && !ticketListState.length && !merchListState.length && router.query.event_id !== 'undefined') {
           Promise.all([getEventDetailAndSetState(router.query.event_id as string),
             getEventTicketsAndSetState(router.query.event_id as string),
             getEventMerchAndSetState(router.query.event_id as string)])
@@ -111,7 +111,8 @@ const Checkout = () => {
         endTime: res.endTime,
         default_currency: res.default_currency,
         cover: res.cover,
-        paymentMethod: res.paymentMethod
+        paymentMethod: res.paymentMethod,
+        paypalEmail: res.paypalEmail,
       }
       setEventDataForCheckout(eventDetail)
     } catch (err) {

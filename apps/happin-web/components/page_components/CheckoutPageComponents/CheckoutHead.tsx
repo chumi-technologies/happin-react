@@ -55,7 +55,7 @@ const CheckoutHead = ({
     try {
       setButtonLoading(true)
       // check login or not
-      if (!user && !localStorage.getItem('open_from_other_source')) {
+      if (!user && !localStorage.getItem('chumi_jwt')) {
         generateToast('To continue, please log in or sign up ', toast);
         setButtonLoading(false)
         return

@@ -15,6 +15,7 @@ export type EventBasicData = {
   default_currency: string;
   cover: string;
   paymentMethod: string[];
+  paypalEmail?: string;
 }
 
 export type GeneralTicketInfo = {

@@ -9,32 +9,30 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
-  const { setBoxOfficeMode , setOnlyShowMerch} = useCheckoutState();
+  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
   
   useEffect(() => {
-    if (router?.query?.token && router.asPath.includes('/checkout/') || localStorage.getItem('open_from_other_source')) {
+    if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
       if (typeof window !== undefined) {
-        localStorage.setItem('open_from_other_source', '1');
         if (!localStorage.getItem('chumi_jwt')) {
           localStorage.setItem('chumi_jwt', router?.query?.token as string);
         }
       }
     }
+    if (router?.query?.fromapp) {
+      setOpenInApp(true);
+    }
     if (router?.query?.merchonly) {
       setOnlyShowMerch(true);
-    } else {
-      setOnlyShowMerch(false);
     }
     //box office mode is only opened in 2b app, hide the header
     if (router?.query?.role === 'boxoffice') {
-      setIsMobileBarOpen(false);
-      setShowHeader(false);
       setBoxOfficeMode(true);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])

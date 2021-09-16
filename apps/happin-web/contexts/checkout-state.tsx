@@ -64,6 +64,8 @@ interface CheckoutContext {
   merchListState: MerchItemDataProps[],
   ticketListState: TicketItemDataProps[],
   onlyShowMerch: boolean | undefined,
+  openInApp: boolean | undefined,
+  setOpenInApp: (arg: boolean) => void,
   setOnlyShowMerch: (arg: boolean) => void,
   dispatcMerchListAction: (arg: MerchListAction)=> void,
   dispatchTicketListAction: (arg: TicketListAction)=> void,
@@ -361,6 +363,8 @@ export function CheckoutState({ children }: { children: any }) {
   // affiliate code, should be pass into the final step request body
   const [affiliate, setAffiliate] = useState<string>();
 
+  const [openInApp, setOpenInApp] = useState<boolean>();
+
   // app opens buy merch in livestream, only showing merchs
   const [onlyShowMerch, setOnlyShowMerch] = useState<boolean>();
 
@@ -392,6 +396,8 @@ export function CheckoutState({ children }: { children: any }) {
     merchListState: merchListState,
     ticketListState: ticketListState,
     onlyShowMerch: onlyShowMerch,
+    openInApp: openInApp,
+    setOpenInApp: setOpenInApp,
     setOnlyShowMerch: setOnlyShowMerch,
     dispatcMerchListAction: dispatcMerchListAction,
     dispatchTicketListAction: dispatchTicketListAction,
