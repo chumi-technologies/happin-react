@@ -790,7 +790,7 @@ const Payment = () => {
                       <form>
                         <div className="max-w-4xl mx-auto">
                           <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
-                            <div className="lg:col-span-4">
+                            <div className="lg:col-span-6">
                               <label htmlFor="fullName" className="form-label required">Full name</label>
                               <input
                                 id="fullName"
@@ -803,7 +803,7 @@ const Payment = () => {
                                 <div className="text-rose-500 text-sm mt-1">Full name is required.</div>
                               )}
                             </div>
-                            <div className="lg:col-span-4">
+                            <div className="lg:col-span-6">
                               <label htmlFor="email" className="form-label required">Email</label>
                               <input
                                 id="email"
@@ -822,7 +822,7 @@ const Payment = () => {
                                 <div className="text-rose-500 text-sm mt-1">Email is invalid.</div>
                               )}
                             </div>
-                            <div className="lg:col-span-4">
+                            <div className="lg:col-span-6">
                               <label htmlFor="tel" className="form-label required">Phone number</label>
                               <input
                                 id="tel"

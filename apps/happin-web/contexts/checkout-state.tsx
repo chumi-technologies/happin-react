@@ -63,6 +63,8 @@ interface CheckoutContext {
   affiliate: string | undefined,
   merchListState: MerchItemDataProps[],
   ticketListState: TicketItemDataProps[],
+  onlyShowMerch: boolean | undefined,
+  setOnlyShowMerch: (arg: boolean) => void,
   dispatcMerchListAction: (arg: MerchListAction)=> void,
   dispatchTicketListAction: (arg: TicketListAction)=> void,
   setAffiliate: (arg: string) => void,
@@ -359,6 +361,9 @@ export function CheckoutState({ children }: { children: any }) {
   // affiliate code, should be pass into the final step request body
   const [affiliate, setAffiliate] = useState<string>();
 
+  // app opens buy merch in livestream, only showing merchs
+  const [onlyShowMerch, setOnlyShowMerch] = useState<boolean>();
+
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
@@ -386,6 +391,8 @@ export function CheckoutState({ children }: { children: any }) {
     affiliate: affiliate,
     merchListState: merchListState,
     ticketListState: ticketListState,
+    onlyShowMerch: onlyShowMerch,
+    setOnlyShowMerch: setOnlyShowMerch,
     dispatcMerchListAction: dispatcMerchListAction,
     dispatchTicketListAction: dispatchTicketListAction,
     setAffiliate: setAffiliate,

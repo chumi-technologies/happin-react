@@ -9,7 +9,7 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
-  const { setBoxOfficeMode } = useCheckoutState();
+  const { setBoxOfficeMode , setOnlyShowMerch} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
@@ -25,6 +25,11 @@ const Layout = ({ children }: { children: any }) => {
           localStorage.setItem('chumi_jwt', router?.query?.token as string);
         }
       }
+    }
+    if (router?.query?.merchonly) {
+      setOnlyShowMerch(true);
+    } else {
+      setOnlyShowMerch(false);
     }
     //box office mode is only opened in 2b app, hide the header
     if (router?.query?.role === 'boxoffice') {
