@@ -421,7 +421,8 @@ const Payment = () => {
     if (!eventDataForCheckout) {
       if (orderId) {
         if (activityId) {
-          releaseLock();
+          // releaseLock();
+          console.log('Redirect to ac:' , activityId);
           router.push(`/checkout/${activityId}`);
         } else {
           releaseLock();
