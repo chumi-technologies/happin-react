@@ -160,18 +160,13 @@ const Payment = () => {
   const handleCartUpdateAndApplyPromoCode = async () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
-      try {
-        caculatePriceBreakDown(orderId,
-          {
-            cart: cart.items,
-            discountCode: codeUsed || "",
-            activityId: eventDataForCheckout?.id || "",
-            shippingCountry: shippingCountry
-          });
-      }
-      catch (err) {
-        console.log(err)
-      }
+      caculatePriceBreakDown(orderId,
+        {
+          cart: cart.items,
+          discountCode: codeUsed || "",
+          activityId: eventDataForCheckout?.id || "",
+          shippingCountry: shippingCountry
+        });
     }
   }
 
@@ -390,11 +385,11 @@ const Payment = () => {
       const res = await lockCheckoutTickets(orderItem);
       if (res.orderId) {
         localStorage.setItem('orderId', res?.orderId);
-      } else if(res.status === 'failed') {
+      } else if (res.status === 'failed') {
         generateToast('Item(s) no longer available, please try again later', toast);
         router.push({
           pathname: `/checkout/${eventDataForCheckout?.id}`,
-          query: { clearcart: 'true'}
+          query: { clearcart: 'true' }
         });
         return
       }
@@ -402,6 +397,8 @@ const Payment = () => {
     }
     catch (err) {
       console.log(err)
+      generateToast('Unknow error, please contact us', toast);
+      router.push(`/checkout/${eventDataForCheckout?.id}`);
     }
   }
 
@@ -411,6 +408,9 @@ const Payment = () => {
       setPriceBreakDown(res?.priceBreakDown);
     }
     catch (err) {
+      // if server failed to calculate the price, return to first page
+      generateToast('Unknow error, please contact us', toast);
+      router.push(`/checkout/${eventDataForCheckout?.id}`);
       console.log(err)
     }
   }

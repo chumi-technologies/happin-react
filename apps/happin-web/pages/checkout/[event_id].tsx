@@ -401,13 +401,13 @@ const Checkout = () => {
                   (<>
                     {/* TODO NEED TO REMOVE AND ADD THE SALE TIME ON CHECKOU HEADER */}
                     {/* display public sale start time when sale not start */}
-                    {saleStart === false &&
+{/*                     {saleStart === false &&
                       (
                         <div className="sm:text-lg" style={{ fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
                           <h1>Public sale start on</h1>
                           <h1>{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</h1>
                         </div>
-                      )}
+                      )} */}
                     {!onlyShowMerch && <>
                       <div id="Livestream-Tickets" className="divide-y divide-gray-700">
                         {
