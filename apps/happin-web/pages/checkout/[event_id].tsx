@@ -41,6 +41,7 @@ const Checkout = () => {
     ticketListState,
     dispatchTicketListAction,
     onlyShowMerch,
+    clearCart
   } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
@@ -64,6 +65,10 @@ const Checkout = () => {
           getEventMerchAndSetState(router.query.event_id as string)])
       }
     })()
+
+    if (router.query.clearcart && router.query.clearcart !== 'undefined') {
+      clearCart()
+    }
 
     if (localStorage.getItem('orderId')) {
       releaseLock()

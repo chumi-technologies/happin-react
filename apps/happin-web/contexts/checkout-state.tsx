@@ -42,6 +42,7 @@ export interface RemoveItemHandlerParam {
 enum ActionKind {
   Increase = 'INCREASE',
   Decrease = 'DECREASE',
+  Clear = 'CLEAR'
 }
 
 type Action = {
@@ -75,7 +76,8 @@ interface CheckoutContext {
   setCodeUsed: (arg: string) => void,
   setEventDataForCheckout: (arg: EventBasicData) => void,
   addItem: (arg: AddItemHandlerParam) => void,
-  removeItem: (arg0: RemoveItemHandlerParam) => void
+  removeItem: (arg0: RemoveItemHandlerParam) => void,
+  clearCart: ()=> void
 }
 
 const defaultCartState: Cart = {
@@ -105,6 +107,9 @@ const cartReducer = (state: Cart, action: Action) => {
   }
   if (action.type === ActionKind.Decrease) {
     return decreament(action, state);
+  }
+  if (action.type === ActionKind.Clear) {
+    // nothing and return default cart state
   }
   return defaultCartState
 }
@@ -385,6 +390,10 @@ export function CheckoutState({ children }: { children: any }) {
     dispatchCartAction({ type: ActionKind.Decrease, payload: item, quantity, property, bundleIdentifier });
   };
 
+  const clearCartHandler = () => {
+    dispatchCartAction({ type: ActionKind.Clear, payload: {} as TicketItemDataProps, quantity: 1 });
+  }
+
 
   const context: CheckoutContext = {
     cart: cartState,
@@ -408,6 +417,7 @@ export function CheckoutState({ children }: { children: any }) {
     setEventDataForCheckout: setEventDataForCheckout,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler
   };
 
   return (

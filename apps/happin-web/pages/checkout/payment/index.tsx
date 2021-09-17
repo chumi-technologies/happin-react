@@ -392,7 +392,10 @@ const Payment = () => {
         localStorage.setItem('orderId', res?.orderId);
       } else if(res.status === 'failed') {
         generateToast('Item(s) no longer available, please try again later', toast);
-        router.push(`/checkout/${eventDataForCheckout?.id}`);
+        router.push({
+          pathname: `/checkout/${eventDataForCheckout?.id}`,
+          query: { clearcart: 'true'}
+        });
         return
       }
       setPriceBreakDown(res?.priceBreakDown)
