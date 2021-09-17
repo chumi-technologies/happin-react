@@ -61,8 +61,8 @@ const Checkout = () => {
           await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
         }
         Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-          getEventTicketsAndSetState(router.query.event_id as string),
-          getEventMerchAndSetState(router.query.event_id as string)])
+        getEventTicketsAndSetState(router.query.event_id as string),
+        getEventMerchAndSetState(router.query.event_id as string)])
       }
     })()
 
@@ -395,25 +395,32 @@ const Checkout = () => {
           </div>
           <div className="container">
             <div className="checkout__container">
-              <div className="rounded-lg bg-yellow-500 px-4 py-3 md:px-5 md:py-3 text-gray-900 text-sm mt-5 sm:mt-8">
-                <div className="table">
-                  <div className="table-row">
-                    <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Pre Sale:</div>
-                    <div className="table-cell py-0.5 font-semibold">Jul 17, 2021・8 PM - Jul 26, 2021・8 PM</div>
-                  </div>
-                  <div className="table-row">
-                    <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Public Sale:</div>
-                    <div className="table-cell py-0.5 font-semibold">Aug 1, 2021・8 PM</div>
+              {saleStart === false &&
+                <div className="rounded-lg bg-yellow-500 px-4 py-3 md:px-5 md:py-3 text-gray-900 text-sm mt-5 sm:mt-8">
+                  <div className="table">
+                    {(generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) &&
+                      <div className="table-row">
+                        <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Pre Sale:</div>
+                        <div className="table-cell py-0.5 font-semibold">{moment(generalTicketInfo?.presaleStart).format('MMMM Do, h:mma')} - {moment(generalTicketInfo?.presaleEnd).format('MMMM Do, h:mma')}</div>
+                      </div>
+                    }
+                    {saleStart === false &&
+                      <div className="table-row">
+                        <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Public Sale:</div>
+                        <div className="table-cell py-0.5 font-semibold">{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</div>
+                      </div>
+                    }
                   </div>
                 </div>
-              </div>
+              }
+
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
                     {/* TODO NEED TO REMOVE AND ADD THE SALE TIME ON CHECKOU HEADER */}
                     {/* display public sale start time when sale not start */}
-{/*                     {saleStart === false &&
+                    {/*                     {saleStart === false &&
                       (
                         <div className="sm:text-lg" style={{ fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
                           <h1>Public sale start on</h1>
