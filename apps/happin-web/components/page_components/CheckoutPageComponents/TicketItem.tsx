@@ -25,7 +25,7 @@ const TicketItem = (props: TicketItemProps) => {
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
   // the input number is read from Cart , so the max input must use original quantity,
-  // (quantity will keep decreasing as item add to cart, if quantity is used here, 
+  // (quantity will keep decreasing as item add to cart, if quantity is used here,
   // the max will never reach the correct amount)
   const getMaxNumberInputQty = () => {
     if (data?.originalQuantity > data?.maxPerOrder) {
@@ -45,7 +45,7 @@ const TicketItem = (props: TicketItemProps) => {
           </div>
           {(typeof data.start === 'number' && typeof data.end === 'number') && <div className="text-gray-400 text-xs">On sale from: {moment(data.start * 1000).format('MMMM Do, h:mma')} ~ {moment(data.end * 1000).format('MMMM Do, h:mma')}</div>}
         </div>
-        {(data.originalQuantity <= 0 || data.originalQuantity < data.minPerOrder) ? <p style={{textAlign: 'center'}} className="btn checkout__ticket-select">SOLD OUT</p> 
+        {(data.originalQuantity <= 0 || data.originalQuantity < data.minPerOrder) ? <p style={{textAlign: 'center'}} className="btn checkout__ticket-select !w-auto whitespace-nowrap">SOLD OUT</p>
         : (
           data.merch ?
             <button

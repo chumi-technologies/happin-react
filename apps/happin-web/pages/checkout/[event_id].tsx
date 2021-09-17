@@ -395,6 +395,18 @@ const Checkout = () => {
           </div>
           <div className="container">
             <div className="checkout__container">
+              <div className="rounded-lg bg-yellow-500 px-4 py-3 md:px-5 md:py-3 text-gray-900 text-sm mt-5 sm:mt-8">
+                <div className="table">
+                  <div className="table-row">
+                    <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Pre Sale:</div>
+                    <div className="table-cell py-0.5 font-semibold">Jul 17, 2021・8 PM - Jul 26, 2021・8 PM</div>
+                  </div>
+                  <div className="table-row">
+                    <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Public Sale:</div>
+                    <div className="table-cell py-0.5 font-semibold">Aug 1, 2021・8 PM</div>
+                  </div>
+                </div>
+              </div>
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&

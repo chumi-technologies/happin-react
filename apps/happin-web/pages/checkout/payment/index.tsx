@@ -471,7 +471,7 @@ const Payment = () => {
       return
     }
     handleCartUpdateAndApplyPromoCode();
-    
+
   }, [cart, codeUsed]);
 
 
@@ -707,20 +707,13 @@ const Payment = () => {
   return (
     <>
       <div className="checkout__page">
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col md:h-full">
           <PaymentHead
             countdownCompleted={onCountDownCompleted}
           />
-          <div className="flex-1 h-0 web-scroll overflow-y-auto">
+          <div className="md:flex-1 md:h-0 web-scroll overflow-y-auto">
             <div className="container">
               <div className="flex flex-col md:flex-row w-full py-2 md:py-8">
-                <div className="md:hidden">
-                  <div className="font-semibold min-w-0 block md:hidden pb-3 mb-3 border-b border-solid border-white border-opacity-20">
-                    <div className="text-lg leading-5 mb-1">{eventDataForCheckout?.title}</div>
-                    <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
-                  </div>
-                  <div className="text-sm text-gray-300 mb-5">Please check out within <span className="font-medium text-white">5 minutes 51 seconds</span>.</div>
-                </div>
                 {showShipping ?
                   <div className="md:flex-1 min-w-0">
                     <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
@@ -1194,7 +1187,7 @@ const Payment = () => {
                           </div>
                           <br></br>
                           <div className="h-12 sm:hidden" />
-                          <button form="stripe-form" className="btn btn-rose w-full !rounded-full !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                          <button form="stripe-form" className="btn btn-rose w-full !rounded-t-none !rounded-b-lg !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
                           <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
                             <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
                           </div>
