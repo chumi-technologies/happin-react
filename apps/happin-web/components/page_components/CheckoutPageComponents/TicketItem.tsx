@@ -45,8 +45,8 @@ const TicketItem = (props: TicketItemProps) => {
           </div>
           {(typeof data.start === 'number' && typeof data.end === 'number') && <div className="text-gray-400 text-xs">On sale from: {moment(data.start * 1000).format('MMMM Do, h:mma')} ~ {moment(data.end * 1000).format('MMMM Do, h:mma')}</div>}
         </div>
-        {data.originalQuantity <= 0 && <p style={{textAlign: 'center'}} className="btn checkout__ticket-select">SOLD OUT</p> }
-        {data.originalQuantity >0 && (
+        {(data.originalQuantity <= 0 || data.originalQuantity < data.minPerOrder) ? <p style={{textAlign: 'center'}} className="btn checkout__ticket-select">SOLD OUT</p> 
+        : (
           data.merch ?
             <button
               onClick={() => onSelect(data)}
