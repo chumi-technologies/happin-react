@@ -30,6 +30,9 @@ const Checkout = () => {
   const [saleStart, setSaleStart] = useState<boolean>();
   const [inPresale, setInPresale] = useState<boolean>();
 
+  const [showingTab, setShowingTab] = useState<string>('');
+
+
   // indicate presale code from url param is valid
   const [presaleCodeUsed, setPresaleCodeUsed] = useState<boolean>(false);
 
@@ -48,6 +51,9 @@ const Checkout = () => {
   } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
+
+  //const [ticketTypeHeaderArray, setTicketTypeHeaderArray] = useState<JSX.Element[]>()
+  const [sortedHeader, setSortedHeader] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -130,26 +136,32 @@ const Checkout = () => {
   const getEventTicketsAndSetState = async (eventId: string) => {
     try {
       const res = await getGATickets(eventId);
-      const ticketList: TicketItemDataProps[] = res.tickets.map((t: any) => {
+      const ticketList: TicketItemDataProps[] = res.tickets.map((t: any, index: number) => {
         let features: TicketItemFeaturesProps[] = [];
+        const firstTicket = index === 0
         switch (t.ticketType) {
           case ETicketType.INPERSON:
-            features = [ETicketFeature.TICKET]
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
             break;
           case ETicketType.FREEINPERSON:
-            features = [ETicketFeature.TICKET]
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
             break;
           case ETicketType.LIVESTREAM:
-            features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK]
+            features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
           case ETicketType.PFM:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK,
-            ETicketFeature.VIP]
+            ETicketFeature.VIP];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
           case ETicketType.PLAYBACK:
             features = [ETicketFeature.TICKET,
-            ETicketFeature.PLAYBACK]
+            ETicketFeature.PLAYBACK];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
           default:
             break;
@@ -307,55 +319,46 @@ const Checkout = () => {
     return <Fragment key={item.id}></Fragment>
   }
 
+  useEffect(() => {
+    if (ticketListState.length) {
+      ticketListState.forEach(t => {
+        switch (t.ticketType) {
+          case ETicketType.LIVESTREAM:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          case ETicketType.PFM:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          case ETicketType.INPERSON:
+            // not generate the tab for in person when the event is past
+            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+              return;
+            }
+            ticketTypeHeaderId.add('In-Person-Tickets');
+            break;
+          case ETicketType.FREEINPERSON:
+            // not generate the tab for in person when the event is past
+            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+              return;
+            }
+            ticketTypeHeaderId.add('In-Person-Tickets');
+            break;
+          case ETicketType.PLAYBACK:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          default:
+            break;
+        }
+      })
+      const sortedHead = Array.from(ticketTypeHeaderId).sort((a: string, b: string) => {
+        if (a > b) return -1
+        else return 1
+      })
+      setSortedHeader(sortedHead)
+    }
+  }, [ticketListState])
 
-  if (ticketListState.length) {
-    ticketListState.forEach(t => {
-      switch (t.ticketType) {
-        case ETicketType.LIVESTREAM:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        case ETicketType.PFM:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        case ETicketType.INPERSON:
-          // not generate the tab for in person when the event is past
-          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-            return;
-          }
-          ticketTypeHeaderId.add('In-Person-Tickets');
-          break;
-        case ETicketType.FREEINPERSON:
-          // not generate the tab for in person when the event is past
-          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-            return;
-          }
-          ticketTypeHeaderId.add('In-Person-Tickets');
-          break;
-        case ETicketType.PLAYBACK:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        default:
-          break;
-      }
-    })
-  }
 
-  const ticketTypeHeaderArray = Array.from(ticketTypeHeaderId).map(id => (
-    <Link
-      className="checkout__head-tab"
-      activeClass="active"
-      containerId="checkout-scroll-body"
-      to={id}
-      name="myScrollToElement"
-      spy={true}
-      smooth={true}
-      key={id}
-      offset={windowWidth > 640 ? -56 : -44}
-      duration={500}
-    >
-      {id.replace(/-/g, ' ')}
-    </Link>
-  ))
 
   const hasRegularMerch = () => {
     let hasRegularMerch = false
@@ -380,20 +383,42 @@ const Checkout = () => {
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">
               <div className="flex">
-                {!onlyShowMerch && ticketTypeHeaderArray}
+                {!onlyShowMerch && (
+                  sortedHeader.map(id => {
+                    return (
+                      <div
+                        onClick={() => { setShowingTab(id) }}
+                        className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                        key={id}
+                        /* activeClass="active"
+                        containerId="checkout-scroll-body"
+                        
+                        to={id}
+                        name="myScrollToElement"
+                        spy={true}
+                        smooth={true}
+                        offset={windowWidth > 640 ? -56 : -44}
+                        duration={500} */
+                      >
+                        {id.replace(/-/g, ' ')}
+                      </div>
+                    )
+                  })
+                )}
                 {(merchListState.length && hasRegularMerch()) ?
-                  <Link
-                    className="checkout__head-tab"
-                    activeClass="active"
+                  <div
+                    onClick={() => { setShowingTab('merch') }}
+                    className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                    /* activeClass="active"
                     containerId="checkout-scroll-body"
                     to="merch"
                     spy={true}
                     smooth={true}
                     offset={windowWidth > 640 ? -56 : -44}
-                    duration={500}
+                    duration={500} */
                   >
-                    Merch
-                  </Link> : <></>}
+                    Add on
+                  </div> : <></>}
               </div>
             </div>
           </div>
@@ -420,19 +445,17 @@ const Checkout = () => {
 
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
+                {(eventDataForCheckout && eventDataForCheckout.tags?.includes('Private')) && (
+                    <div className="sm:text-lg" style={{position: 'absolute', left: '50%', top:'50%', transform: 'translate(-50%, 0)',
+                     fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
+                      <h1>Event not yet published</h1>
+                      <h1>Please come back later</h1>
+                    </div>
+                )}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
-                    {/* TODO NEED TO REMOVE AND ADD THE SALE TIME ON CHECKOU HEADER */}
-                    {/* display public sale start time when sale not start */}
-                    {/*                     {saleStart === false &&
-                      (
-                        <div className="sm:text-lg" style={{ fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
-                          <h1>Public sale start on</h1>
-                          <h1>{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</h1>
-                        </div>
-                      )} */}
                     {!onlyShowMerch && <>
-                      <div id="Livestream-Tickets" className="divide-y divide-gray-700">
+                      <div id="Livestream-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'Livestream-Tickets' ? 'block' : 'none' }}>
                         {
                           ticketListState.map((item) => {
                             if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
@@ -447,7 +470,7 @@ const Checkout = () => {
                           })
                         }
                       </div>
-                      <div id="In-Person-Tickets" className="divide-y divide-gray-700">
+                      <div id="In-Person-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'In-Person-Tickets' ? 'block' : 'none' }}>
                         {
                           ticketListState.map((item) => {
                             if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
@@ -473,7 +496,7 @@ const Checkout = () => {
                       </div>
                     </>}
                     {/* merch items start */}
-                    {(merchListState.length > 0 && hasRegularMerch()) && (<div id="merch" className="py-5 sm:py-8 text-white">
+                    {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) &&  (<div id="merch" className="py-5 sm:py-8 text-white">
                       <div className="mb-3 font-semibold text-lg">Add On</div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {

@@ -64,10 +64,10 @@ export type TicketItemFeaturesProps = {
 };
 
 export const ETicketFeature = {
-  TICKET : {type: 'ticket', tooltip: 'Ticket includes'} ,
-  PLAYBACK : {type: 'video', tooltip: 'Playback ticket includes'},
-  MERCHBUNDLE : { type:'bag', tooltip: 'Merch bundle includes'},
-  VIP : {type:'vip', tooltip: 'VIP ticket includes'}
+  TICKET : {type: 'ticket', tooltip: 'Ticket included'} ,
+  PLAYBACK : {type: 'video', tooltip: 'Playback ticket included'},
+  MERCHBUNDLE : { type:'bag', tooltip: 'Merch bundle included'},
+  VIP : {type:'vip', tooltip: 'VIP ticket included'}
 }
 
 
