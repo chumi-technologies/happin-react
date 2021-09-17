@@ -16,6 +16,7 @@ import { useToast } from '@chakra-ui/react';
 import { validateCode } from 'lib/api';
 import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
+import { useSSOState } from 'contexts/sso-state';
 
 const CheckoutHead = ({
   saleStart,
@@ -32,6 +33,7 @@ const CheckoutHead = ({
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
   const [buttonLoading, setButtonLoading] = useState<boolean>();
+  const { dimmed, showSSOSignUp } = useSSOState();
 
   const router = useRouter()
   const toast = useToast()
@@ -39,6 +41,14 @@ const CheckoutHead = ({
   useEffect(()=> {
     setButtonLoading(false)
   }, [])
+
+  useEffect(() => {
+    if (dimmed) {
+      document.body.classList.add("body-overflow-hidden");
+    } else {
+      document.body.classList.remove("body-overflow-hidden");
+    }
+  }, [dimmed])
 
   const nextButtonHandler = async () => {
     console.log('Cart: ', cart);
@@ -57,6 +67,7 @@ const CheckoutHead = ({
       // check login or not
       if (!user && !localStorage.getItem('chumi_jwt')) {
         generateToast('To continue, please log in or sign up ', toast);
+        showSSOSignUp()
         setButtonLoading(false)
         return
       } 
