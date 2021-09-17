@@ -12,10 +12,13 @@ import { TicketAndMerchListActionKind, useCheckoutState } from 'contexts/checkou
 import { getEventDetailForCheckout, getEventMerchs, getGATickets, validateCode } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
 import { releaseLock } from './payment';
+import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
+import { useToast } from '@chakra-ui/react';
 
 const Checkout = () => {
   const router = useRouter();
   const windowWidth = useResize();
+  const toast = useToast();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [bundleSidebarOpen, setBundleSidebarOpen] = useState(false);
@@ -96,6 +99,7 @@ const Checkout = () => {
           setCodeUsed(res.code)
         } else if (res.type === 'presale') {
           setPresaleCodeUsed(true);
+          generateToast('You have entered the presale code', toast);
         }
       }
     } catch (err) {

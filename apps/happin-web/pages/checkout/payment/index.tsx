@@ -1043,6 +1043,7 @@ const Payment = () => {
                         <div className="flex">
                           <input
                             defaultValue={codeUsed}
+                            disabled={(codeUsed && !promoteCode) ? true: false}
                             onChange={(e) => {
                               setPromoteCode(e.target.value)
                             }}
@@ -1050,10 +1051,10 @@ const Payment = () => {
                             className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                           <button
                             onClick={ApplyPromoCode}
-                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">Apply
+                            disabled={validateCodeLoading}
+                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied': validateCodeLoading ? 'Processing...' : 'Apply'}
                           </button>
                         </div>
-                        <div className="sm:text-lg font-semibold mb-4">{validateCodeLoading ? 'Processing...' : ''}</div>
                       </div>
 
                       <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
