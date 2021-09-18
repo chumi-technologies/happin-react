@@ -23,9 +23,7 @@ const Layout = ({ children }: { children: any }) => {
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
-      if (!localStorage.getItem('chumi_jwt')) {
-        localStorage.setItem('chumi_jwt', router?.query?.token as string);
-      }
+      localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
     if (router?.query?.fromapp) {
       setOpenInApp(true);

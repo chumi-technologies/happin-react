@@ -17,6 +17,8 @@ import { validateCode } from 'lib/api';
 import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
+import jwt_decode from "jwt-decode";
+
 
 const CheckoutHead = ({
   saleStart,
@@ -70,7 +72,16 @@ const CheckoutHead = ({
         showSSOSignUp()
         setButtonLoading(false)
         return
-      } 
+      } else if (!user && localStorage.getItem('chumi_jwt')) {
+        let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
+        if (new Date().getTime() < decoded.exp) {
+          generateToast('To continue, please log in or sign up ', toast);
+          showSSOSignUp()
+          setButtonLoading(false)
+          return
+        }
+      }
+
       if (user) {
         // exchange token & store the crowdcore server token in local stoarge
         await exchangeForCrowdCoreToken();
