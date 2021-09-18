@@ -4,7 +4,7 @@ import CheckoutHead from '../../components/page_components/CheckoutPageComponent
 import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BundleSidebar';
 import { ETicketAvailability, ETicketFeature, ETicketType, ETicketVisibility, EventBasicData, GeneralTicketInfo, MerchItemDataProps, MerchProperty, TicketItemDataProps, TicketItemFeaturesProps } from '../../lib/model/checkout';
 import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
-import { Link, animateScroll as scroll } from 'react-scroll';
+// import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
@@ -87,9 +87,9 @@ const Checkout = () => {
 
 
     // hack react-scroll初加载拿不到offset的问题
-    scroll.scrollTo(1, {
+   /*  scroll.scrollTo(1, {
       containerId: 'checkout-scroll-body'
-    });
+    }); */
   }, [router.query])
 
   useEffect(() => {
