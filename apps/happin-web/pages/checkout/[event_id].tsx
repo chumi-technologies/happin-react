@@ -57,6 +57,9 @@ const Checkout = () => {
 
   useEffect(() => {
     (async () => {
+      if (localStorage.getItem('orderId')) {
+        await releaseLock()
+      }
       if (router.query.event_id && router.query.event_id !== 'undefined') {
         // check code in url is valid or not
         if (router.query.code || router.query.affiliate) {
@@ -79,9 +82,7 @@ const Checkout = () => {
       clearCart()
     }
 
-    if (localStorage.getItem('orderId')) {
-      releaseLock()
-    }
+
     // hack react-scroll初加载拿不到offset的问题
     scroll.scrollTo(1, {
       containerId: 'checkout-scroll-body'
