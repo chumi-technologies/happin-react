@@ -29,13 +29,14 @@ const PaymentHead = ({
             <div className="md:truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
           </div>
           <div className="text-sm text-gray-300 py-3">Please check out within <span className="font-medium text-white">
+            
           {/*<Countdown date={Date.now() + 420000} renderer={renderer} />*/}
           <Countdown
             controlled = {true}
             onComplete = {countdownCompleted}
             date = {timer}
           />
-          </span>.</div>
+          </span>. <h3>Do not refresh or close this page as your reserved items will be lost</h3></div>
         </div>
       </div>
     </div>
