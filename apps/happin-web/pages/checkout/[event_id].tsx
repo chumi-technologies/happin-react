@@ -152,8 +152,7 @@ const Checkout = () => {
   const getEventTicketsAndSetState = async (eventId: string) => {
     try {
       const res = await getGATickets(eventId);
-      let hasLiveTicket = false;
-      let hasInPersonTicket = false;
+
       const ticketList: TicketItemDataProps[] = res.tickets.map((t: any, index: number) => {
         let features: TicketItemFeaturesProps[] = [];
         switch (t.ticketType) {
@@ -178,25 +177,6 @@ const Checkout = () => {
           default:
             break;
         }
-
-         // skip for 1. box office mode, online tickets 
-        // and 2. not box office mode, at door tickets
-        if (boxOfficeMode) {
-          if (displayForBoxOfficeMode(t.availability) && t.visibility!==ETicketVisibility.INVISIBLE) {
-            if([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
-              hasInPersonTicket = true;
-            } else  if([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
-              hasLiveTicket = true;
-            }
-          };
-        } else if (displayForRegularMode(t.availability) && t.visibility!==ETicketVisibility.INVISIBLE) {
-          if([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
-            hasInPersonTicket = true;
-          } else  if([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
-            hasLiveTicket = true;
-          }
-        };
-
 
         if (t.isBundle) {
           features.push(ETicketFeature.MERCHBUNDLE);
@@ -223,14 +203,6 @@ const Checkout = () => {
         }
         return ticket
       })
-
-      if (hasInPersonTicket) {
-        // prioritize live stream ticket first (if any live stream ticket exists)
-        if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
-      } else {
-        setShowingTab('Livestream-Tickets')
-      }
-
 
       dispatchTicketListAction({ type: TicketAndMerchListActionKind.Init, initValue: ticketList })
       const gerneralTicketInfo: GeneralTicketInfo = {
@@ -404,6 +376,39 @@ const Checkout = () => {
       setSortedHeader(sortedHead)
     }
   }, [ticketListState])
+
+
+  useEffect(() => {
+    if (ticketListState.length) {
+      let hasLiveTicket = false;
+      let hasInPersonTicket = false;
+      ticketListState.forEach(t => {
+        // skip for 1. box office mode, online tickets 
+        // and 2. not box office mode, at door tickets
+        if (boxOfficeMode) {
+          if (displayForBoxOfficeMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE) {
+            if ([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
+              hasInPersonTicket = true;
+            } else if ([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
+              hasLiveTicket = true;
+            }
+          };
+        } else if (displayForRegularMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE) {
+          if ([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
+            hasInPersonTicket = true;
+          } else if ([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
+            hasLiveTicket = true;
+          }
+        };
+      })
+      if (hasInPersonTicket) {
+        // prioritize live stream ticket first (if any live stream ticket exists)
+        if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
+      } else {
+        setShowingTab('Livestream-Tickets')
+      }
+    }
+  }, [boxOfficeMode, ticketListState])
 
 
 
