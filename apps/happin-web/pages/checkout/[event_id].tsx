@@ -434,43 +434,53 @@ const Checkout = () => {
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">
-              <div className="flex">
-                {!onlyShowMerch && (
-                  sortedHeader.map(id => {
-                    return (
-                      <div
-                        onClick={() => { setShowingTab(id) }}
-                        className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                        key={id}
-                      /* activeClass="active"
-                      containerId="checkout-scroll-body"
-                      
-                      to={id}
-                      name="myScrollToElement"
-                      spy={true}
-                      smooth={true}
-                      offset={windowWidth > 640 ? -56 : -44}
-                      duration={500} */
-                      >
-                        {id.replace(/-/g, ' ')}
-                      </div>
-                    )
-                  })
-                )}
-                {(merchListState.length && hasRegularMerch()) ?
-                  <div
-                    onClick={() => { setShowingTab('merch') }}
-                    className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                  /* activeClass="active"
-                  containerId="checkout-scroll-body"
-                  to="merch"
-                  spy={true}
-                  smooth={true}
-                  offset={windowWidth > 640 ? -56 : -44}
-                  duration={500} */
-                  >
-                    Add on
-                  </div> : <></>}
+              <div className="flex" style={{justifyContent: 'space-between'}}>
+                <div className="flex">
+                  {!onlyShowMerch && (
+                    sortedHeader.map(id => {
+                      return (
+                        <div
+                          onClick={() => { setShowingTab(id) }}
+                          className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                          key={id}
+                        /* activeClass="active"
+                        containerId="checkout-scroll-body"
+                        
+                        to={id}
+                        name="myScrollToElement"
+                        spy={true}
+                        smooth={true}
+                        offset={windowWidth > 640 ? -56 : -44}
+                        duration={500} */
+                        >
+                          {id.replace(/-/g, ' ')}
+                        </div>
+                      )
+                    })
+                  )}
+                  {(merchListState.length && hasRegularMerch()) ?
+                    <div
+                      onClick={() => { setShowingTab('merch') }}
+                      className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                    /* activeClass="active"
+                    containerId="checkout-scroll-body"
+                    to="merch"
+                    spy={true}
+                    smooth={true}
+                    offset={windowWidth > 640 ? -56 : -44}
+                    duration={500} */
+                    >
+                      Add on
+                    </div> : <></>}
+                </div>
+
+                <div className="flex">
+                  {boxOfficeMode &&
+                    <div className="truncate text-sm text-yellow-500" style={{display:'flex', alignItems: 'center', width: '100px'}}>
+                        BOX OFFICE
+                    </div>}
+                </div>
+
               </div>
             </div>
           </div>
