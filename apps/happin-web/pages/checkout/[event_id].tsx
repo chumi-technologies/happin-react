@@ -57,9 +57,6 @@ const Checkout = () => {
 
   useEffect(() => {
     (async () => {
-      if (localStorage.getItem('orderId')) {
-        await releaseLock()
-      }
       if (router.query.event_id && router.query.event_id !== 'undefined') {
         // check code in url is valid or not
         if (router.query.code || router.query.affiliate) {
@@ -72,15 +69,21 @@ const Checkout = () => {
           // two code appear at same time is not possible
           await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
         }
+
+        if (localStorage.getItem('orderId')) {
+          await releaseLock()
+        }
+        // only clear cart when the order is failed to created due to not enough quantity, redirected from payment page
+        if (router.query.clearcart && router.query.clearcart !== 'undefined') {
+          clearCart()
+        }         
         Promise.all([getEventDetailAndSetState(router.query.event_id as string),
         getEventTicketsAndSetState(router.query.event_id as string),
         getEventMerchAndSetState(router.query.event_id as string)])
       }
     })()
 
-    if (router.query.clearcart && router.query.clearcart !== 'undefined') {
-      clearCart()
-    }
+
 
 
     // hack react-scroll初加载拿不到offset的问题
@@ -391,15 +394,15 @@ const Checkout = () => {
                         onClick={() => { setShowingTab(id) }}
                         className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
                         key={id}
-                        /* activeClass="active"
-                        containerId="checkout-scroll-body"
-                        
-                        to={id}
-                        name="myScrollToElement"
-                        spy={true}
-                        smooth={true}
-                        offset={windowWidth > 640 ? -56 : -44}
-                        duration={500} */
+                      /* activeClass="active"
+                      containerId="checkout-scroll-body"
+                      
+                      to={id}
+                      name="myScrollToElement"
+                      spy={true}
+                      smooth={true}
+                      offset={windowWidth > 640 ? -56 : -44}
+                      duration={500} */
                       >
                         {id.replace(/-/g, ' ')}
                       </div>
@@ -410,13 +413,13 @@ const Checkout = () => {
                   <div
                     onClick={() => { setShowingTab('merch') }}
                     className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                    /* activeClass="active"
-                    containerId="checkout-scroll-body"
-                    to="merch"
-                    spy={true}
-                    smooth={true}
-                    offset={windowWidth > 640 ? -56 : -44}
-                    duration={500} */
+                  /* activeClass="active"
+                  containerId="checkout-scroll-body"
+                  to="merch"
+                  spy={true}
+                  smooth={true}
+                  offset={windowWidth > 640 ? -56 : -44}
+                  duration={500} */
                   >
                     Add on
                   </div> : <></>}
@@ -447,11 +450,13 @@ const Checkout = () => {
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
                 {(eventDataForCheckout && eventDataForCheckout.tags?.includes('Private')) && (
-                    <div className="sm:text-lg" style={{position: 'absolute', left: '50%', top:'50%', transform: 'translate(-50%, 0)',
-                     fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
-                      <h1>Event not yet published</h1>
-                      <h1>Please come back later</h1>
-                    </div>
+                  <div className="sm:text-lg" style={{
+                    position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, 0)',
+                    fontWeight: 600, textAlign: 'center', margin: '20px 0'
+                  }}>
+                    <h1>Event not yet published</h1>
+                    <h1>Please come back later</h1>
+                  </div>
                 )}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
@@ -497,7 +502,7 @@ const Checkout = () => {
                       </div>
                     </>}
                     {/* merch items start */}
-                    {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) &&  (<div id="merch" className="py-5 sm:py-8 text-white">
+                    {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) && (<div id="merch" className="py-5 sm:py-8 text-white">
                       <div className="mb-3 font-semibold text-lg">Add On</div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
