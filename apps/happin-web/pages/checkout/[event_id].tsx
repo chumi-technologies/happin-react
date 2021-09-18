@@ -144,14 +144,6 @@ const Checkout = () => {
         let features: TicketItemFeaturesProps[] = [];
         const firstTicket = index === 0
         switch (t.ticketType) {
-          case ETicketType.INPERSON:
-            features = [ETicketFeature.TICKET];
-            firstTicket ? setShowingTab('In-Person-Tickets') : null;
-            break;
-          case ETicketType.FREEINPERSON:
-            features = [ETicketFeature.TICKET];
-            firstTicket ? setShowingTab('In-Person-Tickets') : null;
-            break;
           case ETicketType.LIVESTREAM:
             features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK];
             firstTicket ? setShowingTab('Livestream-Tickets') : null;
@@ -166,6 +158,14 @@ const Checkout = () => {
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK];
             firstTicket ? setShowingTab('Livestream-Tickets') : null;
+            break;
+          case ETicketType.INPERSON:
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
+            break;
+          case ETicketType.FREEINPERSON:
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
             break;
           default:
             break;
