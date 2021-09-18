@@ -1,27 +1,27 @@
-import { RemoveItemHandlerParam } from "contexts/checkout-state";
+import { MerchListAction, RemoveItemHandlerParam, TicketAndMerchListActionKind, TicketListAction } from "contexts/checkout-state";
 import { Cart, MerchItemDataProps, TicketItemDataProps } from "lib/model/checkout";
-import { ActionKind, MerchListAction, TicketListAction } from "pages/checkout/[event_id]";
 
 
 /**
  * Utility function to handle the remove ticket logic
  * @param data TicketItemDataProps
  * @param cart Cart
- * @param editingIndex the index of the editing item in Cart
- * @param onChange function to modify the ticket list quantity (passed from checkout index filr)
+ * @param ticketEditingId the id of the editing ticket in Cart
+ * @param onChange function to modify the ticket list quantity (passed from the checkout context)
  * @param removeItem function to remove item from the cart (passed from the checkout context)
  */
 export function decreaseTicketAmount(data: TicketItemDataProps, cart: Cart,
-  ticketEditingIndex: number, onChange: (arg1: TicketListAction) => void, removeItem: (arg1: RemoveItemHandlerParam) => void) {
+  ticketEditingId: string, onChange: (arg1: TicketListAction) => void, removeItem: (arg1: RemoveItemHandlerParam) => void) {
   if (cart.items.ticketItem.length) {
     // the remaining amount is equal to the min per order, decrease to zero
-    if (cart.items.ticketItem[ticketEditingIndex] && cart.items.ticketItem[ticketEditingIndex].quantity === data.minPerOrder) {
-      onChange({ type: ActionKind.Increase, payload: data, quantity: data.minPerOrder })
+    const index = cart.items.ticketItem.findIndex(t=>t.ticketId === ticketEditingId)
+    if (cart.items.ticketItem[index] && cart.items.ticketItem[index].quantity === data.minPerOrder) {
+      onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: data.minPerOrder })
       removeItem({item: data, quantity:data.minPerOrder});
       return
     }
 
-    onChange({ type: ActionKind.Increase, payload: data, quantity: 1 })
+    onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1 })
     removeItem({item: data, quantity: 1});
   }
 }
@@ -33,9 +33,9 @@ export function decreaseMerchAmount(
   removeItem: (arg1: RemoveItemHandlerParam) => void,
   propertyName: string,
 ) {
-  const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
-  onChange({ type: ActionKind.Increase, payload: data, quantity: 1, property: propertyName })
-  removeItem({item: data, quantity: 1, property: data.property[propertyIndex].pName})
+  //const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
+  onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1, property: propertyName })
+  removeItem({item: data, quantity: 1, property: propertyName})
 }
 
 
@@ -44,8 +44,8 @@ export function decreaseMerchAmount(
  * @param ticket TicketItemDataProps
  * @param cart Cart
  * @param bundleMerchs MerchItemDataProps[]
- * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout index file)
- * @param onChangeTicketList function to modify the ticket list quantity (passed from the checkout index file)
+ * @param onChangeMerchList function to modify the merch list quantity (passed from the checkout context)
+ * @param onChangeTicketList function to modify the ticket list quantity passed from the checkout context)
  * @param quantity number to add
  * @param removeItem function to remove item to the cart (passed from the checkout context)
  * @param properties array of selected properties name
@@ -61,9 +61,9 @@ export function decreaseMerchAmount(
   properties: string[],
   identifier?: string,
 ) {
-  onChangeTicketList({ type: ActionKind.Increase, payload: ticket, quantity });
+  onChangeTicketList({ type: TicketAndMerchListActionKind.Increase, payload: ticket, quantity });
   bundleMerchs.forEach((m, index) => {
-    onChangeMerchList({ type: ActionKind.Increase, payload: m, quantity, property: properties[index] });
+    onChangeMerchList({ type: TicketAndMerchListActionKind.Increase, payload: m, quantity, property: properties[index] });
   })
   removeItem({item: ticket, quantity, bundleIdentifier: identifier});
 }

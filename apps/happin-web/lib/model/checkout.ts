@@ -2,17 +2,20 @@ export enum ETicketType {
   INPERSON = 'paid',
   FREEINPERSON = 'free',
   LIVESTREAM = 'live',
-  PFM = 'pfm',
+  PFM = 'PFM',
   PLAYBACK = 'playback'
 }
 
 export type EventBasicData = {
+  id: string;
   startTime: Date;
   endTime: Date;
   tags: string[];
   title: string;
   default_currency: string;
   cover: string;
+  paymentMethod: string[];
+  paypalEmail?: string;
 }
 
 export type GeneralTicketInfo = {
@@ -61,10 +64,10 @@ export type TicketItemFeaturesProps = {
 };
 
 export const ETicketFeature = {
-  TICKET : {type: 'ticket', tooltip: 'Ticket includes'} ,
-  PLAYBACK : {type: 'video', tooltip: 'Playback ticket includes'},
-  MERCHBUNDLE : { type:'bag', tooltip: 'Merch bundle includes'},
-  VIP : {type:'vip', tooltip: 'VIP ticket includes'}
+  TICKET : {type: 'ticket', tooltip: 'Ticket included'} ,
+  PLAYBACK : {type: 'video', tooltip: 'Playback ticket included'},
+  MERCHBUNDLE : { type:'bag', tooltip: 'Merch bundle included'},
+  VIP : {type:'vip', tooltip: 'VIP ticket included'}
 }
 
 
@@ -78,6 +81,7 @@ export type MerchItemDataProps = {
   kind: 'merch',
   max: number, // max per order
   mail: boolean, // can be shipped
+  shippingCountry: string[],
   forApp: boolean // filter out for app gifts
   show: boolean // deleted or not
   tickets : string[] //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
@@ -124,5 +128,17 @@ export interface CartMerchItem {
   price: number;
   name: string;
   image: string[];
+  shipping: boolean;
+  shippingCountry: string[];
 }
 
+export interface OrderItem {
+  cart:{
+    ticketItem: CartTicketItem[],
+    merchItem: CartMerchItem[],
+    bundleItem: CartBundleItem[],
+  };
+  discountCode: string;
+  activityId: string;
+  shippingCountry:string;
+}

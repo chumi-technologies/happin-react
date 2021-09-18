@@ -4,101 +4,21 @@ import CheckoutHead from '../../components/page_components/CheckoutPageComponent
 import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BundleSidebar';
 import { ETicketAvailability, ETicketFeature, ETicketType, ETicketVisibility, EventBasicData, GeneralTicketInfo, MerchItemDataProps, MerchProperty, TicketItemDataProps, TicketItemFeaturesProps } from '../../lib/model/checkout';
 import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
-import { Link, animateScroll as scroll } from 'react-scroll';
+// import { Link, animateScroll as scroll } from 'react-scroll';
 import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
-import { useCheckoutState } from 'contexts/checkout-state';
-import { getEventDetailForCheckout, getEventMerchs, getGATickets } from 'lib/api';
+import { TicketAndMerchListActionKind, useCheckoutState } from 'contexts/checkout-state';
+import { getEventDetailForCheckout, getEventMerchs, getGATickets, validateCode } from 'lib/api';
 import MerchSidebar from '@components/page_components/CheckoutPageComponents/MerchSideBar';
-
-
-export enum ActionKind {
-  Increase = 'INCREASE',
-  Decrease = 'DECREASE',
-  Init = 'INIT'
-}
-
-export type TicketListAction = {
-  type: ActionKind,
-  payload?: TicketItemDataProps,
-  initValue?: TicketItemDataProps[],
-  quantity?: number;
-}
-
-export type MerchListAction = {
-  type: ActionKind,
-  payload?: MerchItemDataProps,
-  initValue?: MerchItemDataProps[],
-  quantity?: number;
-  property?: string;
-}
-
-const ticketListReducer = (state: TicketItemDataProps[], action: TicketListAction) => {
-  let finalTicketList = state
-  if (action.type === ActionKind.Increase) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const targetSection = state[targetIndex].sectionId;
-      state.forEach(t => {
-        if (t.sectionId === targetSection) {
-          t.quantity += (action.quantity || 0);
-        }
-      })
-      finalTicketList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Decrease) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const targetSection = state[targetIndex].sectionId;
-      state.forEach(t => {
-        if (t.sectionId === targetSection) {
-          t.quantity -= (action.quantity || 0);
-        }
-      })
-      finalTicketList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Init) {
-    return [...action.initValue as TicketItemDataProps[]]
-  }
-  return finalTicketList
-}
-
-const merchListReducer = (state: MerchItemDataProps[], action: MerchListAction) => {
-  let finalMerchList = state;
-  //const propertyIndex =  action.propertyIndex as number
-  if (action.type === ActionKind.Increase) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
-      if (propertyIndex >= 0) {
-        state[targetIndex].property[propertyIndex].pValue += (action.quantity || 0)
-      }
-      finalMerchList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Decrease) {
-    const targetIndex = state.findIndex(t => t.id === action.payload?.id);
-    if (targetIndex !== -1) {
-      const propertyIndex = state[targetIndex].property.findIndex(p=>p.pName === action.property)
-      // if merch has property alter the quantity inside this property
-      if (propertyIndex >= 0) {
-        state[targetIndex].property[propertyIndex].pValue -= (action.quantity || 0)
-      }
-      finalMerchList = [...state];
-    }
-  }
-  if (action.type === ActionKind.Init) {
-    return [...action.initValue as MerchItemDataProps[]]
-  }
-  return finalMerchList
-}
+import { releaseLock } from './payment';
+import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
+import { useToast } from '@chakra-ui/react';
 
 const Checkout = () => {
   const router = useRouter();
   const windowWidth = useResize();
+  const toast = useToast();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [bundleSidebarOpen, setBundleSidebarOpen] = useState(false);
@@ -107,57 +27,109 @@ const Checkout = () => {
   const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps[]>();
   const [selectedBundleTicket, setSelectedBundleTicket] = useState<TicketItemDataProps>();
 
-  // ticket list & merch list, payment page dont need these, hence not store in context
-  const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
-  const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
-
   const [saleStart, setSaleStart] = useState<boolean>();
   const [inPresale, setInPresale] = useState<boolean>();
 
-  const { setEventDataForCheckout, eventDataForCheckout, boxOfficeMode, setGeneralTicketInfo, generalTicketInfo } = useCheckoutState();
+  const [showingTab, setShowingTab] = useState<string>('');
+
+
+  // indicate presale code from url param is valid
+  const [presaleCodeUsed, setPresaleCodeUsed] = useState<boolean>(false);
+
+  const { setEventDataForCheckout,
+    eventDataForCheckout,
+    boxOfficeMode,
+    setGeneralTicketInfo,
+    generalTicketInfo,
+    setAffiliate,
+    setCodeUsed, merchListState,
+    dispatcMerchListAction,
+    ticketListState,
+    dispatchTicketListAction,
+    onlyShowMerch,
+    clearCart
+  } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
 
+  //const [ticketTypeHeaderArray, setTicketTypeHeaderArray] = useState<JSX.Element[]>()
+  const [sortedHeader, setSortedHeader] = useState<string[]>([]);
+
   useEffect(() => {
-    if (router?.query?.event_id) {
-      Promise.all([getEventDetailAndSetState(router.query.event_id as string),
-      getEventTicketsAndSetState(router.query.event_id as string),
-      getEventMerchAndSetState(router.query.event_id as string)])
-    }
-    // check code in url is valid or not
-    if (router?.query?.presale_code) {
+    (async () => {
+      if (router.query.event_id && router.query.event_id !== 'undefined') {
+        // check code in url is valid or not
+        if (router.query.code || router.query.affiliate) {
+          // affilate code could be 100% discount code, hence need to check
+          // if the affilate code is valid disocunt code, then store in the context if valid (codeUsed)
+          if (router.query.affiliate) {
+            // store affiliate code into context regardless, server will check validity on final step
+            setAffiliate(router.query.affiliate as string)
+          }
+          // two code appear at same time is not possible
+          await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
+        }
 
-    }
+        if (localStorage.getItem('orderId')) {
+          await releaseLock()
+        }
+        // only clear cart when the order is failed to created due to not enough quantity, redirected from payment page
+        if (router.query.clearcart && router.query.clearcart !== 'undefined') {
+          clearCart()
+        }         
+        Promise.all([getEventDetailAndSetState(router.query.event_id as string),
+        getEventTicketsAndSetState(router.query.event_id as string),
+        getEventMerchAndSetState(router.query.event_id as string)])
+      }
+    })()
 
-    if (router?.query?.code) {
 
-    }
+
+
     // hack react-scroll初加载拿不到offset的问题
-    scroll.scrollTo(1, {
+   /*  scroll.scrollTo(1, {
       containerId: 'checkout-scroll-body'
-    });
+    }); */
   }, [router.query])
 
   useEffect(() => {
-    // checkSaleStarted(1630793982000)
     if (generalTicketInfo?.saleStartTime) {
       checkSaleStarted(generalTicketInfo.saleStartTime);
     }
     if (generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) {
       checkPresaleStarted(generalTicketInfo.presaleStart, generalTicketInfo.presaleEnd);
     }
-  }, [generalTicketInfo])
+  }, [generalTicketInfo, presaleCodeUsed])
+
+  const validateUrlCodeAndSetState = async (eventId: string, code: string) => {
+    try {
+      const res = await validateCode(eventId, code)
+      if (res.valid) {
+        if (res.type === 'discount') {
+          setCodeUsed(res.code)
+        } else if (res.type === 'presale') {
+          setPresaleCodeUsed(true);
+          generateToast('You have entered the presale code', toast);
+        }
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const getEventDetailAndSetState = async (eventId: string) => {
     try {
       const res = await getEventDetailForCheckout(eventId);
       const eventDetail: EventBasicData = {
+        id: res._id,
         tags: res.tags,
         title: res.title,
         startTime: res.startTime,
         endTime: res.endTime,
         default_currency: res.default_currency,
         cover: res.cover,
+        paymentMethod: res.paymentMethod,
+        paypalEmail: res.paypalEmail,
       }
       setEventDataForCheckout(eventDetail)
     } catch (err) {
@@ -168,26 +140,32 @@ const Checkout = () => {
   const getEventTicketsAndSetState = async (eventId: string) => {
     try {
       const res = await getGATickets(eventId);
-      const ticketList: TicketItemDataProps[] = res.tickets.map((t: any) => {
+      const ticketList: TicketItemDataProps[] = res.tickets.map((t: any, index: number) => {
         let features: TicketItemFeaturesProps[] = [];
+        const firstTicket = index === 0
         switch (t.ticketType) {
-          case 'paid':
-            features = [ETicketFeature.TICKET]
+          case ETicketType.INPERSON:
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
             break;
-          case 'free':
-            features = [ETicketFeature.TICKET]
+          case ETicketType.FREEINPERSON:
+            features = [ETicketFeature.TICKET];
+            firstTicket ? setShowingTab('In-Person-Tickets') : null;
             break;
-          case 'live':
-            features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK]
+          case ETicketType.LIVESTREAM:
+            features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
-          case 'pfm':
+          case ETicketType.PFM:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK,
-            ETicketFeature.VIP]
+            ETicketFeature.VIP];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
-          case 'playback':
+          case ETicketType.PLAYBACK:
             features = [ETicketFeature.TICKET,
-            ETicketFeature.PLAYBACK]
+            ETicketFeature.PLAYBACK];
+            firstTicket ? setShowingTab('Livestream-Tickets') : null;
             break;
           default:
             break;
@@ -218,7 +196,7 @@ const Checkout = () => {
         }
         return ticket
       })
-      dispatchTicketListAction({ type: ActionKind.Init, initValue: ticketList })
+      dispatchTicketListAction({ type: TicketAndMerchListActionKind.Init, initValue: ticketList })
       const gerneralTicketInfo: GeneralTicketInfo = {
         absorbFee: res.generalInfo.absorbFee,
         saleStartTime: res.generalInfo.onSaleCounter,
@@ -251,6 +229,7 @@ const Checkout = () => {
             max: m.max,
             forApp: m.forApp,
             description: m.description,
+            shippingCountry: m.shippingCost.map((shipping: any) => shipping.destination),
             price: m.price,
             kind: 'merch',
             mail: m.mail,
@@ -260,16 +239,8 @@ const Checkout = () => {
           }
           return merch
         })
-        // fake dup 
-        /* const newmerch = {
-          ...merchList[0],
-          id: '123456789',
-          name: 'Sample 2',
-          property: [{ pName: 'sm', pValue: 5, originalPValue: 5 }, { pName: 'md', pValue: 10, originalPValue: 10 }]
-        }
-        merchList = [newmerch, merchList[0]]; */
       }
-      dispatcMerchListAction({ type: ActionKind.Init, initValue: merchList })
+      dispatcMerchListAction({ type: TicketAndMerchListActionKind.Init, initValue: merchList })
     } catch (err) {
       console.log(err);
     }
@@ -301,13 +272,12 @@ const Checkout = () => {
   const checkPresaleStarted = (start: number, end: number) => {
     if (moment(new Date()).isBetween(moment(start), moment(end))) {
       setInPresale(true)
+      if (presaleCodeUsed) {
+        setSaleStart(true);
+      }
     } else {
       setInPresale(false)
     }
-  }
-
-  const onPresaleCodeValidate = () => {
-    setSaleStart(true)
   }
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
@@ -328,7 +298,6 @@ const Checkout = () => {
         key={item.id}
         data={item}
         onSelect={onTicketBundleSelect}
-        onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         absorbFee={generalTicketInfo?.absorbFee || false}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
@@ -343,7 +312,6 @@ const Checkout = () => {
         key={item.id}
         data={item}
         onSelect={onTicketBundleSelect}
-        onChange={dispatchTicketListAction}
         currency={eventDataForCheckout?.default_currency || ''}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
         absorbFee={generalTicketInfo?.absorbFee || false}
@@ -355,55 +323,46 @@ const Checkout = () => {
     return <Fragment key={item.id}></Fragment>
   }
 
+  useEffect(() => {
+    if (ticketListState.length) {
+      ticketListState.forEach(t => {
+        switch (t.ticketType) {
+          case ETicketType.LIVESTREAM:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          case ETicketType.PFM:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          case ETicketType.INPERSON:
+            // not generate the tab for in person when the event is past
+            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+              return;
+            }
+            ticketTypeHeaderId.add('In-Person-Tickets');
+            break;
+          case ETicketType.FREEINPERSON:
+            // not generate the tab for in person when the event is past
+            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+              return;
+            }
+            ticketTypeHeaderId.add('In-Person-Tickets');
+            break;
+          case ETicketType.PLAYBACK:
+            ticketTypeHeaderId.add('Livestream-Tickets');
+            break;
+          default:
+            break;
+        }
+      })
+      const sortedHead = Array.from(ticketTypeHeaderId).sort((a: string, b: string) => {
+        if (a > b) return -1
+        else return 1
+      })
+      setSortedHeader(sortedHead)
+    }
+  }, [ticketListState])
 
-  if (ticketListState.length) {
-    ticketListState.forEach(t => {
-      switch (t.ticketType) {
-        case ETicketType.LIVESTREAM:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        case ETicketType.PFM:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        case ETicketType.INPERSON:
-          // not generate the tab for in person when the event is past
-          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-            return;
-          }
-          ticketTypeHeaderId.add('In-Person-Tickets');
-          break;
-        case ETicketType.FREEINPERSON:
-          // not generate the tab for in person when the event is past
-          if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
-            return;
-          }
-          ticketTypeHeaderId.add('In-Person-Tickets');
-          break;
-        case ETicketType.PLAYBACK:
-          ticketTypeHeaderId.add('Livestream-Tickets');
-          break;
-        default:
-          break;
-      }
-    })
-  }
 
-  const ticketTypeHeaderArray = Array.from(ticketTypeHeaderId).map(id => (
-    <Link
-      className="checkout__head-tab"
-      activeClass="active"
-      containerId="checkout-scroll-body"
-      to={id}
-      name="myScrollToElement"
-      spy={true}
-      smooth={true}
-      key={id}
-      offset={windowWidth > 640 ? -56 : -44}
-      duration={500}
-    >
-      {id.replace(/-/g, ' ')}
-    </Link>
-  ))
 
   const hasRegularMerch = () => {
     let hasRegularMerch = false
@@ -423,89 +382,128 @@ const Checkout = () => {
         <CheckoutHead
           saleStart={saleStart}
           inPresale={inPresale}
-          ticketList={ticketListState}
-          merchList={merchListState}
-          onChangeTicketList={dispatchTicketListAction}
-          onChangeMerchList={dispatcMerchListAction}
-          onPresaleCodeValidate={onPresaleCodeValidate} />
+          onPresaleCodeValidate={setSaleStart} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
             <div className="container">
               <div className="flex">
-                {ticketTypeHeaderArray}
+                {!onlyShowMerch && (
+                  sortedHeader.map(id => {
+                    return (
+                      <div
+                        onClick={() => { setShowingTab(id) }}
+                        className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                        key={id}
+                      /* activeClass="active"
+                      containerId="checkout-scroll-body"
+                      
+                      to={id}
+                      name="myScrollToElement"
+                      spy={true}
+                      smooth={true}
+                      offset={windowWidth > 640 ? -56 : -44}
+                      duration={500} */
+                      >
+                        {id.replace(/-/g, ' ')}
+                      </div>
+                    )
+                  })
+                )}
                 {(merchListState.length && hasRegularMerch()) ?
-                  <Link
-                    className="checkout__head-tab"
-                    activeClass="active"
-                    containerId="checkout-scroll-body"
-                    to="merch"
-                    spy={true}
-                    smooth={true}
-                    offset={windowWidth > 640 ? -56 : -44}
-                    duration={500}
+                  <div
+                    onClick={() => { setShowingTab('merch') }}
+                    className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
+                  /* activeClass="active"
+                  containerId="checkout-scroll-body"
+                  to="merch"
+                  spy={true}
+                  smooth={true}
+                  offset={windowWidth > 640 ? -56 : -44}
+                  duration={500} */
                   >
-                    Merch
-                  </Link> : <></>}
+                    Add on
+                  </div> : <></>}
               </div>
             </div>
           </div>
           <div className="container">
             <div className="checkout__container">
+              {saleStart === false &&
+                <div className="rounded-lg bg-yellow-500 px-4 py-3 md:px-5 md:py-3 text-gray-900 text-sm mt-5 sm:mt-8">
+                  <div className="table">
+                    {(generalTicketInfo?.presaleStart && generalTicketInfo?.presaleEnd) &&
+                      <div className="table-row">
+                        <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Pre Sale:</div>
+                        <div className="table-cell py-0.5 font-semibold">{moment(generalTicketInfo?.presaleStart).format('MMMM Do, h:mma')} - {moment(generalTicketInfo?.presaleEnd).format('MMMM Do, h:mma')}</div>
+                      </div>
+                    }
+                    {saleStart === false &&
+                      <div className="table-row">
+                        <div className="table-cell py-0.5 pr-3 whitespace-nowrap">Public Sale:</div>
+                        <div className="table-cell py-0.5 font-semibold">{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</div>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
+                {(eventDataForCheckout && eventDataForCheckout.tags?.includes('Private')) && (
+                  <div className="sm:text-lg" style={{
+                    position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, 0)',
+                    fontWeight: 600, textAlign: 'center', margin: '20px 0'
+                  }}>
+                    <h1>Event not yet published</h1>
+                    <h1>Please come back later</h1>
+                  </div>
+                )}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
-                    {/* display public sale start time when sale not start */}
-                    {saleStart === false &&
-                      (
-                        <div className="sm:text-lg" style={{ fontWeight: 600, textAlign: 'center', margin: '20px 0' }}>
-                          <h1>Public sale start on</h1>
-                          <h1>{moment(generalTicketInfo?.saleStartTime).format('MMMM Do, h:mma')}</h1>
-                        </div>
-                      )}
-                    <div id="Livestream-Tickets" className="divide-y divide-gray-700">
-                      {
-                        ticketListState.map((item) => {
-                          if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
-                            || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE) {
+                    {!onlyShowMerch && <>
+                      <div id="Livestream-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'Livestream-Tickets' ? 'block' : 'none' }}>
+                        {
+                          ticketListState.map((item) => {
+                            if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
+                              || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE) {
 
-                            let disabledFlag = false;
-                            if (!saleStart) {
-                              disabledFlag = true
-                            }
-                            return renderTicketBaseOnAvailability(item, disabledFlag);
-                          } else return <Fragment key={item.id}></Fragment>
-                        })
-                      }
-                    </div>
-                    <div id="In-Person-Tickets" className="divide-y divide-gray-700">
-                      {
-                        ticketListState.map((item) => {
-                          if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
-                            && item.visibility !== ETicketVisibility.INVISIBLE) {
+                              let disabledFlag = false;
+                              if (!saleStart) {
+                                disabledFlag = true
+                              }
+                              return renderTicketBaseOnAvailability(item, disabledFlag);
+                            } else return <Fragment key={item.id}></Fragment>
+                          })
+                        }
+                      </div>
+                      <div id="In-Person-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'In-Person-Tickets' ? 'block' : 'none' }}>
+                        {
+                          ticketListState.map((item) => {
+                            if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
+                              && item.visibility !== ETicketVisibility.INVISIBLE) {
 
-                            // for inperson ticket, if event has started, disable all the in person tickets,
-                            // by passing the disabled into ticketItem
-                            let disabledFlag = false;
-                            if (eventDataForCheckout && moment(eventDataForCheckout?.startTime).isBefore(moment(new Date()))) {
-                              disabledFlag = true;
-                            }
-                            if (!saleStart) {
-                              disabledFlag = true
-                            }
-                            // if event has ended do not show the in person tickets at all
-                            if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
-                              return <Fragment key={item.id}></Fragment>
-                            }
-                            return renderTicketBaseOnAvailability(item, disabledFlag);
-                          } else return <Fragment key={item.id}></Fragment>
-                        })
-                      }
-                    </div>
-
+                              // for inperson ticket, if event has started, disable all the in person tickets,
+                              // by passing the disabled into ticketItem
+                              let disabledFlag = false;
+                              if (eventDataForCheckout && moment(eventDataForCheckout?.startTime).isBefore(moment(new Date()))) {
+                                disabledFlag = true;
+                              }
+                              if (!saleStart) {
+                                disabledFlag = true
+                              }
+                              // if event has ended do not show the in person tickets at all
+                              if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
+                                return <Fragment key={item.id}></Fragment>
+                              }
+                              return renderTicketBaseOnAvailability(item, disabledFlag);
+                            } else return <Fragment key={item.id}></Fragment>
+                          })
+                        }
+                      </div>
+                    </>}
                     {/* merch items start */}
-                    {(merchListState.length > 0 && hasRegularMerch()) && (<div id="merch" className="py-5 sm:py-8 text-white">
-                      <div className="mb-3 font-semibold text-lg">Adds On</div>
+                    {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) && (<div id="merch" className="py-5 sm:py-8 text-white">
+                      <div className="mb-3 font-semibold text-lg">Add On</div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
                           merchListState.map((item) => {
@@ -543,13 +541,10 @@ const Checkout = () => {
             ticket={selectedBundleTicket as TicketItemDataProps}
             isOpen={bundleSidebarOpen}
             setIsOpen={setBundleSidebarOpen}
-            onChangeMerchList={dispatcMerchListAction}
-            onChangeTicketList={dispatchTicketListAction}
             merchs={selectedBundleMerch as MerchItemDataProps[]}
             onClose={() => { setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined) }}
           />
           <MerchSidebar
-            onChange={dispatcMerchListAction}
             merch={selectedRegularMerch as MerchItemDataProps}
             isOpen={sidebarOpen}
             setIsOpen={setSidebarOpen}

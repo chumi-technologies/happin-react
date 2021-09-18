@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import { MerchItemDataProps, TicketItemDataProps } from 'lib/model/checkout';
 import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
-import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
 
@@ -18,28 +17,26 @@ type CheckoutSidebarProps = {
   onClose: () => void;
   merchs: MerchItemDataProps[],
   ticket: TicketItemDataProps,
-  setIsOpen: (arg: any)=>void,
-  onChangeTicketList: (data: TicketListAction)=> void;
-  onChangeMerchList: (data: MerchListAction)=> void;
+  setIsOpen: (arg: any) => void,
 }
 
 const BundleSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, setIsOpen, onClose, merchs, ticket, onChangeTicketList, onChangeMerchList} = props;
-  const { eventDataForCheckout, generalTicketInfo, addItem } = useCheckoutState();
+  const { isOpen, setIsOpen, onClose, merchs, ticket } = props;
+  const { eventDataForCheckout, addItem, dispatcMerchListAction, dispatchTicketListAction } = useCheckoutState();
   const [inputValue, setInputValue] = useState(0)
 
   // array of the selected merchs property name inside this bundle 
   // (eg. ['small', 'medium'] means 'small' is the selected property 
   // for first mech with property name 'small' and so on
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
-  
-  useEffect(()=> {
+
+  useEffect(() => {
     if (merchs) {
-      if (!selectedProperties.length){
+      if (!selectedProperties.length) {
         const init: string[] = Array(merchs.length);
-        merchs.forEach((m,index)=> {
+        merchs.forEach((m, index) => {
           // the init array should be the 0 property index of every merch
-          init[index] =  m.property[0].pName
+          init[index] = m.property[0].pName
         })
         setSelectedProperties(init)
       }
@@ -50,38 +47,41 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     setInputValue(0)
     setSelectedProperties(s => {
       const newSelectedProperties = [...s];
-      newSelectedProperties[outerIndex] =  data.label
+      newSelectedProperties[outerIndex] = data.label
       return newSelectedProperties
     })
   }
 
-/*   const getMaxAllowNumber = ()=> {
-    let maxAllowNumber = 0;
-    //let propertyMin = 0;
-   // let maxPerOrder = 0;
-    if (merchs && merchs.length && selectedProperties && selectedProperties.length) {
-      // from the merch list, get the selected properties , then optain the min pValue among them
-      //const selectedProperty = merchs.map((m, index)=> m.property.find(p=>p.pName === selectedProperties[index]));
-      //const values = selectedProperty.map(p=>{return p?.pValue || 0});
-      //propertyMin = Math.min(...values);
-      
-      // get merch list max per order list, then obtain the min value among them
-      // const maxPerOrderList = merchs.map(m=>m.max);
-      // maxPerOrder = Math.min(...maxPerOrderList);
+  /*   const getMaxAllowNumber = ()=> {
+      let maxAllowNumber = 0;
+      //let propertyMin = 0;
+     // let maxPerOrder = 0;
+      if (merchs && merchs.length && selectedProperties && selectedProperties.length) {
+        // from the merch list, get the selected properties , then optain the min pValue among them
+        //const selectedProperty = merchs.map((m, index)=> m.property.find(p=>p.pName === selectedProperties[index]));
+        //const values = selectedProperty.map(p=>{return p?.pValue || 0});
+        //propertyMin = Math.min(...values);
+        
+        // get merch list max per order list, then obtain the min value among them
+        // const maxPerOrderList = merchs.map(m=>m.max);
+        // maxPerOrder = Math.min(...maxPerOrderList);
+  
+        // finally compare propertyMin & ticket.quantity, reassign maxAllowNumber
+        // maxAllowNumber = Math.min(propertyMin, ticket.quantity);
+  
+      }
+      maxAllowNumber = ticket.quantity;
+      return maxAllowNumber
+    } */
 
-      // finally compare propertyMin & ticket.quantity, reassign maxAllowNumber
-      // maxAllowNumber = Math.min(propertyMin, ticket.quantity);
-
-    }
-    maxAllowNumber = ticket.quantity;
-    return maxAllowNumber
-  } */
-
+  // the input number is not read from Cart , so the max number can use quantity,
+  // quantity or cart will not change when the number input changed, it will only changed when the 
+  // add to cart button is clicked
   const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
-    if (data?.originalQuantity > data?.maxPerOrder) {
+    if (data?.quantity > data?.maxPerOrder) {
       return data?.maxPerOrder
     } else {
-      return data?.originalQuantity;
+      return data?.quantity;
     }
   }
 
@@ -95,25 +95,29 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseBundleTicketAmount(ticket, merchs, onChangeTicketList, onChangeMerchList, inputValue, addItem, selectedProperties);
-    setIsOpen((s:boolean)=>!s);
+    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatcMerchListAction, inputValue, addItem, selectedProperties);
+    setIsOpen((s: boolean) => !s);
     setInputValue(0)
     setSelectedProperties([]);
   }
 
-  const increaseBundleAmount = ()=> {
-    if (ticket.quantity >= ticket.minPerOrder && inputValue === 0) {
-      setInputValue(ticket.minPerOrder)
-    } else {
-      setInputValue(s=>s+1)
+  const increaseBundleAmount = () => {
+    if (ticket.quantity >= 1) {
+      if (inputValue !== 0) {
+        setInputValue(s => s + 1)
+        return
+      }
+      if (ticket.quantity >= ticket.minPerOrder ) {
+        setInputValue(ticket.minPerOrder)  
+      }
     }
   }
 
-  const decreaseBundleAmount = ()=> {
+  const decreaseBundleAmount = () => {
     if (inputValue === ticket.minPerOrder) {
       setInputValue(0)
     } else {
-      setInputValue(s=>s-1)
+      setInputValue(s => s - 1)
     }
   }
 
@@ -126,15 +130,16 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             <div className="w-full pr-7">
               <div className="leading-none mb-2 font-semibold text-white">{ticket?.title}</div>
               <div className="font-medium text-xs text-gray-400">
-              {generalTicketInfo && (
-              generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
-               : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)}
+              <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
+               {/*  {generalTicketInfo && (
+                  generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
+                    : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)} */}
               </div>
               <div className="text-gray-400 text-xs">{ticket?.notes}</div>
             </div>
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-              onClick={()=>{onClose(); setInputValue(0); setSelectedProperties([])}}>
+              onClick={() => { onClose(); setInputValue(0); setSelectedProperties([]) }}>
               <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
             </div>
           </div>
@@ -161,7 +166,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
                     // isOpen is added here to ensure the select component is reset after close 
                     (item.property && isOpen) && (
                       <Select
-                        data={item.property.map((p, j)=> {
+                        data={item.property.map((p, j) => {
                           return {
                             value: p.pValue,
                             label: p.pName,
@@ -170,7 +175,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
                           }
                         })}
                         onChange={(data) => {
-                          alterSelectedProperties(i,data)
+                          alterSelectedProperties(i, data)
                         }}
                       />
                     )
@@ -182,19 +187,19 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         </div>
       </div>
       <div className="flex items-center px-5 sm:px-6 py-4 border-t border-solid border-gray-700">
-        <NumberInput min={0} max={getMaxTicketNumberInputQty(ticket)}  value = {inputValue}
-         onDecreaseClick = {()=>decreaseBundleAmount()}
-         onIncreaseClick = {()=>increaseBundleAmount()}
+        <NumberInput min={0} max={getMaxTicketNumberInputQty(ticket)} value={inputValue}
+          onDecreaseClick={() => decreaseBundleAmount()}
+          onIncreaseClick={() => increaseBundleAmount()}
         />
         <div className="flex-1 ml-4 sm:ml-6">
-          {checkSoldOut() ?  <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
+          {checkSoldOut() ? <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" disabled className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">SOLD OUT</span>
-          </button>: <button onClick={addBundleButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
+          </button> : <button onClick={addBundleButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>
           </button>}
-         
+
         </div>
       </div>
     </div>

@@ -1,7 +1,4 @@
-import { useToast } from "@chakra-ui/react"
-
-export const generateToast = (message: string) => {
-  const toast = useToast()
+export const generateToast = (message: string, toast: any) => {
   toast({
     title: message,
     position: 'top',

@@ -4,7 +4,8 @@ export interface User {
     uid: string;
     points: number;
     desc: string;
-    rootUserID: string; // need to remove later
+    _id: string // happinUID
+    //rootUserID: string; // need to remove later
     email: string;
     phonenumber: string;
     areaCode: string;
