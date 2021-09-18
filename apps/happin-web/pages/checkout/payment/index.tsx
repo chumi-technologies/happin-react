@@ -1179,7 +1179,7 @@ const Payment = () => {
                           </>
                         )}
 
-                      </>) :
+                      </>) : (priceBreakDown && priceBreakDown.total === 0) ?
                       (
                         <>
                           <div className="mt-5 text-center">
@@ -1194,7 +1194,7 @@ const Payment = () => {
                             <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
                           </div>
                         </>
-                      )
+                      ): <></>
                     }
                   </div>
                 </div>
