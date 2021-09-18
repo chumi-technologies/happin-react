@@ -12,7 +12,6 @@ import { Delete } from '@icon-park/react';
 import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack, useEditable } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
-import moment from 'moment';
 import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { CartTicketItem, TicketItemDataProps, MerchItemDataProps, CartBundleItem, CartMerchItem, OrderItem } from '../../../lib/model/checkout';
 import { useRouter } from 'next/router';
@@ -467,7 +466,7 @@ const Payment = () => {
 
   useEffect(() => {
     // last item in cart deleted, go back to first page
-    if (!cart.items.bundleItem.length && !cart.items.merchItem.length && !cart.items.ticketItem.length) {
+    if (!cart.items.bundleItem.length && !cart.items.merchItem.length && !cart.items.ticketItem.length && eventDataForCheckout) {
       router.push(`/checkout/${eventDataForCheckout?.id}`);
       return
     }

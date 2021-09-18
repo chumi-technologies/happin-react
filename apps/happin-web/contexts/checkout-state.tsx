@@ -66,6 +66,8 @@ interface CheckoutContext {
   ticketListState: TicketItemDataProps[],
   onlyShowMerch: boolean | undefined,
   openInApp: boolean | undefined,
+  tokenPassedIn: boolean | undefined,
+  setTokenPassedIn: (arg: boolean) => void,
   setOpenInApp: (arg: boolean) => void,
   setOnlyShowMerch: (arg: boolean) => void,
   dispatcMerchListAction: (arg: MerchListAction)=> void,
@@ -376,6 +378,8 @@ export function CheckoutState({ children }: { children: any }) {
   const [generalTicketInfo, setGeneralTicketInfo] = useState<GeneralTicketInfo>();
   const [boxOfficeMode, setBoxOfficeMode] = useState<boolean>(false);
 
+  const [tokenPassedIn, setTokenPassedIn] = useState<boolean>();
+
 
   const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
   const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
@@ -406,6 +410,8 @@ export function CheckoutState({ children }: { children: any }) {
     ticketListState: ticketListState,
     onlyShowMerch: onlyShowMerch,
     openInApp: openInApp,
+    tokenPassedIn: tokenPassedIn,
+    setTokenPassedIn: setTokenPassedIn,
     setOpenInApp: setOpenInApp,
     setOnlyShowMerch: setOnlyShowMerch,
     dispatcMerchListAction: dispatcMerchListAction,

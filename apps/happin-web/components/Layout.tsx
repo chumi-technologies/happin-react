@@ -13,7 +13,7 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
   const [showHeader, setShowHeader] = useState(false);
 
-  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp} = useCheckoutState();
+  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
@@ -23,6 +23,7 @@ const Layout = ({ children }: { children: any }) => {
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
+      setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
     if (router?.query?.fromapp) {

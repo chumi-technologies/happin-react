@@ -30,7 +30,7 @@ const CheckoutHead = ({
   onPresaleCodeValidate: (arg: boolean) => void,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
   const { user, exchangeForCrowdCoreToken } = useUserState()
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
@@ -82,9 +82,16 @@ const CheckoutHead = ({
         }
       }
 
+      // 如果之已经在这里登陆过 再通过happin web angular redirect到这里，
+      // 并且有一个 crowdcore token 传进来， 这时候tokenPassedIn 会是true,
+      // 应该用传进来的 crowdcore token, 而不是用这里登陆者的fb token去换 crowdcore token,
+      // 否则可能造成的情况是 传进来的是另一个人的crowdcore token， 这里登陆的是另一个人，
+      // 应该以传进来的那个crowdcore token作为 购票者 当happin web angular 不再充当活动页面时候可以删除tokenPassedIn该逻辑）
       if (user) {
-        // exchange token & store the crowdcore server token in local stoarge
-        await exchangeForCrowdCoreToken();
+        if (!tokenPassedIn) {
+          // exchange token & store the crowdcore server token in local stoarge
+          await exchangeForCrowdCoreToken();
+        }
       }
 
       await router.push('/checkout/payment');
