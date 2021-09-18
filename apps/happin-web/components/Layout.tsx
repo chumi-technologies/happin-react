@@ -6,8 +6,12 @@ import { useRouter } from "next/router";
 import { useCheckoutState } from "contexts/checkout-state";
 
 const Layout = ({ children }: { children: any }) => {
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
+  // TODO  IMPORTANT BECAUSE HAPPIN WEB ANGULAR IS STILL OUR EVENT DETAIL
+  // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO 
+  // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
+  // ANGULAR IS DEPREICATED.
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
+  const [showHeader, setShowHeader] = useState(false);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp} = useCheckoutState();
 
@@ -19,10 +23,8 @@ const Layout = ({ children }: { children: any }) => {
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
       setShowHeader(false);
-      if (typeof window !== undefined) {
-        if (!localStorage.getItem('chumi_jwt')) {
-          localStorage.setItem('chumi_jwt', router?.query?.token as string);
-        }
+      if (!localStorage.getItem('chumi_jwt')) {
+        localStorage.setItem('chumi_jwt', router?.query?.token as string);
       }
     }
     if (router?.query?.fromapp) {
