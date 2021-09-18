@@ -140,32 +140,33 @@ const Checkout = () => {
   const getEventTicketsAndSetState = async (eventId: string) => {
     try {
       const res = await getGATickets(eventId);
+      let hasLiveTicket = false;
+      let hasInPersonTicket = false;
       const ticketList: TicketItemDataProps[] = res.tickets.map((t: any, index: number) => {
         let features: TicketItemFeaturesProps[] = [];
-        const firstTicket = index === 0
         switch (t.ticketType) {
           case ETicketType.LIVESTREAM:
             features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK];
-            firstTicket ? setShowingTab('Livestream-Tickets') : null;
+            hasLiveTicket = true;
             break;
           case ETicketType.PFM:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK,
             ETicketFeature.VIP];
-            firstTicket ? setShowingTab('Livestream-Tickets') : null;
+            hasLiveTicket = true;
             break;
           case ETicketType.PLAYBACK:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK];
-            firstTicket ? setShowingTab('Livestream-Tickets') : null;
+            hasLiveTicket = true;
             break;
           case ETicketType.INPERSON:
             features = [ETicketFeature.TICKET];
-            firstTicket ? setShowingTab('In-Person-Tickets') : null;
+            hasInPersonTicket = true;
             break;
           case ETicketType.FREEINPERSON:
             features = [ETicketFeature.TICKET];
-            firstTicket ? setShowingTab('In-Person-Tickets') : null;
+            hasInPersonTicket = true;
             break;
           default:
             break;
@@ -196,6 +197,15 @@ const Checkout = () => {
         }
         return ticket
       })
+
+      if (hasInPersonTicket) {
+        // prioritize live stream ticket first (if any live stream ticket exists)
+        if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
+      } else {
+        setShowingTab('Livestream-Tickets') 
+      }
+
+
       dispatchTicketListAction({ type: TicketAndMerchListActionKind.Init, initValue: ticketList })
       const gerneralTicketInfo: GeneralTicketInfo = {
         absorbFee: res.generalInfo.absorbFee,
@@ -325,9 +335,25 @@ const Checkout = () => {
 
   useEffect(() => {
     if (ticketListState.length) {
-      ticketListState.forEach(t => {
+      const displayForBoxOfficeMode = (ticketAvailable: string) => {
+        if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {
+          return true
+        } else return false
+      }
+      const displayForRegularMode = (ticketAvailable: string) => {
+        if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.ONLINE)) {
+          return true
+        } else return false
+      }
+      ticketListState.filter(t => t.visibility !== ETicketVisibility.INVISIBLE).forEach(t => {
+        // skip adding header for 1. box office mode, online tickets 
+        // and 2. not box office mode, at door tickets
+        if (boxOfficeMode) {
+          if(!displayForBoxOfficeMode(t.availability)) return;
+        } else if(!displayForRegularMode(t.availability)) return;
+
         switch (t.ticketType) {
-          case ETicketType.LIVESTREAM:
+          case ETicketType.LIVESTREAM: 
             ticketTypeHeaderId.add('Livestream-Tickets');
             break;
           case ETicketType.PFM:
