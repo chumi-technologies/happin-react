@@ -15,6 +15,17 @@ import { releaseLock } from './payment';
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { useToast } from '@chakra-ui/react';
 
+const displayForBoxOfficeMode = (ticketAvailable: string) => {
+  if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {
+    return true
+  } else return false
+}
+const displayForRegularMode = (ticketAvailable: string) => {
+  if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.ONLINE)) {
+    return true
+  } else return false
+}
+
 const Checkout = () => {
   const router = useRouter();
   const windowWidth = useResize();
@@ -148,30 +159,44 @@ const Checkout = () => {
         switch (t.ticketType) {
           case ETicketType.LIVESTREAM:
             features = [ETicketFeature.TICKET, ETicketFeature.PLAYBACK];
-            hasLiveTicket = true;
             break;
           case ETicketType.PFM:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK,
             ETicketFeature.VIP];
-            hasLiveTicket = true;
             break;
           case ETicketType.PLAYBACK:
             features = [ETicketFeature.TICKET,
             ETicketFeature.PLAYBACK];
-            hasLiveTicket = true;
             break;
           case ETicketType.INPERSON:
             features = [ETicketFeature.TICKET];
-            hasInPersonTicket = true;
             break;
           case ETicketType.FREEINPERSON:
             features = [ETicketFeature.TICKET];
-            hasInPersonTicket = true;
             break;
           default:
             break;
         }
+
+         // skip for 1. box office mode, online tickets 
+        // and 2. not box office mode, at door tickets
+        if (boxOfficeMode) {
+          if (displayForBoxOfficeMode(t.availability) && t.visibility!==ETicketVisibility.INVISIBLE) {
+            if([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
+              hasInPersonTicket = true;
+            } else  if([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
+              hasLiveTicket = true;
+            }
+          };
+        } else if (displayForRegularMode(t.availability) && t.visibility!==ETicketVisibility.INVISIBLE) {
+          if([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
+            hasInPersonTicket = true;
+          } else  if([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
+            hasLiveTicket = true;
+          }
+        };
+
 
         if (t.isBundle) {
           features.push(ETicketFeature.MERCHBUNDLE);
@@ -337,16 +362,6 @@ const Checkout = () => {
 
   useEffect(() => {
     if (ticketListState.length) {
-      const displayForBoxOfficeMode = (ticketAvailable: string) => {
-        if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {
-          return true
-        } else return false
-      }
-      const displayForRegularMode = (ticketAvailable: string) => {
-        if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.ONLINE)) {
-          return true
-        } else return false
-      }
       ticketListState.filter(t => t.visibility !== ETicketVisibility.INVISIBLE).forEach(t => {
         // skip adding header for 1. box office mode, online tickets 
         // and 2. not box office mode, at door tickets
