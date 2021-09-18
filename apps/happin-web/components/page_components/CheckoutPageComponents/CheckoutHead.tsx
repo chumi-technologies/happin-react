@@ -74,7 +74,7 @@ const CheckoutHead = ({
         return
       } else if (!user && localStorage.getItem('chumi_jwt')) {
         let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
-        if (new Date().getTime() < decoded.exp) {
+        if (new Date().getTime() > (decoded.exp * 1000)) {
           generateToast('To continue, please log in or sign up ', toast);
           showSSOSignUp()
           setButtonLoading(false)
