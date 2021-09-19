@@ -393,7 +393,7 @@ const Payment = () => {
     }
     catch (err) {
       console.log(err)
-      generateToast('Unknow error, please contact us', toast);
+      generateToast('Unknown error, please contact us', toast);
       router.push(`/checkout/${eventDataForCheckout?.id}`);
     }
   }
@@ -405,7 +405,7 @@ const Payment = () => {
     }
     catch (err) {
       // if server failed to calculate the price, return to first page
-      generateToast('Unknow error, please contact us', toast);
+      generateToast('Unknown error, please contact us', toast);
       router.push(`/checkout/${eventDataForCheckout?.id}`);
       console.log(err)
     }
@@ -520,6 +520,8 @@ const Payment = () => {
         }
       } else {
         generateToast('Thank you, your order is placed', toast);
+        localStorage.removeItem('orderId')
+        localStorage.removeItem('activityId');
         if (openInApp) {
           postCloseMessageForApp()
         } else {
@@ -566,6 +568,8 @@ const Payment = () => {
         if (orderStatus.status === EOrderStatus.PAID) {
           setIsProcessing(false)
           generateToast('Thank you, your order is placed', toast);
+          localStorage.removeItem('orderId');
+          localStorage.removeItem('activityId');
           if (openInApp) {
             postCloseMessageForApp()
           } else {
