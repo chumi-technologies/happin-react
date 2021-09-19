@@ -553,6 +553,11 @@ const Payment = () => {
       case 'expired_card':
         generateToast('Your card has expired.', toast)
         break;
+      case 'card_declined':
+        generateToast('Your card was declined.', toast)
+        break;
+      case 'processing_error':
+        generateToast('An error occured while processing your card. Please try again later', toast)
       default:
         generateToast('Unknown error, please contact us', toast)
         break
