@@ -97,7 +97,8 @@ const Payment = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState,
+    formState: { errors, isValid, isSubmitting },
     //setValue,
     //reset,
     control,
@@ -127,7 +128,7 @@ const Payment = () => {
   const [clientSecret, setClientSecret] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
-    const shippings = merchListState.filter(m => m.tickets.length > 0).map(m => m.shippingCountry);
+    const shippings = merchListState.map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
@@ -143,10 +144,10 @@ const Payment = () => {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
       if (res.valid && res.type === 'discount') {
-        generateToast('Promo code applied', toast);
+        generateToast(`${promoteCode} discount applied`, toast);
         setCodeUsed(promoteCode as string);
       } else {
-        generateToast('Invalid code', toast)
+        generateToast(`it's not a valid discount code`, toast)
         return;
       }
     } catch (err) {
@@ -196,7 +197,6 @@ const Payment = () => {
     });
   }
 
-
   const createPayPalOrder = (_: any, actions: any) => {
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
@@ -207,7 +207,6 @@ const Payment = () => {
     if (!isValid) {
       return;
     }
-
     if (!localStorage.getItem('orderId')) {
       generateToast('Order lost', toast);
       return
@@ -320,8 +319,6 @@ const Payment = () => {
         });
     }
   }
-
-
 
   const onCountDownCompleted = async () => {
     const orderId = localStorage.getItem('orderId');
@@ -474,6 +471,13 @@ const Payment = () => {
 
   }, [cart, codeUsed]);
 
+  useEffect(() => {
+  if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
+    generateToast(`Please enter all required information for shipping address`, toast);
+  } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)){
+    generateToast(`Please enter all required information`, toast);
+  }
+  }, [formState]);
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
     try {
@@ -599,7 +603,6 @@ const Payment = () => {
     }
     window.parent.postMessage(passJson, '*');
   }
-
 
   const generateShippingFormTemplate = () => {
     return (
