@@ -42,6 +42,10 @@ const CheckoutHead = ({
 
   const router = useRouter()
   const toast = useToast()
+  let innerWidth: number = 0;
+  if (typeof window !== undefined) {
+    innerWidth = window.innerWidth; 
+  }
 
   const cartButton = useRef<any>(null);
   useEffect(() => {
@@ -465,13 +469,12 @@ const CheckoutHead = ({
               </>
             )}
           </Popover>
-          {cartButton.current && (
+          {(cartButton.current && (innerWidth >= 768))  && (
             <Pop
               isOpen={cartPopoverMsg.show}
               parentElement={cartButton?.current as HTMLElement}
-              positions={['bottom', 'top']}
               containerStyle={{ zIndex: '1000' }}
-              contentLocation={()=>{
+              contentLocation={() => {
                 //console.log((cartButton?.current as HTMLElement).clientWidth)
                 return { top: 55, left: -65 }
               }}
