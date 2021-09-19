@@ -324,16 +324,17 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        await releaseLockCheckoutTickets(orderId);
         router.push(`/checkout/${eventDataForCheckout?.id}`);
       }
       catch (err) {
         console.log(err)
       }
-      finally {
+      // rediect to first page will release the lock and clear localstorage,
+      // no need to do it here
+     /*  finally {
         localStorage.removeItem('orderId');
         localStorage.removeItem('activityId');
-      }
+      } */
     }
   }
 
@@ -513,7 +514,7 @@ const Payment = () => {
             receipt_email: data.email
           })
           if (response.error) {
-            throw new Error(response.error.code);
+            throw response.error;
           }
           console.log('stripe confirmed payment, wait for crowdcore server confirm', response)
           await checkStripePaymentSuccess(crowdcoreOrderId)
@@ -531,14 +532,17 @@ const Payment = () => {
         }
       }
     } catch (err) {
-      console.log(err.message)
-      handlePaymentError(err.message);
+      if (err.type  === 'card_error') {
+        generateToast(err.message, toast)
+      } else {
+        generateToast('Unknown error, please contact us', toast)
+      }
     } finally {
       setIsProcessing(false);
     }
   }
 
-  const handlePaymentError = (errCode: string) => {
+/*   const handlePaymentError = (errCode: string) => {
     console.log('payment error: ', errCode)
     switch (errCode) {
       case 'incorrect_cvc':
@@ -562,7 +566,7 @@ const Payment = () => {
         generateToast('Unknown error, please contact us', toast)
         break
     }
-  }
+  } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
