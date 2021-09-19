@@ -12,6 +12,9 @@ const PaymentHead = ({
   ) => {
   const { eventDataForCheckout } = useCheckoutState();
   const [ timer,setTimer ] = useState<number>(420000);
+  const renderer = ({ minutes, seconds }:any) => {
+    return <span>{minutes}:{seconds}</span>;
+  };
   // const [timer, setTimer] = useState<number>(111420000);
   useEffect(() => {
     const interval = setInterval(() => {
@@ -35,6 +38,7 @@ const PaymentHead = ({
             controlled = {true}
             onComplete = {countdownCompleted}
             date = {timer}
+            renderer={renderer}
           />
           </span>. <h3>Do not refresh or close this page as your reserved items will be lost</h3></div>
         </div>
