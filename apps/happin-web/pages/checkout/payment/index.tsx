@@ -1131,7 +1131,7 @@ const Payment = () => {
                           </div>
                           {priceBreakDown?.discount ? <div className="flex justify-between py-1">
                             <div className="text-gray-300">Discount</div>
-                            <div>- {currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
+                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
                           </div> : <></>
                           }
                         </div>
