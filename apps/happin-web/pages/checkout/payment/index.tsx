@@ -1243,7 +1243,7 @@ const Payment = () => {
               leaveTo="dialog-leave-to"
             >
               <div className="relative inline-block w-full max-w-sm p-5 sm:p-6 my-8 overflow-hidden text-left align-middle bg-gray-800 rounded-2xl z-10">
-                <div className="relative flex items-center justify-center mb-6">
+                <div className="relative flex items-center justify-center">
                   <Dialog.Title
                     as="h3"
                     className="text-lg sm:text-xl font-bold leading-6 text-white"

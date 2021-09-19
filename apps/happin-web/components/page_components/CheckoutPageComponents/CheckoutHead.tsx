@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall, Delete } from '@icon-park/react';
@@ -18,16 +18,19 @@ import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import jwt_decode from "jwt-decode";
+import { Popover as Pop, ArrowContainer } from 'react-tiny-popover'
 
 
 const CheckoutHead = ({
   saleStart,
   inPresale,
   onPresaleCodeValidate,
+  cartPopoverMsg,
 }: {
   saleStart: any,
   inPresale: any,
   onPresaleCodeValidate: (arg: boolean) => void,
+  cartPopoverMsg: any,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
@@ -40,7 +43,8 @@ const CheckoutHead = ({
   const router = useRouter()
   const toast = useToast()
 
-  useEffect(()=> {
+  const cartButton = useRef<any>(null);
+  useEffect(() => {
     setButtonLoading(false)
   }, [])
 
@@ -179,9 +183,9 @@ const CheckoutHead = ({
   }
 
   const cartItemCount = () => {
-    const bundleItems = cart.items.bundleItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
-    const ticketItems = cart.items.ticketItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
-    const merchItems = cart.items.merchItem.reduce((acc, cur)=> acc=acc+cur.quantity, 0)
+    const bundleItems = cart.items.bundleItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
+    const ticketItems = cart.items.ticketItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
+    const merchItems = cart.items.merchItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
 
     return bundleItems + ticketItems + merchItems
   }
@@ -403,6 +407,7 @@ const CheckoutHead = ({
               <>
                 <Popover.Button
                   as="div"
+                  ref={cartButton}
                   className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
                 >
                   <SvgIcon id="buy" className="text-xl" />
@@ -460,6 +465,38 @@ const CheckoutHead = ({
               </>
             )}
           </Popover>
+          {cartButton.current && (
+            <Pop
+              isOpen={cartPopoverMsg.show}
+              parentElement={cartButton?.current as HTMLElement}
+              positions={['bottom', 'top']}
+              containerStyle={{ zIndex: '1000' }}
+              contentLocation={()=>{
+                //console.log((cartButton?.current as HTMLElement).clientWidth)
+                return { top: 55, left: -65 }
+              }}
+              content={({ childRect, popoverRect }) => (
+                <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+                  position={'bottom'}
+                  childRect={childRect}
+                  popoverRect={popoverRect}
+                  arrowColor={'#65bd6c'}
+                  arrowSize={5}
+                  arrowStyle={{ opacity: 1, left: '50%', transform: 'translate(-50%, 0)' }}
+                >
+                  <div
+                    className="text-sm"
+                    style={{ backgroundColor: '#65bd6c', opacity: 1, borderRadius: '10px', padding: '10px' }}
+                  >
+                    Item added successfully
+                  </div>
+                </ArrowContainer>
+              )}
+            >
+              <div style={{ display: 'none' }}></div>
+            </Pop>
+          )}
+
           {/* show presale only when in presale duration and sale not start */}
           {(saleStart === false && inPresale) && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>}
           {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" disabled={buttonLoading} onClick={() => { nextButtonHandler() }} >{buttonLoading ? 'Processing...' : 'Next Step'}</button>}
