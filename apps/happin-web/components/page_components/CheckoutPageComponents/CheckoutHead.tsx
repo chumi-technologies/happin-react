@@ -43,7 +43,7 @@ const CheckoutHead = ({
   const router = useRouter()
   const toast = useToast()
   let innerWidth: number = 0;
-  if (typeof window !== undefined) {
+  if (typeof window !== 'undefined') {
     innerWidth = window.innerWidth; 
   }
 

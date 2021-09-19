@@ -22,7 +22,7 @@ export function UserState({ children }: {children: any}) {
   }, [])
 
   const setUserInfo = async ()=> {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       try {
         const response = await getUserInfo();
         const user = response.data;
@@ -35,7 +35,7 @@ export function UserState({ children }: {children: any}) {
   }
 
   const exchangeForCrowdCoreToken = async ()=> {
-    if (typeof window !== undefined) {
+    if (typeof window !== 'undefined') {
       try {
           const response = await exchangeCrowdcoreToken();
           const token = response?.data?.token;
