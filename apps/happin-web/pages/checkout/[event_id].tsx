@@ -253,6 +253,7 @@ const Checkout = () => {
             kind: 'merch',
             mail: m.mail,
             show: m.show,
+            isDonation: m.isDonation,
             property,
             tickets: bindTickets[0] || []
           }

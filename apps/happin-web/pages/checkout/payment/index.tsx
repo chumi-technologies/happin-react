@@ -133,7 +133,7 @@ const Payment = (props: any) => {
   const [clientSecret, setClientSecret] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
-    const shippings = merchListState.map(m => m.shippingCountry);
+    const shippings = merchListState.filter(m => !m.isDonation).map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
@@ -149,7 +149,11 @@ const Payment = (props: any) => {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
       if (res.valid && res.type === 'discount') {
-        generateToast(`${promoteCode} discount applied`, toast);
+        if (res.discountMethod === 'percentage') {
+          generateToast(`${res.discount}% discount applied`, toast);
+        } else {
+          generateToast(`${currencyFormatter(String(eventDataForCheckout?.default_currency)).format(res.discount)} discount applied`, toast);
+        }
         setCodeUsed(promoteCode as string);
       } else {
         generateToast(`it's not a valid discount code`, toast)
@@ -1133,10 +1137,17 @@ const Payment = (props: any) => {
                             <div className="text-gray-300">Service Fee</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
                           </div>
-                          <div className="flex justify-between py-1">
-                            <div className="text-gray-300">Extra Charge</div>
-                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.extraCharge || 0) / 100)}</div>
-                          </div>
+                          {
+                            priceBreakDown?.extraChargeDetails?.map((detail: { title: string, amount: number; }) => {
+                              return (
+                                <div className="flex justify-between py-1" key={detail.title}>
+                                  <div className="text-gray-300">{detail.title}</div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((detail.amount || 0) / 100)}</div>
+                                </div>
+                              );
+                            }
+                            )
+                          }
                           {showShipping && <div className="flex justify-between py-1">
                             <div className="text-gray-300">Shipping</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.shippingCost || 0) / 100)}</div>
