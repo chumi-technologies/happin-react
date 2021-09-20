@@ -60,6 +60,10 @@ const customStyles = {
     background: state.isSelected ? '#fff' : state.isFocused ? '#000' : '#1a1a1a',
     padding: 20,
   }),
+  menuList:(provided: any, state: any) => ({
+    ...provided,
+    padding:0,
+  }),
   control: (provided: any, state: any) => ({
     // none of react-select's styles are passed to <Control />
     ...provided,
