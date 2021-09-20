@@ -59,7 +59,8 @@ const Checkout = () => {
     ticketListState,
     dispatchTicketListAction,
     onlyShowMerch,
-    clearCart
+    clearCart,
+    codeUsed
   } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
@@ -67,8 +68,13 @@ const Checkout = () => {
   //const [ticketTypeHeaderArray, setTicketTypeHeaderArray] = useState<JSX.Element[]>()
   const [sortedHeader, setSortedHeader] = useState<string[]>([]);
 
+  useEffect(()=>{
+    if (codeUsed) {
+      setCodeUsed('')
+    }
+  },[])
+
   useEffect(() => {
-    setCodeUsed('');
     (async () => {
       if (router.query.event_id && router.query.event_id !== 'undefined') {
 
