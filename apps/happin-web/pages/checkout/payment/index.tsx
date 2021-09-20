@@ -155,7 +155,7 @@ const PaymentInner = (props: any) => {
           generateToast(`No eligible product for discount`, toast);
         } else {
           generateToast(`Discount applied successfully`, toast);
-          setCodeUsed(promoteCode as string);
+          setCodeUsed(promoteCode.trim());
         }
       } else {
         generateToast(`Not a valid code`, toast)
