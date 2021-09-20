@@ -14,11 +14,12 @@ type CheckoutSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
   merch: MerchItemDataProps,
-  setIsOpen: (arg: any)=>void
+  setIsOpen: (arg: any)=>void,
+  setCartPopoverMsg: (arg: any)=> void
 }
 
 const MerchSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, onClose, merch, setIsOpen } = props;
+  const { isOpen, onClose, merch, setIsOpen, setCartPopoverMsg } = props;
   const { addItem, dispatcMerchListAction } = useCheckoutState();
   //const [merchEditingIndex, setMerchEditingIndex] = useState(0);
 
@@ -33,7 +34,8 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     increaseMerchAmount(merch, dispatcMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
-    setSelectedPropertyIndex(0)
+    setSelectedPropertyIndex(0);
+    setCartPopoverMsg({show: true})
   }
 
    // the input number is not read from Cart , so the max input can be quantity,

@@ -324,16 +324,20 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        await releaseLockCheckoutTickets(orderId);
-        router.push(`/checkout/${eventDataForCheckout?.id}`);
+        router.push({
+          pathname: `/checkout/${eventDataForCheckout?.id}`,
+          query: { clearcart: 'true' }
+        });
       }
       catch (err) {
         console.log(err)
       }
-      finally {
+      // rediect to first page will release the lock and clear localstorage,
+      // no need to do it here
+     /*  finally {
         localStorage.removeItem('orderId');
         localStorage.removeItem('activityId');
-      }
+      } */
     }
   }
 
@@ -393,7 +397,7 @@ const Payment = () => {
     }
     catch (err) {
       console.log(err)
-      generateToast('Unknow error, please contact us', toast);
+      generateToast('Unknown error, please contact us', toast);
       router.push(`/checkout/${eventDataForCheckout?.id}`);
     }
   }
@@ -405,7 +409,7 @@ const Payment = () => {
     }
     catch (err) {
       // if server failed to calculate the price, return to first page
-      generateToast('Unknow error, please contact us', toast);
+      generateToast('Unknown error, please contact us', toast);
       router.push(`/checkout/${eventDataForCheckout?.id}`);
       console.log(err)
     }
@@ -513,13 +517,15 @@ const Payment = () => {
             receipt_email: data.email
           })
           if (response.error) {
-            throw new Error(response.error.code);
+            throw response.error;
           }
           console.log('stripe confirmed payment, wait for crowdcore server confirm', response)
           await checkStripePaymentSuccess(crowdcoreOrderId)
         }
       } else {
         generateToast('Thank you, your order is placed', toast);
+        localStorage.removeItem('orderId')
+        localStorage.removeItem('activityId');
         if (openInApp) {
           postCloseMessageForApp()
         } else {
@@ -529,14 +535,17 @@ const Payment = () => {
         }
       }
     } catch (err) {
-      console.log(err.message)
-      handlePaymentError(err.message);
+      if (err.type  === 'card_error') {
+        generateToast(err.message, toast)
+      } else {
+        generateToast('Unknown error, please contact us', toast)
+      }
     } finally {
       setIsProcessing(false);
     }
   }
 
-  const handlePaymentError = (errCode: string) => {
+/*   const handlePaymentError = (errCode: string) => {
     console.log('payment error: ', errCode)
     switch (errCode) {
       case 'incorrect_cvc':
@@ -551,11 +560,16 @@ const Payment = () => {
       case 'expired_card':
         generateToast('Your card has expired.', toast)
         break;
+      case 'card_declined':
+        generateToast('Your card was declined.', toast)
+        break;
+      case 'processing_error':
+        generateToast('An error occured while processing your card. Please try again later', toast)
       default:
         generateToast('Unknown error, please contact us', toast)
         break
     }
-  }
+  } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
@@ -566,6 +580,8 @@ const Payment = () => {
         if (orderStatus.status === EOrderStatus.PAID) {
           setIsProcessing(false)
           generateToast('Thank you, your order is placed', toast);
+          localStorage.removeItem('orderId');
+          localStorage.removeItem('activityId');
           if (openInApp) {
             postCloseMessageForApp()
           } else {
@@ -1127,7 +1143,7 @@ const Payment = () => {
                           </div>
                           {priceBreakDown?.discount ? <div className="flex justify-between py-1">
                             <div className="text-gray-300">Discount</div>
-                            <div>- {currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
+                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
                           </div> : <></>
                           }
                         </div>
@@ -1243,7 +1259,7 @@ const Payment = () => {
               leaveTo="dialog-leave-to"
             >
               <div className="relative inline-block w-full max-w-sm p-5 sm:p-6 my-8 overflow-hidden text-left align-middle bg-gray-800 rounded-2xl z-10">
-                <div className="relative flex items-center justify-center mb-6">
+                <div className="relative flex items-center justify-center">
                   <Dialog.Title
                     as="h3"
                     className="text-lg sm:text-xl font-bold leading-6 text-white"

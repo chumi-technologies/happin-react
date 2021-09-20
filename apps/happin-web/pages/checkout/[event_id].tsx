@@ -5,7 +5,7 @@ import BundleSidebar from '../../components/page_components/CheckoutPageComponen
 import { ETicketAvailability, ETicketFeature, ETicketType, ETicketVisibility, EventBasicData, GeneralTicketInfo, MerchItemDataProps, MerchProperty, TicketItemDataProps, TicketItemFeaturesProps } from '../../lib/model/checkout';
 import MerchItem from '../../components/page_components/CheckoutPageComponents/MerchItem';
 // import { Link, animateScroll as scroll } from 'react-scroll';
-import { useResize } from 'utils/hooks';
+// import { useResize } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { TicketAndMerchListActionKind, useCheckoutState } from 'contexts/checkout-state';
@@ -28,7 +28,7 @@ const displayForRegularMode = (ticketAvailable: string) => {
 
 const Checkout = () => {
   const router = useRouter();
-  const windowWidth = useResize();
+  // const windowWidth = useResize();
   const toast = useToast();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,6 +43,7 @@ const Checkout = () => {
 
   const [showingTab, setShowingTab] = useState<string>('');
 
+  const [cartPopoverMsg, setCartPopoverMsg] = useState<any>({show: false});
 
   // indicate presale code from url param is valid
   const [presaleCodeUsed, setPresaleCodeUsed] = useState<boolean>(false);
@@ -114,11 +115,20 @@ const Checkout = () => {
     }
   }, [generalTicketInfo, presaleCodeUsed])
 
+  useEffect(()=> {
+    let timerToHideMsg: any;
+    timerToHideMsg = setTimeout(()=> {setCartPopoverMsg({show: false})}, 2000)
+    return ()=>{
+      if(timerToHideMsg) {clearTimeout(timerToHideMsg)};
+    }
+  }, [cartPopoverMsg])
+
   const validateUrlCodeAndSetState = async (eventId: string, code: string) => {
     try {
       const res = await validateCode(eventId, code)
       if (res.valid) {
         if (res.type === 'discount') {
+          generateToast('Discount code applied.',toast)
           setCodeUsed(res.code)
         } else if (res.type === 'presale') {
           setPresaleCodeUsed(true);
@@ -311,6 +321,7 @@ const Checkout = () => {
         absorbFee={generalTicketInfo?.absorbFee || false}
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
         disabled={disabledFlag}
+        setCartPopoverMsg={setCartPopoverMsg}
       />
     } else if (boxOfficeMode) {
       return <Fragment key={item.id}></Fragment>
@@ -325,6 +336,7 @@ const Checkout = () => {
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
         absorbFee={generalTicketInfo?.absorbFee || false}
         disabled={disabledFlag}
+        setCartPopoverMsg={setCartPopoverMsg}
       />
     } else if (!boxOfficeMode) {
       return <Fragment key={item.id}></Fragment>
@@ -430,6 +442,7 @@ const Checkout = () => {
         <CheckoutHead
           saleStart={saleStart}
           inPresale={inPresale}
+          cartPopoverMsg={cartPopoverMsg}
           onPresaleCodeValidate={setSaleStart} />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="sticky top-0 bg-gray-800 shadow-2xl z-10">
@@ -475,7 +488,7 @@ const Checkout = () => {
                 </div>
 
                 <div className="flex">
-                  {boxOfficeMode &&
+                  {(boxOfficeMode && sortedHeader.length > 0) &&
                     <div className="truncate text-sm text-yellow-500" style={{display:'flex', alignItems: 'center', width: '100px'}}>
                         BOX OFFICE
                     </div>}
@@ -600,12 +613,14 @@ const Checkout = () => {
             isOpen={bundleSidebarOpen}
             setIsOpen={setBundleSidebarOpen}
             merchs={selectedBundleMerch as MerchItemDataProps[]}
+            setCartPopoverMsg = {setCartPopoverMsg}
             onClose={() => { setBundleSidebarOpen(false); setSelectedBundleMerch(undefined); setSelectedBundleTicket(undefined) }}
           />
           <MerchSidebar
             merch={selectedRegularMerch as MerchItemDataProps}
             isOpen={sidebarOpen}
             setIsOpen={setSidebarOpen}
+            setCartPopoverMsg = {setCartPopoverMsg}
             onClose={() => { setSidebarOpen(false); setSelectedRegularMerch(undefined) }}
           />
         </div>

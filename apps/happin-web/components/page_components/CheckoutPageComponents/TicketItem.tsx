@@ -17,10 +17,11 @@ export type TicketItemProps = {
   currency: string,
   absorbFee: boolean,
   taxNeeded: number
+  setCartPopoverMsg: (arg: any)=> void
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, currency, absorbFee = false, taxNeeded, disabled = false } = props;
+  const { data, onSelect, currency, absorbFee = false, taxNeeded, disabled = false, setCartPopoverMsg } = props;
   const { cart, addItem, removeItem, dispatchTicketListAction } = useCheckoutState();
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
@@ -60,7 +61,7 @@ const TicketItem = (props: TicketItemProps) => {
               max={getMaxNumberInputQty()}
               value = {cart?.items?.ticketItem[ticketEditingIndex]?.quantity || 0}
               onDecreaseClick = {()=>{decreaseTicketAmount(data, cart, data.id, dispatchTicketListAction, removeItem)}}
-              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, data.id, dispatchTicketListAction, addItem)}}
+              onIncreaseClick = {()=>{increaseTicketAmount(data, cart, data.id, dispatchTicketListAction, addItem); setCartPopoverMsg({show: true})}}
               // disabled if  1. out side the ticket sale time range, 2.the prop disblaed is pass in
               isDisabled={ disabled || ((typeof data.start === 'number' && typeof data.end === 'number' ) && !(moment(new Date()).isBetween(moment(data.start * 1000), moment(data.end * 1000)))) }
             />
