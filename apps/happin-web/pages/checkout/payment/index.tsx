@@ -147,15 +147,17 @@ const Payment = () => {
     try {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
+      const ticketsInCart = [...cart.items.ticketItem.map(i => i.ticketId), ...cart.items.bundleItem.map(i => i.ticketId)];
+      // If not applied to all and no match ticket ids show error
       if (res.valid && res.type === 'discount') {
-        if (res.discountMethod === 'percentage') {
-          generateToast(`${res.discount}% discount applied`, toast);
+        if (!res.appliedToAll && !res.appliedTo.some((id: string) => ticketsInCart.includes(id))) {
+          generateToast(`No eligible product for discount`, toast);
         } else {
-          generateToast(`${currencyFormatter(String(eventDataForCheckout?.default_currency)).format(res.discount)} discount applied`, toast);
+          generateToast(`Discount applied successfully`, toast);
+          setCodeUsed(promoteCode as string);
         }
-        setCodeUsed(promoteCode as string);
       } else {
-        generateToast(`it's not a valid discount code`, toast)
+        generateToast(`Not a valid code`, toast)
         return;
       }
     } catch (err) {
