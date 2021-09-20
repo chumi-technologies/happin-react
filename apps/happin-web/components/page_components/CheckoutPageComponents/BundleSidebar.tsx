@@ -10,6 +10,7 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
+import { useCallback } from 'react';
 
 
 type CheckoutSidebarProps = {
@@ -31,18 +32,29 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
   // for first mech with property name 'small' and so on
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
-  useEffect(() => {
-    if (merchs) {
-      if (!selectedProperties.length) {
-        const init: string[] = Array(merchs.length);
+  const getInitSelectedProperties = useCallback(() => {
+    const init: string[] = Array(merchs.length);
         merchs.forEach((m, index) => {
           // the init array should be the 0 property index of every merch
           init[index] = m.property[0].pName
         })
-        setSelectedProperties(init)
+    return init
+  }, [merchs])
+
+  useEffect(() => {
+    if (merchs) {
+      if (!selectedProperties.length) {
+        setSelectedProperties(getInitSelectedProperties())
       }
     }
   }, [merchs])
+
+  useEffect(()=> {
+    if (isOpen === false && merchs) {
+      setInputValue(0);
+      setSelectedProperties(getInitSelectedProperties())
+    }
+  }, [isOpen, merchs])
 
   const alterSelectedProperties = (outerIndex: number, data: any) => {
     setInputValue(0)
@@ -141,7 +153,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             </div>
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-              onClick={() => { onClose(); setInputValue(0); setSelectedProperties([]) }}>
+              onClick={() => { onClose(); setInputValue(0); setSelectedProperties(getInitSelectedProperties())}}>
               <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
             </div>
           </div>

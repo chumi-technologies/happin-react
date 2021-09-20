@@ -270,6 +270,7 @@ const Checkout = () => {
 
   const onTicketBundleSelect = (value: any) => {
     if (typeof value === 'object') {
+      setBundleSidebarOpen(false)
       // set selected bundle merch
       filterBundleMerchForSelectedTicket(value.id)
       // set selceted bundle ticket
@@ -597,8 +598,9 @@ const Checkout = () => {
                                 data={item}
                                 disabled={disabledFlag}
                                 onSelect={() => {
+                                  setSidebarOpen(false);
                                   setSelectedRegularMerch(item)
-                                  setSidebarOpen(true);
+                                  setTimeout(()=>{ setSidebarOpen(true)}, 250)
                                 }}
                               />
                             )

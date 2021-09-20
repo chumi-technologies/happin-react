@@ -1076,7 +1076,8 @@ const PaymentInner = (props: any) => {
                             defaultValue={codeUsed}
                             disabled={(codeUsed && !promoteCode) ? true : false}
                             onChange={(e) => {
-                              setPromoteCode(e.target.value)
+                              const trimmed = e.target.value.trim()
+                              setPromoteCode(trimmed)
                             }}
                             type="text"
                             className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
