@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall, Delete } from '@icon-park/react';
@@ -9,39 +9,157 @@ import { CartBundleItem, CartMerchItem, CartTicketItem, MerchItemDataProps, Tick
 import { useCheckoutState } from 'contexts/checkout-state';
 import { decreaseBundleTicketAmount, decreaseMerchAmount, decreaseTicketAmount } from './util/decreseInput';
 import { increaseBundleTicketAmount, increaseMerchAmount, increaseTicketAmount } from './util/IncreseInput';
-import { MerchListAction, TicketListAction } from 'pages/checkout/[event_id]';
 import { currencyFormatter } from './util/currencyFormat';
 import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
+import { useToast } from '@chakra-ui/react';
+import { validateCode } from 'lib/api';
+import { useRouter } from 'next/router';
+import { useUserState } from 'contexts/user-state';
+import { useSSOState } from 'contexts/sso-state';
+import jwt_decode from "jwt-decode";
+import { Popover as Pop, ArrowContainer } from 'react-tiny-popover'
+
 
 const CheckoutHead = ({
   saleStart,
   inPresale,
-  ticketList,
-  merchList,
   onPresaleCodeValidate,
-  onChangeTicketList,
-  onChangeMerchList,
+  cartPopoverMsg,
 }: {
   saleStart: any,
   inPresale: any,
-  ticketList: TicketItemDataProps[],
-  merchList: MerchItemDataProps[],
-  onPresaleCodeValidate: () => void,
-  onChangeTicketList: (data: TicketListAction) => void;
-  onChangeMerchList: (data: MerchListAction) => void;
+  onPresaleCodeValidate: (arg: boolean) => void,
+  cartPopoverMsg: any,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
+  const { user, exchangeForCrowdCoreToken } = useUserState()
+  // const [discountInput, setDiscountInput] = useState<string>('');
+  const [presaleInput, setPresaleInput] = useState<string>('');
+  const [buttonLoading, setButtonLoading] = useState<boolean>();
+  const { dimmed, showSSOSignUp } = useSSOState();
 
-  const nextButtonHandler = () => {
-    console.log(cart);
-    console.log(merchList);
-    console.log(ticketList)
+  const router = useRouter()
+  const toast = useToast()
+  let innerWidth: number = 0;
+  if (typeof window !== 'undefined') {
+    innerWidth = window.innerWidth; 
+  }
+
+  const cartButton = useRef<any>(null);
+  useEffect(() => {
+    setButtonLoading(false)
+  }, [])
+
+  useEffect(() => {
+    if (dimmed) {
+      document.body.classList.add("body-overflow-hidden");
+    } else {
+      document.body.classList.remove("body-overflow-hidden");
+    }
+  }, [dimmed])
+
+  const nextButtonHandler = async () => {
+    console.log('Cart: ', cart);
+    console.log('Merch List: ', merchListState);
+    console.log('Ticket List: ', ticketListState)
+    console.log('Code Used', codeUsed);
+    console.log('Affiliate', affiliate)
+
     if (cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length === 0) {
       console.log('No item in cart');
-      generateToast('No item in cart');
+      generateToast('No item in cart', toast);
       return
+    }
+    try {
+      setButtonLoading(true)
+      // check login or not
+      if (!user && !localStorage.getItem('chumi_jwt')) {
+        generateToast('To continue, please log in or sign up ', toast);
+        showSSOSignUp()
+        setButtonLoading(false)
+        return
+      } else if (!user && localStorage.getItem('chumi_jwt')) {
+        let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
+        if (new Date().getTime() > (decoded.exp * 1000)) {
+          generateToast('To continue, please log in or sign up ', toast);
+          showSSOSignUp()
+          setButtonLoading(false)
+          return
+        }
+      }
+
+      // 如果之已经在这里登陆过 再通过happin web angular redirect到这里，
+      // 并且有一个 crowdcore token 传进来， 这时候tokenPassedIn 会是true,
+      // 应该用传进来的 crowdcore token, 而不是用这里登陆者的fb token去换 crowdcore token,
+      // 否则可能造成的情况是 传进来的是另一个人的crowdcore token， 这里登陆的是另一个人，
+      // 应该以传进来的那个crowdcore token作为 购票者 当happin web angular 不再充当活动页面时候可以删除tokenPassedIn该逻辑）
+      if (user) {
+        if (!tokenPassedIn) {
+          // exchange token & store the crowdcore server token in local stoarge
+          await exchangeForCrowdCoreToken();
+        }
+      }
+
+      await router.push('/checkout/payment');
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  /*   const onDiscountCodeChangeHandler = (event: any) => {
+      setDiscountInput(event.target.value)
+    } */
+
+  const onPresaleCodeChangeHandler = (event: any) => {
+    setPresaleInput(event.target.value)
+  }
+
+  /*   const onApplyDiscountCodeClicked = async ()=> {
+      if(!discountInput) {
+        return
+      }
+      try {
+        setValidateCodeLoading(true)
+        const res= await validateCode(eventDataForCheckout?.id as string, discountInput as string)
+        if (res.valid) {
+          if (res.type === 'discount') {
+            setCodeUsed(res.code)
+          } else { generateToast('Invalid code', toast); return}
+        } else {
+          generateToast('Invalid code', toast)
+          return
+        }
+        generateToast('Code applied, final amount will be shown on next page', toast);
+      } catch(err) {
+        console.log(err)
+      } finally {
+        setValidateCodeLoading(false)
+      }
+    } */
+
+  const onApplyPresaleCodeClicked = async () => {
+    if (!presaleInput) {
+      return
+    }
+    try {
+      setButtonLoading(true)
+      const res = await validateCode(eventDataForCheckout?.id as string, presaleInput as string)
+      if (res.valid) {
+        if (res.type === 'presale') {
+          closeModal();
+          onPresaleCodeValidate(true);
+        } else { generateToast('Invalid code', toast); return }
+      } else {
+        generateToast('Invalid code', toast)
+        return
+      }
+      generateToast('Pre-sale code applied', toast);
+    } catch (err) {
+      console.log(err)
+    } finally {
+      setButtonLoading(false)
     }
   }
 
@@ -52,17 +170,12 @@ const CheckoutHead = ({
     setIsOpen(true)
   }
 
-  const enterPresaleCode = () => {
-    closeModal();
-    onPresaleCodeValidate();
-  }
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
-    return merchList.filter(m => {
-      if (m.tickets.includes(ticketId)) {
-        return true
-      }
-    })
+    const bundleMerchs = merchListState.filter(m => m.tickets.includes(ticketId));
+    /* const merchBundleIds = bundleMerchs.map(merch =>merch.id);
+    ticket.merchs.sort((a,b)=> merchBundleIds.indexOf(a.merchId) - merchBundleIds.indexOf(b.merchId)); */
+    return bundleMerchs
   }
 
   // array of the selected merchs property name inside this bundle 
@@ -74,10 +187,16 @@ const CheckoutHead = ({
   }
 
   const cartItemCount = () => {
-    let count = cart.items.bundleItem.length + cart.items.merchItem.length + cart.items.ticketItem.length
-    return count
+    const bundleItems = cart.items.bundleItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
+    const ticketItems = cart.items.ticketItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
+    const merchItems = cart.items.merchItem.reduce((acc, cur) => acc = acc + cur.quantity, 0)
+
+    return bundleItems + ticketItems + merchItems
   }
 
+  // the input number is read from Cart , so the max input must use original quantity,
+  // (quantity will keep decreasing as item add to cart, if quantity is used here, 
+  // the max will never reach the correct amount) same for getMaxMerchNumberInputQty()
   const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
     if (data?.originalQuantity > data?.maxPerOrder) {
       return data?.maxPerOrder
@@ -88,34 +207,25 @@ const CheckoutHead = ({
 
   const getMaxMerchNumberInputQty = (merch: MerchItemDataProps, property: string) => {
     const selectedPropertyIndex = merch.property.findIndex(p => p.pName === property);
-    if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
+    if (merch?.property[selectedPropertyIndex]?.originalPValue > merch?.max) {
       return merch?.max
     } else {
-      return merch?.property[selectedPropertyIndex]?.pValue + merch?.property[selectedPropertyIndex]?.originalPValue
+      return merch?.property[selectedPropertyIndex]?.originalPValue
     }
   }
 
   const getEditingMerchListItem = (merch: CartMerchItem): MerchItemDataProps => {
-    return merchList.find(item => item.id === merch.merchId) as MerchItemDataProps;
+    return merchListState.find(item => item.id === merch.merchId) as MerchItemDataProps;
   }
 
   const getEdtingTicketListItem = (t: CartTicketItem): TicketItemDataProps => {
-    return ticketList.find(item => item.id === t.ticketId) as TicketItemDataProps
+    return ticketListState.find(item => item.id === t.ticketId) as TicketItemDataProps
   }
 
+  /*   const getEditingMerchCartIndex = (t: CartMerchItem) => {
+      return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
+    } */
 
-
-  const getEditingTicketCartIndex = (t: CartTicketItem) => {
-    return cart.items.ticketItem.findIndex(item => item.ticketId === t.ticketId)
-  }
-
-  const getEditingMerchCartIndex = (t: CartMerchItem) => {
-    return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
-  }
-
-  const getEditingBundleCartIndex = (t: CartBundleItem) => {
-    return cart.items.bundleItem.findIndex(item => item.identifier === t.identifier)
-  }
 
   const generateCartTicketsTemplate = () => {
     return cart.items.ticketItem.map(t => {
@@ -134,13 +244,13 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
-                  value={cart?.items?.ticketItem[getEditingTicketCartIndex(t)]?.quantity || 0}
+                  value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, removeItem) }}
-                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, getEditingTicketCartIndex(t), onChangeTicketList, addItem) }}
+                  onDecreaseClick={() => { decreaseTicketAmount(getEdtingTicketListItem(t), cart, t.ticketId, dispatchTicketListAction, removeItem) }}
+                  onIncreaseClick={() => { increaseTicketAmount(getEdtingTicketListItem(t), cart, t.ticketId, dispatchTicketListAction, addItem) }}
                 />
               </div>
-              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, onChangeTicketList, removeItem) }}
+              <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -168,13 +278,13 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
-                  value={cart?.items?.merchItem[getEditingMerchCartIndex(m)]?.quantity || 0}
+                  value={m.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, removeItem, m.property) }}
-                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), onChangeMerchList, addItem, m.property, 1) }}
+                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, removeItem, m.property) }}
+                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, addItem, m.property, 1) }}
                 />
               </div>
-              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, onChangeMerchList, removeItem) }}
+              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -188,7 +298,7 @@ const CheckoutHead = ({
   const generateCartBundleTemplate = () => {
     return cart.items.bundleItem.map(t => {
       return (
-        <div className="flex p-4" key={t.ticketId}>
+        <div className="flex p-4" key={t.identifier}>
           <div className="w-16 h-16 rounded-md overflow-hidden">
             <img className="w-full h-full object-cover" src={eventDataForCheckout?.cover.startsWith('https') ? eventDataForCheckout.cover : 'https://images.chumi.co/' + eventDataForCheckout?.cover} alt='' />
           </div>
@@ -202,36 +312,42 @@ const CheckoutHead = ({
                 <NumberInput
                   min={0}
                   max={getMaxTicketNumberInputQty(getEdtingTicketListItem(t))}
-                  value={cart?.items?.bundleItem[getEditingBundleCartIndex(t)]?.quantity || 0}
+                  value={t.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => {
-                    decreaseBundleTicketAmount(
-                      getEdtingTicketListItem(t),
-                      filterBundleMerchForSelectedTicket(t.ticketId),
-                      onChangeTicketList,
-                      onChangeMerchList,
-                      1,
-                      removeItem,
-                      getPropertiesForMerchBundle(t.merchs),
-                      t.identifier)
-                  }}
-                  onIncreaseClick={() => {
-                    increaseBundleTicketAmount(
-                      getEdtingTicketListItem(t),
-                      filterBundleMerchForSelectedTicket(t.ticketId),
-                      onChangeTicketList,
-                      onChangeMerchList,
-                      1,
-                      addItem,
-                      getPropertiesForMerchBundle(t.merchs),
-                      t.identifier)
-                  }}
+                  onDecreaseClick={() => { bundleRemoveHandler(t) }}
+                  onIncreaseClick={() => { bundleIncreaseHandler(t) }}
                 />
               </div>
-              <div onClick={() => { }}
+              <div onClick={() => { bundleDeleteHandler(t) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
+            </div>
+
+            {/* bundle merchs */}
+            <div className="flex justify-between flex-1 mt-5 " style={{ flexDirection: 'column' }}>
+              <div className="text-white text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
+              {t.merchs.map(m => (
+                <div className="flex p-4 border-l border-solid border-white border-opacity-20" key={m.identifier}>
+                  <div className="w-16 h-16 rounded-md overflow-hidden">
+                    <img className="w-full h-full object-cover" src={m.image[0].startsWith('https') ? m.image[0] : 'https://images.chumi.co/' + m.image[0]} alt='' />
+                  </div>
+                  <div className="flex-1 min-w-0 ml-4 flex flex-col">
+                    <div className="flex items-start mb-2">
+                      <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                    </div>
+                    <div className="flex items-end justify-between flex-1">
+                      <div className="flex items-center">
+                        <NumberInput
+                          isDisabled={true}
+                          value={t.quantity || 0}
+                          size="sm"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -239,6 +355,48 @@ const CheckoutHead = ({
     })
   }
 
+  const bundleIncreaseHandler = (t: CartBundleItem) => {
+    increaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      dispatchTicketListAction,
+      dispatcMerchListAction,
+      1,
+      addItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
+
+
+  const bundleRemoveHandler = (t: CartBundleItem,) => {
+    let quantity = 1;
+    const ticket: TicketItemDataProps = getEdtingTicketListItem(t)
+
+    if (ticket.minPerOrder === t.quantity) {
+      quantity = t.quantity
+    }
+    decreaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      dispatchTicketListAction,
+      dispatcMerchListAction,
+      quantity,
+      removeItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
+
+  const bundleDeleteHandler = (t: CartBundleItem) => {
+    decreaseBundleTicketAmount(
+      getEdtingTicketListItem(t),
+      filterBundleMerchForSelectedTicket(t.ticketId),
+      dispatchTicketListAction,
+      dispatcMerchListAction,
+      t.quantity,
+      removeItem,
+      getPropertiesForMerchBundle(t.merchs),
+      t.identifier)
+  }
 
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
@@ -246,13 +404,14 @@ const CheckoutHead = ({
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
           <div className="flex-1 font-semibold min-w-0 hidden sm:block">
             <div className="truncate">{eventDataForCheckout?.title}</div>
-            <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
+            {eventDataForCheckout?.startTime && <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>}
           </div>
           <Popover className="flex md:relative sm:ml-4">
             {({ open }) => (
               <>
                 <Popover.Button
                   as="div"
+                  ref={cartButton}
                   className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
                 >
                   <SvgIcon id="buy" className="text-xl" />
@@ -284,15 +443,23 @@ const CheckoutHead = ({
                         {generateCartBundleTemplate()}
                         {cartItemCount() === 0 && (
                           <div style={{ justifyContent: 'center', display: 'flex', alignItems: 'center', height: '100%' }}>
-                            <h1 className="font-semibold text-lg">Shopping cart is empty</h1>
+                            <h1 className="font-semibold text-lg">Your shopping cart is empty</h1>
                           </div>
                         )}
                       </div>
-                      <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
-                        <input type="text" className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
-                        <button className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Apply</button>
-                      </div>
-                      <div className="px-5 pb-5 flex justify-between mt-5">
+                      {/*                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
+                        {!codeUsed && (
+                          <>
+                            <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                            <button onClick={onApplyDiscountCodeClicked} className="btn btn-rose !py-0 w-32 h-11 !font-semibold">{validateCodeLoading? 'Processing': 'Apply'}</button>
+                          </>)}
+                        {codeUsed &&
+                          (
+                            <>
+                              <input type="text" readOnly={true} value={codeUsed} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" ></input>
+                              <button disabled className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Applied</button></>)}
+                      </div> */}
+                      <div className="px-5 pb-5 flex justify-between mt-5 pt-5 border-t border-solid border-white border-opacity-10">
                         <div className="font-semibold text-lg">Subtotal</div>
                         <div className="font-semibold text-lg">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(cart.subTotal)} </div>
                       </div>
@@ -302,9 +469,40 @@ const CheckoutHead = ({
               </>
             )}
           </Popover>
+          {(cartButton.current && (innerWidth >= 768))  && (
+            <Pop
+              isOpen={cartPopoverMsg.show}
+              parentElement={cartButton?.current as HTMLElement}
+              containerStyle={{ zIndex: '1000' }}
+              contentLocation={() => {
+                //console.log((cartButton?.current as HTMLElement).clientWidth)
+                return { top: 55, left: -65 }
+              }}
+              content={({ childRect, popoverRect }) => (
+                <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+                  position={'bottom'}
+                  childRect={childRect}
+                  popoverRect={popoverRect}
+                  arrowColor={'#65bd6c'}
+                  arrowSize={5}
+                  arrowStyle={{ opacity: 1, left: '50%', transform: 'translate(-50%, 0)' }}
+                >
+                  <div
+                    className="text-sm"
+                    style={{ backgroundColor: '#65bd6c', opacity: 1, borderRadius: '10px', padding: '10px' }}
+                  >
+                    Item added successfully
+                  </div>
+                </ArrowContainer>
+              )}
+            >
+              <div style={{ display: 'none' }}></div>
+            </Pop>
+          )}
+
           {/* show presale only when in presale duration and sale not start */}
           {(saleStart === false && inPresale) && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>}
-          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={() => { nextButtonHandler() }} >Next Step</button>}
+          {saleStart && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" disabled={buttonLoading} onClick={() => { nextButtonHandler() }} >{buttonLoading ? 'Processing...' : 'Next Step'}</button>}
         </div>
       </div>
       {/*Dialog*/}
@@ -356,14 +554,15 @@ const CheckoutHead = ({
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
-                <p className="mt-6 text-sm text-gray-400">Invitation code is case sensitive, you will reicive the code from the host.</p>
+                <input value={presaleInput} onChange={onPresaleCodeChangeHandler} type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
+                <p className="mt-6 text-sm text-gray-400">Pre-sale code is case sensitive, you will reicive the code from the host.</p>
                 <button
                   type="button"
                   className="mt-6 btn btn-rose w-full !rounded-full"
-                  onClick={enterPresaleCode}
+                  onClick={onApplyPresaleCodeClicked}
+                  disabled={buttonLoading}
                 >
-                  Confirm
+                  {buttonLoading ? 'Processing...' : 'Confirm'}
                 </button>
               </div>
             </Transition.Child>

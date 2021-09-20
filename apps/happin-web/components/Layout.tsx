@@ -6,25 +6,37 @@ import { useRouter } from "next/router";
 import { useCheckoutState } from "contexts/checkout-state";
 
 const Layout = ({ children }: { children: any }) => {
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
+  // TODO  IMPORTANT BECAUSE HAPPIN WEB ANGULAR IS STILL OUR EVENT DETAIL
+  // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO 
+  // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
+  // ANGULAR IS DEPREICATED.
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
+  const [showHeader, setShowHeader] = useState(false);
 
-  const { setHappinUserID, setBoxOfficeMode } = useCheckoutState();
+  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
   
   useEffect(() => {
-    if (router?.query?.happinUser && router.asPath.includes('/checkout/')) {
-      setIsMobileBarOpen(false)
+    if (router?.query?.token && router.asPath.includes('/checkout/')) {
+      setIsMobileBarOpen(false);
       setShowHeader(false);
-      setHappinUserID(router?.query?.happinUser as string);
+      setTokenPassedIn(true);
+      localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
+    if (router?.query?.fromapp) {
+      setOpenInApp(true);
+    }
+    if (router?.query?.merchonly) {
+      setOnlyShowMerch(true);
+    }
+    //box office mode is only opened in 2b app, hide the header
     if (router?.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-  }, [router.query])
+  }, [router.query, router.asPath, setBoxOfficeMode])
 
   return (
     <>

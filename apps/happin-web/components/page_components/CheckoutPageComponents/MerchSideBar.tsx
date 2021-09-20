@@ -8,20 +8,19 @@ import classNames from 'classnames';
 import { MerchItemDataProps } from 'lib/model/checkout';
 import { useState } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { MerchListAction } from 'pages/checkout/[event_id]';
 import { increaseMerchAmount } from './util/IncreseInput';
 
 type CheckoutSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
   merch: MerchItemDataProps,
-  onChange: (data: MerchListAction)=> void;
-  setIsOpen: (arg: any)=>void
+  setIsOpen: (arg: any)=>void,
+  setCartPopoverMsg: (arg: any)=> void
 }
 
 const MerchSidebar = (props: CheckoutSidebarProps) => {
-  const { isOpen, onClose, merch, onChange, setIsOpen } = props;
-  const { addItem } = useCheckoutState();
+  const { isOpen, onClose, merch, setIsOpen, setCartPopoverMsg } = props;
+  const { addItem, dispatcMerchListAction } = useCheckoutState();
   //const [merchEditingIndex, setMerchEditingIndex] = useState(0);
 
   const [inputValue, setInputValue] = useState(0)
@@ -32,12 +31,16 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseMerchAmount(merch, onChange, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
+    increaseMerchAmount(merch, dispatcMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
-    setSelectedPropertyIndex(0)
+    setSelectedPropertyIndex(0);
+    setCartPopoverMsg({show: true})
   }
 
+   // the input number is not read from Cart , so the max input can be quantity,
+  // quantity or cart will not change when the number input changed, it will only changed when the 
+  // add to cart button is clicked
   const getMaxNumberInputQty = () => {
     if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
       return merch?.max

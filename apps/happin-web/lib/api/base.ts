@@ -90,8 +90,26 @@ instanceHappin.interceptors.response.use(
   }
 )
 
+instanceCrowCore.interceptors.request.use(
+  (config) => {
+    const idToken = getLocalStorageCrowdCoreIDToken();
+    if (idToken) {
+      config.headers['authorization'] = `Bearer ${idToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error)
+  }
+)
 
-
+const getLocalStorageCrowdCoreIDToken = () => {
+  let idToken;
+  if (typeof window !== 'undefined'){
+    idToken = window.localStorage.getItem('chumi_jwt');
+  }
+  return idToken;
+}
 
 const refreshToken = async (): Promise<refreshTokenResponse> => {
   const refreshToken = getLocalStorageRefreshToken();
@@ -121,7 +139,32 @@ export const postToHappin = async(path:string, payload: any) => {
   }
 }
 
+export const postToCrowdCore = async(path:string, payload: any) => {
+  try {
+    const result = await instanceCrowCore.post(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
 
+export const updateToCrowdCore = async(path:string, payload: any) => {
+  try {
+    const result = await instanceCrowCore.put(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const deleteFromCrowdCore = async(path:string) => {
+  try {
+    const result = await instanceCrowCore.delete(path);
+    return result
+  } catch (error) {
+    throw error
+  }
+}
 
 export const getFromCrowdCore = async<T = any>(path: string) => {
   try {
