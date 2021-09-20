@@ -16,6 +16,7 @@ export type EventBasicData = {
   cover: string;
   paymentMethod: string[];
   paypalEmail?: string;
+  stripeKey?: string;
 }
 
 export type GeneralTicketInfo = {
