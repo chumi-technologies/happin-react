@@ -324,7 +324,10 @@ const Payment = () => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        router.push(`/checkout/${eventDataForCheckout?.id}`);
+        router.push({
+          pathname: `/checkout/${eventDataForCheckout?.id}`,
+          query: { clearcart: 'true' }
+        });
       }
       catch (err) {
         console.log(err)
