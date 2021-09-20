@@ -148,7 +148,11 @@ const Payment = () => {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
       if (res.valid && res.type === 'discount') {
-        generateToast(`${promoteCode} discount applied`, toast);
+        if (res.discountMethod === 'percentage') {
+          generateToast(`${res.discount}% discount applied`, toast);
+        } else {
+          generateToast(`$${res.discount / 100} discount applied`, toast);
+        }
         setCodeUsed(promoteCode as string);
       } else {
         generateToast(`it's not a valid discount code`, toast)
