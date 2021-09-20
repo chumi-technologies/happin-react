@@ -5,7 +5,7 @@ const MyEventsHead = () => {
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
-        <div className="font-bold text-2xl mt-3">My Events</div>
+        <div className="font-bold text-xl sm:text-2xl mt-3">My Events</div>
         <div className="flex">
           <Link
             className="my-events__head-tab"
@@ -15,7 +15,7 @@ const MyEventsHead = () => {
             name="myScrollToElement"
             spy={true}
             smooth={true}
-            // offset={windowWidth > 640 ? -56 : -44}
+            offset={-20}
             duration={500}
           >
             Upcoming
@@ -27,7 +27,7 @@ const MyEventsHead = () => {
             to="past"
             spy={true}
             smooth={true}
-            // offset={windowWidth > 640 ? -56 : -44}
+            offset={-20}
             duration={500}
           >
             Past
@@ -39,7 +39,7 @@ const MyEventsHead = () => {
             to="saved"
             spy={true}
             smooth={true}
-            // offset={windowWidth > 640 ? -56 : -44}
+            offset={-20}
             duration={500}
           >
             Saved

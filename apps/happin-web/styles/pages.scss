@@ -90,7 +90,7 @@
   }
 }
 .event-details__tab {
-  @apply flex items-center justify-center flex-1 rounded-full h-8 sm:h-10 cursor-pointer font-medium text-gray-400 transition;
+  @apply flex items-center justify-center flex-1 rounded-full h-8 sm:h-10 cursor-pointer font-medium text-gray-400 transition text-sm md:text-base;
   &:hover {
     @apply text-white;
   }
@@ -325,10 +325,7 @@
 .my-event-details__intro {
   @apply mr-5 md:mr-6 lg:mr-10;
   width: 100%;
-  @media (min-width: 768px) {
-    width: 360px;
-  }
-  @media (min-width: 900px) {
+  @media (min-width: 1024px) {
     width: 450px;
   }
 }
