@@ -194,7 +194,7 @@ const Payment = () => {
         email: userForm.email,
         phone: userForm.phone,
         buyerName: userForm.fullName,
-        affliateCode: affiliate
+        affiliateCode: affiliate
       }
       console.log(formForPayPal)
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string, data)
@@ -272,7 +272,7 @@ const Payment = () => {
       buyerName: data.fullName,
       billingAddress,
       shipping: shippingForm,
-      affliateCode: affiliate
+      affiliateCode: affiliate
     }
     console.log(formForPaidTicket)
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
@@ -304,7 +304,7 @@ const Payment = () => {
       method: 'free',
       buyerName: data.fullName,
       shipping: shippingForm,
-      affliateCode: affiliate
+      affiliateCode: affiliate
     }
     console.log(formForFreeTicket);
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
