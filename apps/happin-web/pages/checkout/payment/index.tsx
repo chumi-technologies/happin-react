@@ -5,6 +5,7 @@ import PaymentHead from '@components/page_components/PaymentPageComponents/Payme
 import CheckoutForm from '@components/page_components/PaymentPageComponents/StripeCheckoutForm';
 import {
   CardElement,
+  Elements,
   useElements,
   useStripe
 } from "@stripe/react-stripe-js";
@@ -25,7 +26,7 @@ import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPa
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
-import { StripeCardElement } from '@stripe/stripe-js';
+import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
 
 enum EOrderStatus {
@@ -60,9 +61,9 @@ const customStyles = {
     background: state.isSelected ? '#fff' : state.isFocused ? '#000' : '#1a1a1a',
     padding: 20,
   }),
-  menuList:(provided: any, state: any) => ({
+  menuList: (provided: any, state: any) => ({
     ...provided,
-    padding:0,
+    padding: 0,
   }),
   control: (provided: any, state: any) => ({
     // none of react-select's styles are passed to <Control />
@@ -97,7 +98,7 @@ export const releaseLock = async () => {
   }
 }
 
-const Payment = () => {
+const Payment = (props: any) => {
   const {
     register,
     handleSubmit,
@@ -338,10 +339,10 @@ const Payment = () => {
       }
       // rediect to first page will release the lock and clear localstorage,
       // no need to do it here
-     /*  finally {
-        localStorage.removeItem('orderId');
-        localStorage.removeItem('activityId');
-      } */
+      /*  finally {
+         localStorage.removeItem('orderId');
+         localStorage.removeItem('activityId');
+       } */
     }
   }
 
@@ -426,7 +427,7 @@ const Payment = () => {
       if (orderId) {
         if (activityId) {
           // releaseLock();
-          console.log('Redirect to ac:' , activityId);
+          console.log('Redirect to ac:', activityId);
           router.push(`/checkout/${activityId}`);
         } else {
           releaseLock();
@@ -480,11 +481,11 @@ const Payment = () => {
   }, [cart, codeUsed]);
 
   useEffect(() => {
-  if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
-    generateToast(`Please enter all required information for shipping address`, toast);
-  } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)){
-    generateToast(`Please enter all required information`, toast);
-  }
+    if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
+      generateToast(`Please enter all required information for shipping address`, toast);
+    } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)) {
+      generateToast(`Please enter all required information`, toast);
+    }
   }, [formState]);
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
@@ -539,7 +540,7 @@ const Payment = () => {
         }
       }
     } catch (err) {
-      if (err.type  === 'card_error') {
+      if (err.type === 'card_error') {
         generateToast(err.message, toast)
       } else {
         generateToast('Unknown error, please contact us', toast)
@@ -549,31 +550,31 @@ const Payment = () => {
     }
   }
 
-/*   const handlePaymentError = (errCode: string) => {
-    console.log('payment error: ', errCode)
-    switch (errCode) {
-      case 'incorrect_cvc':
-        generateToast('Incorrect CVC code, please check your card input', toast)
-        break;
-      case 'incomplete_cvc':
-        generateToast('Incomplete CVC code, please check your card input', toast)
-        break;
-      case 'incomplete_zip':
-        generateToast('Incomplete ZIP code, please check your card input', toast)
-        break;
-      case 'expired_card':
-        generateToast('Your card has expired.', toast)
-        break;
-      case 'card_declined':
-        generateToast('Your card was declined.', toast)
-        break;
-      case 'processing_error':
-        generateToast('An error occured while processing your card. Please try again later', toast)
-      default:
-        generateToast('Unknown error, please contact us', toast)
-        break
-    }
-  } */
+  /*   const handlePaymentError = (errCode: string) => {
+      console.log('payment error: ', errCode)
+      switch (errCode) {
+        case 'incorrect_cvc':
+          generateToast('Incorrect CVC code, please check your card input', toast)
+          break;
+        case 'incomplete_cvc':
+          generateToast('Incomplete CVC code, please check your card input', toast)
+          break;
+        case 'incomplete_zip':
+          generateToast('Incomplete ZIP code, please check your card input', toast)
+          break;
+        case 'expired_card':
+          generateToast('Your card has expired.', toast)
+          break;
+        case 'card_declined':
+          generateToast('Your card was declined.', toast)
+          break;
+        case 'processing_error':
+          generateToast('An error occured while processing your card. Please try again later', toast)
+        default:
+          generateToast('Unknown error, please contact us', toast)
+          break
+      }
+    } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
@@ -1066,7 +1067,7 @@ const Payment = () => {
                         <div className="flex">
                           <input
                             defaultValue={codeUsed}
-                            disabled={(codeUsed && !promoteCode) ? true: false}
+                            disabled={(codeUsed && !promoteCode) ? true : false}
                             onChange={(e) => {
                               setPromoteCode(e.target.value)
                             }}
@@ -1075,7 +1076,7 @@ const Payment = () => {
                           <button
                             onClick={ApplyPromoCode}
                             disabled={validateCodeLoading}
-                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied': validateCodeLoading ? 'Processing...' : 'Apply'}
+                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied' : validateCodeLoading ? 'Processing...' : 'Apply'}
                           </button>
                         </div>
                       </div>
@@ -1202,21 +1203,21 @@ const Payment = () => {
                         )}
 
                       </>) : (priceBreakDown && priceBreakDown.total === 0) ?
-                      (
-                        <>
-                          <div className="mt-5 text-center">
-                            <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                              <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
-                            </Checkbox>
-                          </div>
-                          <br></br>
-                          <div className="h-12 sm:hidden" />
-                          <button form="stripe-form" className="btn btn-rose w-full !rounded-t-none !rounded-b-lg !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
-                          <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
-                            <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
-                          </div>
-                        </>
-                      ): <></>
+                        (
+                          <>
+                            <div className="mt-5 text-center">
+                              <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
+                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                              </Checkbox>
+                            </div>
+                            <br></br>
+                            <div className="h-12 sm:hidden" />
+                            <button form="stripe-form" className="btn btn-rose w-full !rounded-t-none !rounded-b-lg !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
+                              <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            </div>
+                          </>
+                        ) : <></>
                     }
                   </div>
                 </div>
@@ -1283,4 +1284,28 @@ const Payment = () => {
 
 };
 
-export default Payment;
+
+
+const StripeWrapper = () => {
+  const { eventDataForCheckout } = useCheckoutState();
+  const [stripeKey, setStripeKey] = useState<string>();
+  useEffect(() => {
+    if (eventDataForCheckout && eventDataForCheckout.stripeKey) {
+      setStripeKey(eventDataForCheckout.stripeKey as string);
+      console.log(eventDataForCheckout.stripeKey)
+    }
+  }, [eventDataForCheckout])
+  return (
+    <>
+    {
+      stripeKey &&
+      (<Elements stripe= { loadStripe(stripeKey as string) } >
+        <Payment>
+        </Payment>
+      </Elements>)
+    }
+    </>
+  )
+}
+
+export default StripeWrapper;

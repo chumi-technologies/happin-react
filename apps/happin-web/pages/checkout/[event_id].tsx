@@ -152,6 +152,7 @@ const Checkout = () => {
         cover: res.cover,
         paymentMethod: res.paymentMethod,
         paypalEmail: res.paypalEmail,
+        stripeKey: res.stripeKey,
       }
       setEventDataForCheckout(eventDetail)
     } catch (err) {
