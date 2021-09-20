@@ -151,7 +151,7 @@ const Payment = () => {
         if (res.discountMethod === 'percentage') {
           generateToast(`${res.discount}% discount applied`, toast);
         } else {
-          generateToast(`$${res.discount} discount applied`, toast);
+          generateToast(`${eventDataForCheckout?.default_currency}$${res.discount.toFixed(2)} discount applied`, toast);
         }
         setCodeUsed(promoteCode as string);
       } else {
