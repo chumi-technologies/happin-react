@@ -68,6 +68,7 @@ const Checkout = () => {
   const [sortedHeader, setSortedHeader] = useState<string[]>([]);
 
   useEffect(() => {
+    setCodeUsed('');
     (async () => {
       if (router.query.event_id && router.query.event_id !== 'undefined') {
 

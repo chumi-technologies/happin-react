@@ -98,7 +98,7 @@ export const releaseLock = async () => {
   }
 }
 
-const Payment = (props: any) => {
+const PaymentInner = (props: any) => {
   const {
     register,
     handleSubmit,
@@ -426,9 +426,10 @@ const Payment = (props: any) => {
 
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
-    const activityId = localStorage.getItem('activityId');
-    if (!eventDataForCheckout) {
-      if (orderId) {
+   //const activityId = localStorage.getItem('activityId');
+    if (eventDataForCheckout) {
+      // redirect logic is handle in outer wrapper
+      /* if (orderId) {
         if (activityId) {
           // releaseLock();
           console.log('Redirect to ac:', activityId);
@@ -440,7 +441,7 @@ const Payment = (props: any) => {
       } else {
         router.push(`https://happin.app`);
       }
-    } else {
+    } else { */
       if (!orderId) {
         localStorage.setItem('activityId', eventDataForCheckout.id);
         lockCheckoutTicketsHandle({
@@ -1297,26 +1298,47 @@ const Payment = (props: any) => {
 
 
 
-const StripeWrapper = () => {
-  const { eventDataForCheckout } = useCheckoutState();
+const Payment = () => {
+  const { eventDataForCheckout, cart, codeUsed } = useCheckoutState();
   const [stripeKey, setStripeKey] = useState<string>();
+  const router = useRouter()
   useEffect(() => {
     if (eventDataForCheckout && eventDataForCheckout.stripeKey) {
       setStripeKey(eventDataForCheckout.stripeKey as string);
-      console.log(eventDataForCheckout.stripeKey)
     }
   }, [eventDataForCheckout])
+
+
+  useEffect(() => {
+    const orderId = localStorage.getItem('orderId');
+    const activityId = localStorage.getItem('activityId');
+    if (!eventDataForCheckout) {
+      if (orderId) {
+        if (activityId) {
+          // releaseLock();
+          console.log('Redirect to ac:', activityId);
+          router.push(`/checkout/${activityId}`);
+        } else {
+          releaseLock();
+          router.push(`https://happin.app`);
+        }
+      } else {
+        router.push(`https://happin.app`);
+      }
+    }
+  }, []);
+
   return (
     <>
     {
       stripeKey &&
-      (<Elements stripe= { loadStripe(stripeKey as string) } >
-        <Payment>
-        </Payment>
-      </Elements>)
+      <Elements stripe= { loadStripe(stripeKey as string) } >
+        <PaymentInner >
+        </PaymentInner>
+      </Elements>
     }
     </>
   )
 }
 
-export default StripeWrapper;
+export default Payment;
