@@ -132,7 +132,7 @@ const Payment = () => {
   const [clientSecret, setClientSecret] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
-    const shippings = merchListState.map(m => m.shippingCountry);
+    const shippings = merchListState.filter(m => !m.isDonation).map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
