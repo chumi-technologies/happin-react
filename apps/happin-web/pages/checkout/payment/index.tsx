@@ -1132,10 +1132,17 @@ const Payment = () => {
                             <div className="text-gray-300">Service Fee</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
                           </div>
-                          <div className="flex justify-between py-1">
-                            <div className="text-gray-300">Extra Charge</div>
-                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.extraCharge || 0) / 100)}</div>
-                          </div>
+                          {
+                            priceBreakDown?.extraChargeDetails.map((detail: { title: string, amount: number; }) => {
+                              return (
+                                <div className="flex justify-between py-1" key={detail.title}>
+                                  <div className="text-gray-300">{detail.title}</div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((detail.amount || 0) / 100)}</div>
+                                </div>
+                              );
+                            }
+                            )
+                          }
                           {showShipping && <div className="flex justify-between py-1">
                             <div className="text-gray-300">Shipping</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.shippingCost || 0) / 100)}</div>
