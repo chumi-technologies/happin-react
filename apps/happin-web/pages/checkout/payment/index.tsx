@@ -151,7 +151,7 @@ const Payment = () => {
         if (res.discountMethod === 'percentage') {
           generateToast(`${res.discount}% discount applied`, toast);
         } else {
-          generateToast(`$${res.discount / 100} discount applied`, toast);
+          generateToast(`$${res.discount} discount applied`, toast);
         }
         setCodeUsed(promoteCode as string);
       } else {
