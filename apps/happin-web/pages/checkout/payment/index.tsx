@@ -661,9 +661,9 @@ const PaymentInner = (props: any) => {
           if (openInApp) {
             postCloseMessageForApp()
           } else {
-            // setTimeout(() => {
-            //   router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
-            // }, 1000)
+            setTimeout(() => {
+              router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+            }, 1000)
           }
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
