@@ -10,7 +10,7 @@ import {
   useStripe
 } from "@stripe/react-stripe-js";
 import { Delete } from '@icon-park/react';
-import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack, useEditable } from '@chakra-ui/react';
+import { Checkbox, HStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
 import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
@@ -26,8 +26,7 @@ import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPa
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
-import { StringOrNumber } from '@chakra-ui/utils/dist/types/types';
-import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
+import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
 
 
 enum EOrderStatus {
@@ -100,7 +99,7 @@ const PaymentInner = (props: any) => {
     handleSubmit,
     formState,
     formState: { errors, isValid, isSubmitting },
-    setValue,
+    //setValue,
     //reset,
     control,
     getValues
@@ -222,19 +221,36 @@ const PaymentInner = (props: any) => {
       generateToast('Order lost', toast);
       return
     }
-    return actions.order.create({
-      purchase_units: [
-        {
-          amount: {
-            currency_code: eventDataForCheckout?.default_currency,
-            value: priceBreakDown.total / 100
-          },
-          payee: {
-            email_address: eventDataForCheckout?.paypalEmail || process.env.NEXT_PUBLIC_PAYPAL_HAPPIN_PAYEE
+
+    let paypalObject: any;
+    if (eventDataForCheckout?.paypalEmail) {
+      paypalObject = {
+        purchase_units: [
+          {
+            amount: {
+              currency_code: eventDataForCheckout?.default_currency,
+              value: priceBreakDown.total / 100
+            },
+            payee: {
+              email_address: eventDataForCheckout?.paypalEmail
+            }
           }
-        }
-      ],
-    });
+        ],
+      }
+    } else {
+      paypalObject = {
+        purchase_units: [
+          {
+            amount: {
+              currency_code: eventDataForCheckout?.default_currency,
+              value: priceBreakDown.total / 100
+            }
+          }
+        ],
+      }
+    } 
+
+    return actions.order.create(paypalObject);
   }
 
   const generateQuestionAnswer = (data:any) => {
