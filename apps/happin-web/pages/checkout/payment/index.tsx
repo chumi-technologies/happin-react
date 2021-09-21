@@ -106,6 +106,7 @@ const PaymentInner = (props: any) => {
     getValues
   } = useForm<FormData>({ mode: 'all' });
 
+
   const focusButtonRef = useRef(null);
   const router = useRouter();
   const toast = useToast();
@@ -435,7 +436,7 @@ const PaymentInner = (props: any) => {
           isMandatory: question.isMandatory,
           appliedToTicketId: question.appliedToTicketId,
           questions: question.questions,
-          definedAnswers:question.definedAnswers.map(a => ({value:a,label:a})),
+          definedAnswers:question.definedAnswers.map((a: any) => ({value:a,label:a})),
         }))
         setCheckoutQuestions(mappingQuestions);
       }
@@ -518,15 +519,15 @@ const PaymentInner = (props: any) => {
   if(questions) {
       for (let i=0;i<questions.length;i++) {
       // @ts-ignore
-      if (formState.isSubmitting && formState.errors[questions[i]] ) {
+      if (isSubmitting && errors[questions[i]] ) {
         generateToast(`Please enter all required information for organizer question`, toast);
         break;
       }   
     }
   }
-  if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
+  if (showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone || errors.province || errors.city || errors.country || errors.postcode)) {
     generateToast(`Please enter all required information for shipping address`, toast);
-  } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)){
+  } else if (!showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone)){
     generateToast(`Please enter all required information`, toast);
   }
   }, [formState]);
