@@ -183,7 +183,7 @@ const PaymentInner = (props: any) => {
   const onPayPalApprove = (data: any, actions: any) => {
     return actions.order.capture().then(async (details: any) => {
       const crowdcoreOrderId = localStorage.getItem('orderId')
-
+      const checkoutFormAnswers  = generateQuestionAnswer(data);
       const userForm = getValues()
       const shippingForm = {
         country: userForm.country,
@@ -200,7 +200,8 @@ const PaymentInner = (props: any) => {
         email: userForm.email,
         phone: userForm.phone,
         buyerName: userForm.fullName,
-        affiliateCode: affiliate
+        affiliateCode: affiliate,
+        checkoutForm:checkoutFormAnswers
       }
       console.log(formForPayPal)
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string, data)
@@ -236,9 +237,35 @@ const PaymentInner = (props: any) => {
     });
   }
 
+  const generateQuestionAnswer = (data:any) => {
+    const checkoutFormAnswers:any[][] =[];
+    const questions:any = checkoutQuestions.map(q=>({question:q.questions,type:q.type}));
+    if(questions) {
+        for (let i=0;i<questions.length;i++) {
+        if(questions[i].type === 'multipleSelect') {
+           let multiSelectAnswer = []; 
+           for(let j=0;j<data[questions[i]].length;j++) {
+             multiSelectAnswer.push(data[questions[i]][j].value);
+           } 
+           checkoutFormAnswers.push(multiSelectAnswer);      
+        } else if(questions[i].type === 'singleSelect') {
+           let singleSelectAnswer =[];
+           singleSelectAnswer.push(data[questions[i]].value)
+           checkoutFormAnswers.push(singleSelectAnswer);
+        } else if(questions[i].type === 'text'){
+            let textAnswer =[];
+           textAnswer.push(data[questions[i]])
+           checkoutFormAnswers.push(textAnswer);
+        }     
+      }
+    }
+    return checkoutFormAnswers;
+  }
+
   const onPaidTicketSubmit = async (data: any) => {
     const values = getValues();
     console.log(values,'values')
+    const checkoutFormAnswers  = generateQuestionAnswer(data);
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
       return
@@ -280,7 +307,8 @@ const PaymentInner = (props: any) => {
       buyerName: data.fullName,
       billingAddress,
       shipping: shippingForm,
-      affiliateCode: affiliate
+      affiliateCode: affiliate,
+      checkoutForm:checkoutFormAnswers
     }
     console.log(formForPaidTicket)
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
@@ -288,6 +316,7 @@ const PaymentInner = (props: any) => {
   }
 
   const onFreeTicketSubmit = async (data: any) => {
+    const checkoutFormAnswers  = generateQuestionAnswer(data);
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
       return
@@ -312,7 +341,8 @@ const PaymentInner = (props: any) => {
       method: 'free',
       buyerName: data.fullName,
       shipping: shippingForm,
-      affiliateCode: affiliate
+      affiliateCode: affiliate,
+      checkoutForm:checkoutFormAnswers
     }
     console.log(formForFreeTicket);
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
@@ -524,8 +554,7 @@ const PaymentInner = (props: any) => {
         break;
       }   
     }
-  }
-  if (showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone || errors.province || errors.city || errors.country || errors.postcode)) {
+  } else if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
     generateToast(`Please enter all required information for shipping address`, toast);
   } else if (!showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone)){
     generateToast(`Please enter all required information`, toast);
@@ -771,7 +800,7 @@ const PaymentInner = (props: any) => {
       </>
     )
   }
-
+    console.log(checkoutQuestions,"checkoutQuestions")
   return (
     <>
       <div className="checkout__page">
@@ -827,7 +856,7 @@ const PaymentInner = (props: any) => {
                                 if(q.type === 'singleSelect') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -842,15 +871,20 @@ const PaymentInner = (props: any) => {
                                         )}
                                         rules={
                                           { required: q.isMandatory }
-                                        }
+                                        }                                      
                                       />
+                                        {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                       </div>
                                   )       
                                 }
                                 if(q.type === 'multipleSelect') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -868,13 +902,18 @@ const PaymentInner = (props: any) => {
                                           { required: q.isMandatory}
                                         }
                                       />
+                                        {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                       </div>
                                   )        
                                 }
                                 if(q.type === 'text') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -891,6 +930,11 @@ const PaymentInner = (props: any) => {
                                           { required: q.isMandatory}
                                         }
                                       />
+                                      {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                     </div>
                                   )       
                                 }
@@ -956,7 +1000,7 @@ const PaymentInner = (props: any) => {
                                 if(q.type === 'singleSelect') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -973,13 +1017,18 @@ const PaymentInner = (props: any) => {
                                           { required: q.isMandatory }
                                         }
                                       />
+                                      {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                       </div>
                                   )       
                                 }
                                 if(q.type === 'multipleSelect') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -997,13 +1046,18 @@ const PaymentInner = (props: any) => {
                                           { required: q.isMandatory}
                                         }
                                       />
+                                        {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                       </div>
                                   )        
                                 }
                                 if(q.type === 'text') {
                                   return (
                                     <div key={q.questions} className="lg:col-span-6">
-                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
                                       <Controller
                                         name= {q.questions}
                                         control={control}
@@ -1020,6 +1074,11 @@ const PaymentInner = (props: any) => {
                                           { required: q.isMandatory}
                                         }
                                       />
+                                        {/*
+                                           // @ts-ignore */}
+                                        { errors[q.questions] && (
+                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                        )}
                                     </div>
                                   )       
                                 }
