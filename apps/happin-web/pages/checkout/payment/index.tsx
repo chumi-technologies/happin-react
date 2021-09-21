@@ -202,7 +202,6 @@ const PaymentInner = (props: any) => {
         affiliateCode: affiliate,
         checkoutForm:checkoutFormAnswers
       }
-      console.log(formForPayPal)
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string)
     });
   }
@@ -324,7 +323,6 @@ const PaymentInner = (props: any) => {
       affiliateCode: affiliate,
       checkoutForm:checkoutFormAnswers
     }
-    console.log(formForPaidTicket)
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
 
   }
@@ -358,7 +356,6 @@ const PaymentInner = (props: any) => {
       affiliateCode: affiliate,
       checkoutForm:checkoutFormAnswers
     }
-    console.log(formForFreeTicket);
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
   };
 
