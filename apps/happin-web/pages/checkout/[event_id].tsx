@@ -233,7 +233,8 @@ const Checkout = () => {
         saleStartTime: res.generalInfo.onSaleCounter,
         presaleStart: res.generalInfo.presaleStartTime,
         presaleEnd: res.generalInfo.presaleEndTime,
-        taxNeeded: res.generalInfo.taxNeeded
+        taxNeeded: res.generalInfo.taxNeeded,
+        refundPolicy: res.generalInfo.refundPolicy
       }
       setGeneralTicketInfo(gerneralTicketInfo);
     } catch (err) {

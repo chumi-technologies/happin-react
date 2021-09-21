@@ -117,7 +117,19 @@ const PaymentInner = (props: any) => {
   const stripe = useStripe();
   const elements = useElements();
   const [stripeInputError, setStripeInputError] = useState<any>(null);
-  const { eventDataForCheckout, cart, codeUsed, setCodeUsed, dispatchTicketListAction, dispatcMerchListAction, removeItem, ticketListState, merchListState, affiliate, openInApp } = useCheckoutState();
+  const { eventDataForCheckout,
+          cart, 
+          codeUsed, 
+          setCodeUsed, 
+          dispatchTicketListAction, 
+          dispatcMerchListAction,
+          removeItem, 
+          ticketListState, 
+          merchListState, 
+          affiliate, 
+          openInApp,
+          generalTicketInfo
+        } = useCheckoutState();
   const [validateCodeLoading, setValidateCodeLoading] = useState<boolean>(false);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
@@ -1344,6 +1356,7 @@ const PaymentInner = (props: any) => {
                             }
 
                             <div className="mt-5 text-center">
+                              {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
                               <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
                                 <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
                               </Checkbox>
@@ -1363,6 +1376,7 @@ const PaymentInner = (props: any) => {
                         (
                           <>
                             <div className="mt-5 text-center">
+                            {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
                               <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
                                 <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
                               </Checkbox>

@@ -25,6 +25,7 @@ export type GeneralTicketInfo = {
   taxNeeded: number,
   presaleStart: number,
   presaleEnd: number,
+  refundPolicy: string,
 }
 
 export type TicketItemDataProps = {
