@@ -8,6 +8,7 @@ const VALIADTE_CODE_PATH = '/codes/validate?activityId={acid}&code={code}'
 const LOCK_CHECKOUT_PATH = '/payment/order'
 const RELEASE_LOCK_CHECKOUT_PATH = '/payment/order/{orderId}'
 const UPDATE_ORDER_FROM_CART_PATH = '/payment/order/{orderId}'
+const GET_CHECKOUT_FORM_QUESTIONS = '/checkout-form/questions/{acid}'
 
 const checkinTicket = async (payload: any) => {
     const response = await postToHappin(CHECKIN_TICKET_PATH, payload)
@@ -21,6 +22,11 @@ const getGATickets = async (acid: string) => {
 
 const getEventMerchs = async (acid: string)=> {
     const response = await getFromCrowdCore(GET_MERCH_PATH.replace('{acid}',acid));
+    return response || {}
+}
+
+const getCheckoutFormQuestions = async(acid:string) => {
+    const response = await getFromCrowdCore(GET_CHECKOUT_FORM_QUESTIONS.replace('{acid}',acid));
     return response || {}
 }
 
@@ -43,4 +49,4 @@ const updateOrderFromCart = async(orderId:string, payload:any) => {
     const response = await updateToCrowdCore(UPDATE_ORDER_FROM_CART_PATH.replace('{orderId}',orderId),payload);
     return response || {}
 }
-export {checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, updateOrderFromCart}
+export {checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, updateOrderFromCart, getCheckoutFormQuestions}

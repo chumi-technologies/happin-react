@@ -14,7 +14,7 @@ import { Checkbox, CheckboxGroup, HStack, Radio, RadioGroup, Stack, useEditable 
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
 import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
-import { CartTicketItem, TicketItemDataProps, MerchItemDataProps, CartBundleItem, CartMerchItem, OrderItem } from '../../../lib/model/checkout';
+import { CartTicketItem, TicketItemDataProps, MerchItemDataProps, CartBundleItem, CartMerchItem, OrderItem, MappingQuestionsResponse } from '../../../lib/model/checkout';
 import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
 import Select from "react-select";
@@ -22,10 +22,12 @@ import countryList from 'react-select-country-list';
 import { deleteTicketFromCart, deleteMerchFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
 import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
-import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPayment, getOrderStatus, updateOrderFromCart } from '../../../lib/api';
+import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPayment, getOrderStatus, updateOrderFromCart, getCheckoutFormQuestions } from '../../../lib/api';
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
+import { StripeCardElement } from '@stripe/stripe-js';
+import { StringOrNumber } from '@chakra-ui/utils/dist/types/types';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
 
@@ -47,11 +49,6 @@ type FormData = {
   apartment?: string;
   province?: string;
   postcode?: string;
-  /* message: string;
-  radio: string;
-  radio2: string;
-  checkbox: StringOrNumber[];
-  textarea: string; */
 };
 
 const customStyles = {
@@ -104,7 +101,7 @@ const PaymentInner = (props: any) => {
     handleSubmit,
     formState,
     formState: { errors, isValid, isSubmitting },
-    //setValue,
+    setValue,
     //reset,
     control,
     getValues
@@ -127,7 +124,9 @@ const PaymentInner = (props: any) => {
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
+  const [checkoutQuestions,setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
+
 
   // for stripe, in case stripe payment failed , can pay again with this secret
   const [clientSecret, setClientSecret] = useState<string>();
@@ -238,6 +237,8 @@ const PaymentInner = (props: any) => {
   }
 
   const onPaidTicketSubmit = async (data: any) => {
+    const values = getValues();
+    console.log(values,'values')
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
       return
@@ -426,6 +427,26 @@ const PaymentInner = (props: any) => {
     }
   }
 
+  const getCheckoutFormQuestionFromServer = async (acid:string)=> {
+    try {
+      const res:MappingQuestionsResponse[] = await getCheckoutFormQuestions(acid);
+      if (res) {
+        const mappingQuestions:any[] = res.map( question => ({
+          type: question.type,
+          isMandatory: question.isMandatory,
+          appliedToTicketId: question.appliedToTicketId,
+          questions: question.questions,
+          definedAnswers:question.definedAnswers.map(a => ({value:a,label:a})),
+        }))
+        setCheckoutQuestions(mappingQuestions);
+      }
+    }
+    catch (err) {
+      generateToast('Unknown error about organizer questions, please contact us', toast);
+      router.push(`/checkout/${eventDataForCheckout?.id}`);
+      console.log(err)
+    }
+  }
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
    //const activityId = localStorage.getItem('activityId');
@@ -476,6 +497,12 @@ const PaymentInner = (props: any) => {
     setShippingOptions(options);
   }, []);
 
+  useEffect(() => {
+    if (eventDataForCheckout) {
+      getCheckoutFormQuestionFromServer(eventDataForCheckout?.id);
+    }   
+  }, []);
+
 
   useEffect(() => {
     // last item in cart deleted, go back to first page
@@ -488,11 +515,21 @@ const PaymentInner = (props: any) => {
   }, [cart, codeUsed]);
 
   useEffect(() => {
-    if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
-      generateToast(`Please enter all required information for shipping address`, toast);
-    } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)) {
-      generateToast(`Please enter all required information`, toast);
+  const questions = checkoutQuestions.map(q=>q.questions);
+  if(questions) {
+      for (let i=0;i<questions.length;i++) {
+      // @ts-ignore
+      if (formState.isSubmitting && formState.errors[questions[i]] ) {
+        generateToast(`Please enter all required information for organizer question`, toast);
+        break;
+      }   
     }
+  }
+  if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
+    generateToast(`Please enter all required information for shipping address`, toast);
+  } else if (!showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone)){
+    generateToast(`Please enter all required information`, toast);
+  }
   }, [formState]);
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
@@ -785,61 +822,79 @@ const PaymentInner = (props: any) => {
                               )}
                             </div>
                             {generateShippingFormTemplate()}
-                            {/* <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
-                        <div className="lg:col-span-6">
-                          <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
-                          <RadioGroup defaultValue="1" colorScheme="rose">
-                            <Stack className="radio-pointer text-gray-300">
-                              <Radio value="radio1" {...register('radio')}>
-                                <span className="text-sm">Radio 1</span>
-                              </Radio>
-                              <Radio value="radio2" {...register('radio')}>
-                                <span className="text-sm">Radio 2</span>
-                              </Radio>
-                            </Stack>
-                          </RadioGroup>
-                        </div>
-                        <div className="lg:col-span-6">
-                          <div className="font-semibold mb-2">2. General Admission Livestream Tickets</div>
-                          <RadioGroup defaultValue="1" colorScheme="rose">
-                            <HStack className="radio-pointer text-gray-300">
-                              <Radio value="radio1" {...register('radio2')}>
-                                <span className="text-sm">Radio 1</span>
-                              </Radio>
-                              <Radio value="radio2" {...register('radio2')}>
-                                <span className="text-sm">Radio 2</span>
-                              </Radio>
-                            </HStack>
-                          </RadioGroup>
-                        </div>
-                        <div className="lg:col-span-6">
-                          <div className="font-semibold mb-2">3. General Admission Livestream Tickets</div>
-                          <CheckboxGroup
-                            colorScheme="rose"
-                            defaultValue={['checkbox01']}
-                            onChange={(value) => {
-                              setValue('checkbox', value)
-                            }}
-                          >
-                            <Stack className="text-gray-300">
-                              <Checkbox value="checkbox01">
-                                <span className="text-sm">checkbox 1</span>
-                              </Checkbox>
-                              <Checkbox value="checkbox02">
-                                <span className="text-sm">checkbox 2</span>
-                              </Checkbox>
-                            </Stack>
-                          </CheckboxGroup>
-                        </div>
-                        <div className="lg:col-span-6">
-                          <div className="font-semibold mb-2">4. General Admission Livestream Tickets</div>
-                          <textarea
-                            className="form-field"
-                            rows={3}
-                            placeholder="请输入"
-                            {...register('textarea')}
-                          />
-                        </div> */}
+                            <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
+                              {checkoutQuestions && checkoutQuestions.map(q =>{ 
+                                if(q.type === 'singleSelect') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                          <Select
+                                            styles={customStyles}
+                                            options={q.definedAnswers}
+                                            onChange={(val) => { onChange(val) }}
+                                            onBlur={onBlur}
+                                            selected={value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory }
+                                        }
+                                      />
+                                      </div>
+                                  )       
+                                }
+                                if(q.type === 'multipleSelect') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                          <Select
+                                            styles={customStyles}
+                                            isMulti = {true}
+                                            options={q.definedAnswers}
+                                            onChange={(val) => { onChange(val) }}
+                                            onBlur={onBlur}
+                                            selected={value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory}
+                                        }
+                                      />
+                                      </div>
+                                  )        
+                                }
+                                if(q.type === 'text') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({field:{onChange,value}}) => (
+                                          <textarea
+                                            className="form-field"
+                                            onChange={(val) => { onChange(val) }}
+                                            rows={3}
+                                            placeholder="Please enter"
+                                            value = {value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory}
+                                        }
+                                      />
+                                    </div>
+                                  )       
+                                }
+                              })}
                           </div>
                         </div>
                       </form>
@@ -897,61 +952,78 @@ const PaymentInner = (props: any) => {
                                 <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
                               )}
                             </div>
-                            {/* <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
-                      <div className="lg:col-span-6">
-                        <div className="font-semibold mb-2">1. General Admission Livestream Tickets</div>
-                        <RadioGroup defaultValue="1" colorScheme="rose">
-                          <Stack className="radio-pointer text-gray-300">
-                            <Radio value="radio1" {...register('radio')}>
-                              <span className="text-sm">Radio 1</span>
-                            </Radio>
-                            <Radio value="radio2" {...register('radio')}>
-                              <span className="text-sm">Radio 2</span>
-                            </Radio>
-                          </Stack>
-                        </RadioGroup>
-                      </div>
-                      <div className="lg:col-span-6">
-                        <div className="font-semibold mb-2">2. General Admission Livestream Tickets</div>
-                        <RadioGroup defaultValue="1" colorScheme="rose">
-                          <HStack className="radio-pointer text-gray-300">
-                            <Radio value="radio1" {...register('radio2')}>
-                              <span className="text-sm">Radio 1</span>
-                            </Radio>
-                            <Radio value="radio2" {...register('radio2')}>
-                              <span className="text-sm">Radio 2</span>
-                            </Radio>
-                          </HStack>
-                        </RadioGroup>
-                      </div>
-                      <div className="lg:col-span-6">
-                        <div className="font-semibold mb-2">3. General Admission Livestream Tickets</div>
-                        <CheckboxGroup
-                          colorScheme="rose"
-                          defaultValue={['checkbox01']}
-                          onChange={(value) => {
-                            setValue('checkbox', value)
-                          }}
-                        >
-                          <Stack className="text-gray-300">
-                            <Checkbox value="checkbox01">
-                              <span className="text-sm">checkbox 1</span>
-                            </Checkbox>
-                            <Checkbox value="checkbox02">
-                              <span className="text-sm">checkbox 2</span>
-                            </Checkbox>
-                          </Stack>
-                        </CheckboxGroup>
-                      </div>
-                      <div className="lg:col-span-6">
-                        <div className="font-semibold mb-2">4. General Admission Livestream Tickets</div>
-                        <textarea
-                          className="form-field"
-                          rows={3}
-                          placeholder="请输入"
-                          {...register('textarea')}
-                        />
-                      </div> */}
+                              {checkoutQuestions && checkoutQuestions.map(q =>{ 
+                                if(q.type === 'singleSelect') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                          <Select
+                                            styles={customStyles}
+                                            options={q.definedAnswers}
+                                            onChange={(val) => { onChange(val) }}
+                                            onBlur={onBlur}
+                                            selected={value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory }
+                                        }
+                                      />
+                                      </div>
+                                  )       
+                                }
+                                if(q.type === 'multipleSelect') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({ field: { onChange, onBlur, value } }) => (
+                                          <Select
+                                            styles={customStyles}
+                                            isMulti = {true}
+                                            options={q.definedAnswers}
+                                            onChange={(val) => { onChange(val) }}
+                                            onBlur={onBlur}
+                                            selected={value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory}
+                                        }
+                                      />
+                                      </div>
+                                  )        
+                                }
+                                if(q.type === 'text') {
+                                  return (
+                                    <div key={q.questions} className="lg:col-span-6">
+                                      <div className="font-semibold mb-2">{q.questions}</div>
+                                      <Controller
+                                        name= {q.questions}
+                                        control={control}
+                                        render={({field:{onChange,value}}) => (
+                                          <textarea
+                                            className="form-field"
+                                            onChange={(val) => { onChange(val) }}
+                                            rows={3}
+                                            placeholder="Please enter"
+                                            value = {value}
+                                          />
+                                        )}
+                                        rules={
+                                          { required: q.isMandatory}
+                                        }
+                                      />
+                                    </div>
+                                  )       
+                                }
+                              })}
                           </div>
                         </div>
                       </form>

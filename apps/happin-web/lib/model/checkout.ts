@@ -144,3 +144,14 @@ export interface OrderItem {
   activityId: string;
   shippingCountry:string;
 }
+
+export interface MappingQuestionsResponse {
+  type: string;
+  isMandatory: boolean;
+  appliedToTicketId: string[];
+  questions: string;
+  definedAnswers:string[];
+  postDate: number;
+  activityId: string;
+  creator:string;
+}
