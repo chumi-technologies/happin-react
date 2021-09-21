@@ -5,6 +5,7 @@ import PaymentHead from '@components/page_components/PaymentPageComponents/Payme
 import CheckoutForm from '@components/page_components/PaymentPageComponents/StripeCheckoutForm';
 import {
   CardElement,
+  Elements,
   useElements,
   useStripe
 } from "@stripe/react-stripe-js";
@@ -27,6 +28,7 @@ import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
 import { StripeCardElement } from '@stripe/stripe-js';
 import { StringOrNumber } from '@chakra-ui/utils/dist/types/types';
+import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
 
 enum EOrderStatus {
@@ -56,9 +58,9 @@ const customStyles = {
     background: state.isSelected ? '#fff' : state.isFocused ? '#000' : '#1a1a1a',
     padding: 20,
   }),
-  menuList:(provided: any, state: any) => ({
+  menuList: (provided: any, state: any) => ({
     ...provided,
-    padding:0,
+    padding: 0,
   }),
   control: (provided: any, state: any) => ({
     // none of react-select's styles are passed to <Control />
@@ -93,7 +95,7 @@ export const releaseLock = async () => {
   }
 }
 
-const Payment = () => {
+const PaymentInner = (props: any) => {
   const {
     register,
     handleSubmit,
@@ -122,14 +124,15 @@ const Payment = () => {
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
-  const [promoteCode, setPromoteCode] = useState<string>();
   const [checkoutQuestions,setCheckoutQuestions] = useState<any[]>([]);
+  const [promoteCode, setPromoteCode] = useState<string>('');
+
 
   // for stripe, in case stripe payment failed , can pay again with this secret
   const [clientSecret, setClientSecret] = useState<string>();
 
   const generateShippingOptions = (): any[] => {
-    const shippings = merchListState.map(m => m.shippingCountry);
+    const shippings = merchListState.filter(m => !m.isDonation).map(m => m.shippingCountry);
     const shippingOptionsUnion = _.union(shippings[0]);
     if (shippingOptionsUnion.includes("ROW")) {
       return countryList().getData()
@@ -144,12 +147,17 @@ const Payment = () => {
     try {
       setValidateCodeLoading(true)
       const res = await validateCode(eventDataForCheckout?.id as string, promoteCode as string)
+      const ticketsInCart = [...cart.items.ticketItem.map(i => i.ticketId), ...cart.items.bundleItem.map(i => i.ticketId)];
+      // If not applied to all and no match ticket ids show error
       if (res.valid && res.type === 'discount') {
-        console.log(res,'res')
-        generateToast(`${promoteCode} discount applied`, toast);
-        setCodeUsed(promoteCode as string);
+        if (!res.appliedToAll && !res.appliedTo.some((id: string) => ticketsInCart.includes(id))) {
+          generateToast(`No eligible product for discount`, toast);
+        } else {
+          generateToast(`Discount applied successfully`, toast);
+          setCodeUsed(promoteCode.trim());
+        }
       } else {
-        generateToast(`it's not a valid discount code`, toast)
+        generateToast(`Not a valid code`, toast)
         return;
       }
     } catch (err) {
@@ -192,7 +200,7 @@ const Payment = () => {
         email: userForm.email,
         phone: userForm.phone,
         buyerName: userForm.fullName,
-        affliateCode: affiliate
+        affiliateCode: affiliate
       }
       console.log(formForPayPal)
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string, data)
@@ -272,7 +280,7 @@ const Payment = () => {
       buyerName: data.fullName,
       billingAddress,
       shipping: shippingForm,
-      affliateCode: affiliate
+      affiliateCode: affiliate
     }
     console.log(formForPaidTicket)
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
@@ -304,7 +312,7 @@ const Payment = () => {
       method: 'free',
       buyerName: data.fullName,
       shipping: shippingForm,
-      affliateCode: affiliate
+      affiliateCode: affiliate
     }
     console.log(formForFreeTicket);
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
@@ -338,10 +346,10 @@ const Payment = () => {
       }
       // rediect to first page will release the lock and clear localstorage,
       // no need to do it here
-     /*  finally {
-        localStorage.removeItem('orderId');
-        localStorage.removeItem('activityId');
-      } */
+      /*  finally {
+         localStorage.removeItem('orderId');
+         localStorage.removeItem('activityId');
+       } */
     }
   }
 
@@ -441,12 +449,13 @@ const Payment = () => {
   }
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
-    const activityId = localStorage.getItem('activityId');
-    if (!eventDataForCheckout) {
-      if (orderId) {
+   //const activityId = localStorage.getItem('activityId');
+    if (eventDataForCheckout) {
+      // redirect logic is handle in outer wrapper
+      /* if (orderId) {
         if (activityId) {
           // releaseLock();
-          console.log('Redirect to ac:' , activityId);
+          console.log('Redirect to ac:', activityId);
           router.push(`/checkout/${activityId}`);
         } else {
           releaseLock();
@@ -455,7 +464,7 @@ const Payment = () => {
       } else {
         router.push(`https://happin.app`);
       }
-    } else {
+    } else { */
       if (!orderId) {
         localStorage.setItem('activityId', eventDataForCheckout.id);
         lockCheckoutTicketsHandle({
@@ -575,7 +584,7 @@ const Payment = () => {
         }
       }
     } catch (err) {
-      if (err.type  === 'card_error') {
+      if (err.type === 'card_error') {
         generateToast(err.message, toast)
       } else {
         generateToast('Unknown error, please contact us', toast)
@@ -585,31 +594,31 @@ const Payment = () => {
     }
   }
 
-/*   const handlePaymentError = (errCode: string) => {
-    console.log('payment error: ', errCode)
-    switch (errCode) {
-      case 'incorrect_cvc':
-        generateToast('Incorrect CVC code, please check your card input', toast)
-        break;
-      case 'incomplete_cvc':
-        generateToast('Incomplete CVC code, please check your card input', toast)
-        break;
-      case 'incomplete_zip':
-        generateToast('Incomplete ZIP code, please check your card input', toast)
-        break;
-      case 'expired_card':
-        generateToast('Your card has expired.', toast)
-        break;
-      case 'card_declined':
-        generateToast('Your card was declined.', toast)
-        break;
-      case 'processing_error':
-        generateToast('An error occured while processing your card. Please try again later', toast)
-      default:
-        generateToast('Unknown error, please contact us', toast)
-        break
-    }
-  } */
+  /*   const handlePaymentError = (errCode: string) => {
+      console.log('payment error: ', errCode)
+      switch (errCode) {
+        case 'incorrect_cvc':
+          generateToast('Incorrect CVC code, please check your card input', toast)
+          break;
+        case 'incomplete_cvc':
+          generateToast('Incomplete CVC code, please check your card input', toast)
+          break;
+        case 'incomplete_zip':
+          generateToast('Incomplete ZIP code, please check your card input', toast)
+          break;
+        case 'expired_card':
+          generateToast('Your card has expired.', toast)
+          break;
+        case 'card_declined':
+          generateToast('Your card was declined.', toast)
+          break;
+        case 'processing_error':
+          generateToast('An error occured while processing your card. Please try again later', toast)
+        default:
+          generateToast('Unknown error, please contact us', toast)
+          break
+      }
+    } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
@@ -1136,17 +1145,18 @@ const Payment = () => {
                         <div className="sm:text-lg font-semibold mb-4">Discount Code</div>
                         <div className="flex">
                           <input
-                            defaultValue={codeUsed}
-                            disabled={(codeUsed && !promoteCode) ? true: false}
+                            disabled={(codeUsed && !promoteCode) ? true : false}
                             onChange={(e) => {
-                              setPromoteCode(e.target.value)
+                              const trimmed = e.target.value.trim()
+                              setPromoteCode(trimmed)
                             }}
+                            value={codeUsed || promoteCode}
                             type="text"
                             className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                           <button
                             onClick={ApplyPromoCode}
                             disabled={validateCodeLoading}
-                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied': validateCodeLoading ? 'Processing...' : 'Apply'}
+                            className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied' : validateCodeLoading ? 'Processing...' : 'Apply'}
                           </button>
                         </div>
                       </div>
@@ -1203,10 +1213,17 @@ const Payment = () => {
                             <div className="text-gray-300">Service Fee</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
                           </div>
-                          <div className="flex justify-between py-1">
-                            <div className="text-gray-300">Extra Charge</div>
-                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.extraCharge || 0) / 100)}</div>
-                          </div>
+                          {
+                            priceBreakDown?.extraChargeDetails?.map((detail: { title: string, amount: number; }) => {
+                              return (
+                                <div className="flex justify-between py-1" key={detail.title}>
+                                  <div className="text-gray-300">{detail.title}</div>
+                                  <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((detail.amount || 0) / 100)}</div>
+                                </div>
+                              );
+                            }
+                            )
+                          }
                           {showShipping && <div className="flex justify-between py-1">
                             <div className="text-gray-300">Shipping</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.shippingCost || 0) / 100)}</div>
@@ -1273,21 +1290,21 @@ const Payment = () => {
                         )}
 
                       </>) : (priceBreakDown && priceBreakDown.total === 0) ?
-                      (
-                        <>
-                          <div className="mt-5 text-center">
-                            <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                              <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
-                            </Checkbox>
-                          </div>
-                          <br></br>
-                          <div className="h-12 sm:hidden" />
-                          <button form="stripe-form" className="btn btn-rose w-full !rounded-t-none !rounded-b-lg !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
-                          <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
-                            <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
-                          </div>
-                        </>
-                      ): <></>
+                        (
+                          <>
+                            <div className="mt-5 text-center">
+                              <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
+                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                              </Checkbox>
+                            </div>
+                            <br></br>
+                            <div className="h-12 sm:hidden" />
+                            <button form="stripe-form" className="btn btn-rose w-full !rounded-t-none !rounded-b-lg !font-semibold hidden sm:block" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            <div className="fixed bottom-0 left-0 right-0 z-10 bg-gray-800 sm:hidden">
+                              <button form="stripe-form" className="btn btn-rose w-full !py-4 !rounded-none !font-semibold" onClick={() => { handleSubmit(onFreeTicketSubmit)() }}>Place Order</button>
+                            </div>
+                          </>
+                        ) : <></>
                     }
                   </div>
                 </div>
@@ -1353,5 +1370,50 @@ const Payment = () => {
   );
 
 };
+
+
+
+const Payment = () => {
+  const { eventDataForCheckout, cart, codeUsed } = useCheckoutState();
+  const [stripeKey, setStripeKey] = useState<string>();
+  const router = useRouter()
+  useEffect(() => {
+    if (eventDataForCheckout && eventDataForCheckout.stripeKey) {
+      setStripeKey(eventDataForCheckout.stripeKey as string);
+    }
+  }, [eventDataForCheckout])
+
+
+  useEffect(() => {
+    const orderId = localStorage.getItem('orderId');
+    const activityId = localStorage.getItem('activityId');
+    if (!eventDataForCheckout) {
+      if (orderId) {
+        if (activityId) {
+          // releaseLock();
+          console.log('Redirect to ac:', activityId);
+          router.push(`/checkout/${activityId}`);
+        } else {
+          releaseLock();
+          router.push(`https://happin.app`);
+        }
+      } else {
+        router.push(`https://happin.app`);
+      }
+    }
+  }, []);
+
+  return (
+    <>
+    {
+      stripeKey &&
+      <Elements stripe= { loadStripe(stripeKey as string) } >
+        <PaymentInner >
+        </PaymentInner>
+      </Elements>
+    }
+    </>
+  )
+}
 
 export default Payment;

@@ -16,6 +16,7 @@ export type EventBasicData = {
   cover: string;
   paymentMethod: string[];
   paypalEmail?: string;
+  stripeKey?: string;
 }
 
 export type GeneralTicketInfo = {
@@ -84,7 +85,8 @@ export type MerchItemDataProps = {
   shippingCountry: string[],
   forApp: boolean // filter out for app gifts
   show: boolean // deleted or not
-  tickets : string[] //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
+  tickets: string[]; //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
+  isDonation: boolean;
 };
 
 export type MerchProperty = {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SvgIcon from '@components/SvgIcon';
 import { CloseSmall } from '@icon-park/react';
 import Merch from './Merch';
@@ -26,6 +26,13 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
   const [inputValue, setInputValue] = useState(0)
 
   const [selectedPropertyIndex, setSelectedPropertyIndex] = useState(0);
+
+  useEffect(()=> {
+    if (isOpen === false) {
+      setInputValue(0);
+      setSelectedPropertyIndex(0)
+    }
+  }, [isOpen])
 
   const addMerchButtonHandler = () => {
     if (!inputValue) {

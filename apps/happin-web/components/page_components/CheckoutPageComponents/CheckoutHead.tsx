@@ -473,7 +473,7 @@ const CheckoutHead = ({
             <Pop
               isOpen={cartPopoverMsg.show}
               parentElement={cartButton?.current as HTMLElement}
-              containerStyle={{ zIndex: '1000' }}
+              containerStyle={{ zIndex: '29' }}
               contentLocation={() => {
                 //console.log((cartButton?.current as HTMLElement).clientWidth)
                 return { top: 55, left: -65 }
