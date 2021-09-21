@@ -10,7 +10,6 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
-import { useCallback } from 'react';
 
 
 type CheckoutSidebarProps = {
@@ -32,29 +31,22 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
   // for first mech with property name 'small' and so on
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
-  const getInitSelectedProperties = useCallback(() => {
-    const init: string[] = Array(merchs.length);
-        merchs.forEach((m, index) => {
-          // the init array should be the 0 property index of every merch
-          init[index] = m.property[0].pName
-        })
-    return init
+  useEffect(() => {
+    if (merchs) {
+      const init: string[] = Array(merchs.length);
+      merchs.forEach((m, index) => {
+        // the init array should be the 0 property index of every merch
+        init[index] = m.property[0].pName
+      })
+      setSelectedProperties(init)
+    }
   }, [merchs])
 
   useEffect(() => {
-    if (merchs) {
-      if (!selectedProperties.length) {
-        setSelectedProperties(getInitSelectedProperties())
-      }
-    }
-  }, [merchs])
-
-  useEffect(()=> {
-    if (isOpen === false && merchs) {
+    if (isOpen === false) {
       setInputValue(0);
-      setSelectedProperties(getInitSelectedProperties())
     }
-  }, [isOpen, merchs])
+  }, [isOpen])
 
   const alterSelectedProperties = (outerIndex: number, data: any) => {
     setInputValue(0)
@@ -112,7 +104,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     setIsOpen((s: boolean) => !s);
     setInputValue(0)
     setSelectedProperties([]);
-    setCartPopoverMsg({show: true});
+    setCartPopoverMsg({ show: true });
   }
 
   const increaseBundleAmount = () => {
@@ -121,8 +113,8 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         setInputValue(s => s + 1)
         return
       }
-      if (ticket.quantity >= ticket.minPerOrder ) {
-        setInputValue(ticket.minPerOrder)  
+      if (ticket.quantity >= ticket.minPerOrder) {
+        setInputValue(ticket.minPerOrder)
       }
     }
   }
@@ -144,8 +136,8 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             <div className="w-full pr-7">
               <div className="leading-none mb-2 font-semibold text-white">{ticket?.title}</div>
               <div className="font-medium text-xs text-gray-400">
-              <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
-               {/*  {generalTicketInfo && (
+                <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
+                {/*  {generalTicketInfo && (
                   generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
                     : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)} */}
               </div>
@@ -153,7 +145,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             </div>
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
-              onClick={() => { onClose(); setInputValue(0); setSelectedProperties(getInitSelectedProperties())}}>
+              onClick={() => { onClose(); setInputValue(0); setSelectedProperties([]) }}>
               <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
             </div>
           </div>
