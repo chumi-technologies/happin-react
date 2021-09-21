@@ -18,10 +18,11 @@ export type TicketItemProps = {
   absorbFee: boolean,
   taxNeeded: number
   setCartPopoverMsg: (arg: any)=> void
+  discountCodeApplied: {appliedTo: Array<string>, discount: number, method: string} | undefined
 }
 
 const TicketItem = (props: TicketItemProps) => {
-  const { data, onSelect, currency, absorbFee = false, taxNeeded, disabled = false, setCartPopoverMsg } = props;
+  const { data, onSelect, currency, absorbFee = false, taxNeeded, disabled = false, setCartPopoverMsg, discountCodeApplied } = props;
   const { cart, addItem, removeItem, dispatchTicketListAction } = useCheckoutState();
   const ticketEditingIndex = cart.items.ticketItem.findIndex(item=>item.ticketId === data.id);
 
@@ -35,6 +36,20 @@ const TicketItem = (props: TicketItemProps) => {
       return data?.originalQuantity;
     }
   }
+
+  const renderDiscountNumberFromUrlCode = () => {
+    if (discountCodeApplied && discountCodeApplied.appliedTo && discountCodeApplied.appliedTo.includes(data.id)) {
+      if (discountCodeApplied.method === 'percentage') {
+        return <span className="text-yellow-500 text-sm">&nbsp;  {discountCodeApplied.discount}% off per ticket at checkout</span>
+      } else {
+        const offValue = currencyFormatter(currency as string).format(discountCodeApplied.discount);
+        return <span  className="text-yellow-500 text-sm">&nbsp;  {offValue} off per ticket at checkout</span>
+      }
+    } else {
+      return <></>
+    }
+  }
+
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
@@ -43,6 +58,7 @@ const TicketItem = (props: TicketItemProps) => {
           <div className="font-medium text-xs text-gray-400">
             <span className="text-white text-sm">{currencyFormatter(currency as string).format(data.price)}</span>
             {data.price!==0 && (taxNeeded  ? <span className="ml-1">{absorbFee ? '+ Tax' : '+ Tax + Fee'}</span> : <span className="ml-1">{absorbFee ? '' : '+ Fee'}</span>)}
+            {renderDiscountNumberFromUrlCode()}
           </div>
           {(typeof data.start === 'number' && typeof data.end === 'number') && <div className="text-gray-400 text-xs">On sale from: {moment(data.start * 1000).format('MMMM Do, h:mma')} ~ {moment(data.end * 1000).format('MMMM Do, h:mma')}</div>}
         </div>

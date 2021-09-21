@@ -137,6 +137,9 @@ const Checkout = () => {
         if (res.type === 'discount') {
           generateToast('Discount code applied.',toast)
           setCodeUsed(res.code)
+          if (res.appliedTo && res.appliedTo.length) {
+            setDiscountCodeApplied({appliedTo: res.appliedTo, discount: res.discount, method: res.discountMethod})
+          }
         } else if (res.type === 'presale') {
           setPresaleCodeUsed(true);
         }
@@ -145,6 +148,8 @@ const Checkout = () => {
       console.log(err)
     }
   }
+
+  const [discountCodeApplied, setDiscountCodeApplied] = useState<{appliedTo: Array<string>, discount: number, method: string}>();
 
   const getEventDetailAndSetState = async (eventId: string) => {
     try {
@@ -332,6 +337,7 @@ const Checkout = () => {
         taxNeeded={generalTicketInfo?.taxNeeded || 0}
         disabled={disabledFlag}
         setCartPopoverMsg={setCartPopoverMsg}
+        discountCodeApplied={discountCodeApplied}
       />
     } else if (boxOfficeMode) {
       return <Fragment key={item.id}></Fragment>
@@ -347,6 +353,7 @@ const Checkout = () => {
         absorbFee={generalTicketInfo?.absorbFee || false}
         disabled={disabledFlag}
         setCartPopoverMsg={setCartPopoverMsg}
+        discountCodeApplied={discountCodeApplied}
       />
     } else if (!boxOfficeMode) {
       return <Fragment key={item.id}></Fragment>
@@ -423,11 +430,13 @@ const Checkout = () => {
           }
         };
       })
-      if (hasInPersonTicket) {
-        // prioritize live stream ticket first (if any live stream ticket exists)
-        if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
-      } else {
-        setShowingTab('Livestream-Tickets')
+      if (!showingTab) {
+        if (hasInPersonTicket) {
+          // prioritize live stream ticket first (if any live stream ticket exists)
+          if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
+        } else {
+          setShowingTab('Livestream-Tickets')
+        }
       }
     }
   }, [boxOfficeMode, ticketListState])
