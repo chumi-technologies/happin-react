@@ -182,9 +182,9 @@ const PaymentInner = (props: any) => {
 
   const onPayPalApprove = (data: any, actions: any) => {
     return actions.order.capture().then(async (details: any) => {
-      const crowdcoreOrderId = localStorage.getItem('orderId')
-      const checkoutFormAnswers  = generateQuestionAnswer(data);
+      const crowdcoreOrderId = localStorage.getItem('orderId')    
       const userForm = getValues()
+      const checkoutFormAnswers  = generateQuestionAnswer(userForm);
       const shippingForm = {
         country: userForm.country,
         city: userForm.city,
@@ -204,7 +204,7 @@ const PaymentInner = (props: any) => {
         checkoutForm:checkoutFormAnswers
       }
       console.log(formForPayPal)
-      postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string, data)
+      postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string)
     });
   }
 
@@ -244,17 +244,17 @@ const PaymentInner = (props: any) => {
         for (let i=0;i<questions.length;i++) {
         if(questions[i].type === 'multipleSelect') {
            let multiSelectAnswer = []; 
-           for(let j=0;j<data[questions[i]].length;j++) {
-             multiSelectAnswer.push(data[questions[i]][j].value);
+           for(let j=0;j<data[questions[i].question].length;j++) {
+             multiSelectAnswer.push(data[questions[i].question][j].value);
            } 
            checkoutFormAnswers.push(multiSelectAnswer);      
         } else if(questions[i].type === 'singleSelect') {
            let singleSelectAnswer =[];
-           singleSelectAnswer.push(data[questions[i]].value)
+           singleSelectAnswer.push(data[questions[i].question].value)
            checkoutFormAnswers.push(singleSelectAnswer);
         } else if(questions[i].type === 'text'){
             let textAnswer =[];
-           textAnswer.push(data[questions[i]])
+           textAnswer.push(data[questions[i].question])
            checkoutFormAnswers.push(textAnswer);
         }     
       }
@@ -263,8 +263,6 @@ const PaymentInner = (props: any) => {
   }
 
   const onPaidTicketSubmit = async (data: any) => {
-    const values = getValues();
-    console.log(values,'values')
     const checkoutFormAnswers  = generateQuestionAnswer(data);
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
@@ -561,7 +559,7 @@ const PaymentInner = (props: any) => {
   }
   }, [formState]);
 
-  const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data: any) => {
+  const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data?: any) => {
     try {
       setIsProcessing(true);
       let result: any;
@@ -663,9 +661,9 @@ const PaymentInner = (props: any) => {
           if (openInApp) {
             postCloseMessageForApp()
           } else {
-            setTimeout(() => {
-              router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
-            }, 1000)
+            // setTimeout(() => {
+            //   router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+            // }, 1000)
           }
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
@@ -800,7 +798,7 @@ const PaymentInner = (props: any) => {
       </>
     )
   }
-    console.log(checkoutQuestions,"checkoutQuestions")
+
   return (
     <>
       <div className="checkout__page">
