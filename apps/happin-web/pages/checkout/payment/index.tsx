@@ -1347,12 +1347,16 @@ const PaymentInner = (props: any) => {
                               Pay With Credit Card
                             </button>}
                             {!chooseStripe &&
-                              <><div className="divider-words">OR</div>
+                              <>
                                 {(scriptLoaded && eventDataForCheckout?.paymentMethod.includes('PayPal')) &&
+                                <>
+                                  <div className="divider-words">OR</div>
                                   <PayPalButton
                                     createOrder={(data: any, actions: any) => createPayPalOrder(data, actions)}
                                     onApprove={(data: any, actions: any) => onPayPalApprove(data, actions)} />
-                                }</>
+                                </>
+                                }
+                              </>
                             }
 
                             <div className="mt-5 text-center">
