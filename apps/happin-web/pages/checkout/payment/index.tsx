@@ -26,7 +26,6 @@ import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPa
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
-import { StripeCardElement } from '@stripe/stripe-js';
 import { StringOrNumber } from '@chakra-ui/utils/dist/types/types';
 import { loadStripe, Stripe, StripeCardElement } from '@stripe/stripe-js';
 
