@@ -244,7 +244,7 @@ const PaymentInner = (props: any) => {
           {
             amount: {
               currency_code: eventDataForCheckout?.default_currency,
-              value: priceBreakDown.total / 100
+              value: (priceBreakDown.total / 100).toFixed(2)
             },
             payee: {
               email_address: eventDataForCheckout?.paypalEmail
@@ -258,13 +258,12 @@ const PaymentInner = (props: any) => {
           {
             amount: {
               currency_code: eventDataForCheckout?.default_currency,
-              value: priceBreakDown.total / 100
+              value: (priceBreakDown.total / 100).toFixed(2)
             }
           }
         ],
       }
     }
-
     return actions.order.create(paypalObject);
   }
 
