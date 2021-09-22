@@ -20,7 +20,7 @@ type CheckoutSidebarProps = {
 
 const MerchSidebar = (props: CheckoutSidebarProps) => {
   const { isOpen, onClose, merch, setIsOpen, setCartPopoverMsg } = props;
-  const { addItem, dispatcMerchListAction } = useCheckoutState();
+  const { addItem, dispatchMerchListAction } = useCheckoutState();
   //const [merchEditingIndex, setMerchEditingIndex] = useState(0);
 
   const [inputValue, setInputValue] = useState(0)
@@ -38,7 +38,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseMerchAmount(merch, dispatcMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
+    increaseMerchAmount(merch, dispatchMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
     setSelectedPropertyIndex(0);
@@ -46,7 +46,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
   }
 
    // the input number is not read from Cart , so the max input can be quantity,
-  // quantity or cart will not change when the number input changed, it will only changed when the 
+  // quantity or cart will not change when the number input changed, it will only changed when the
   // add to cart button is clicked
   const getMaxNumberInputQty = () => {
     if (merch?.property[selectedPropertyIndex]?.pValue > merch?.max) {
@@ -57,7 +57,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
   }
 
   return (
-    <div className={classNames('checkout__sidebar', { 'open': isOpen })}>
+    <div className={classNames('checkout__sidebar footer-action', { 'open': isOpen })}>
       <div className="flex flex-col flex-1 h-0">
         <div className="px-5 sm:px-6">
           <div className="relative flex items-start py-6">
@@ -85,7 +85,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
               <div className="text-white font-semibold mb-1">{merch?.name}</div>
               <div className="text-gray-400 text-tiny mb-3">{merch?.description}</div>
               {
-                // isOpen is added here to ensure the select component is reset after close 
+                // isOpen is added here to ensure the select component is reset after close
                 (merch?.property && isOpen) && (
                   <Select
                     data={merch.property.map((p,index) => ({ label: p.pName, value: p.pValue, index }))}

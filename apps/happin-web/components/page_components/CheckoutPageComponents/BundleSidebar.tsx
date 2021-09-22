@@ -23,11 +23,11 @@ type CheckoutSidebarProps = {
 
 const BundleSidebar = (props: CheckoutSidebarProps) => {
   const { isOpen, setIsOpen, onClose, merchs, ticket, setCartPopoverMsg } = props;
-  const { eventDataForCheckout, addItem, dispatcMerchListAction, dispatchTicketListAction } = useCheckoutState();
+  const { eventDataForCheckout, addItem, dispatchMerchListAction, dispatchTicketListAction } = useCheckoutState();
   const [inputValue, setInputValue] = useState(0)
 
-  // array of the selected merchs property name inside this bundle 
-  // (eg. ['small', 'medium'] means 'small' is the selected property 
+  // array of the selected merchs property name inside this bundle
+  // (eg. ['small', 'medium'] means 'small' is the selected property
   // for first mech with property name 'small' and so on
   const [selectedProperties, setSelectedProperties] = useState<string[]>([]);
 
@@ -66,21 +66,21 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         //const selectedProperty = merchs.map((m, index)=> m.property.find(p=>p.pName === selectedProperties[index]));
         //const values = selectedProperty.map(p=>{return p?.pValue || 0});
         //propertyMin = Math.min(...values);
-        
+
         // get merch list max per order list, then obtain the min value among them
         // const maxPerOrderList = merchs.map(m=>m.max);
         // maxPerOrder = Math.min(...maxPerOrderList);
-  
+
         // finally compare propertyMin & ticket.quantity, reassign maxAllowNumber
         // maxAllowNumber = Math.min(propertyMin, ticket.quantity);
-  
+
       }
       maxAllowNumber = ticket.quantity;
       return maxAllowNumber
     } */
 
   // the input number is not read from Cart , so the max number can use quantity,
-  // quantity or cart will not change when the number input changed, it will only changed when the 
+  // quantity or cart will not change when the number input changed, it will only changed when the
   // add to cart button is clicked
   const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
     if (data?.quantity > data?.maxPerOrder) {
@@ -100,7 +100,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatcMerchListAction, inputValue, addItem, selectedProperties);
+    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatchMerchListAction, inputValue, addItem, selectedProperties);
     setIsOpen((s: boolean) => !s);
     setInputValue(0)
     setSelectedProperties([]);
@@ -128,10 +128,9 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
   }
 
   return (
-    <div className={classNames('checkout__sidebar', { 'open': isOpen })}>
+    <div className={classNames('checkout__sidebar footer-action', { 'open': isOpen })}>
       <div className="flex flex-col flex-1 h-0">
         <div className="px-5 sm:px-6">
-
           <div className="relative flex items-start py-4 sm:py-6 border-b border-solid border-gray-700">
             <div className="w-full pr-7">
               <div className="leading-none mb-2 font-semibold text-white">{ticket?.title}</div>
@@ -169,7 +168,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
                   <div className="text-white font-semibold mb-1">{item.name}</div>
                   <div className="text-gray-400 text-tiny mb-3">{item.description}</div>
                   {
-                    // isOpen is added here to ensure the select component is reset after close 
+                    // isOpen is added here to ensure the select component is reset after close
                     (item.property && isOpen) && (
                       <Select
                         data={item.property.map((p, j) => {
