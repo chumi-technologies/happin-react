@@ -50,8 +50,9 @@ export type TicketItemDataProps = {
 
 export enum ETicketVisibility {
   VISIBLE = 'visible',
-  INVISIBLE = 'invisible',
-  SCHEDULE = 'schedule'
+  INVISIBLE = 'invisible', // deleted ticket
+  SCHEDULE = 'schedule',
+  HIDDEN = 'publichidden' // not show to public
 }
 
 export enum ETicketAvailability  {

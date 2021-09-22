@@ -365,8 +365,9 @@ const Checkout = () => {
   }
 
   useEffect(() => {
-    if (ticketListState.length) {
-      ticketListState.filter(t => t.visibility !== ETicketVisibility.INVISIBLE).forEach(t => {
+    // for init the ticket headers options (in person tab/ live stram tab)
+    if (ticketListState.length && !sortedHeader.length) {
+      ticketListState.filter(t => t.visibility !== ETicketVisibility.INVISIBLE && t.visibility !== ETicketVisibility.HIDDEN).forEach(t => {
         // skip adding header for 1. box office mode, online tickets
         // and 2. not box office mode, at door tickets
         if (boxOfficeMode) {
@@ -411,21 +412,23 @@ const Checkout = () => {
 
 
   useEffect(() => {
-    if (ticketListState.length) {
+    // for initialize the showing tab only
+    // (display Livestream-Tickets or In-Person-Tickets on page loaded)
+    if (ticketListState.length && !showingTab) {
       let hasLiveTicket = false;
       let hasInPersonTicket = false;
       ticketListState.forEach(t => {
         // skip for 1. box office mode, online tickets
         // and 2. not box office mode, at door tickets
         if (boxOfficeMode) {
-          if (displayForBoxOfficeMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE) {
+          if (displayForBoxOfficeMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE && t.visibility !== ETicketVisibility.HIDDEN) {
             if ([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
               hasInPersonTicket = true;
             } else if ([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
               hasLiveTicket = true;
             }
           };
-        } else if (displayForRegularMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE) {
+        } else if (displayForRegularMode(t.availability) && t.visibility !== ETicketVisibility.INVISIBLE && t.visibility !== ETicketVisibility.HIDDEN) {
           if ([ETicketType.INPERSON, ETicketType.FREEINPERSON].includes(t.ticketType)) {
             hasInPersonTicket = true;
           } else if ([ETicketType.LIVESTREAM, ETicketType.PFM, ETicketType.PLAYBACK].includes(t.ticketType)) {
@@ -433,13 +436,11 @@ const Checkout = () => {
           }
         };
       })
-      if (!showingTab) {
-        if (hasInPersonTicket) {
-          // prioritize live stream ticket first (if any live stream ticket exists)
-          if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
-        } else {
-          setShowingTab('Livestream-Tickets')
-        }
+      if (hasInPersonTicket) {
+        // prioritize live stream ticket first (if any live stream ticket exists)
+        if (hasLiveTicket) setShowingTab('Livestream-Tickets'); else setShowingTab('In-Person-Tickets')
+      } else {
+        setShowingTab('Livestream-Tickets')
       }
     }
   }, [boxOfficeMode, ticketListState])
@@ -449,7 +450,7 @@ const Checkout = () => {
   const hasRegularMerch = () => {
     let hasRegularMerch = false
     if (merchListState.length) {
-      merchListState.forEach(m => {
+      merchListState.filter(m => m.show && !m.forApp).forEach(m => {
         if (!m.tickets.length) {
           hasRegularMerch = true;
         }
@@ -554,57 +555,48 @@ const Checkout = () => {
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
                   (<>
                     {!onlyShowMerch && <>
-                      {
-                        showingTab === 'Livestream-Tickets' && (
-                          <div id="Livestream-Tickets" className="divide-y divide-gray-700">
-                            {
-                              ticketListState.map((item) => {
-                                if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
-                                  || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE) {
+                      <div id="Livestream-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'Livestream-Tickets' ? 'block' : 'none' }}>
+                        {
+                          ticketListState.map((item) => {
+                            if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
+                              || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
 
-                                  let disabledFlag = false;
-                                  if (!saleStart) {
-                                    disabledFlag = true
-                                  }
-                                  return renderTicketBaseOnAvailability(item, disabledFlag);
-                                } else return <Fragment key={item.id}></Fragment>
-                              })
-                            }
-                          </div>
-                        )
-                      }
-                      {
-                        showingTab === 'In-Person-Tickets' && (
-                          <div id="In-Person-Tickets" className="divide-y divide-gray-700">
-                            {
-                              ticketListState.map((item) => {
-                                if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
-                                  && item.visibility !== ETicketVisibility.INVISIBLE) {
+                              let disabledFlag = false;
+                              if (!saleStart) {
+                                disabledFlag = true
+                              }
+                              return renderTicketBaseOnAvailability(item, disabledFlag);
+                            } else return <Fragment key={item.id}></Fragment>
+                          })
+                        }
+                      </div>
+                      <div id="In-Person-Tickets" className="divide-y divide-gray-700" style={{ display: showingTab === 'In-Person-Tickets' ? 'block' : 'none' }}>
+                        {
+                          ticketListState.map((item) => {
+                            if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
+                              && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
 
-                                  // for inperson ticket, if event has started, disable all the in person tickets,
-                                  // by passing the disabled into ticketItem
-                                  let disabledFlag = false;
-                                  if (eventDataForCheckout && moment(eventDataForCheckout?.startTime).isBefore(moment(new Date()))) {
-                                    disabledFlag = true;
-                                  }
-                                  if (!saleStart) {
-                                    disabledFlag = true
-                                  }
-                                  // if event has ended do not show the in person tickets at all
-                                  if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
-                                    return <Fragment key={item.id}></Fragment>
-                                  }
-                                  return renderTicketBaseOnAvailability(item, disabledFlag);
-                                } else return <Fragment key={item.id}></Fragment>
-                              })
-                            }
-                          </div>
-                        )
-                      }
+                              // for inperson ticket, if event has started, disable all the in person tickets,
+                              // by passing the disabled into ticketItem
+                              let disabledFlag = false;
+                              if (eventDataForCheckout && moment(eventDataForCheckout?.startTime).isBefore(moment(new Date()))) {
+                                disabledFlag = true;
+                              }
+                              if (!saleStart) {
+                                disabledFlag = true
+                              }
+                              // if event has ended do not show the in person tickets at all
+                              if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
+                                return <Fragment key={item.id}></Fragment>
+                              }
+                              return renderTicketBaseOnAvailability(item, disabledFlag);
+                            } else return <Fragment key={item.id}></Fragment>
+                          })
+                        }
+                      </div>
                     </>}
                     {/* merch items start */}
                     {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) && (<div id="merch" className="py-5 sm:py-8 text-white">
-                      <div className="mb-3 font-semibold text-lg">Add On</div>
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
                           merchListState.map((item) => {
