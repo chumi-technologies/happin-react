@@ -80,11 +80,7 @@ export default function EmailSignUp() {
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
       if (firebaseToken) {
-        const response = await signUpHappin(firebaseToken, { version: 2 });
-        if ( response.code=== 10012) {
-          toast.error('User exists, please sign in');
-          return
-        }
+        await signUpHappin(firebaseToken, { version: 2 });
         if (origin.includes('ticketing.happin')) {
           const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
           window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
@@ -96,7 +92,9 @@ export default function EmailSignUp() {
         setProcessing(false)
       }, 2000)
     } catch (error) {
-      if (error.code.includes('auth/email-already-in-use')) {
+      if (error.code === 10012) {
+        toast.error('User exists, please sign in');
+      } else if (error.code.includes('auth/email-already-in-use')) {
         toast.error('Email exists, please try another one.')
       } else if (error.code === 'auth/invalid-email') {
         toast.error('This email is invalid')

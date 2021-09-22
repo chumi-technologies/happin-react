@@ -43,14 +43,14 @@ export default function Home() {
           if (firebaseToken) {
             if (!signin) {
               try {
-                const response = await signUpHappin(firebaseToken, { version: 2 });
-                if(response.code === 10012) {
-                  setProcessing(false)
-                  toast.error('User exists, please sign in');
-                  return
-                }
+                await signUpHappin(firebaseToken, { version: 2 });
               } catch(err) {
-                toast.error('Unknown error, please try againlater');
+                if (err.code === 10012) {
+                  toast.error('User exists, please sign in');
+                } else {
+                  toast.error('Unknown error, please try again later');
+                }
+                setProcessing(false)
                 return
               }
             }

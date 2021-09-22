@@ -68,11 +68,7 @@ export default function Phone() {
       const firebaseToken = await result?.user?.getIdToken();
       const refreshToken = result?.user?.refreshToken;
       if (!signin) {
-        const response = await signUpHappin(firebaseToken, { version: 2, phone: phoneWithoutAreaCode, areaCode: countryCode });
-        if (response.code === 10012) {
-          toast.error('User exists, please sign in');
-          return
-        }
+        await signUpHappin(firebaseToken, { version: 2, phone: phoneWithoutAreaCode, areaCode: countryCode });
       }
       if (origin.includes('ticketing.happin')) {
         const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
@@ -83,7 +79,11 @@ export default function Phone() {
         setProcessing(false)
       }, 2000)
     } catch (err) {
-      toast.error('Unknown error, please try again later');
+      if (err.code === 10012) {
+        toast.error('User exists, please sign in');
+      } else {
+        toast.error('Unknown error, please try again later');
+      }
       grecaptcha.reset(recaptchaWidgetId);
       setProcessing(false);
     }
