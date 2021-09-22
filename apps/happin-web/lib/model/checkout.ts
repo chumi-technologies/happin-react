@@ -89,6 +89,7 @@ export type MerchItemDataProps = {
   show: boolean // deleted or not
   tickets: string[]; //bind to which ticket (if empty, the merch is regular merch, otherwise it's inside bundle)
   isDonation: boolean;
+  isOptionalBundleItem: boolean
 };
 
 export type MerchProperty = {
@@ -134,6 +135,7 @@ export interface CartMerchItem {
   image: string[];
   shipping: boolean;
   shippingCountry: string[];
+  tickets: string[];
 }
 
 export interface OrderItem {

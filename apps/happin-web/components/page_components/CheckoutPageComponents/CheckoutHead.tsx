@@ -225,6 +225,49 @@ const CheckoutHead = ({
       return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
     } */
 
+// DO NOT DELETE
+/*   const checkToRemoveOptionBundleItem =(t: CartTicketItem, action: string): void=> {
+    let hasOptionBundleItem = false;
+    const merchsNeedToRemoved: CartMerchItem[] = [];
+    const edtingTicketListItem = getEdtingTicketListItem(t)
+    merchListState.filter(m => m.show && !m.forApp && m.isOptionalBundleItem).forEach(m => {
+      if (m.tickets.includes(t.ticketId)) {
+        //  optional bundle item 的 ticket array 包含了参数 cartTicketItem 的 ticketid
+        //  说明有可能cart里面 有optional的 bundle item, 需要查 cart 里面的 merch item 
+        cart.items.merchItem.forEach((cartMerch) => {
+          if(cartMerch.merchId === m.id) {
+            hasOptionBundleItem = true;
+            merchsNeedToRemoved.push(cartMerch);
+          }
+        })
+      }
+    })
+
+    if (hasOptionBundleItem && merchsNeedToRemoved.length) {
+      merchsNeedToRemoved.forEach( m => {
+       if(action==='decrease') {
+          if (t.quantity === edtingTicketListItem.minPerOrder || t.quantity === 1) {
+            // remaining ticket quantity is equal to min per order or remain is 1
+            deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
+          }
+        } else if (action === 'delete'){
+          deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
+        }
+        deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
+
+      })
+    }
+
+    if (action === 'decrease') {
+      decreaseTicketAmount(edtingTicketListItem, cart, t.ticketId, dispatchTicketListAction, removeItem)
+    } else if(action === 'delete') {
+      deleteTicketFromCart(edtingTicketListItem, t.quantity, dispatchTicketListAction, removeItem)
+    } 
+
+  } */
+
+
+
 
   const generateCartTicketsTemplate = () => {
     return cart.items.ticketItem.map(t => {
@@ -279,7 +322,7 @@ const CheckoutHead = ({
                   max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
                   value={m.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatchMerchListAction, removeItem, m.property) }}
+                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatchMerchListAction, removeItem, m.property, 1) }}
                   onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), dispatchMerchListAction, addItem, m.property, 1) }}
                 />
               </div>

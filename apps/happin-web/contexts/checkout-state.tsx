@@ -170,7 +170,8 @@ const inreament = (action: Action, state: Cart) => {
           name: action.payload.name,
           image: action.payload.image,
           shipping: action.payload.mail,
-          shippingCountry: action.payload.shippingCountry
+          shippingCountry: action.payload.shippingCountry,
+          tickets: action.payload.tickets,
         });
     }
     finalCart = {
@@ -196,6 +197,7 @@ const inreament = (action: Action, state: Cart) => {
         quantity: action.quantity, //not important for bundles, bundle quantity should be ticket's quantity
         identifier: m.id + (action.bundleMerchProperty as string[])[index], // not important for bundles
         price: m.price, // not important for bundles, bundle price should be ticket's price
+        tickets: m.tickets
       })) || [];
 
       const bundleTicket: CartBundleItem = {

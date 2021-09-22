@@ -28,7 +28,6 @@ const displayForRegularMode = (ticketAvailable: string) => {
 
 const Checkout = () => {
   const router = useRouter();
-  // const windowWidth = useResize();
   const toast = useToast();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -66,7 +65,6 @@ const Checkout = () => {
 
   const ticketTypeHeaderId = new Set<string>()
 
-  //const [ticketTypeHeaderArray, setTicketTypeHeaderArray] = useState<JSX.Element[]>()
   const [sortedHeader, setSortedHeader] = useState<string[]>([]);
 
   useEffect(()=>{
@@ -104,14 +102,6 @@ const Checkout = () => {
         }
       }
     })()
-
-
-
-
-    // hack react-scroll初加载拿不到offset的问题
-    /*  scroll.scrollTo(1, {
-       containerId: 'checkout-scroll-body'
-     }); */
   }, [router.query])
 
   useEffect(() => {
@@ -253,6 +243,8 @@ const Checkout = () => {
             ...p,
             originalPValue: p.pValue
           }))
+          // if this merch's price is greater than 0, it's not considered to be 
+          // a bundle merch, but a regular merch binded to a ticket as optional item
           const bindTickets = m.activities.filter((a: any) => eventId === a.activityId)
             .map((a: any) => a.tickets.map((t: any) => t.ticketId))
           const merch: MerchItemDataProps = {
@@ -269,6 +261,7 @@ const Checkout = () => {
             show: m.show,
             isDonation: m.isDonation,
             property,
+            isOptionalBundleItem: (m.price > 0 && bindTickets[0].length),
             tickets: bindTickets[0] || []
           }
           return merch
@@ -318,7 +311,9 @@ const Checkout = () => {
 
   const filterBundleMerchForSelectedTicket = (ticketId: string) => {
     const filterMerchs = merchListState.filter(m => {
-      if (m.tickets.includes(ticketId)) {
+      // generate bundle items for the side bar to show
+      // filter out not isOptionalBundleItem , so the side bar only includes 0 price bundle items
+      if (m.tickets.includes(ticketId) && !m.isOptionalBundleItem) {
         return true
       }
     })
@@ -382,16 +377,16 @@ const Checkout = () => {
             break;
           case ETicketType.INPERSON:
             // not generate the tab for in person when the event is past
-            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+/*             if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
               return;
-            }
+            } */
             ticketTypeHeaderId.add('In-Person-Tickets');
             break;
           case ETicketType.FREEINPERSON:
             // not generate the tab for in person when the event is past
-            if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
+/*             if (eventDataForCheckout && moment(eventDataForCheckout.endTime).isBefore(new Date())) {
               return;
-            }
+            } */
             ticketTypeHeaderId.add('In-Person-Tickets');
             break;
           case ETicketType.PLAYBACK:
@@ -478,15 +473,6 @@ const Checkout = () => {
                           onClick={() => { setShowingTab(id) }}
                           className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
                           key={id}
-                        /* activeClass="active"
-                        containerId="checkout-scroll-body"
-
-                        to={id}
-                        name="myScrollToElement"
-                        spy={true}
-                        smooth={true}
-                        offset={windowWidth > 640 ? -56 : -44}
-                        duration={500} */
                         >
                           {id.replace(/-/g, ' ')}
                         </div>
@@ -497,13 +483,6 @@ const Checkout = () => {
                     <div
                       onClick={() => { setShowingTab('merch') }}
                       className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                    /* activeClass="active"
-                    containerId="checkout-scroll-body"
-                    to="merch"
-                    spy={true}
-                    smooth={true}
-                    offset={windowWidth > 640 ? -56 : -44}
-                    duration={500} */
                     >
                       Add on
                     </div> : <></>}
@@ -548,7 +527,6 @@ const Checkout = () => {
                     fontWeight: 600, textAlign: 'center', margin: '20px 0'
                   }}>
                     <h1>Event not yet published</h1>
-                    <h1>Please come back later</h1>
                   </div>
                 )}
                 {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
@@ -591,9 +569,9 @@ const Checkout = () => {
                                     disabledFlag = true
                                   }
                                   // if event has ended do not show the in person tickets at all
-                                  if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
+                                  /* if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
                                     return <Fragment key={item.id}></Fragment>
-                                  }
+                                  } */
                                   return renderTicketBaseOnAvailability(item, disabledFlag);
                                 } else return <Fragment key={item.id}></Fragment>
                               })
@@ -601,6 +579,41 @@ const Checkout = () => {
                           </div>
                         )
                       }
+
+
+                      {/* show bundle optional item here (not free but has relation to ticket) , only show under live ticket
+                          in person ticket tab, not showing in add on ticket tab
+                      */}
+                      {(merchListState.length > 0 && (showingTab !== 'merch') )&& (<div className="py-5 sm:py-8 text-white">
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                        {
+                          merchListState.map((item) => {
+                            let disabledFlag = false
+                            if (!saleStart) {
+                              disabledFlag = true
+                            }
+                            // not showing to the regular merch list if merch is 1. for app(virtual gift)
+                            // 2. deleted(show is false) 3.is not optional bundle merch
+                            if (item.forApp || !item.show || !item.isOptionalBundleItem) {
+                              return <Fragment key={item.id}></Fragment>
+                            }
+                            return (
+                              <MerchItem
+                                key={item.id}
+                                currency={eventDataForCheckout.default_currency}
+                                data={item}
+                                disabled={disabledFlag}
+                                onSelect={() => {
+                                  setSidebarOpen(false);
+                                  setSelectedRegularMerch(item)
+                                  setTimeout(()=>{ setSidebarOpen(true)}, 250)
+                                }}
+                              />
+                            )
+                          })
+                        }
+                      </div>
+                    </div>)}
                     </>}
                     {/* merch items start */}
                     {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) && (<div id="merch" className="py-5 sm:py-8 text-white">
@@ -613,7 +626,7 @@ const Checkout = () => {
                             }
                             // not showing to the regular merch list if merch is 1. for app(virtual gift)
                             // 2. deleted(show is false) 3.tickets list has item (bundle merch)
-                            if (item.forApp || !item.show || item.tickets.length) {
+                            if (item.forApp || !item.show || item.tickets.length || item.isOptionalBundleItem) {
                               return <Fragment key={item.id}></Fragment>
                             }
                             return (

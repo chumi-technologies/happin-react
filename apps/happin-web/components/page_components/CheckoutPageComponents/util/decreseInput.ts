@@ -32,10 +32,11 @@ export function decreaseMerchAmount(
   onChange: (arg1: MerchListAction) => void,
   removeItem: (arg1: RemoveItemHandlerParam) => void,
   propertyName: string,
+  quantity: number
 ) {
   //const propertyIndex = data.property.findIndex(p => p.pName === propertyName);
   onChange({ type: TicketAndMerchListActionKind.Increase, payload: data, quantity: 1, property: propertyName })
-  removeItem({item: data, quantity: 1, property: propertyName})
+  removeItem({item: data, quantity, property: propertyName})
 }
 
 
