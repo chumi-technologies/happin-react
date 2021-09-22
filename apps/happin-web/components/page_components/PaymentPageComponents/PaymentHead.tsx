@@ -31,7 +31,7 @@ const PaymentHead = ({
         <div className="md:flex md:items-center md:h-20">
           <div className="flex-1 min-w-0 md:flex md:items-center">
             <div className="flex items-center flex-1 min-w-0 pt-5 md:pt-0 pb-3 md:p-0 border-b md:border-b-0 border-solid border-white border-opacity-20">
-              <Link href="/checkout/612837057b14e585278f4329">
+              <Link href={`/checkout/${eventDataForCheckout?.id}`}>
                 <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
                   <Left theme="outline" size="24" fill="currentColor"/>
                   <span className="md:ml-2">Back</span>

@@ -18,7 +18,6 @@ import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import jwt_decode from "jwt-decode";
-import { Popover as Pop, ArrowContainer } from 'react-tiny-popover'
 
 
 const CheckoutHead = ({
@@ -399,7 +398,7 @@ const CheckoutHead = ({
   }
 
   return (
-    <div className="footer-action fixed bottom-0 right-0 left-0 sm:relative bg-gray-800 border-b border-solid border-gray-700 z-10">
+    <div className="footer-action fixed bottom-0 right-0 left-0 sm:relative bg-gray-800 border-b border-solid border-gray-700 z-20">
       <div className="container">
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
           <div className="flex-1 font-semibold min-w-0 hidden sm:block">

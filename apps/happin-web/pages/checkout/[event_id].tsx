@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useReducer, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import TicketItem from '../../components/page_components/CheckoutPageComponents/TicketItem';
 import CheckoutHead from '../../components/page_components/CheckoutPageComponents/CheckoutHead';
 import BundleSidebar from '../../components/page_components/CheckoutPageComponents/BundleSidebar';
@@ -14,7 +14,6 @@ import MerchSidebar from '@components/page_components/CheckoutPageComponents/Mer
 import { releaseLock } from './payment';
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { useToast } from '@chakra-ui/react';
-import { User } from 'lib/model/user';
 
 const displayForBoxOfficeMode = (ticketAvailable: string) => {
   if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {

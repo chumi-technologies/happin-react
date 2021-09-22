@@ -46,7 +46,6 @@
     "react-share": "^4.4.0",
     "react-slick": "^0.28.1",
     "react-spring-lightbox": "^1.6.0",
-    "react-tiny-popover": "^7.0.0",
     "sass": "^1.35.1",
     "styled-components": "^5.3.0"
   },
