@@ -92,7 +92,7 @@ export default function EmailSignUp() {
         setProcessing(false)
       }, 2000)
     } catch (error) {
-      if (error.code === 10012) {
+      if (err.message.includes('already associated')) {
         toast.error('User exists, please sign in');
       } else if (error.code.includes('auth/email-already-in-use')) {
         toast.error('Email exists, please try another one.')
