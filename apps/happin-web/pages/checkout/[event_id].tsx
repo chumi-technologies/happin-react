@@ -461,14 +461,14 @@ const Checkout = () => {
 
   return (
     <div className="checkout__page">
-      <div className="flex flex-col-reverse md:flex-col h-full">
+      <div className="sm:flex sm:flex-col-reverse md:flex-col sm:h-full">
         <CheckoutHead
           saleStart={saleStart}
           inPresale={inPresale}
           cartPopoverMsg={cartPopoverMsg}
           onPresaleCodeValidate={setSaleStart} />
-        <div className="flex-1 h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
-          <div className="sticky md:relative top-0 bg-gray-800 shadow-2xl z-10 border-b border-solid border-gray-700 md:border-0">
+        <div className="sm:flex-1 sm:h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
+          <div className="fixed sm:sticky md:relative top-0 left-0 right-0 bg-gray-800 shadow-2xl z-10 border-b border-solid border-gray-700 md:border-0">
             <div className="container">
               <div className="flex" style={{justifyContent: 'space-between'}}>
                 <div className="flex">

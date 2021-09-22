@@ -7,7 +7,7 @@ import { useCheckoutState } from "contexts/checkout-state";
 
 const Layout = ({ children }: { children: any }) => {
   // TODO  IMPORTANT BECAUSE HAPPIN WEB ANGULAR IS STILL OUR EVENT DETAIL
-  // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO 
+  // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
@@ -18,7 +18,7 @@ const Layout = ({ children }: { children: any }) => {
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
-  
+
   useEffect(() => {
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
@@ -51,7 +51,7 @@ const Layout = ({ children }: { children: any }) => {
       )}
 
       {/* Header Section */}
-      <div className="flex flex-col h-screen">
+      <div className="sm:flex sm:flex-col sm:h-screen">
         {showHeader && <Header />}
         {children}
       </div>

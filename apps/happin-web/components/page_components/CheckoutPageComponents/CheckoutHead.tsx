@@ -399,7 +399,7 @@ const CheckoutHead = ({
   }
 
   return (
-    <div className="relative bg-gray-800 border-b border-solid border-gray-700">
+    <div className="footer-action fixed bottom-0 right-0 left-0 sm:relative bg-gray-800 border-b border-solid border-gray-700 z-10">
       <div className="container">
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
           <div className="flex-1 font-semibold min-w-0 hidden sm:block">

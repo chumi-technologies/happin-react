@@ -136,10 +136,15 @@
 
 // Check out
 .checkout__page {
-  @apply relative flex-1 h-0 bg-black text-white overflow-y-auto overflow-x-hidden;
+  @apply relative sm:flex-1 sm:h-0 bg-black text-white sm:overflow-y-auto overflow-x-hidden;
 }
 .checkout__container {
   max-width: 600px;
+  padding-top: 44px;
+  padding-bottom: 68px;
+  @media (min-width: 640px) {
+    padding: 0;
+  }
   @media (min-width: 1280px) {
     max-width: 720px;
   }
@@ -237,7 +242,7 @@
   transform: translate(50%, -50%);
 }
 .checkout__sidebar {
-  @apply absolute right-0 flex flex-col bg-gray-800 bottom-0 z-20 bg-opacity-80 border-l border-solid border-gray-800;
+  @apply fixed top-0 sm:absolute right-0 w-full flex flex-col bg-gray-800 bottom-0 z-20 bg-opacity-80 border-l border-solid border-gray-800;
   transform: translateX(100%);
   transition: all .3s;
   backdrop-filter: saturate(1.8) blur(20px);
@@ -245,8 +250,6 @@
     transform: translateX(0);
     box-shadow: -10px 10px 50px -12px rgba(0, 0, 0, .6);
   }
-  width: 100%;
-  top: 0;
   @media (min-width: 640px) {
     top: 57px;
     width: 450px;
