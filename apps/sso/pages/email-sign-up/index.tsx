@@ -80,7 +80,11 @@ export default function EmailSignUp() {
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
       if (firebaseToken) {
-        await signUpHappin(firebaseToken, { version: 2 });
+        const response = await signUpHappin(firebaseToken, { version: 2 });
+        if ( response.code=== 10012) {
+          toast.error('User exists, please sign in');
+          return
+        }
         if (origin.includes('ticketing.happin')) {
           const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
           window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
