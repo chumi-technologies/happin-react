@@ -84,7 +84,7 @@ const TicketItem = (props: TicketItemProps) => {
         )}
 
       </div>
-      <HStack my={2}>
+      <HStack mt={2}>
         {
           data.features && data.features.map((item: TicketItemFeaturesProps, index) => (
             <Tooltip
@@ -105,7 +105,7 @@ const TicketItem = (props: TicketItemProps) => {
         }
       </HStack>
       {
-        data.notes && <div className="text-white text-xs sm:text-sm">{data.notes}</div>
+        data.notes && <div className="text-white text-xs sm:text-sm mt-2">{data.notes}</div>
       }
       {
         data.ticketType === ETicketType.PFM && (

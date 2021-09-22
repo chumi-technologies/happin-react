@@ -12,7 +12,7 @@ import { increaseBundleTicketAmount, increaseMerchAmount, increaseTicketAmount }
 import { currencyFormatter } from './util/currencyFormat';
 import { deleteMerchFromCart, deleteTicketFromCart } from './util/deleteInput';
 import { generateToast } from './util/toast';
-import { useToast } from '@chakra-ui/react';
+import { Tooltip, useToast } from '@chakra-ui/react';
 import { validateCode } from 'lib/api';
 import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
@@ -33,7 +33,7 @@ const CheckoutHead = ({
   cartPopoverMsg: any,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatcMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatchMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
   const { user, exchangeForCrowdCoreToken } = useUserState()
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
@@ -44,7 +44,7 @@ const CheckoutHead = ({
   const toast = useToast()
   let innerWidth: number = 0;
   if (typeof window !== 'undefined') {
-    innerWidth = window.innerWidth; 
+    innerWidth = window.innerWidth;
   }
 
   const cartButton = useRef<any>(null);
@@ -178,8 +178,8 @@ const CheckoutHead = ({
     return bundleMerchs
   }
 
-  // array of the selected merchs property name inside this bundle 
-  // (eg. ['small', 'medium'] means 'small' is the selected property 
+  // array of the selected merchs property name inside this bundle
+  // (eg. ['small', 'medium'] means 'small' is the selected property
   // for first mech with property name 'small' and so on
   const getPropertiesForMerchBundle = (merchs: CartMerchItem[]): string[] => {
     // this list will contain all properties  (user cannot skip merch inside a bundle)
@@ -195,7 +195,7 @@ const CheckoutHead = ({
   }
 
   // the input number is read from Cart , so the max input must use original quantity,
-  // (quantity will keep decreasing as item add to cart, if quantity is used here, 
+  // (quantity will keep decreasing as item add to cart, if quantity is used here,
   // the max will never reach the correct amount) same for getMaxMerchNumberInputQty()
   const getMaxTicketNumberInputQty = (data: TicketItemDataProps) => {
     if (data?.originalQuantity > data?.maxPerOrder) {
@@ -280,11 +280,11 @@ const CheckoutHead = ({
                   max={getMaxMerchNumberInputQty(getEditingMerchListItem(m), m.property)}
                   value={m.quantity || 0}
                   size="sm"
-                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, removeItem, m.property) }}
-                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), dispatcMerchListAction, addItem, m.property, 1) }}
+                  onDecreaseClick={() => { decreaseMerchAmount(getEditingMerchListItem(m), dispatchMerchListAction, removeItem, m.property) }}
+                  onIncreaseClick={() => { increaseMerchAmount(getEditingMerchListItem(m), dispatchMerchListAction, addItem, m.property, 1) }}
                 />
               </div>
-              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+              <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
@@ -360,7 +360,7 @@ const CheckoutHead = ({
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
       dispatchTicketListAction,
-      dispatcMerchListAction,
+      dispatchMerchListAction,
       1,
       addItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -379,7 +379,7 @@ const CheckoutHead = ({
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
       dispatchTicketListAction,
-      dispatcMerchListAction,
+      dispatchMerchListAction,
       quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -391,7 +391,7 @@ const CheckoutHead = ({
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
       dispatchTicketListAction,
-      dispatcMerchListAction,
+      dispatchMerchListAction,
       t.quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -409,14 +409,16 @@ const CheckoutHead = ({
           <Popover className="flex md:relative sm:ml-4">
             {({ open }) => (
               <>
-                <Popover.Button
-                  as="div"
-                  ref={cartButton}
-                  className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
-                >
-                  <SvgIcon id="buy" className="text-xl" />
-                  <div className="badge-count">{cartItemCount()}</div>
-                </Popover.Button>
+                <Tooltip hasArrow label="Item added successfully" px={3} py={2} borderRadius="lg" offset={[0, 12]} placement="bottom" bg="green.500" color="green.900" isOpen={cartPopoverMsg.show && !open && innerWidth >= 768}>
+                  <Popover.Button
+                    as="div"
+                    ref={cartButton}
+                    className={classNames('relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 border-2 border-solid border-gray-600 rounded-full cursor-pointer hover:bg-gray-600 transition', { 'bg-gray-600': open })}
+                  >
+                    <SvgIcon id="buy" className="text-xl" />
+                    <div className="badge-count">{cartItemCount()}</div>
+                  </Popover.Button>
+                </Tooltip>
                 <Transition
                   as={Fragment}
                   enter="checkout-enter"
@@ -469,36 +471,36 @@ const CheckoutHead = ({
               </>
             )}
           </Popover>
-          {(cartButton.current && (innerWidth >= 768))  && (
-            <Pop
-              isOpen={cartPopoverMsg.show}
-              parentElement={cartButton?.current as HTMLElement}
-              containerStyle={{ zIndex: '29' }}
-              contentLocation={() => {
-                //console.log((cartButton?.current as HTMLElement).clientWidth)
-                return { top: 55, left: -65 }
-              }}
-              content={({ childRect, popoverRect }) => (
-                <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
-                  position={'bottom'}
-                  childRect={childRect}
-                  popoverRect={popoverRect}
-                  arrowColor={'#65bd6c'}
-                  arrowSize={5}
-                  arrowStyle={{ opacity: 1, left: '50%', transform: 'translate(-50%, 0)' }}
-                >
-                  <div
-                    className="text-sm"
-                    style={{ backgroundColor: '#65bd6c', opacity: 1, borderRadius: '10px', padding: '10px' }}
-                  >
-                    Item added successfully
-                  </div>
-                </ArrowContainer>
-              )}
-            >
-              <div style={{ display: 'none' }}></div>
-            </Pop>
-          )}
+          {/*{(cartButton.current && (innerWidth >= 768))  && (*/}
+          {/*  <Pop*/}
+          {/*    isOpen={cartPopoverMsg.show}*/}
+          {/*    parentElement={cartButton?.current as HTMLElement}*/}
+          {/*    containerStyle={{ zIndex: '29' }}*/}
+          {/*    contentLocation={() => {*/}
+          {/*      //console.log((cartButton?.current as HTMLElement).clientWidth)*/}
+          {/*      return { top: 55, left: -65 }*/}
+          {/*    }}*/}
+          {/*    content={({ childRect, popoverRect }) => (*/}
+          {/*      <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!*/}
+          {/*        position={'bottom'}*/}
+          {/*        childRect={childRect}*/}
+          {/*        popoverRect={popoverRect}*/}
+          {/*        arrowColor={'#65bd6c'}*/}
+          {/*        arrowSize={5}*/}
+          {/*        arrowStyle={{ opacity: 1, left: '50%', transform: 'translate(-50%, 0)' }}*/}
+          {/*      >*/}
+          {/*        <div*/}
+          {/*          className="text-sm"*/}
+          {/*          style={{ backgroundColor: '#65bd6c', opacity: 1, borderRadius: '10px', padding: '10px' }}*/}
+          {/*        >*/}
+          {/*          Item added successfully*/}
+          {/*        </div>*/}
+          {/*      </ArrowContainer>*/}
+          {/*    )}*/}
+          {/*  >*/}
+          {/*    <div style={{ display: 'none' }}></div>*/}
+          {/*  </Pop>*/}
+          {/*)}*/}
 
           {/* show presale only when in presale duration and sale not start */}
           {(saleStart === false && inPresale) && <button className="flex-1 sm:flex-none btn btn-rose !font-semibold !rounded-full !px-5 ml-4 sm:ml-6 !text-sm sm:!text-base" onClick={openModal}>Enter Pre-Sale Code</button>}

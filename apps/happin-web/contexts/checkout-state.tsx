@@ -72,7 +72,7 @@ interface CheckoutContext {
   setTokenPassedIn: (arg: boolean) => void,
   setOpenInApp: (arg: boolean) => void,
   setOnlyShowMerch: (arg: boolean) => void,
-  dispatcMerchListAction: (arg: MerchListAction)=> void,
+  dispatchMerchListAction: (arg: MerchListAction)=> void,
   dispatchTicketListAction: (arg: TicketListAction)=> void,
   setAffiliate: (arg: string) => void,
   setGeneralTicketInfo: (arg: GeneralTicketInfo) => void,
@@ -385,7 +385,7 @@ export function CheckoutState({ children }: { children: any }) {
   const [userInfoFromUrl, setUserInfoFromUrl] = useState<any>();
 
 
-  const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
+  const [merchListState, dispatchMerchListAction] = useReducer(merchListReducer, []);
   const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
 
   const addItemToCartHandler = ({ item,
@@ -420,7 +420,7 @@ export function CheckoutState({ children }: { children: any }) {
     setTokenPassedIn: setTokenPassedIn,
     setOpenInApp: setOpenInApp,
     setOnlyShowMerch: setOnlyShowMerch,
-    dispatcMerchListAction: dispatcMerchListAction,
+    dispatchMerchListAction: dispatchMerchListAction,
     dispatchTicketListAction: dispatchTicketListAction,
     setAffiliate: setAffiliate,
     setGeneralTicketInfo: setGeneralTicketInfo,

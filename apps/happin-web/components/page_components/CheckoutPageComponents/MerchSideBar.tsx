@@ -20,7 +20,7 @@ type CheckoutSidebarProps = {
 
 const MerchSidebar = (props: CheckoutSidebarProps) => {
   const { isOpen, onClose, merch, setIsOpen, setCartPopoverMsg } = props;
-  const { addItem, dispatcMerchListAction } = useCheckoutState();
+  const { addItem, dispatchMerchListAction } = useCheckoutState();
   //const [merchEditingIndex, setMerchEditingIndex] = useState(0);
 
   const [inputValue, setInputValue] = useState(0)
@@ -38,7 +38,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseMerchAmount(merch, dispatcMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
+    increaseMerchAmount(merch, dispatchMerchListAction, addItem, merch?.property[selectedPropertyIndex]?.pName, inputValue);
     setIsOpen((s:boolean)=>!s);
     setInputValue(0)
     setSelectedPropertyIndex(0);

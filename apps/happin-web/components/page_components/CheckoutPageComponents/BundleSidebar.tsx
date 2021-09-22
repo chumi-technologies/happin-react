@@ -23,7 +23,7 @@ type CheckoutSidebarProps = {
 
 const BundleSidebar = (props: CheckoutSidebarProps) => {
   const { isOpen, setIsOpen, onClose, merchs, ticket, setCartPopoverMsg } = props;
-  const { eventDataForCheckout, addItem, dispatcMerchListAction, dispatchTicketListAction } = useCheckoutState();
+  const { eventDataForCheckout, addItem, dispatchMerchListAction, dispatchTicketListAction } = useCheckoutState();
   const [inputValue, setInputValue] = useState(0)
 
   // array of the selected merchs property name inside this bundle 
@@ -100,7 +100,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
     if (!inputValue) {
       return
     }
-    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatcMerchListAction, inputValue, addItem, selectedProperties);
+    increaseBundleTicketAmount(ticket, merchs, dispatchTicketListAction, dispatchMerchListAction, inputValue, addItem, selectedProperties);
     setIsOpen((s: boolean) => !s);
     setInputValue(0)
     setSelectedProperties([]);

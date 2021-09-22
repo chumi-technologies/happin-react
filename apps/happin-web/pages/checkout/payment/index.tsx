@@ -124,7 +124,7 @@ const PaymentInner = (props: any) => {
     codeUsed,
     setCodeUsed,
     dispatchTicketListAction,
-    dispatcMerchListAction,
+    dispatchMerchListAction,
     removeItem,
     ticketListState,
     merchListState,
@@ -423,7 +423,7 @@ const PaymentInner = (props: any) => {
       getEdtingTicketListItem(t),
       filterBundleMerchForSelectedTicket(t.ticketId),
       dispatchTicketListAction,
-      dispatcMerchListAction,
+      dispatchMerchListAction,
       t.quantity,
       removeItem,
       getPropertiesForMerchBundle(t.merchs),
@@ -1179,7 +1179,7 @@ const PaymentInner = (props: any) => {
                                       isDisabled={true}
                                     />
                                   </div>
-                                  <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatcMerchListAction, removeItem) }}
+                                  <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
                                     className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
                                     <Delete theme="outline" size="14" fill="currentColor" />
                                   </div>
