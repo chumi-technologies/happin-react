@@ -558,7 +558,7 @@ const Checkout = () => {
                         {
                           ticketListState.map((item) => {
                             if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
-                              || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE) {
+                              || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
 
                               let disabledFlag = false;
                               if (!saleStart) {
@@ -573,7 +573,7 @@ const Checkout = () => {
                         {
                           ticketListState.map((item) => {
                             if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
-                              && item.visibility !== ETicketVisibility.INVISIBLE) {
+                              && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
 
                               // for inperson ticket, if event has started, disable all the in person tickets,
                               // by passing the disabled into ticketItem
