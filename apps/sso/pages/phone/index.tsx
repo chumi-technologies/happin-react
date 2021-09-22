@@ -79,7 +79,7 @@ export default function Phone() {
         setProcessing(false)
       }, 2000)
     } catch (err) {
-      if (err.message.includes('already associated')) {
+      if (err.message.includes('already exist with phone')) {
         toast.error('User exists, please sign in');
       } else {
         toast.error('Unknown error, please try again later');
