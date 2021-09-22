@@ -27,6 +27,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
+import { User } from 'lib/model/user';
+import { useUserState } from 'contexts/user-state';
 
 
 enum EOrderStatus {
@@ -118,24 +120,26 @@ const PaymentInner = (props: any) => {
   const elements = useElements();
   const [stripeInputError, setStripeInputError] = useState<any>(null);
   const { eventDataForCheckout,
-          cart, 
-          codeUsed, 
-          setCodeUsed, 
-          dispatchTicketListAction, 
-          dispatcMerchListAction,
-          removeItem, 
-          ticketListState, 
-          merchListState, 
-          affiliate, 
-          openInApp,
-          generalTicketInfo
-        } = useCheckoutState();
+    cart,
+    codeUsed,
+    setCodeUsed,
+    dispatchTicketListAction,
+    dispatcMerchListAction,
+    removeItem,
+    ticketListState,
+    merchListState,
+    affiliate,
+    openInApp,
+    generalTicketInfo,
+    userInfoFromUrl
+  } = useCheckoutState();
+  const { user } = useUserState();
   const [validateCodeLoading, setValidateCodeLoading] = useState<boolean>(false);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
-  const [checkoutQuestions,setCheckoutQuestions] = useState<any[]>([]);
+  const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
 
 
@@ -193,9 +197,9 @@ const PaymentInner = (props: any) => {
 
   const onPayPalApprove = (data: any, actions: any) => {
     return actions.order.capture().then(async (details: any) => {
-      const crowdcoreOrderId = localStorage.getItem('orderId')    
+      const crowdcoreOrderId = localStorage.getItem('orderId')
       const userForm = getValues()
-      const checkoutFormAnswers  = generateQuestionAnswer(userForm);
+      const checkoutFormAnswers = generateQuestionAnswer(userForm);
       const shippingForm = {
         country: userForm.country,
         city: userForm.city,
@@ -212,7 +216,7 @@ const PaymentInner = (props: any) => {
         phone: userForm.phone,
         buyerName: userForm.fullName,
         affiliateCode: affiliate,
-        checkoutForm:checkoutFormAnswers
+        checkoutForm: checkoutFormAnswers
       }
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string)
     });
@@ -259,38 +263,38 @@ const PaymentInner = (props: any) => {
           }
         ],
       }
-    } 
+    }
 
     return actions.order.create(paypalObject);
   }
 
-  const generateQuestionAnswer = (data:any) => {
-    const checkoutFormAnswers:any[][] =[];
-    const questions:any = checkoutQuestions.map(q=>({question:q.questions,type:q.type}));
-    if(questions) {
-        for (let i=0;i<questions.length;i++) {
-        if(questions[i].type === 'multipleSelect') {
-           let multiSelectAnswer = []; 
-           for(let j=0;j<data[questions[i].question].length;j++) {
-             multiSelectAnswer.push(data[questions[i].question][j].value);
-           } 
-           checkoutFormAnswers.push(multiSelectAnswer);      
-        } else if(questions[i].type === 'singleSelect') {
-           let singleSelectAnswer =[];
-           singleSelectAnswer.push(data[questions[i].question].value)
-           checkoutFormAnswers.push(singleSelectAnswer);
-        } else if(questions[i].type === 'text'){
-            let textAnswer =[];
-           textAnswer.push(data[questions[i].question])
-           checkoutFormAnswers.push(textAnswer);
-        }     
+  const generateQuestionAnswer = (data: any) => {
+    const checkoutFormAnswers: any[][] = [];
+    const questions: any = checkoutQuestions.map(q => ({ question: q.questions, type: q.type }));
+    if (questions) {
+      for (let i = 0; i < questions.length; i++) {
+        if (questions[i].type === 'multipleSelect') {
+          let multiSelectAnswer = [];
+          for (let j = 0; j < data[questions[i].question].length; j++) {
+            multiSelectAnswer.push(data[questions[i].question][j].value);
+          }
+          checkoutFormAnswers.push(multiSelectAnswer);
+        } else if (questions[i].type === 'singleSelect') {
+          let singleSelectAnswer = [];
+          singleSelectAnswer.push(data[questions[i].question].value)
+          checkoutFormAnswers.push(singleSelectAnswer);
+        } else if (questions[i].type === 'text') {
+          let textAnswer = [];
+          textAnswer.push(data[questions[i].question])
+          checkoutFormAnswers.push(textAnswer);
+        }
       }
     }
     return checkoutFormAnswers;
   }
 
   const onPaidTicketSubmit = async (data: any) => {
-    const checkoutFormAnswers  = generateQuestionAnswer(data);
+    const checkoutFormAnswers = generateQuestionAnswer(data);
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
       return
@@ -333,14 +337,14 @@ const PaymentInner = (props: any) => {
       billingAddress,
       shipping: shippingForm,
       affiliateCode: affiliate,
-      checkoutForm:checkoutFormAnswers
+      checkoutForm: checkoutFormAnswers
     }
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
 
   }
 
   const onFreeTicketSubmit = async (data: any) => {
-    const checkoutFormAnswers  = generateQuestionAnswer(data);
+    const checkoutFormAnswers = generateQuestionAnswer(data);
     if (!agreeToTerms) {
       generateToast('Terms and condition is not checked', toast);
       return
@@ -366,7 +370,7 @@ const PaymentInner = (props: any) => {
       buyerName: data.fullName,
       shipping: shippingForm,
       affiliateCode: affiliate,
-      checkoutForm:checkoutFormAnswers
+      checkoutForm: checkoutFormAnswers
     }
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
   };
@@ -480,16 +484,16 @@ const PaymentInner = (props: any) => {
     }
   }
 
-  const getCheckoutFormQuestionFromServer = async (acid:string)=> {
+  const getCheckoutFormQuestionFromServer = async (acid: string) => {
     try {
-      const res:MappingQuestionsResponse[] = await getCheckoutFormQuestions(acid);
+      const res: MappingQuestionsResponse[] = await getCheckoutFormQuestions(acid);
       if (res) {
-        const mappingQuestions:any[] = res.map( question => ({
+        const mappingQuestions: any[] = res.map(question => ({
           type: question.type,
           isMandatory: question.isMandatory,
           appliedToTicketId: question.appliedToTicketId,
           questions: question.questions,
-          definedAnswers:question.definedAnswers.map((a: any) => ({value:a,label:a})),
+          definedAnswers: question.definedAnswers.map((a: any) => ({ value: a, label: a })),
         }))
         setCheckoutQuestions(mappingQuestions);
       }
@@ -502,7 +506,7 @@ const PaymentInner = (props: any) => {
   }
   useEffect(() => {
     const orderId = localStorage.getItem('orderId');
-   //const activityId = localStorage.getItem('activityId');
+    //const activityId = localStorage.getItem('activityId');
     if (eventDataForCheckout) {
       // redirect logic is handle in outer wrapper
       /* if (orderId) {
@@ -553,7 +557,7 @@ const PaymentInner = (props: any) => {
   useEffect(() => {
     if (eventDataForCheckout) {
       getCheckoutFormQuestionFromServer(eventDataForCheckout?.id);
-    }   
+    }
   }, []);
 
 
@@ -568,20 +572,20 @@ const PaymentInner = (props: any) => {
   }, [cart, codeUsed]);
 
   useEffect(() => {
-  const questions = checkoutQuestions.map(q=>q.questions);
-  if(questions) {
-      for (let i=0;i<questions.length;i++) {
-      // @ts-ignore
-      if (isSubmitting && errors[questions[i]] ) {
-        generateToast(`Please enter all required information for organizer question`, toast);
-        break;
-      }   
+    const questions = checkoutQuestions.map(q => q.questions);
+    if (questions) {
+      for (let i = 0; i < questions.length; i++) {
+        // @ts-ignore
+        if (isSubmitting && errors[questions[i]]) {
+          generateToast(`Please enter all required information for organizer question`, toast);
+          break;
+        }
+      }
+    } else if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
+      generateToast(`Please enter all required information for shipping address`, toast);
+    } else if (!showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone)) {
+      generateToast(`Please enter all required information`, toast);
     }
-  } else if (showShipping && formState.isSubmitting && (formState.errors.email || formState.errors.fullName || formState.errors.phone || formState.errors.province || formState.errors.city || formState.errors.country || formState.errors.postcode)) {
-    generateToast(`Please enter all required information for shipping address`, toast);
-  } else if (!showShipping && isSubmitting && (errors.email || errors.fullName || errors.phone)){
-    generateToast(`Please enter all required information`, toast);
-  }
   }, [formState]);
 
   const postPaymentToCrowdCore = async (form: any, crowdcoreOrderId: string, data?: any) => {
@@ -725,19 +729,6 @@ const PaymentInner = (props: any) => {
     return (
       <>
         <div className="lg:col-span-3">
-          <label htmlFor="tel" className="form-label required">Phone number</label>
-          <input
-            id="tel"
-            type="tel"
-            className="form-field"
-            placeholder="Phone number"
-            {...register('phone', { required: true })}
-          />
-          {errors.phone && (
-            <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
-          )}
-        </div>
-        <div className="lg:col-span-3">
           <label htmlFor="country" className="form-label required">Country</label>
           <Controller
             name="country"
@@ -844,6 +835,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-3">
                               <label htmlFor="fullName" className="form-label required">Full name</label>
                               <input
+                                defaultValue={userInfoFromUrl.displayname || user?.displayname || ''}
                                 id="fullName"
                                 type="text"
                                 className="form-field"
@@ -857,6 +849,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-3">
                               <label htmlFor="email" className="form-label required">Email</label>
                               <input
+                                defaultValue={userInfoFromUrl.email || user?.email || ''}
                                 id="email"
                                 type="email"
                                 className="form-field"
@@ -873,95 +866,109 @@ const PaymentInner = (props: any) => {
                                 <div className="text-rose-500 text-sm mt-1">Email is invalid.</div>
                               )}
                             </div>
+                            <div className="lg:col-span-3">
+                              <label htmlFor="tel" className="form-label required">Phone number</label>
+                              <input
+                                defaultValue={userInfoFromUrl.phonenumber || user?.phonenumber || ''}                            
+                                id="tel"
+                                type="tel"
+                                className="form-field"
+                                placeholder="Phone number"
+                                {...register('phone', { required: true })}
+                              />
+                              {errors.phone && (
+                                <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
+                              )}
+                            </div>
                             {generateShippingFormTemplate()}
                             <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>
-                              {checkoutQuestions && checkoutQuestions.map(q =>{ 
-                                if(q.type === 'singleSelect') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({ field: { onChange, onBlur, value } }) => (
-                                          <Select
-                                            styles={customStyles}
-                                            options={q.definedAnswers}
-                                            onChange={(val) => { onChange(val) }}
-                                            onBlur={onBlur}
-                                            selected={value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory }
-                                        }                                      
-                                      />
-                                        {/*
+                            {checkoutQuestions && checkoutQuestions.map(q => {
+                              if (q.type === 'singleSelect') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, onBlur, value } }) => (
+                                        <Select
+                                          styles={customStyles}
+                                          options={q.definedAnswers}
+                                          onChange={(val) => { onChange(val) }}
+                                          onBlur={onBlur}
+                                          selected={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                      </div>
-                                  )       
-                                }
-                                if(q.type === 'multipleSelect') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({ field: { onChange, onBlur, value } }) => (
-                                          <Select
-                                            styles={customStyles}
-                                            isMulti = {true}
-                                            options={q.definedAnswers}
-                                            onChange={(val) => { onChange(val) }}
-                                            onBlur={onBlur}
-                                            selected={value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory}
-                                        }
-                                      />
-                                        {/*
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                              if (q.type === 'multipleSelect') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, onBlur, value } }) => (
+                                        <Select
+                                          styles={customStyles}
+                                          isMulti={true}
+                                          options={q.definedAnswers}
+                                          onChange={(val) => { onChange(val) }}
+                                          onBlur={onBlur}
+                                          selected={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                      </div>
-                                  )        
-                                }
-                                if(q.type === 'text') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({field:{onChange,value}}) => (
-                                          <textarea
-                                            className="form-field"
-                                            onChange={(val) => { onChange(val) }}
-                                            rows={3}
-                                            placeholder="Please enter"
-                                            value = {value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory}
-                                        }
-                                      />
-                                      {/*
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                              if (q.type === 'text') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, value } }) => (
+                                        <textarea
+                                          className="form-field"
+                                          onChange={(val) => { onChange(val) }}
+                                          rows={3}
+                                          placeholder="Please enter"
+                                          value={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                    </div>
-                                  )       
-                                }
-                              })}
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                            })}
                           </div>
                         </div>
                       </form>
@@ -977,6 +984,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-6">
                               <label htmlFor="fullName" className="form-label required">Full name</label>
                               <input
+                                defaultValue={userInfoFromUrl?.displayname || user?.displayname || ''}
                                 id="fullName"
                                 type="text"
                                 className="form-field"
@@ -990,6 +998,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-6">
                               <label htmlFor="email" className="form-label required">Email</label>
                               <input
+                                defaultValue={userInfoFromUrl?.email || user?.email || ''}
                                 id="email"
                                 type="email"
                                 className="form-field"
@@ -1009,6 +1018,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-6">
                               <label htmlFor="tel" className="form-label required">Phone number</label>
                               <input
+                                defaultValue={userInfoFromUrl?.phonenumber || user?.phonenumber || ''}                              
                                 id="tel"
                                 type="tel"
                                 className="form-field"
@@ -1019,93 +1029,93 @@ const PaymentInner = (props: any) => {
                                 <div className="text-rose-500 text-sm mt-1">Phone number is required.</div>
                               )}
                             </div>
-                              {checkoutQuestions && checkoutQuestions.map(q =>{ 
-                                if(q.type === 'singleSelect') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({ field: { onChange, onBlur, value } }) => (
-                                          <Select
-                                            styles={customStyles}
-                                            options={q.definedAnswers}
-                                            onChange={(val) => { onChange(val) }}
-                                            onBlur={onBlur}
-                                            selected={value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory }
-                                        }
-                                      />
-                                      {/*
+                            {checkoutQuestions && checkoutQuestions.map(q => {
+                              if (q.type === 'singleSelect') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, onBlur, value } }) => (
+                                        <Select
+                                          styles={customStyles}
+                                          options={q.definedAnswers}
+                                          onChange={(val) => { onChange(val) }}
+                                          onBlur={onBlur}
+                                          selected={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                      </div>
-                                  )       
-                                }
-                                if(q.type === 'multipleSelect') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({ field: { onChange, onBlur, value } }) => (
-                                          <Select
-                                            styles={customStyles}
-                                            isMulti = {true}
-                                            options={q.definedAnswers}
-                                            onChange={(val) => { onChange(val) }}
-                                            onBlur={onBlur}
-                                            selected={value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory}
-                                        }
-                                      />
-                                        {/*
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                              if (q.type === 'multipleSelect') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, onBlur, value } }) => (
+                                        <Select
+                                          styles={customStyles}
+                                          isMulti={true}
+                                          options={q.definedAnswers}
+                                          onChange={(val) => { onChange(val) }}
+                                          onBlur={onBlur}
+                                          selected={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                      </div>
-                                  )        
-                                }
-                                if(q.type === 'text') {
-                                  return (
-                                    <div key={q.questions} className="lg:col-span-6">
-                                      <div className={"font-semibold mb-2 "+ (q.isMandatory ? "required":"")}>{q.questions}</div>
-                                      <Controller
-                                        name= {q.questions}
-                                        control={control}
-                                        render={({field:{onChange,value}}) => (
-                                          <textarea
-                                            className="form-field"
-                                            onChange={(val) => { onChange(val) }}
-                                            rows={3}
-                                            placeholder="Please enter"
-                                            value = {value}
-                                          />
-                                        )}
-                                        rules={
-                                          { required: q.isMandatory}
-                                        }
-                                      />
-                                        {/*
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                              if (q.type === 'text') {
+                                return (
+                                  <div key={q.questions} className="lg:col-span-6">
+                                    <div className={"font-semibold mb-2 " + (q.isMandatory ? "required" : "")}>{q.questions}</div>
+                                    <Controller
+                                      name={q.questions}
+                                      control={control}
+                                      render={({ field: { onChange, value } }) => (
+                                        <textarea
+                                          className="form-field"
+                                          onChange={(val) => { onChange(val) }}
+                                          rows={3}
+                                          placeholder="Please enter"
+                                          value={value}
+                                        />
+                                      )}
+                                      rules={
+                                        { required: q.isMandatory }
+                                      }
+                                    />
+                                    {/*
                                            // @ts-ignore */}
-                                        { errors[q.questions] && (
-                                          <div className="text-rose-500 text-sm mt-1">This question is required.</div>
-                                        )}
-                                    </div>
-                                  )       
-                                }
-                              })}
+                                    {errors[q.questions] && (
+                                      <div className="text-rose-500 text-sm mt-1">This question is required.</div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                            })}
                           </div>
                         </div>
                       </form>
@@ -1349,12 +1359,12 @@ const PaymentInner = (props: any) => {
                             {!chooseStripe &&
                               <>
                                 {(scriptLoaded && eventDataForCheckout?.paymentMethod.includes('PayPal')) &&
-                                <>
-                                  <div className="divider-words">OR</div>
-                                  <PayPalButton
-                                    createOrder={(data: any, actions: any) => createPayPalOrder(data, actions)}
-                                    onApprove={(data: any, actions: any) => onPayPalApprove(data, actions)} />
-                                </>
+                                  <>
+                                    <div className="divider-words">OR</div>
+                                    <PayPalButton
+                                      createOrder={(data: any, actions: any) => createPayPalOrder(data, actions)}
+                                      onApprove={(data: any, actions: any) => onPayPalApprove(data, actions)} />
+                                  </>
                                 }
                               </>
                             }
@@ -1380,7 +1390,7 @@ const PaymentInner = (props: any) => {
                         (
                           <>
                             <div className="mt-5 text-center">
-                            {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
+                              {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
                               <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
                                 <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
                               </Checkbox>
@@ -1493,13 +1503,13 @@ const Payment = () => {
 
   return (
     <>
-    {
-      stripeKey &&
-      <Elements stripe= { loadStripe(stripeKey as string) } >
-        <PaymentInner >
-        </PaymentInner>
-      </Elements>
-    }
+      {
+        stripeKey &&
+        <Elements stripe={loadStripe(stripeKey as string)} >
+          <PaymentInner >
+          </PaymentInner>
+        </Elements>
+      }
     </>
   )
 }

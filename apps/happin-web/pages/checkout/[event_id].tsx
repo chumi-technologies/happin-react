@@ -14,6 +14,7 @@ import MerchSidebar from '@components/page_components/CheckoutPageComponents/Mer
 import { releaseLock } from './payment';
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { useToast } from '@chakra-ui/react';
+import { User } from 'lib/model/user';
 
 const displayForBoxOfficeMode = (ticketAvailable: string) => {
   if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {
@@ -60,7 +61,8 @@ const Checkout = () => {
     dispatchTicketListAction,
     onlyShowMerch,
     clearCart,
-    codeUsed
+    codeUsed,
+    setUserInfoFromUrl
   } = useCheckoutState();
 
   const ticketTypeHeaderId = new Set<string>()
@@ -77,11 +79,11 @@ const Checkout = () => {
   useEffect(() => {
     (async () => {
       if (router.query.event_id && router.query.event_id !== 'undefined') {
-
-
         if (localStorage.getItem('orderId')) {
           await releaseLock()
         }
+        // for user info form at payment page, higher priority than user state's info
+        setUserInfoFromUrl({email: router.query.email, phonenumber: router.query.phone, displayname: router.query.username})
         // only clear cart when the order is failed to created due to not enough quantity, redirected from payment page
         if (router.query.clearcart && router.query.clearcart !== 'undefined') {
           clearCart()

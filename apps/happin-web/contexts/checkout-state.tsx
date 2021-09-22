@@ -67,6 +67,8 @@ interface CheckoutContext {
   onlyShowMerch: boolean | undefined,
   openInApp: boolean | undefined,
   tokenPassedIn: boolean | undefined,
+  userInfoFromUrl: any,
+  setUserInfoFromUrl: (arg: any) =>void,
   setTokenPassedIn: (arg: boolean) => void,
   setOpenInApp: (arg: boolean) => void,
   setOnlyShowMerch: (arg: boolean) => void,
@@ -380,6 +382,8 @@ export function CheckoutState({ children }: { children: any }) {
 
   const [tokenPassedIn, setTokenPassedIn] = useState<boolean>();
 
+  const [userInfoFromUrl, setUserInfoFromUrl] = useState<any>();
+
 
   const [merchListState, dispatcMerchListAction] = useReducer(merchListReducer, []);
   const [ticketListState, dispatchTicketListAction] = useReducer(ticketListReducer, []);
@@ -411,6 +415,8 @@ export function CheckoutState({ children }: { children: any }) {
     onlyShowMerch: onlyShowMerch,
     openInApp: openInApp,
     tokenPassedIn: tokenPassedIn,
+    userInfoFromUrl: userInfoFromUrl,
+    setUserInfoFromUrl: setUserInfoFromUrl,
     setTokenPassedIn: setTokenPassedIn,
     setOpenInApp: setOpenInApp,
     setOnlyShowMerch: setOnlyShowMerch,
