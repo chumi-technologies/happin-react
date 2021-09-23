@@ -616,7 +616,7 @@ const Checkout = () => {
                     </div>)}
                     </>}
                     {/* merch items start */}
-                    {(merchListState.length > 0 && hasRegularMerch() && (showingTab === 'merch')) && (<div id="merch" className="py-5 sm:py-8 text-white">
+                    {(merchListState.length > 0 && hasRegularMerch() && ((showingTab === 'merch') || onlyShowMerch)) && (<div id="merch" className="py-5 sm:py-8 text-white">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
                           merchListState.map((item) => {
