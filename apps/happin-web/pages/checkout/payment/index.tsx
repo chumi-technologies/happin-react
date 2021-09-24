@@ -830,7 +830,7 @@ const PaymentInner = (props: any) => {
       </>
     )
   }
-  console.log(innerWidth,'innerWidth')
+
   return (
     <>
       <div className="checkout__page">
@@ -897,7 +897,7 @@ const PaymentInner = (props: any) => {
                               )}
                             </div>
                             {generateShippingFormTemplate()}
-                            {checkoutQuestions && <div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>}
+                            {checkoutQuestions && checkoutQuestions.length>0 && (<div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>)}
                             {checkoutQuestions && checkoutQuestions.map(q => {
                               if (q.type === 'singleSelect') {
                                 return (
