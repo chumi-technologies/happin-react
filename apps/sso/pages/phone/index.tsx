@@ -80,7 +80,8 @@ export default function Phone() {
       }, 2000)
     } catch (err) {
       if (err.message.includes('already exist with phone')) {
-        toast.error('User exists, please sign in');
+        toggleMode()
+        toast.error('User exists, please log in');
       } else {
         toast.error('Unknown error, please try again later');
       }
