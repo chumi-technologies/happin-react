@@ -1,4 +1,6 @@
 import { Grid } from "@chakra-ui/react";
+import { EventData } from "lib/model/event";
+import moment from "moment";
 
 const AgendaItem = ({ item }: any) => {
   return (
@@ -29,7 +31,7 @@ const AgendaDate = ({ date, content }: any) => {
   );
 };
 
-const EventAgenda = () => {
+const EventAgenda = ({eventData}:{eventData: EventData}) => {
   const agenda = [
     {
       date: 'July 1',
@@ -50,19 +52,21 @@ const EventAgenda = () => {
         },
       ]
     },
-    {
-      date: 'July 2',
-      content: [
-        {
-          time: "11PM",
-          type: "VIP / FAN Meeting",
-          title: "BlackPink’s Meet & Greet",
-          description:
-            "Grab your tickets now. You can access the event and group chat 1 hour before the event starts.",
-        },
-      ]
-    },
   ];
+
+  const generateAgendaItems = () => {
+    // pfm start time is unix time millisecond, start_datetime is date object need to convert to unix time in millisecond
+    const dates = [...eventData.pfms.map(pfm => pfm.startTime), new Date(eventData.event.start_datetime).getTime()];
+    const sortedDates = dates.sort((d1,d2) => { if (d1>d2) return 1; else return -1 });
+    const day = Array.from(new Set(sortedDates.map(d => moment(d).format('MMM D'))));
+    console.log(day);
+    const agenda = day.map(d=>({date: d, content:[]}));
+    
+
+  }
+
+  generateAgendaItems()
+
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Agenda</div>

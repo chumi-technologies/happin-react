@@ -3,8 +3,11 @@ import EventDescription from "./EventDescription";
 import EventLineUp from "./EventLineUp";
 import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
+import { EventData } from "lib/model/event";
 
-const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: any) => {
+const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: {
+  setIsModalOpen: (arg: boolean) => void, eventData: EventData, groupEvents: any, setIsRedeemModalOpen: (arg: boolean) => void
+}) => {
   return (
     <>
       <EventTitle 
@@ -27,8 +30,8 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         {/* <div className="h-px bg-gray-600 mt-6 sm:mt-10" /> */}
       </div>
       <div id="agenda" className="pt-6 sm:pt-10">
-        {/* <EventAgenda /> */}
-        {/* <div className="h-px bg-gray-600 my-6 sm:my-10" /> */}
+        <EventAgenda eventData={eventData}/>
+        <div className="h-px bg-gray-600 my-6 sm:my-10" />
         <EventHost 
           hostName={eventData?.event?.creator?.name}
           hostProfileImageUrl={eventData?.event?.creator?.avatar}/>

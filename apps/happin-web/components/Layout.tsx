@@ -10,8 +10,8 @@ const Layout = ({ children }: { children: any }) => {
   // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
-  const [showHeader, setShowHeader] = useState(false);
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 

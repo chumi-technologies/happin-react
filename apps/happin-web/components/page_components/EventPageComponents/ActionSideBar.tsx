@@ -36,11 +36,11 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
   return (
     <div className="absolute right-4 top-4 sm:right-6 sm:top-6 lg:right-14 lg:top-14 z-20">
       <VStack>
-        <div className={classNames('event-details__side-action', { 'favorite': isFavorite })}
+       {/*  <div className={classNames('event-details__side-action', { 'favorite': isFavorite })}
              onClick={()=> {setIsFavorite(s=>!s)}}
         >
           <Like theme={isFavorite? 'filled' : 'outline'} size="1em" fill="currentColor" strokeWidth={2}/>
-        </div>
+        </div> */}
         <div className="relative">
         <div className="event-details__side-action relative z-30" onClick={() => {setOpenShare(!openShare)}}>
           <ShareTwo theme="outline" size="1em" fill="currentColor" strokeWidth={2}/>

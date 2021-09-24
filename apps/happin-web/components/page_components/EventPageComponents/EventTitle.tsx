@@ -16,8 +16,8 @@ type EventTitleProps = {
   eventTitle?: string;
   isLiveStream?: boolean;
   tags?: string[];
-  eventStartDate?: string;
-  eventEndDate?: string;
+  eventStartDate?: Date;
+  eventEndDate?: Date;
   price?: number;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
@@ -51,7 +51,7 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
     <>
       {/* Badges */}
       <HStack spacing={3}>
-        {tags && tags.map((tag: string, index: Number) => {
+        {tags && tags.slice(0,3).map((tag: string, index: Number) => {
           return (
             <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
               {tag}

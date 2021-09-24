@@ -51,7 +51,7 @@ export default function Header() {
           <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
           <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
           {/* Mobile Left Menu */}
-          <Menu as="div" className="relative lg:hidden">
+{/*           <Menu as="div" className="relative lg:hidden">
             {({ open }) => (
               <>
                 <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-900', { 'bg-gray-800 text-white hover:bg-gray-800': open })}>
@@ -89,16 +89,16 @@ export default function Header() {
                 </Transition>
               </>
             )}
-          </Menu>
+          </Menu> */}
           {/* Left Menu */}
-          <HStack spacing={4} display={{ base: "none", lg: "flex" }}>
+{/*           <HStack spacing={4} display={{ base: "none", lg: "flex" }}>
             <Link href="/">
               <a className="header__link">Home</a>
             </Link>
             <Link href="/">
               <a className="header__link">Explore events</a>
             </Link>
-          </HStack>
+          </HStack> */}
         </div>
 
         {/* Central Block */}
