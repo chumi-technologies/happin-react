@@ -152,7 +152,7 @@ export interface OrderItem {
 export interface MappingQuestionsResponse {
   type: string;
   isMandatory: boolean;
-  appliedToTicketId: string[];
+  appliedToTicketIds: string[];
   questions: string;
   definedAnswers:string[];
   postDate: number;

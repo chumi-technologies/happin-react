@@ -493,14 +493,14 @@ const PaymentInner = (props: any) => {
         const mappingQuestions: any[] = res.map(question => ({
           type: question.type,
           isMandatory: question.isMandatory,
-          appliedToTicketId: question.appliedToTicketId,
+          appliedToTicketId: question.appliedToTicketIds,
           questions: question.questions,
           definedAnswers: question.definedAnswers.map((a: any) => ({ value: a, label: a })),
         }))
         const ticketsInCart = [...cart.items.ticketItem.map(i => i.ticketId), ...cart.items.bundleItem.map(i => i.ticketId)];
         const ticketInResponse:any[] = [];
         for (const question of res) {
-           let appliedToTickedIdArray = question.appliedToTicketId;
+           let appliedToTickedIdArray = question.appliedToTicketIds;
            if(appliedToTickedIdArray && appliedToTickedIdArray.length>0) {
              for (const ticketId of appliedToTickedIdArray) {
                if(ticketId) {
