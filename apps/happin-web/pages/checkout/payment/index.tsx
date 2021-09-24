@@ -137,13 +137,14 @@ const PaymentInner = (props: any) => {
   const [validateCodeLoading, setValidateCodeLoading] = useState<boolean>(false);
   const [shippingOptions, setShippingOptions] = useState<any[]>([]);
   const [priceBreakDown, setPriceBreakDown] = useState<any>({});
+  const [isCashOnly, setIsCashOnly] = useState<boolean>(false);
   const [shippingCountry, setShippingCountry] = useState<string>('');
   const [showShipping, setShowShipping] = useState<boolean>(false);
   const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
 
   let innerWidth: number = 0;
-    if (typeof window !== 'undefined') {
+  if (typeof window !== 'undefined') {
     innerWidth = window.innerWidth;
   }
   // for stripe, in case stripe payment failed , can pay again with this secret
@@ -465,6 +466,9 @@ const PaymentInner = (props: any) => {
         return
       }
       setPriceBreakDown(res?.priceBreakDown)
+      if (res.isCashOnly) {
+        setIsCashOnly(res.isCashOnly)
+      }
     }
     catch (err) {
       console.log(err)
@@ -477,6 +481,9 @@ const PaymentInner = (props: any) => {
     try {
       const res = await updateOrderFromCart(orderId, orderItem);
       setPriceBreakDown(res?.priceBreakDown);
+      if (res.isCashOnly) {
+        setIsCashOnly(res.isCashOnly)
+      }
     }
     catch (err) {
       // if server failed to calculate the price, return to first page
@@ -498,18 +505,18 @@ const PaymentInner = (props: any) => {
           definedAnswers: question.definedAnswers.map((a: any) => ({ value: a, label: a })),
         }))
         const ticketsInCart = [...cart.items.ticketItem.map(i => i.ticketId), ...cart.items.bundleItem.map(i => i.ticketId)];
-        const ticketInResponse:any[] = [];
+        const ticketInResponse: any[] = [];
         for (const question of res) {
-           let appliedToTickedIdArray = question.appliedToTicketIds;
-           if(appliedToTickedIdArray && appliedToTickedIdArray.length>0) {
-             for (const ticketId of appliedToTickedIdArray) {
-               if(ticketId) {
-                 ticketInResponse.push(ticketId);
-               }           
-             }
-           }         
+          let appliedToTickedIdArray = question.appliedToTicketIds;
+          if (appliedToTickedIdArray && appliedToTickedIdArray.length > 0) {
+            for (const ticketId of appliedToTickedIdArray) {
+              if (ticketId) {
+                ticketInResponse.push(ticketId);
+              }
+            }
+          }
         }
-        if(ticketsInCart.some(t=>ticketInResponse.includes(t))) {
+        if (ticketsInCart.some(t => ticketInResponse.includes(t))) {
           setCheckoutQuestions(mappingQuestions)
         }
       }
@@ -845,8 +852,8 @@ const PaymentInner = (props: any) => {
                   <div className="md:flex-1 min-w-0">
                     <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
                       <div className="sm:text-lg md:text-xl font-semibold mb-3">Shipping</div>
-                      <form className= {innerWidth >= 768?"mb-5":""}>
-                        <div className= "max-w-4xl mx-auto">
+                      <form className={innerWidth >= 768 ? "mb-5" : ""}>
+                        <div className="max-w-4xl mx-auto">
                           <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
                             <div className="lg:col-span-3">
                               <label htmlFor="fullName" className="form-label required">Full name</label>
@@ -885,7 +892,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-3">
                               <label htmlFor="tel" className="form-label required">Phone number</label>
                               <input
-                                defaultValue={userInfoFromUrl.phonenumber || user?.phonenumber || ''}                            
+                                defaultValue={userInfoFromUrl.phonenumber || user?.phonenumber || ''}
                                 id="tel"
                                 type="tel"
                                 className="form-field"
@@ -897,7 +904,7 @@ const PaymentInner = (props: any) => {
                               )}
                             </div>
                             {generateShippingFormTemplate()}
-                            {checkoutQuestions && checkoutQuestions.length>0 && (<div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>)}
+                            {checkoutQuestions && checkoutQuestions.length > 0 && (<div className="lg:col-span-6 sm:text-lg md:text-xl font-semibold">Organizer questions:</div>)}
                             {checkoutQuestions && checkoutQuestions.map(q => {
                               if (q.type === 'singleSelect') {
                                 return (
@@ -994,7 +1001,7 @@ const PaymentInner = (props: any) => {
                   <div className="md:flex-1 min-w-0">
                     <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
                       <div className="sm:text-lg md:text-xl font-semibold mb-3">Buyer Information</div>
-                      <form className= {innerWidth >= 768?"mb-5":""}>
+                      <form className={innerWidth >= 768 ? "mb-5" : ""}>
                         <div className="max-w-4xl mx-auto">
                           <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
                             <div className="lg:col-span-6">
@@ -1034,7 +1041,7 @@ const PaymentInner = (props: any) => {
                             <div className="lg:col-span-6">
                               <label htmlFor="tel" className="form-label required">Phone number</label>
                               <input
-                                defaultValue={userInfoFromUrl?.phonenumber || user?.phonenumber || ''}                              
+                                defaultValue={userInfoFromUrl?.phonenumber || user?.phonenumber || ''}
                                 id="tel"
                                 type="tel"
                                 className="form-field"
@@ -1317,10 +1324,6 @@ const PaymentInner = (props: any) => {
                             <div className="text-gray-300">Sub-total</div>
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.faceValue || 0) / 100)}</div>
                           </div>
-                          <div className="flex justify-between py-1">
-                            <div className="text-gray-300">Service Fee</div>
-                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
-                          </div>
                           {
                             priceBreakDown?.extraChargeDetails?.map((detail: { title: string, amount: number; }) => {
                               return (
@@ -1346,16 +1349,20 @@ const PaymentInner = (props: any) => {
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.discount || 0) / 100)}</div>
                           </div> : <></>
                           }
+                          <div className="flex justify-between py-1">
+                            <div className="text-gray-300">Processing Fee</div>
+                            <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
+                          </div>
                         </div>
                         <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
-                          <div>Total</div>
+                          {isCashOnly ? <div>Total</div> : <div>Cash Total</div>}
                           <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.total || 0) / 100)}</div>
                         </div>
                       </div>
                     </div>
 
-                    {/* not showing this block if subtotal is 0 after server calculation */}
-                    {(priceBreakDown && priceBreakDown.total) ?
+                    {/* not showing this block if subtotal is 0 after server calculation and cash only is true*/}
+                    {(priceBreakDown && priceBreakDown.total && !isCashOnly ) ?
                       (<>
                         <div className="rounded-lg bg-gray-900 mb-5">
                           <div className="p-4 sm:p-5">
@@ -1402,7 +1409,7 @@ const PaymentInner = (props: any) => {
                           </>
                         )}
 
-                      </>) : (priceBreakDown && priceBreakDown.total === 0) ?
+                      </>) : (priceBreakDown && (priceBreakDown.total === 0 || isCashOnly)) ?
                         (
                           <>
                             <div className="mt-5 text-center">
