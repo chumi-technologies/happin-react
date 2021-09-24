@@ -37,9 +37,9 @@ const PaymentHead = ({
                   <span className="md:ml-2">Back</span>
                 </button>
               </Link>
-              <div className="font-semibold mr-4">
-                <div className="text-lg leading-5 mb-1 md:truncate">{eventDataForCheckout?.title}</div>
-                <div className="md:truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
+              <div className="font-semibold mr-4 truncate">
+                <div className="text-lg leading-5 mb-1 truncate">{eventDataForCheckout?.title}</div>
+                <div className="md:truncate text-sm text-yellow-500 truncate">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>
               </div>
             </div>
             <div className="text-sm text-gray-300 py-3 md:max-w-xs lg:max-w-none">Please check out within <span className="font-medium text-white">

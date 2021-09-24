@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
-import { CloseSmall, Delete } from '@icon-park/react';
+import { CloseSmall, Delete, Left } from '@icon-park/react';
 import NumberInput from '@components/reusable/NumberInput';
 import classNames from 'classnames';
 import moment from 'moment'
@@ -18,6 +18,7 @@ import { useRouter } from 'next/router';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import jwt_decode from "jwt-decode";
+import Link from 'next/link';
 
 
 const CheckoutHead = ({
@@ -233,7 +234,7 @@ const CheckoutHead = ({
     merchListState.filter(m => m.show && !m.forApp && m.isOptionalBundleItem).forEach(m => {
       if (m.tickets.includes(t.ticketId)) {
         //  optional bundle item 的 ticket array 包含了参数 cartTicketItem 的 ticketid
-        //  说明有可能cart里面 有optional的 bundle item, 需要查 cart 里面的 merch item 
+        //  说明有可能cart里面 有optional的 bundle item, 需要查 cart 里面的 merch item
         cart.items.merchItem.forEach((cartMerch) => {
           if(cartMerch.merchId === m.id) {
             hasOptionBundleItem = true;
@@ -262,7 +263,7 @@ const CheckoutHead = ({
       decreaseTicketAmount(edtingTicketListItem, cart, t.ticketId, dispatchTicketListAction, removeItem)
     } else if(action === 'delete') {
       deleteTicketFromCart(edtingTicketListItem, t.quantity, dispatchTicketListAction, removeItem)
-    } 
+    }
 
   } */
 
@@ -444,9 +445,17 @@ const CheckoutHead = ({
     <div className="footer-action fixed bottom-0 right-0 left-0 sm:relative bg-gray-800 border-b border-solid border-gray-700 z-20">
       <div className="container">
         <div className="flex items-center py-3 sm:py-0 sm:h-20">
-          <div className="flex-1 font-semibold min-w-0 hidden sm:block">
-            <div className="truncate">{eventDataForCheckout?.title}</div>
-            {eventDataForCheckout?.startTime && <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>}
+          <div className="flex items-center sm:flex-1">
+            <Link href="/">
+              <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
+                <Left theme="outline" size="24" fill="currentColor"/>
+                <span className="md:ml-2">Back</span>
+              </button>
+            </Link>
+            <div className="flex-1 font-semibold min-w-0 hidden sm:block">
+              <div className="truncate">{eventDataForCheckout?.title}</div>
+              {eventDataForCheckout?.startTime && <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>}
+            </div>
           </div>
           <Popover className="flex md:relative sm:ml-4">
             {({ open }) => (

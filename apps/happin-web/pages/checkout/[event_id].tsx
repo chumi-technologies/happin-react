@@ -14,6 +14,7 @@ import MerchSidebar from '@components/page_components/CheckoutPageComponents/Mer
 import { releaseLock } from './payment';
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { useToast } from '@chakra-ui/react';
+import classNames from 'classnames';
 
 const displayForBoxOfficeMode = (ticketAvailable: string) => {
   if ((ticketAvailable === ETicketAvailability.EVERY_WHERE || ticketAvailable === ETicketAvailability.AT_DOOR)) {
@@ -243,7 +244,7 @@ const Checkout = () => {
             ...p,
             originalPValue: p.pValue
           }))
-          // if this merch's price is greater than 0, it's not considered to be 
+          // if this merch's price is greater than 0, it's not considered to be
           // a bundle merch, but a regular merch binded to a ticket as optional item
           const bindTickets = m.activities.filter((a: any) => eventId === a.activityId)
             .map((a: any) => a.tickets.map((t: any) => t.ticketId))
@@ -464,37 +465,29 @@ const Checkout = () => {
         <div className="sm:flex-1 sm:h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
           <div className="fixed sm:sticky md:relative top-0 left-0 right-0 bg-gray-800 shadow-2xl z-10 border-b border-solid border-gray-700 md:border-0">
             <div className="container">
-              <div className="flex" style={{justifyContent: 'space-between'}}>
-                <div className="flex">
-                  {!onlyShowMerch && (
-                    sortedHeader.map(id => {
-                      return (
-                        <div
-                          onClick={() => { setShowingTab(id) }}
-                          className={`${showingTab === id ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                          key={id}
-                        >
-                          {id.replace(/-/g, ' ')}
-                        </div>
-                      )
-                    })
-                  )}
-                  {(merchListState.length && hasRegularMerch()) ?
-                    <div
-                      onClick={() => { setShowingTab('merch') }}
-                      className={`${showingTab === 'merch' ? 'checkout__head-tab active' : 'checkout__head-tab'}`}
-                    >
-                      Add on
-                    </div> : <></>}
-                </div>
-
-                <div className="flex">
-                  {(boxOfficeMode && sortedHeader.length > 0) &&
-                    <div className="truncate text-sm text-yellow-500" style={{display:'flex', alignItems: 'center', width: '100px'}}>
-                        BOX OFFICE
-                    </div>}
-                </div>
-
+              <div className="flex overflow-x-auto">
+                {!onlyShowMerch && (
+                  sortedHeader.map(id => {
+                    return (
+                      <div
+                        onClick={() => { setShowingTab(id) }}
+                        className={classNames('checkout__head-tab', { active: showingTab === id })}
+                        key={id}
+                      >
+                        {id.replace(/-/g, ' ')}
+                      </div>
+                    )
+                  })
+                )}
+                {
+                  merchListState.length && hasRegularMerch() &&
+                  <div
+                    onClick={() => { setShowingTab('merch') }}
+                    className={classNames('checkout__head-tab', { active: showingTab === 'merch' })}
+                  >
+                    Add on
+                  </div>
+                }
               </div>
             </div>
           </div>
