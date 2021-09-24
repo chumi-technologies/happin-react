@@ -1355,7 +1355,7 @@ const PaymentInner = (props: any) => {
                           </div>
                         </div>
                         <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
-                          {isCashOnly ? <div>Total</div> : <div>Cash Total</div>}
+                          {!isCashOnly ? <div>Total</div> : <div>Cash Total</div>}
                           <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.total || 0) / 100)}</div>
                         </div>
                       </div>
