@@ -79,7 +79,7 @@ export default function Phone() {
         setProcessing(false)
       }, 2000)
     } catch (err) {
-      if (err.message.includes('already exist with phone')) {
+      if (err.message.includes('already')) {
         toggleMode()
         toast.error('User exists, please log in');
       } else {
