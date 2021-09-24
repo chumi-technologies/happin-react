@@ -480,7 +480,7 @@ const Checkout = () => {
                   })
                 )}
                 {
-                  merchListState.length && hasRegularMerch() &&
+                  (merchListState.length > 0 && hasRegularMerch()) &&
                   <div
                     onClick={() => { setShowingTab('merch') }}
                     className={classNames('checkout__head-tab', { active: showingTab === 'merch' })}
