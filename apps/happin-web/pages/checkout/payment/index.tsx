@@ -142,7 +142,10 @@ const PaymentInner = (props: any) => {
   const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
 
-
+  let innerWidth: number = 0;
+    if (typeof window !== 'undefined') {
+    innerWidth = window.innerWidth;
+  }
   // for stripe, in case stripe payment failed , can pay again with this secret
   const [clientSecret, setClientSecret] = useState<string>();
 
@@ -494,7 +497,21 @@ const PaymentInner = (props: any) => {
           questions: question.questions,
           definedAnswers: question.definedAnswers.map((a: any) => ({ value: a, label: a })),
         }))
-        setCheckoutQuestions(mappingQuestions);
+        const ticketsInCart = [...cart.items.ticketItem.map(i => i.ticketId), ...cart.items.bundleItem.map(i => i.ticketId)];
+        const ticketInResponse:any[] = [];
+        for (const question of res) {
+           let appliedToTickedIdArray = question.appliedToTicketId;
+           if(appliedToTickedIdArray && appliedToTickedIdArray.length>0) {
+             for (const ticketId of appliedToTickedIdArray) {
+               if(ticketId) {
+                 ticketInResponse.push(ticketId);
+               }           
+             }
+           }         
+        }
+        if(ticketsInCart.some(t=>ticketInResponse.includes(t))) {
+          setCheckoutQuestions(mappingQuestions)
+        }
       }
     }
     catch (err) {
@@ -813,7 +830,7 @@ const PaymentInner = (props: any) => {
       </>
     )
   }
-
+  console.log(innerWidth,'innerWidth')
   return (
     <>
       <div className="checkout__page">
@@ -828,8 +845,8 @@ const PaymentInner = (props: any) => {
                   <div className="md:flex-1 min-w-0">
                     <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
                       <div className="sm:text-lg md:text-xl font-semibold mb-3">Shipping</div>
-                      <form>
-                        <div className="max-w-4xl mx-auto">
+                      <form className= {innerWidth >= 768?"mb-5":""}>
+                        <div className= "max-w-4xl mx-auto">
                           <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
                             <div className="lg:col-span-3">
                               <label htmlFor="fullName" className="form-label required">Full name</label>
@@ -977,7 +994,7 @@ const PaymentInner = (props: any) => {
                   <div className="md:flex-1 min-w-0">
                     <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
                       <div className="sm:text-lg md:text-xl font-semibold mb-3">Buyer Information</div>
-                      <form>
+                      <form className= {innerWidth >= 768?"mb-5":""}>
                         <div className="max-w-4xl mx-auto">
                           <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
                             <div className="lg:col-span-6">
