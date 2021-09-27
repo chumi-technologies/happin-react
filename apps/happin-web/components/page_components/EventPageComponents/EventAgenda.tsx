@@ -10,7 +10,7 @@ const AgendaItem = ({ item }: any) => {
         mt={{ base: "16px", md: 7 }}
         templateColumns="100px 1fr"
       >
-        <div className="text-sm font-bold leading-none">{moment(item.tine).format('HH A')}</div>
+        <div className="text-sm font-bold leading-none">{moment(item.time).format('h:mm A')}</div>
         <div>
           <div className="text-xs mb-2 uppercase">{item.type}</div>
           <div className="font-bold mb-1">{item.title}</div>

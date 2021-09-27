@@ -28,10 +28,10 @@ export default function Header() {
       setIsEventPage(false);
     }
     if (typeof window !== 'undefined') {
-      //const hostname = window.location.hostname;
-      const hostname = 'deadroyaltyproductions.happin.app'
-      //&& !hostname.includes('localhost')
-      if (!hostname.includes('web.happin.app')) {
+      const hostname = window.location.hostname;
+      // const hostname = 'deadroyaltyproductions.happin.app'
+      // && !hostname.includes('localhost')
+      if (!hostname.includes('web.happin.app') && !hostname.includes('localhost')) {
         whiteLabelDomain(hostname)
       }
     }
