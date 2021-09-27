@@ -1,6 +1,7 @@
 import { Grid } from "@chakra-ui/react";
 import { EventData } from "lib/model/event";
 import moment from "moment";
+import { useState } from "react";
 
 const AgendaItem = ({ item }: any) => {
   return (
@@ -9,7 +10,7 @@ const AgendaItem = ({ item }: any) => {
         mt={{ base: "16px", md: 7 }}
         templateColumns="100px 1fr"
       >
-        <div className="text-sm font-bold leading-none">{item.time}</div>
+        <div className="text-sm font-bold leading-none">{moment(item.tine).format('HH A')}</div>
         <div>
           <div className="text-xs mb-2 uppercase">{item.type}</div>
           <div className="font-bold mb-1">{item.title}</div>
@@ -31,38 +32,39 @@ const AgendaDate = ({ date, content }: any) => {
   );
 };
 
-const EventAgenda = ({eventData}:{eventData: EventData}) => {
-  const agenda = [
-    {
-      date: 'July 1',
-      content: [
-        {
-          time: "11PM",
-          type: "Public Show",
-          title: "A Night With Norelle",
-          description:
-            "Grab your tickets now. You can access the event and group chat 1 hour before the event starts.",
-        },
-        {
-          time: "11PM",
-          type: "VIP / FAN Meeting",
-          title: "Lady Gaga’s Meet & Greet",
-          description:
-            "Grab your tickets now. You can access the event and group chat 1 hour before the event starts.",
-        },
-      ]
-    },
-  ];
+const EventAgenda = ({ eventData }: { eventData: EventData }) => {
+
+  let agenda: any[] = [];
 
   const generateAgendaItems = () => {
-    // pfm start time is unix time millisecond, start_datetime is date object need to convert to unix time in millisecond
-    const dates = [...eventData.pfms.map(pfm => pfm.startTime), new Date(eventData.event.start_datetime).getTime()];
-    const sortedDates = dates.sort((d1,d2) => { if (d1>d2) return 1; else return -1 });
-    const day = Array.from(new Set(sortedDates.map(d => moment(d).format('MMM D'))));
-    console.log(day);
-    const agenda = day.map(d=>({date: d, content:[]}));
-    
-
+    const innerContents = eventData.pfms.map(pfm => {
+      return {
+        type: 'VIP/ Fan Meeting',
+        description: 'Face to face, talk to your artist',
+        time: pfm.startTime,
+        title: eventData.event.title,
+      }
+    })
+    innerContents.push({
+      type: 'Public Show',
+      description: 'Grab your tickets now. You can access the event and group chat 1 hour before the event starts.',
+      time: new Date(eventData.event.start_datetime).getTime(),
+      title: eventData.event.title,
+    })
+    innerContents.sort((a,b) => { if (a.time > b.time) return 1; else return -1 });
+    let previousDate: string;
+    innerContents.forEach((inner, index) => {
+      const currentDate = moment(inner.time).format('MMM D');
+      if (index === 0) {
+        previousDate = currentDate;
+        agenda.push({date: currentDate, content: [inner]})
+      } else if(previousDate !== currentDate){
+        agenda.push({date: currentDate, content: [inner]})
+        previousDate = currentDate;
+      } else {
+        agenda[agenda.length-1].content.push(inner)
+      }
+    })
   }
 
   generateAgendaItems()

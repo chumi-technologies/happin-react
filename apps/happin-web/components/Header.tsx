@@ -8,6 +8,7 @@ import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
+import { getWhiteLabelDomain } from 'lib/api';
 
 export default function Header() {
   const { user, clearUser } = useUserState();
@@ -18,13 +19,33 @@ export default function Header() {
 
   const searchRef = useRef<HTMLInputElement>(null!);
 
+  const [whiteLabelLogo, setWhiteLabelLogo] = useState();
+
   useEffect(() => {
     if (router.asPath.includes('/events/')) {
       setIsEventPage(true);
     } else {
       setIsEventPage(false);
     }
+    if (typeof window !== 'undefined') {
+      //const hostname = window.location.hostname;
+      const hostname = 'deadroyaltyproductions.happin.app'
+      //&& !hostname.includes('localhost')
+      if (!hostname.includes('web.happin.app')) {
+        whiteLabelDomain(hostname)
+      }
+    }
   }, [router.asPath])
+
+  const whiteLabelDomain = async (domain: string) => {
+    try {
+      const response = await getWhiteLabelDomain(domain);
+      const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
+      setWhiteLabelLogo(logo)
+    } catch (err) {
+
+    }
+  }
 
   useEffect(() => {
     showSearch && searchRef.current.focus()
@@ -38,6 +59,7 @@ export default function Header() {
     }
   }, [dimmed])
 
+
   return (
     <div className="relative z-50 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
       {/* Mobile Search Form */}
@@ -48,10 +70,17 @@ export default function Header() {
         {/* Left Block */}
         <div className="flex items-center">
           {/* Logo */}
-          <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
-          <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
+          {whiteLabelLogo ?
+            <>
+              <img className="h-10 mr-6 md:mr-8 hidden sm:block" src={whiteLabelLogo} alt="Happin" />
+            </> :
+            <>
+              <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
+              <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
+            </>}
+
           {/* Mobile Left Menu */}
-{/*           <Menu as="div" className="relative lg:hidden">
+          {/*           <Menu as="div" className="relative lg:hidden">
             {({ open }) => (
               <>
                 <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-900', { 'bg-gray-800 text-white hover:bg-gray-800': open })}>
@@ -91,7 +120,7 @@ export default function Header() {
             )}
           </Menu> */}
           {/* Left Menu */}
-{/*           <HStack spacing={4} display={{ base: "none", lg: "flex" }}>
+          {/*           <HStack spacing={4} display={{ base: "none", lg: "flex" }}>
             <Link href="/">
               <a className="header__link">Home</a>
             </Link>
@@ -169,7 +198,7 @@ export default function Header() {
                       )}
                       {user && (
                         <Menu.Item>
-                        <a className="header__menu-link" onClick={clearUser}>Sign out</a>
+                          <a className="header__menu-link" onClick={clearUser}>Sign out</a>
                         </Menu.Item>
                       )}
                     </div>

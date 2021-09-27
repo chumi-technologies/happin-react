@@ -1,4 +1,4 @@
-import { getEventDetail, getEventDetailForCheckout, getGroupEvents } from "./events";
+import { getEventDetail, getEventDetailForCheckout, getGroupEvents, getWhiteLabelDomain } from "./events";
 import { checkinTicket, getGATickets, getEventMerchs, validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, updateOrderFromCart, getCheckoutFormQuestions } from "./tickets";
 import { getUserInfo, exchangeCrowdcoreToken } from "./user";
 import {submitPayment, getOrderStatus} from './order'
@@ -17,5 +17,6 @@ export {
 	updateOrderFromCart,
 	submitPayment,
 	getOrderStatus,
-	getCheckoutFormQuestions
+	getCheckoutFormQuestions,
+	getWhiteLabelDomain
 };
