@@ -83,8 +83,10 @@ const Checkout = () => {
         // for user info form at payment page, higher priority than user state's info
         setUserInfoFromUrl({email: router.query.email, phonenumber: router.query.phone, displayname: router.query.username})
         // only clear cart when the order is failed to created due to not enough quantity, redirected from payment page
-        if (router.query.clearcart && router.query.clearcart !== 'undefined') {
+        if (localStorage.getItem('clearcart')) {
+          console.log('clear cart')
           clearCart()
+          localStorage.removeItem('clearcart')
         }
         await Promise.all([getEventDetailAndSetState(router.query.event_id as string),
         getEventTicketsAndSetState(router.query.event_id as string),

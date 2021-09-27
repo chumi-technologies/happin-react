@@ -192,9 +192,9 @@ const PaymentInner = (props: any) => {
       caculatePriceBreakDown(orderId,
         {
           cart: cart.items,
-          discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id || "",
-          shippingCountry: shippingCountry
+          discountCode: codeUsed || '',
+          activityId: eventDataForCheckout?.id || '',
+          shippingCountry: shippingCountry,
         });
     }
   }
@@ -385,9 +385,9 @@ const PaymentInner = (props: any) => {
       caculatePriceBreakDown(orderId,
         {
           cart: cart.items,
-          discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id || "",
-          shippingCountry: data.value
+          discountCode: codeUsed || '',
+          activityId: eventDataForCheckout?.id || '',
+          shippingCountry: data.value,
         });
     }
   }
@@ -396,10 +396,8 @@ const PaymentInner = (props: any) => {
     const orderId = localStorage.getItem('orderId');
     if (orderId) {
       try {
-        router.push({
-          pathname: `/checkout/${eventDataForCheckout?.id}`,
-          query: { clearcart: 'true' }
-        });
+        localStorage.setItem('clearcart', '1');
+        router.back();
       }
       catch (err) {
         console.log(err)
@@ -459,10 +457,8 @@ const PaymentInner = (props: any) => {
         localStorage.setItem('orderId', res?.orderId);
       } else if (res.status === 'failed') {
         generateToast('Item(s) no longer available, please try again later', toast);
-        router.push({
-          pathname: `/checkout/${eventDataForCheckout?.id}`,
-          query: { clearcart: 'true' }
-        });
+        localStorage.setItem('clearcart', '1')
+        router.back();
         return
       }
       setPriceBreakDown(res?.priceBreakDown)
@@ -473,7 +469,7 @@ const PaymentInner = (props: any) => {
     catch (err) {
       console.log(err)
       generateToast('Unknown error, please contact us', toast);
-      router.push(`/checkout/${eventDataForCheckout?.id}`);
+      router.back();
     }
   }
 
@@ -488,7 +484,7 @@ const PaymentInner = (props: any) => {
     catch (err) {
       // if server failed to calculate the price, return to first page
       generateToast('Unknown error, please contact us', toast);
-      router.push(`/checkout/${eventDataForCheckout?.id}`);
+      router.back();
       console.log(err)
     }
   }
@@ -523,7 +519,7 @@ const PaymentInner = (props: any) => {
     }
     catch (err) {
       generateToast('Unknown error about organizer questions, please contact us', toast);
-      router.push(`/checkout/${eventDataForCheckout?.id}`);
+      router.back();
       console.log(err)
     }
   }
@@ -549,9 +545,10 @@ const PaymentInner = (props: any) => {
         localStorage.setItem('activityId', eventDataForCheckout.id);
         lockCheckoutTicketsHandle({
           cart: cart.items,
-          discountCode: codeUsed || "",
-          activityId: eventDataForCheckout?.id || "",
-          shippingCountry: ""
+          discountCode: codeUsed || '',
+          activityId: eventDataForCheckout?.id || '',
+          shippingCountry: '',
+          affiliateCode: affiliate || '',
         })
       }
     }
@@ -587,7 +584,7 @@ const PaymentInner = (props: any) => {
   useEffect(() => {
     // last item in cart deleted, go back to first page
     if (!cart.items.bundleItem.length && !cart.items.merchItem.length && !cart.items.ticketItem.length && eventDataForCheckout) {
-      router.push(`/checkout/${eventDataForCheckout?.id}`);
+      router.back();
       return
     }
     handleCartUpdateAndApplyPromoCode();
@@ -721,7 +718,7 @@ const PaymentInner = (props: any) => {
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
           setIsProcessing(false);
           generateToast('Failed to process order, please try again later', toast);
-          router.push(`/checkout/${eventDataForCheckout?.id}`)
+          router.back()
           return
         } else {
           console.log('Order status: ', orderStatus.status)
@@ -730,7 +727,7 @@ const PaymentInner = (props: any) => {
       }
       if (retryTimes === 10) {
         generateToast('Server time out, please try again later', toast);
-        router.push(`/checkout/${eventDataForCheckout?.id}`)
+        router.back()
       }
     } catch (err) {
       console.log(err);
@@ -1513,7 +1510,7 @@ const Payment = () => {
         if (activityId) {
           // releaseLock();
           console.log('Redirect to ac:', activityId);
-          router.push(`/checkout/${activityId}`);
+          router.back();
         } else {
           releaseLock();
           router.push(`https://happin.app`);
