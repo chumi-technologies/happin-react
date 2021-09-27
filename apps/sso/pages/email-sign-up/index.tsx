@@ -26,7 +26,7 @@ export default function EmailSignUp() {
   const [terms, setTerms] = useState(false);
   const [ageState, setAgeState] = useState(false);
   const [termsState, setTermsState] = useState(false);
-  const { origin, role, processing, setProcessing } = useAppState();
+  const { origin, role, processing, setProcessing, toggleMode } = useAppState();
 
   useEffect(() => {
     age && setAgeState(false)
@@ -92,10 +92,8 @@ export default function EmailSignUp() {
         setProcessing(false)
       }, 2000)
     } catch (error) {
-      if (error.message.includes('already associated')) {
-        toast.error('User exists, please sign in');
-      } else if (error.code.includes('auth/email-already-in-use')) {
-        toast.error('Email exists, please try another one.')
+      if (error.code.includes('auth/email-already-in-use')) {
+        toast.error('Email exists, please try another email to sign up.')
       } else if (error.code === 'auth/invalid-email') {
         toast.error('This email is invalid')
       } else if (error.code === 'auth/weak-password') {
