@@ -21,10 +21,11 @@ type EventTitleProps = {
   price?: number;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
+  playbackStart: boolean;
   setIsRedeemModalOpen: (arg0: boolean) => void;
 }
 
-const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = []}: EventTitleProps) => {
+const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playbackStart = false, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -38,7 +39,7 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
     }
   }, [dimmed])
 
-  
+
   const openRedeemModal = () => {
     if (!user) {
       showSSO();
@@ -51,7 +52,7 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
     <>
       {/* Badges */}
       <HStack spacing={3}>
-        {tags && tags.slice(0,3).map((tag: string, index: Number) => {
+        {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
           return (
             <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
               {tag}
@@ -59,12 +60,15 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
           )
         })}
 
-        {isLiveNow && (
+        {isLiveNow ? (
           <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>LIVE</span>
           </div>
-        )}
+        ) : playbackStart ? <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
+          <span className="w-2 h-2 rounded-full bg-white mr-2" />
+          <span>Replay available</span>
+        </div> : <></>}
       </HStack>
 
       {/* Event Title */}
@@ -73,9 +77,12 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
       </h1>
 
       {/* Event Date and Time */}
-      <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">
-        {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
-      </h1>
+      {playbackStart &&
+        <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">
+          {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
+        </h1>
+      }
+
 
       {/* Block with Icons */}
 
@@ -84,25 +91,26 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
         align="start"
         className="mt-8"
       >
-        <div className="flex items-start w-full">
-          <SvgIcon id="clock" className="text-lg text-white" />
-          <div className="ml-3 flex-1">
-            <div className="text-white leading-none mb-1">Date & Time</div>
-            <div className="flex items-start sm:items-center flex-col sm:flex-row text-gray-400">
-              <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">
-                {`${moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')} - ${moment.utc(eventEndDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')} (${moment.duration(moment(eventEndDate).diff(moment(eventStartDate))).asMinutes()} mins)`}
-              </div>
-              {(groupEvents || []).length > 0 && (
-                  <button 
-                    className="btn btn-xs btn-outline-blue" 
+        {!playbackStart &&
+          <div className="flex items-start w-full">
+            <SvgIcon id="clock" className="text-lg text-white" />
+            <div className="ml-3 flex-1">
+              <div className="text-white leading-none mb-1">Date & Time</div>
+              <div className="flex items-start sm:items-center flex-col sm:flex-row text-gray-400">
+                <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">
+                  {`${moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')} - ${moment.utc(eventEndDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')} (${moment.duration(moment(eventEndDate).diff(moment(eventStartDate))).asMinutes()} mins)`}
+                </div>
+                {(groupEvents || []).length > 0 && (
+                  <button
+                    className="btn btn-xs btn-outline-blue"
                     onClick={() => setIsModalOpen(true)}>
-                      See More Dates
+                    See More Dates
                   </button>
-              )}
-  
+                )}
+
+              </div>
             </div>
-          </div>
-        </div>
+          </div>}
         <div className="flex items-start w-full">
           <SvgIcon id="location" className="text-lg text-white" />
           <div className="ml-3">
@@ -114,17 +122,17 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
             </div>
           </div>
         </div>
-        {isLiveStream &&  <div className="flex items-center w-full">
+        {(isLiveStream && !playbackStart) && <div className="flex items-center w-full">
           <SvgIcon id="livestream" className="text-lg text-white" />
           <div className="ml-3 text-white">Livestream</div>
         </div>}
-       
+
         <div className="flex items-start sm:items-center w-full">
           <SvgIcon id="ticket" className="text-lg text-white" />
           <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price!== undefined) && `Price from $${(price/100).toFixed(2)}`}</div>
+            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from $${(price / 100).toFixed(2)}`}</div>
             {/* not showing redeem when it's offline event  */}
-            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>} 
+            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
           </div>
         </div>
       </VStack>

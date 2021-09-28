@@ -4,7 +4,7 @@
  * SEO constants
  */
 export const SEO_TITLE = 'Happin Ticketing';
-export const PRODUCTION_URL = 'https://happin-titcketing.app';
+export const PRODUCTION_URL = 'https://web.happin.app';
 export const SEO_DESCRIPTION =
   'Create your event for free and start selling tickets online today. CrowdCore is made for event organizers, promoters and venues. Use our end-to-end event management platform to plan, promote and sell-out your live events, conferences and festivals.';
 export const SEO_KEYWORDS =

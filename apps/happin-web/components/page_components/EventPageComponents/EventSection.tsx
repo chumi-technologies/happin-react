@@ -1,6 +1,6 @@
 import EventTitle from "./EventTitle";
 import EventDescription from "./EventDescription";
-import EventLineUp from "./EventLineUp";
+//import EventLineUp from "./EventLineUp";
 import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
 import { EventData } from "lib/model/event";
@@ -20,6 +20,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         price={eventData?.event?.min_price}
         location={eventData?.event?.acInfo}
         groupEvents={groupEvents}
+        playbackStart={!!eventData?.event?.ODPBStart}
         setIsRedeemModalOpen={setIsRedeemModalOpen}/>
       <div id="about" className="pt-6 sm:pt-10">
         <EventDescription 

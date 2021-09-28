@@ -19,10 +19,12 @@ const Events = (props: EventData) => {
   const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
 
   const eventData = props;
   const groupEvents = props.groupEvents;
-
+  let eventLocation = 'Stream Via Happin'
+  let eventDescription = ' - You can watch livestream on https://happin.app or download Happin App'
 
   useEffect(() => {
     const isVisitor = Boolean(localStorage.getItem('is_visitor'));
@@ -34,10 +36,25 @@ const Events = (props: EventData) => {
     setIsFirstTimeVisitor(s => !s);
   }
 
+
+  (() => {
+    if (eventData) {
+
+      if (eventData.event.acInfo.location !== 'happin.app' && eventData.event.acInfo.eventType !== 'hybrid') {
+        eventLocation = eventData.event.acInfo.venueName || eventData.event.acInfo.location;
+        eventDescription = ` - You can attend event @ ${eventData.event.acInfo.venueName || eventData.event.acInfo.location}`;
+      } else if (eventData.event.acInfo.eventType === 'hybrid') {
+        eventLocation = eventData.event.acInfo.venueName || eventData.event.acInfo.location + ' and Stream Via Happin';
+        eventDescription = ` - You can attend event @ ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} and watch livestream on https://happin.app or download Happin App`
+      }
+    }
+  })()
+
+
   const seoProps = {
-    description: eventData?.event?.contentPlainText,
-    keywords: eventData?.event?.tags.toString(),
-    title: eventData?.event?.title,
+    description: eventData?.event?.title + eventDescription,
+    keywords: `${eventData?.event?.tags.toString()}, Happin livestream`,
+    title: eventData?.event?.title + ' @ ' + eventLocation,
     ogImage: eventData?.event?.socialImg || eventData?.event?.cover,
     ogUrl: `${PRODUCTION_URL}${router.asPath}`,
     twitterImage: eventData?.event?.socialImg || eventData?.event?.cover
@@ -89,6 +106,17 @@ const Events = (props: EventData) => {
             </div>
           </PopUpModal>
         )}
+        {/* chat with fans button modal */}
+        {isChatModalOpen && (
+          <PopUpModal
+            modalTitle="Find other fans here!"
+            isModalOpen={isChatModalOpen}
+            setIsModalOpen={setIsChatModalOpen}
+          >
+            <div className="m-5">
+            </div>
+          </PopUpModal>
+        )}
         <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
           <ActionSideBar
             eventTitle={eventData?.event?.title}
@@ -119,7 +147,7 @@ const Events = (props: EventData) => {
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
               <EventSection setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar eventData={eventData} />
+            <BottomBar eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen}/>
           </div>
         </div>
       </div>
@@ -145,13 +173,13 @@ export async function getServerSideProps(context: { params: { event_id: string }
     return {
       props,
     }
-  } catch(err) {
+  } catch (err) {
     return {
       redirect: {
         permanent: false,
         destination: "/404",
       },
-      props:{},
+      props: {},
     };
   }
 }

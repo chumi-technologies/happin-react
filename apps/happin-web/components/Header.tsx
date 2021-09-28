@@ -1,14 +1,14 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import { Avatar, HStack } from '@chakra-ui/react';
+import { Avatar, HStack, useToast } from '@chakra-ui/react';
 import { SearchIcon } from "@chakra-ui/icons";
 import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
 import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
-import { getWhiteLabelDomain } from 'lib/api';
+import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
 
 export default function Header() {
   const { user, clearUser } = useUserState();
@@ -16,6 +16,7 @@ export default function Header() {
   const [showSearch, setSearch] = useState(false)
   const [isEventPage, setIsEventPage] = useState(false)
   const router = useRouter();
+  const toast = useToast();
 
   const searchRef = useRef<HTMLInputElement>(null!);
 
@@ -59,6 +60,35 @@ export default function Header() {
     }
   }, [dimmed])
 
+  const clickHostEventHandler = async() => {
+    if (!user) {
+      generateToast('Please sign up as event organizer');
+      showSSOSignUp('Organizer')
+      return
+    }
+    if (!user.email) {
+      generateToast('Please sign up as event organizer');
+      return
+    }
+    try {
+      const res = await exchangeDashboardEventHostToken();
+      if (res.code !== 200) {
+        throw new Error(res.message)
+      }
+      const sassToken = res.data.token;
+      window.location.href = `https://manage.happin.app/link-happin?t=${sassToken}`
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
 
   return (
     <div className="relative z-50 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
@@ -142,9 +172,7 @@ export default function Header() {
 
         {/* Right Block */}
         <div className="flex items-center">
-          <Link href="/" >
-            <a className="header__link sm:hidden md:inline-flex">Host Event</a>
-          </Link>
+          <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Host Event</a>
           {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
             <SearchIcon w={4} h={4} color="currentColor" />
           </button>}
@@ -171,14 +199,14 @@ export default function Header() {
                   <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-800">
                     <div className="py-1">
                       <Menu.Item>
-                        <a className="header__menu-link" onClick={() => router.push('/')}>
+                        <a className="header__menu-link" onClick={clickHostEventHandler}>
                           <International theme="outline" size="16" fill="currentColor" />
                           <span className="ml-2">Host Event Dashboard</span>
                         </a>
                       </Menu.Item>
                       <Menu.Item>
                         <Link href="/">
-                          <a className="header__menu-link" onClick={() => router.push('/')}>
+                          <a className="header__menu-link" onClick={() => location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}>
                             <DownTwo theme="outline" size="16" fill="currentColor" />
                             <span className="ml-2">Download Happin</span>
                           </a>
@@ -192,7 +220,7 @@ export default function Header() {
                             <a className="header__menu-link" onClick={showSSO}>Log in</a>
                           </Menu.Item>
                           <Menu.Item>
-                            <a className="header__menu-link" onClick={showSSOSignUp}>Sign up</a>
+                            <a className="header__menu-link" onClick={()=>{(showSSOSignUp('Fan'))}}>Sign up</a>
                           </Menu.Item>
                         </>
                       )}

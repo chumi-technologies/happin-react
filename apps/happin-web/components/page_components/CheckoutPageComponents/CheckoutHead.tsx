@@ -77,14 +77,14 @@ const CheckoutHead = ({
       // check login or not
       if (!user && !localStorage.getItem('chumi_jwt')) {
         generateToast('To continue, please log in or sign up ', toast);
-        showSSOSignUp()
+        showSSOSignUp('Fan')
         setButtonLoading(false)
         return
       } else if (!user && localStorage.getItem('chumi_jwt')) {
         let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
         if (new Date().getTime() > (decoded.exp * 1000)) {
           generateToast('To continue, please log in or sign up ', toast);
-          showSSOSignUp()
+          showSSOSignUp('Fan')
           setButtonLoading(false)
           return
         }

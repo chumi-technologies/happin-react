@@ -74,24 +74,23 @@ const EventHost = (props : EventHostProps) => {
                 </div>
                 <div className="mt-6 mb-2 text-white font-semibold">Common questions:</div>
                 <Stack align="center" className="text-sm text-gray-300">
-                  <Link href="/"><a className="link-normal">How can I get a refund?</a></Link>
-                  <Link href="/"><a className="link-normal">How to confirm or verify your Eventbrite order?</a></Link>
-                  <Link href="/"><a className="link-normal">What is this Eventbrite fee? (EB *Rate)</a></Link>
-                  <Link href="/"><a className="link-normal">How to update your ticket/ registration information?</a></Link>
+                  <Link href="/"><a className="link-normal">Can I get a refund?</a></Link>
+                  <Link href="/"><a className="link-normal">How to confirm my order and tickets?</a></Link>
                   <Link href="/"><a className="link-normal">Where are my tickets?</a></Link>
                 </Stack>
                 <div className="h-px bg-gray-600 my-6" />
                 <div className="mb-2 text-white font-semibold">Have a question for the organizer?</div>
                 <div className="text-sm text-gray-300">See the event page for more information or</div>
-                <button
-                  type="button"
-                  className="mt-4 mb-1 btn btn-rose"
-                  onClick={() => {
-                    setIsOpen(false)
-                  }}
-                >
-                  Contact the organizer
+                <button type="button"
+                  className="mt-4 mb-1 btn btn-rose">
+                <a
+                 
+                 href={`mailto: samlaw829@gmail.com`}
+               >
+                 Contact the organizer
+               </a>
                 </button>
+
               </div>
             </Transition.Child>
           </div>

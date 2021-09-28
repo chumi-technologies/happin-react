@@ -21,7 +21,7 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Description</div>
-      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80)? "" : "max-h-12 overflow-hidden"}`}>
+      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80)? "" : "overflow-hidden"}`} style={{maxHeight: '75px'}}>
         {rawDescription}
        {/*  <div>
           <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
