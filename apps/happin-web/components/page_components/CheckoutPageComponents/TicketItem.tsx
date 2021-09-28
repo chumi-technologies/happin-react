@@ -18,7 +18,7 @@ export type TicketItemProps = {
   absorbFee: boolean,
   taxNeeded: number
   setCartPopoverMsg: (arg: any)=> void
-  discountCodeApplied: {appliedTo: Array<string>, discount: number, method: string} | undefined
+  discountCodeApplied: {appliedTo: Array<string>, discount: number, method: string, appliedToAll: boolean} | undefined
 }
 
 const TicketItem = (props: TicketItemProps) => {
@@ -38,7 +38,7 @@ const TicketItem = (props: TicketItemProps) => {
   }
 
   const renderDiscountNumberFromUrlCode = () => {
-    if (discountCodeApplied && discountCodeApplied.appliedTo && discountCodeApplied.appliedTo.includes(data.id)) {
+    if (discountCodeApplied && (discountCodeApplied.appliedTo && discountCodeApplied.appliedTo.includes(data.id) || discountCodeApplied.appliedToAll)) {
       if (discountCodeApplied.method === 'percentage') {
         return <span className="text-yellow-500 text-sm">&nbsp;  {discountCodeApplied.discount}% off per ticket at checkout</span>
       } else {

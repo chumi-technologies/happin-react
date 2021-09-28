@@ -147,6 +147,7 @@ export interface OrderItem {
   discountCode: string;
   activityId: string;
   shippingCountry:string;
+  affiliateCode?: string;
 }
 
 export interface MappingQuestionsResponse {

@@ -83,8 +83,10 @@ const Checkout = () => {
         // for user info form at payment page, higher priority than user state's info
         setUserInfoFromUrl({email: router.query.email, phonenumber: router.query.phone, displayname: router.query.username})
         // only clear cart when the order is failed to created due to not enough quantity, redirected from payment page
-        if (router.query.clearcart && router.query.clearcart !== 'undefined') {
+        if (localStorage.getItem('clearcart')) {
+          console.log('clear cart')
           clearCart()
+          localStorage.removeItem('clearcart')
         }
         await Promise.all([getEventDetailAndSetState(router.query.event_id as string),
         getEventTicketsAndSetState(router.query.event_id as string),
@@ -97,6 +99,7 @@ const Checkout = () => {
           if (router.query.affiliate) {
             // store affiliate code into context regardless, server will check validity on final step
             setAffiliate(router.query.affiliate as string)
+            return
           }
           // two code appear at same time is not possible
           await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
@@ -129,8 +132,8 @@ const Checkout = () => {
         if (res.type === 'discount') {
           generateToast('Discount code applied.',toast)
           setCodeUsed(res.code)
-          if (res.appliedTo && res.appliedTo.length) {
-            setDiscountCodeApplied({appliedTo: res.appliedTo, discount: res.discount, method: res.discountMethod})
+          if (res.appliedTo && res.appliedTo.length || res.appliedToAll) {
+            setDiscountCodeApplied({appliedTo: res.appliedTo, discount: res.discount, method: res.discountMethod, appliedToAll: res.appliedToAll})
           }
         } else if (res.type === 'presale') {
           setPresaleCodeUsed(true);
@@ -141,7 +144,7 @@ const Checkout = () => {
     }
   }
 
-  const [discountCodeApplied, setDiscountCodeApplied] = useState<{appliedTo: Array<string>, discount: number, method: string}>();
+  const [discountCodeApplied, setDiscountCodeApplied] = useState<{appliedTo: Array<string>, discount: number, method: string, appliedToAll: boolean}>();
 
   const getEventDetailAndSetState = async (eventId: string) => {
     try {
