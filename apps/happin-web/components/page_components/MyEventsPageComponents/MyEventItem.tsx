@@ -20,7 +20,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
             </div>
           )
         }
-        <div className="hidden sm:block absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition">
+        <div className="hidden md:block absolute right-2 top-2 z-20 opacity-0 group-hover:opacity-100 transition">
           <VStack spacing={1.5}>
             <Tooltip label="Ticket" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               {/*https://nextjs.org/docs/tag/v9.5.2/api-reference/next/link#dynamic-routes*/}
@@ -56,7 +56,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
                className="w-full h-full object-center object-cover rounded-md" />
         </div>
       </div>
-      <div className="flex mt-3 bg-gray-700 rounded-full justify-between">
+      <div className="flex md:hidden mt-3 bg-gray-700 rounded-full justify-between">
         <Link href={`/my-events/event-details?id=${data.id}&page=0`}
               as={`/my-events/event-details/${data.id}/tickets`}>
           <div className="flex items-center text-sm px-3 py-2 active:text-rose-500">

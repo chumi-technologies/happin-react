@@ -140,10 +140,10 @@
 
 // Check out
 .checkout__page {
-  @apply relative bg-black text-white overflow-x-hidden;
-  @media (min-width: 640px) {
-    height: calc(100vh - 80px);
-  }
+  @apply relative bg-black text-white overflow-x-hidden z-0 sm:h-screen;
+  //@media (min-width: 640px) {
+  //  height: calc(100vh - 80px);
+  //}
 }
 .checkout__container {
   max-width: 600px;

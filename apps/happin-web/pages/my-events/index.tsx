@@ -32,7 +32,7 @@ const MyEvents = () => {
     },
   ]
   return (
-    <div className="checkout__page">
+    <div className="common__body">
       <div className="flex flex-col h-full">
         <MyEventsHead />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="my-events-scroll-body">
