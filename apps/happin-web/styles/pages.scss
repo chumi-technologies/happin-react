@@ -81,7 +81,7 @@
 
 // Event Details
 .event-details__page{
-  @apply relative flex-1 h-0 bg-black text-white;
+  @apply relative flex-1 md:h-0 lg:h-0 bg-black text-white;
 }
 .event-details__container {
   @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
