@@ -36,13 +36,13 @@ const MerchItem = (props: MerchItemProps) => {
   }
 
   return (
-    <div className="bg-gray-800 p-2 sm:p-3 rounded-lg">
+    <div className="flex flex-col bg-gray-800 p-2 sm:p-3 rounded-lg">
       <div className="aspect-w-1 aspect-h-1" style={{ height: '150px' }}>
         <img src={data.image[0]} alt={data.name} className="w-full h-full object-center object-cover rounded-md" />
       </div>
       <div className="font-medium text-sm mt-3 mb-1">{currencyFormatter(currency as string).format(data.price)}</div>
       <div className="font-medium text-xs">{data.name}</div>
-      <div className="text-xs text-gray-400 truncate mb-3">{data.description}</div>
+      <div className="text-xs text-gray-400 truncate mb-3 flex-1">{data.description}</div>
       {checkOptionalMerchEligible() ? <button
         className="btn checkout__merch-select"
         disabled={disabled}

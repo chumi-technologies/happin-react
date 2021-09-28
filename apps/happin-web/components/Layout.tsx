@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: any }) => {
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
-  const [showHeader, setShowHeader] = useState(false);
+  const [showHeader, setShowHeader] = useState(true);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 
@@ -51,10 +51,8 @@ const Layout = ({ children }: { children: any }) => {
       )}
 
       {/* Header Section */}
-      <div className="sm:flex sm:flex-col sm:h-screen">
-        {showHeader && <Header />}
-        {children}
-      </div>
+      {showHeader && <Header />}
+      {children}
     </>
   );
 };

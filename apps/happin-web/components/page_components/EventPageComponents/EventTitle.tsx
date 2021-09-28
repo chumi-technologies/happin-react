@@ -10,6 +10,7 @@ import { LocationInfo } from "lib/model/event";
 import { GroupEvent } from 'lib/model/groupEvent';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
+import classnames from 'classnames';
 
 type EventTitleProps = {
   setIsModalOpen: (arg0: boolean) => void;
@@ -38,7 +39,7 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
     }
   }, [dimmed])
 
-  
+
   const openRedeemModal = () => {
     if (!user) {
       showSSO();
@@ -53,14 +54,14 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
       <HStack spacing={3}>
         {tags && tags.map((tag: string, index: Number) => {
           return (
-            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
+            <div className="mb-2 py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
               {tag}
             </div>
           )
         })}
 
         {isLiveNow && (
-          <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
+          <div className="mb-2 inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>LIVE</span>
           </div>
@@ -68,7 +69,9 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
       </HStack>
 
       {/* Event Title */}
-      <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white mt-4 sm:mt-6 font-bold lg:pr-10">
+      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10', {
+        'mt-2 sm:mt-4': tags?.length || isLiveNow
+      })}>
         {eventTitle}
       </h1>
 
@@ -93,13 +96,13 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
                 {`${moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')} - ${moment.utc(eventEndDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')} (${moment.duration(moment(eventEndDate).diff(moment(eventStartDate))).asMinutes()} mins)`}
               </div>
               {(groupEvents || []).length > 0 && (
-                  <button 
-                    className="btn btn-xs btn-outline-blue" 
+                  <button
+                    className="btn btn-xs btn-outline-blue"
                     onClick={() => setIsModalOpen(true)}>
                       See More Dates
                   </button>
               )}
-  
+
             </div>
           </div>
         </div>
@@ -118,13 +121,13 @@ const EventTitle = ({setIsModalOpen, setIsRedeemModalOpen, eventTitle, isLiveStr
           <SvgIcon id="livestream" className="text-lg text-white" />
           <div className="ml-3 text-white">Livestream</div>
         </div>}
-       
+
         <div className="flex items-start sm:items-center w-full">
           <SvgIcon id="ticket" className="text-lg text-white" />
           <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
             <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price!== undefined) && `Price from $${(price/100).toFixed(2)}`}</div>
             {/* not showing redeem when it's offline event  */}
-            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>} 
+            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
           </div>
         </div>
       </VStack>
