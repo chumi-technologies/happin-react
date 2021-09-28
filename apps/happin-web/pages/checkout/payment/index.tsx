@@ -27,7 +27,6 @@ import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
-import { User } from 'lib/model/user';
 import { useUserState } from 'contexts/user-state';
 
 
@@ -67,7 +66,7 @@ const customStyles = {
     ...provided,
     background: state.isSelected ? '#E8F0FE' : '#000',
     marginTop: '0.25rem',
-    border: '2px solid gray',
+    border: '2px solid #454545',
     borderRadius: '0.5rem',
     padding: '0.1rem 0.75rem',
   }),
@@ -1257,7 +1256,7 @@ const PaymentInner = (props: any) => {
                         <div className="sm:text-lg font-semibold mb-4">Discount Code</div>
                         <div className="flex">
                           <input
-                            disabled={(codeUsed && !promoteCode) ? true : false}
+                            disabled={((codeUsed && !promoteCode) || affiliate) ? true : false}
                             onChange={(e) => {
                               const trimmed = e.target.value.trim()
                               setPromoteCode(trimmed)
@@ -1267,7 +1266,7 @@ const PaymentInner = (props: any) => {
                             className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                           <button
                             onClick={ApplyPromoCode}
-                            disabled={validateCodeLoading}
+                            disabled={validateCodeLoading || !!affiliate}
                             className="btn btn-rose !py-0 sm:w-32 h-11 !text-sm !font-semibold">{(codeUsed && !promoteCode) ? 'Applied' : validateCodeLoading ? 'Processing...' : 'Apply'}
                           </button>
                         </div>
