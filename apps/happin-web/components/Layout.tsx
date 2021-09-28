@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: any }) => {
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
-  const [showHeader, setShowHeader] = useState(true);
+  const [showHeader, setShowHeader] = useState(false);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 
