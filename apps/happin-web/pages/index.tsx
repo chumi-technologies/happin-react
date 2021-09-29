@@ -175,7 +175,7 @@ export default function Home() {
             <div className="w-52 mb-8 sm:mb-10">
               <h3 className="tracking-wide uppercase font-bold text-sm">Apps Download</h3>
               <div className="mt-4">
-                <a target="_blank" href="https://apps.apple.com/app/id1527348429">
+                <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-10 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
               </div>
