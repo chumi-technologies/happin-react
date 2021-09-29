@@ -8,21 +8,25 @@ import { UserState } from '../contexts/user-state'
 import { SSO } from '@components/SSO'
 import { SEO } from "@components/SEO";
 import { CheckoutState } from "contexts/checkout-state"
-function App({ Component, pageProps }: AppProps) {
+import { IntercomProvider } from 'react-use-intercom';
 
+function App({ Component, pageProps }: AppProps) {
+  
   return (
     <ChakraProvider theme={theme}>
-      <UserState>
-        <CheckoutState>
-          <SSOState>
-            <SEO />
-            <SSO />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </SSOState>
-        </CheckoutState>
-      </UserState>
+      <IntercomProvider appId={process.env.NEXT_PUBLIC_INTERCOM_APP_ID as string} autoBoot={true}>
+        <UserState>
+          <CheckoutState>
+            <SSOState>
+              <SEO />
+              <SSO />
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </SSOState>
+          </CheckoutState>
+        </UserState>
+      </IntercomProvider>
     </ChakraProvider>
   )
 }

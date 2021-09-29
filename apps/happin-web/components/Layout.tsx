@@ -11,7 +11,7 @@ const Layout = ({ children }: { children: any }) => {
   // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isCheckout, setIsCheckout] = useState(false);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
@@ -33,6 +33,8 @@ const Layout = ({ children }: { children: any }) => {
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
     if (router?.query?.fromapp) {
+      //setIsMobileBarOpen(false);
+      //setShowHeader(false);
       setOpenInApp(true);
     }
     if (router?.query?.merchonly) {
@@ -43,6 +45,13 @@ const Layout = ({ children }: { children: any }) => {
       setBoxOfficeMode(true);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
+
+  useEffect(()=> {
+    const hideMobileBar = localStorage.getItem('hide_mobile_bar');
+    if (hideMobileBar) {
+      setIsMobileBarOpen(false);
+    }
+  }, [])
 
   return (
     <>

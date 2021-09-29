@@ -1,13 +1,15 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
-import { Avatar, HStack } from '@chakra-ui/react';
+import { Avatar, HStack, useToast } from '@chakra-ui/react';
 import { SearchIcon } from "@chakra-ui/icons";
 import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
 import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
+import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
+import { useIntercom } from 'react-use-intercom';
 import classnames from 'classnames';
 
 export default function Header() {
@@ -16,16 +18,47 @@ export default function Header() {
   const [showSearch, setSearch] = useState(false)
   const [isEventPage, setIsEventPage] = useState(false)
   const router = useRouter();
+  const toast = useToast();
+  const { show } = useIntercom();
 
   const searchRef = useRef<HTMLInputElement>(null!);
 
+  const [whiteLabelLogo, setWhiteLabelLogo] = useState();
+  const [whiteLabelHome, setWhiteLabelHome] = useState('');
+  const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
+
   useEffect(() => {
-    if (router.asPath.includes('/events/')) {
+    if (router.asPath.includes('/events/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
       setIsEventPage(true);
     } else {
       setIsEventPage(false);
     }
   }, [router.asPath])
+
+  useEffect(()=> {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      //const hostname = 'deadroyaltyproductions.happin.app'
+      // && !hostname.includes('localhost')
+      if (!hostname.includes('web.happin.app') && !hostname.includes('localhost')) {
+        whiteLabelDomain(hostname)
+      } else {
+        setCheckingWhiteLable(false)
+      }
+    }
+  }, [])
+
+  const whiteLabelDomain = async (domain: string) => {
+    try {
+      const response = await getWhiteLabelDomain(domain);
+      const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
+      setWhiteLabelLogo(logo)
+      setWhiteLabelHome(response.clientUrl);
+      setCheckingWhiteLable(false)
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   useEffect(() => {
     showSearch && searchRef.current.focus()
@@ -39,6 +72,36 @@ export default function Header() {
     }
   }, [dimmed])
 
+  const clickHostEventHandler = async () => {
+    if (!user) {
+      generateToast('Please sign up as event organizer');
+      showSSOSignUp('Organizer')
+      return
+    }
+    if (!user.email) {
+      generateToast('Please sign up as event organizer');
+      return
+    }
+    try {
+      const res = await exchangeDashboardEventHostToken();
+      if (res.code !== 200) {
+        throw new Error(res.message)
+      }
+      const sassToken = res.data.token;
+      window.location.href = `https://manage.happin.app/link-happin?t=${sassToken}`
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
+
   return (
     <header className="header">
       <div className="fixed top-0 left-0 right-0 z-10 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
@@ -50,8 +113,19 @@ export default function Header() {
           {/* Left Block */}
           <div className="flex items-center">
             {/* Logo */}
-            <img className="h-10 mr-6 md:mr-14 hidden sm:block" src="/images/happin-login.svg" alt="Happin" />
-            <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" alt="Happin" />
+            {!checkingWhiteLable ?
+              whiteLabelLogo ?
+                <a>
+                  <img className="h-10 mr-6 md:mr-8 hidden sm:block" src={whiteLabelLogo} onClick={() => {
+                    if (whiteLabelHome) window.location.href = whiteLabelHome.startsWith('https://') ? whiteLabelHome : 'https://' + whiteLabelHome;
+                    else router.push('/')
+                  }} alt="Happin" />
+                </a> :
+                <a>
+                  <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                  <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                </a> : <></>
+            }
             {/* Mobile Left Menu */}
             <Menu as="div" className="relative md:hidden">
               {({ open }) => (
@@ -115,9 +189,8 @@ export default function Header() {
 
           {/* Right Block */}
           <div className="flex items-center">
-            <Link href="/" >
-              <a className="header__link sm:hidden md:inline-flex">Host Event</a>
-            </Link>
+            <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Host Event</a>
+            <a className="text-sm p-2 font-medium text-gray-300 hover:text-white sm:inline-flex md:hidden" onClick={() => { show() }}>Support</a>
             {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>}
@@ -144,18 +217,16 @@ export default function Header() {
                     <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-800">
                       <div className="py-1">
                         <Menu.Item>
-                          <a className="header__menu-link" onClick={() => router.push('/')}>
+                          <a className="header__menu-link" onClick={clickHostEventHandler}>
                             <International theme="outline" size="16" fill="currentColor" />
                             <span className="ml-2">Host Event Dashboard</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
-                          <Link href="/">
-                            <a className="header__menu-link" onClick={() => router.push('/')}>
+                            <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
                               <DownTwo theme="outline" size="16" fill="currentColor" />
                               <span className="ml-2">Download Happin</span>
                             </a>
-                          </Link>
                         </Menu.Item>
                       </div>
                       <div className="py-1">
@@ -165,14 +236,19 @@ export default function Header() {
                               <a className="header__menu-link" onClick={showSSO}>Log in</a>
                             </Menu.Item>
                             <Menu.Item>
-                              <a className="header__menu-link" onClick={showSSOSignUp}>Sign up</a>
+                              <a className="header__menu-link" onClick={()=> {showSSOSignUp('Fan')}}>Sign up</a>
                             </Menu.Item>
                           </>
                         )}
                         {user && (
+                          <>
                           <Menu.Item>
-                            <a className="header__menu-link" onClick={clearUser}>Sign out</a>
+                            <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My tickets</a>
+                         </Menu.Item>
+                          <Menu.Item>
+                            <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
                           </Menu.Item>
+                          </>
                         )}
                       </div>
                     </Menu.Items>

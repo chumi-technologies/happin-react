@@ -12,7 +12,7 @@ enum ESSOMode {
 
 const SSO = () => {
   const { setUserInfo } = useUserState();
-  const { ssoState: { visible, mode }, hideSSO } = useSSOState();
+  const { ssoState: { visible, mode, role }, hideSSO } = useSSOState();
   const [origin, setOrigin] = useState('');
   const router = useRouter();
 
@@ -27,7 +27,7 @@ const SSO = () => {
 
   const url = new URL(process.env.NEXT_PUBLIC_HAPPIN_SSO || '');
   url.searchParams.set('origin', origin)
-  url.searchParams.set('role', 'Fan')
+  url.searchParams.set('role', role)
   if (mode) {
     url.searchParams.set('mode', mode)
   }

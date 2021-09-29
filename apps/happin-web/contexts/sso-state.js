@@ -5,7 +5,7 @@ const ssoContext = createContext();
 
 export function SSOState({ children }) {
   const [dimmed, setDimmed] = useState(false);
-  const [ssoState, setSSOState] = useState({ visible: false, mode: ESSOMode.signIn });
+  const [ssoState, setSSOState] = useState({ visible: false, mode: ESSOMode.signIn, role: 'Fan' });
 
   const showSSO = () => {
     setDimmed(true);
@@ -14,11 +14,12 @@ export function SSOState({ children }) {
     });
   }
 
-  const showSSOSignUp = () => {
+  const showSSOSignUp = (role) => {
     setDimmed(true);
     setSSOState({
       visible: true,
       mode: ESSOMode.signUp,
+      role
     });
   }
 
