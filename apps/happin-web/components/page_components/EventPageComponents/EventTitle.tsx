@@ -52,14 +52,6 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
     <>
       {/* Badges */}
       <HStack spacing={3}>
-        {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
-          return (
-            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
-              {tag}
-            </div>
-          )
-        })}
-
         {isLiveNow ? (
           <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
@@ -67,8 +59,16 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
           </div>
         ) : playbackStart ? <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
           <span className="w-2 h-2 rounded-full bg-white mr-2" />
-          <span>Replay available</span>
+          <span>Replay</span>
         </div> : <></>}
+
+        {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
+          return (
+            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
+              {tag}
+            </div>
+          )
+        })}
       </HStack>
 
       {/* Event Title */}
@@ -77,7 +77,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
       </h1>
 
       {/* Event Date and Time */}
-      {playbackStart &&
+      {!playbackStart &&
         <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">
           {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
         </h1>

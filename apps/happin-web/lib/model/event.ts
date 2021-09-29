@@ -70,7 +70,8 @@ export interface EventDetail {
     creator: Creator;
     acInfo: LocationInfo;
     socialImg: string;
-    hasPFM: boolean
+    hasPFM: boolean;
+    deepLink: string
 }
 
 export interface EventData {

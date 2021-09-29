@@ -12,7 +12,6 @@ const Layout = ({ children }: { children: any }) => {
   // ANGULAR IS DEPREICATED.
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
-
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
@@ -27,6 +26,8 @@ const Layout = ({ children }: { children: any }) => {
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
     if (router?.query?.fromapp) {
+      //setIsMobileBarOpen(false);
+      //setShowHeader(false);
       setOpenInApp(true);
     }
     if (router?.query?.merchonly) {
@@ -37,6 +38,13 @@ const Layout = ({ children }: { children: any }) => {
       setBoxOfficeMode(true);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
+
+  useEffect(()=> {
+    const hideMobileBar = localStorage.getItem('hide_mobile_bar');
+    if (hideMobileBar) {
+      setIsMobileBarOpen(false);
+    }
+  }, [])
 
   return (
     <>
@@ -52,7 +60,7 @@ const Layout = ({ children }: { children: any }) => {
 
       {/* Header Section */}
       <div className="sm:flex sm:flex-col sm:h-screen">
-        {showHeader && <Header />}
+        {showHeader && <Header/>}
         {children}
       </div>
     </>

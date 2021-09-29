@@ -4,9 +4,10 @@ import { useRouter } from 'next/router';
 
 interface eventDataProp {
   eventData: EventData
-  setIsChatButtonOpen: (arg: any)=>void
+  setIsChatButtonOpen: (arg: any)=>void,
+  queryParams: any
 }
-const BottomBar = ({eventData, setIsChatButtonOpen}: eventDataProp) => {
+const BottomBar = ({eventData, setIsChatButtonOpen, queryParams}: eventDataProp) => {
   const router = useRouter();
   const isSoldOut = eventData.isTicketSoldOut;
 
@@ -32,7 +33,7 @@ const BottomBar = ({eventData, setIsChatButtonOpen}: eventDataProp) => {
           <SvgIcon id="chat" className="text-lg text-gray-900 mr-1 sm:mr-2" />
           <span className="text-sm sm:text-base">Chat with Fans</span>
         </button>
-        {!offSaleTimeHasPast(eventData) &&  <button disabled={isSoldOut || checkOffLineEventStarted(eventData)} onClick={()=>{router.push(`/checkout/${eventData.event.eid}`)}} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
+        {!offSaleTimeHasPast(eventData) &&  <button disabled={isSoldOut || checkOffLineEventStarted(eventData)} onClick={()=>{router.push({pathname:`/checkout/${eventData.event.eid}`, query: queryParams})}} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
           <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
           <span className="text-sm sm:text-base">{isSoldOut ? "Sold Out" :checkOffLineEventStarted(eventData) ? "Event Started" : "Get Tickets"}</span>
         </button>}

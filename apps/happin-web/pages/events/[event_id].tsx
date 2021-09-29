@@ -13,33 +13,54 @@ import { GetServerSidePropsResult } from "next";
 import { PRODUCTION_URL } from "utils/constants";
 import { useRouter } from "next/router";
 import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
+import ChatWithFans from  "../../components/page_components/EventPageComponents/ChatWithFans"
+import { useUserState } from "contexts/user-state";
+import { useIntercom } from 'react-use-intercom';
 
 const Events = (props: EventData) => {
   const router = useRouter();
-  const [isFirstTimeVisitor, setIsFirstTimeVisitor] = useState(true);
+  const [hideSigninBar, setHideSigninBar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-
+  const { setEventDeepLink, user } = useUserState();
+  const { update } = useIntercom();
   const eventData = props;
   const groupEvents = props.groupEvents;
+  const [queryParams, setQueryParams] = useState<{code: string, affiliate: string}>({affiliate: '', code: ''});
   let eventLocation = 'Stream Via Happin'
-  let eventDescription = ' - You can watch livestream on https://happin.app or download Happin App'
+  let eventDescription = ' - You can watch livestream on https://web.happin.app or download Happin App'
+  if (typeof window !== 'undefined') {
+    if (window.innerWidth < 768) {
+      update({hideDefaultLauncher: true})
+    }
+  }
+
+  useEffect(()=> {
+    if(router.query.affiliate) {
+      setQueryParams((x)=> {x.affiliate = router.query.affiliate as string; return {...x}})
+    }
+    if(router.query.sharecode) {
+      setQueryParams((x)=> {x.code = router.query.sharecode as string; return {...x}})
+    }
+  }, [])
 
   useEffect(() => {
-    const isVisitor = Boolean(localStorage.getItem('is_visitor'));
-    setIsFirstTimeVisitor(!isVisitor);
+    const hideSigninBar = !localStorage.getItem('hide_signin_bar');
+    setHideSigninBar(!hideSigninBar);
+    if (eventData) {
+      setEventDeepLink(eventData.event.deepLink);
+    }
   }, [])
 
   const firstTimeVisitHandler = () => {
-    localStorage.setItem('is_visitor', 'false');
-    setIsFirstTimeVisitor(s => !s);
+    localStorage.setItem('hide_signin_bar', '1');
+    setHideSigninBar(s => !s);
   }
 
 
   (() => {
     if (eventData) {
-
       if (eventData.event.acInfo.location !== 'happin.app' && eventData.event.acInfo.eventType !== 'hybrid') {
         eventLocation = eventData.event.acInfo.venueName || eventData.event.acInfo.location;
         eventDescription = ` - You can attend event @ ${eventData.event.acInfo.venueName || eventData.event.acInfo.location}`;
@@ -80,7 +101,7 @@ const Events = (props: EventData) => {
       </Head>
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
-        {isFirstTimeVisitor && (
+        {(!hideSigninBar && !user)  && (
           <SignInBar setIsFirstTimeVisitor={firstTimeVisitHandler} />
         )}
 
@@ -114,11 +135,13 @@ const Events = (props: EventData) => {
             setIsModalOpen={setIsChatModalOpen}
           >
             <div className="m-5">
+              <ChatWithFans></ChatWithFans>
             </div>
           </PopUpModal>
         )}
         <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
           <ActionSideBar
+            playbackStart={!!eventData?.event?.ODPBStart}
             eventTitle={eventData?.event?.title}
             hasPFM={eventData.event.hasPFM}
           />
@@ -147,7 +170,7 @@ const Events = (props: EventData) => {
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
               <EventSection setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen}/>
+            <BottomBar queryParams={queryParams}  eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen}/>
           </div>
         </div>
       </div>
@@ -161,7 +184,10 @@ export default Events;
 // fetch data on server upon every request.. not using static page pre render
 export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
   try {
-    const res = await getEventDetail(context.params.event_id as string, 'crowdcore')
+    const titleWithACID = context.params.event_id
+    const tokens = titleWithACID.split('-');
+    const acid = tokens[tokens.length - 1];
+    const res = await getEventDetail(acid, 'crowdcore')
     const props = res.data
     if (res.data?.event?.groupAcid) {
       const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
