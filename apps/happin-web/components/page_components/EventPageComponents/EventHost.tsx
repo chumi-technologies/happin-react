@@ -6,22 +6,23 @@ import Link from "next/link";
 
 type EventHostProps = {
   hostName?: string;
-  hostProfileImageUrl?:string;
+  hostProfileImageUrl?: string;
+  hostEmail?: string;
 }
 
-const EventHost = (props : EventHostProps) => {
+const EventHost = (props: EventHostProps) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
       <HStack justify="space-between" mt={5}>
-        <HStack spacing={{base: 3, sm: 5}}>
-        <Avatar boxSize={10} src={props.hostProfileImageUrl} name={props.hostName} />
-        <div className="font-medium">{props.hostName}</div>
+        <HStack spacing={{ base: 3, sm: 5 }}>
+          <Avatar boxSize={10} src={props.hostProfileImageUrl} name={props.hostName} />
+          <div className="font-medium">{props.hostName}</div>
         </HStack>
-         <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full"
-                 onClick={() => setIsOpen(true)}
-         >Contact</button>
+        <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full"
+          onClick={() => setIsOpen(true)}
+        >Contact</button>
       </HStack>
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
@@ -78,19 +79,19 @@ const EventHost = (props : EventHostProps) => {
                   <Link href="/"><a className="link-normal">How to confirm my order and tickets?</a></Link>
                   <Link href="/"><a className="link-normal">Where are my tickets?</a></Link>
                 </Stack>
-                <div className="h-px bg-gray-600 my-6" />
-                <div className="mb-2 text-white font-semibold">Have a question for the organizer?</div>
-                <div className="text-sm text-gray-300">See the event page for more information or</div>
-                <button type="button"
-                  className="mt-4 mb-1 btn btn-rose">
-                <a
-                 
-                 href={`mailto: samlaw829@gmail.com`}
-               >
-                 Contact the organizer
-               </a>
-                </button>
-
+                {props.hostEmail &&
+                  <>
+                    <div className="h-px bg-gray-600 my-6" />
+                    <div className="mb-2 text-white font-semibold">Have a question for the organizer?</div>
+                    <div className="text-sm text-gray-300">See the event page for more information or</div>
+                    <button type="button"
+                      className="mt-4 mb-1 btn btn-rose">
+                      <a href={`mailto: ${props.hostEmail}`}>
+                        Contact the organizer
+                      </a>
+                    </button>
+                  </>
+                }
               </div>
             </Transition.Child>
           </div>

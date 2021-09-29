@@ -35,7 +35,9 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         <div className="h-px bg-gray-600 my-6 sm:my-10" />
         <EventHost 
           hostName={eventData?.event?.creator?.name}
-          hostProfileImageUrl={eventData?.event?.creator?.avatar}/>
+          hostProfileImageUrl={eventData?.event?.creator?.avatar}
+          hostEmail={eventData?.event?.creator?.email}
+          />
       </div>
     </>
   );

@@ -28,11 +28,14 @@ export default function Header() {
   const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
   useEffect(() => {
-    if (router.asPath.includes('/events/')) {
+    if (router.asPath.includes('/events/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
       setIsEventPage(true);
     } else {
       setIsEventPage(false);
     }
+  }, [router.asPath])
+
+  useEffect(()=> {
     if (typeof window !== 'undefined') {
       const hostname = window.location.hostname;
       //const hostname = 'deadroyaltyproductions.happin.app'
@@ -43,7 +46,7 @@ export default function Header() {
         setCheckingWhiteLable(false)
       }
     }
-  }, [router.asPath])
+  }, [])
 
   const whiteLabelDomain = async (domain: string) => {
     try {
@@ -220,12 +223,10 @@ export default function Header() {
                           </a>
                         </Menu.Item>
                         <Menu.Item>
-                          <Link href="/">
                             <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
                               <DownTwo theme="outline" size="16" fill="currentColor" />
                               <span className="ml-2">Download Happin</span>
                             </a>
-                          </Link>
                         </Menu.Item>
                       </div>
                       <div className="py-1">
@@ -240,9 +241,14 @@ export default function Header() {
                           </>
                         )}
                         {user && (
+                          <>
                           <Menu.Item>
-                            <a className="header__menu-link" onClick={clearUser}>Sign out</a>
+                            <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My tickets</a>
+                         </Menu.Item>
+                          <Menu.Item>
+                            <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
                           </Menu.Item>
+                          </>
                         )}
                       </div>
                     </Menu.Items>

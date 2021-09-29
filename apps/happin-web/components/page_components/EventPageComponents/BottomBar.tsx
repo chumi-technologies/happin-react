@@ -19,7 +19,7 @@ const BottomBar = ({eventData, setIsChatButtonOpen, queryParams}: eventDataProp)
   }
 
   const checkOffLineEventStarted = (eventData: EventData): boolean => {
-    if (eventData?.event?.acInfo?.location !== 'happin.app') {
+    if (eventData?.event?.acInfo?.location !== 'happin.app' && !eventData.event.streamEnabled) {
       return new Date(eventData.event.start_datetime).getTime() < new Date().getTime();
     } else {
       return false
