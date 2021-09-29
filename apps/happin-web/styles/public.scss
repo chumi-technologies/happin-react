@@ -28,12 +28,19 @@
   }
 }
 
+// Header
+.is-checkout .header {
+  @apply hidden sm:block
+}
 // Common Body
 .common__body {
   @apply relative text-white overflow-hidden z-0;
   height: calc(100vh - 64px);
   @media (min-width: 640px) {
     height: calc(100vh - 80px);
+  }
+  .in-app & {
+    @apply h-screen
   }
 }
 

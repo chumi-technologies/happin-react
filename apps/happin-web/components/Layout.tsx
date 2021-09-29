@@ -4,24 +4,31 @@ import Header from "./Header";
 import MobileAppBar from "../components/MobileAppBar";
 import { useRouter } from "next/router";
 import { useCheckoutState } from "contexts/checkout-state";
+import classnames from "classnames";
 
 const Layout = ({ children }: { children: any }) => {
   // TODO  IMPORTANT BECAUSE HAPPIN WEB ANGULAR IS STILL OUR EVENT DETAIL
   // PAGE THIS HAPPIN REACT IS ONY WORK AS A CHECKOUT PAGE CURRENTLY, HENCE NO NEED TO
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
-  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn} = useCheckoutState();
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
+  const [isCheckout, setIsCheckout] = useState(false);
+
+  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
 
   useEffect(() => {
+    // 测试
+    if (router.asPath.includes('/checkout/')) {
+      setIsCheckout(true);
+    }
+    // end 测试
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
-      setShowHeader(false);
+      // setShowHeader(false);
       setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
@@ -57,10 +64,11 @@ const Layout = ({ children }: { children: any }) => {
       {isMobileBarOpen && (
         <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen}></MobileAppBar>
       )}
-
-      {/* Header Section */}
-      {showHeader && <Header />}
-      {children}
+      <div className={classnames({'in-app': openInApp, 'is-checkout': isCheckout})}>
+        {/* Header Section */}
+        {!openInApp && <Header />}
+        {children}
+      </div>
     </>
   );
 };
