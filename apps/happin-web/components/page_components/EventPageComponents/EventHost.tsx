@@ -3,6 +3,7 @@ import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
 import Link from "next/link";
+import { useIntercom } from 'react-use-intercom';
 
 type EventHostProps = {
   hostName?: string;
@@ -12,6 +13,8 @@ type EventHostProps = {
 
 const EventHost = (props: EventHostProps) => {
   const [isOpen, setIsOpen] = useState(false)
+  const { show } = useIntercom();
+
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
@@ -79,7 +82,7 @@ const EventHost = (props: EventHostProps) => {
                   <Link href="/"><a className="link-normal">How to confirm my order and tickets?</a></Link>
                   <Link href="/"><a className="link-normal">Where are my tickets?</a></Link>
                 </Stack>
-                {props.hostEmail &&
+                {props.hostEmail ?
                   <>
                     <div className="h-px bg-gray-600 my-6" />
                     <div className="mb-2 text-white font-semibold">Have a question for the organizer?</div>
@@ -89,6 +92,15 @@ const EventHost = (props: EventHostProps) => {
                       <a href={`mailto: ${props.hostEmail}`}>
                         Contact the organizer
                       </a>
+                    </button>
+                  </> :
+                  <>
+                    <div className="h-px bg-gray-600 my-6" />
+                    <div className="mb-2 text-white font-semibold">The organizer seems didn't provide a contact email</div>
+                    <div className="text-sm text-gray-300">You can send us a message by clicking the button below</div>
+                    <button type="button"
+                      className="mt-4 mb-1 btn btn-rose" onClick={()=>{show(); setIsOpen(false)}}>
+                      Contact us
                     </button>
                   </>
                 }

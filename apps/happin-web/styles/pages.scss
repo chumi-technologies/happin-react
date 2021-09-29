@@ -91,7 +91,9 @@
   }
 }
 .event-details__container {
-  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  @apply w-full sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  padding-right: 4.5rem;
+  padding-left: 3.5rem;
   @media (min-width: 640px) {
     max-width: 720px;
   }
