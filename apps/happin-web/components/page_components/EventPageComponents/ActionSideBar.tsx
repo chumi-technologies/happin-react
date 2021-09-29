@@ -26,12 +26,12 @@ type ActionSideBarProps = {
   playbackStart: boolean
 };
 const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
-  const {    
+  const {
     eventTitle = "",
     hasPFM,
     playbackStart,
   } = props;
-  
+
   const [openShare, setOpenShare] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
   const [showDownload, setDownload] = useState(false)
@@ -49,43 +49,35 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
         </div>
         {
             openShare && (
-              <div className="fade-scale-in absolute right-5 top-5 w-60 z-20">
-                <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800">
-                  <div className="text-sm pr-4 flex">
-                    <div className="mx-2">
-                      <EmailShareButton
-                        url={window.location.href}
-                        subject={eventTitle}
-                        body={window.location.href}
-                      >
-                        <EmailIcon size={32} round />
-                      </EmailShareButton>
-                    </div>
-                    <div className="mx-2">
-                      <FacebookShareButton
-                        url={window.location.href}
-                        quote={eventTitle}
-                      >
-                        <FacebookIcon size={32} round />
-                      </FacebookShareButton>
-                    </div>
-                    <div className="mx-2">
-                      <TwitterShareButton
-                        url={window.location.href}
-                        title={eventTitle}
-                      >
-                        <TwitterIcon size={32} round />
-                      </TwitterShareButton>
-                    </div>
-                    <div className="mx-2">
-                      <WhatsappShareButton
-                        url={window.location.href}
-                        title={eventTitle}
-                      >
-                        <WhatsappIcon size={32} round />
-                      </WhatsappShareButton>
-                    </div>
-                  </div>
+              <div className="fade-scale-in absolute right-5 top-5 w-56 z-20">
+                <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800 text-sm">
+                  <HStack spacing={3}>
+                    <EmailShareButton
+                      url={window.location.href}
+                      subject={eventTitle}
+                      body={window.location.href}
+                    >
+                      <EmailIcon size={32} round />
+                    </EmailShareButton>
+                    <FacebookShareButton
+                      url={window.location.href}
+                      quote={eventTitle}
+                    >
+                      <FacebookIcon size={32} round />
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                      url={window.location.href}
+                      title={eventTitle}
+                    >
+                      <TwitterIcon size={32} round />
+                    </TwitterShareButton>
+                    <WhatsappShareButton
+                      url={window.location.href}
+                      title={eventTitle}
+                    >
+                      <WhatsappIcon size={32} round />
+                    </WhatsappShareButton>
+                  </HStack>
                 </div>
               </div>
             )
@@ -107,7 +99,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                   <div className="text-sm pr-4">
                     {(hasPFM && !playbackStart) ? <>This event includes <a rel="noreferrer" href="https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting" target="_blank" className="link-white">VIP/Fan meeting</a>
                     . Download the Happin app to meet your favourite artists`</> : 'Download the app and chat with other attendees.'}
-                    
+
                   </div>
                   <HStack justify="space-between" mt={3}>
                     <Link href="/">

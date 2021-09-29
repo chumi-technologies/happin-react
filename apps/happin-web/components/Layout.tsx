@@ -59,10 +59,8 @@ const Layout = ({ children }: { children: any }) => {
       )}
 
       {/* Header Section */}
-      <div className="sm:flex sm:flex-col sm:h-screen">
-        {showHeader && <Header/>}
-        {children}
-      </div>
+      {showHeader && <Header />}
+      {children}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState, useRef } from 'react';
 import { CloseSmall } from '@icon-park/react';
+import classnames from 'classnames';
 
 type EventDescriptionProps = {
   description?: string;

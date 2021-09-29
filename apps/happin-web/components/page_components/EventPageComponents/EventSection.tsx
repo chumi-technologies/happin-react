@@ -10,11 +10,11 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
 }) => {
   return (
     <>
-      <EventTitle 
-        setIsModalOpen={setIsModalOpen} 
-        eventTitle={eventData?.event?.title} 
-        tags={eventData?.event?.tags} 
-        isLiveStream={eventData?.event?.streamEnabled} 
+      <EventTitle
+        setIsModalOpen={setIsModalOpen}
+        eventTitle={eventData?.event?.title}
+        tags={eventData?.event?.tags}
+        isLiveStream={eventData?.event?.streamEnabled}
         eventStartDate={eventData?.event?.start_datetime}
         eventEndDate={eventData?.event?.end_datetime}
         price={eventData?.event?.min_price}
@@ -23,7 +23,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         playbackStart={!!eventData?.event?.ODPBStart}
         setIsRedeemModalOpen={setIsRedeemModalOpen}/>
       <div id="about" className="pt-6 sm:pt-10">
-        <EventDescription 
+        <EventDescription
           description={eventData?.event?.content}
           rawDescription={eventData?.event?.contentPlainText}/>
         <div className="h-px bg-gray-600 my-6 sm:my-10" />

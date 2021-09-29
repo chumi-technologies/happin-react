@@ -10,6 +10,7 @@ import { LocationInfo } from "lib/model/event";
 import { GroupEvent } from 'lib/model/groupEvent';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
+import classnames from 'classnames';
 
 type EventTitleProps = {
   setIsModalOpen: (arg0: boolean) => void;
@@ -64,7 +65,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
 
         {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
           return (
-            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
+            <div className="mb-2 py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
               {tag}
             </div>
           )
@@ -72,7 +73,9 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
       </HStack>
 
       {/* Event Title */}
-      <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white mt-4 sm:mt-6 font-bold lg:pr-10">
+      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10', {
+        'mt-2 sm:mt-4': tags?.length || isLiveNow
+      })}>
         {eventTitle}
       </h1>
 
@@ -107,7 +110,6 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
                     See More Dates
                   </button>
                 )}
-
               </div>
             </div>
           </div>}

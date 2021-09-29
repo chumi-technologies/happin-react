@@ -466,7 +466,7 @@ const Checkout = () => {
           cartPopoverMsg={cartPopoverMsg}
           onPresaleCodeValidate={setSaleStart} />
         <div className="sm:flex-1 sm:h-0 web-scroll overflow-y-auto" id="checkout-scroll-body">
-          <div className="fixed sm:sticky md:relative top-0 left-0 right-0 bg-gray-800 shadow-2xl z-10 border-b border-solid border-gray-700 md:border-0">
+          <div className="fixed sm:sticky top-0 left-0 right-0 bg-gray-800 shadow-2xl z-10 border-b border-solid border-gray-700 md:border-0">
             <div className="container">
               <div className="flex overflow-x-auto">
                 {!onlyShowMerch && (

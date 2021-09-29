@@ -17,7 +17,7 @@ const MyEventDetails = () => {
     }
   }, [router.query])
   return (
-    <div className="relative flex-1 h-0 bg-black text-white overflow-hidden">
+    <div className="common__body">
       <div className="flex flex-col h-full">
         <MyEventDetailsHead />
         <div className="flex-1 h-0 web-scroll overflow-y-auto" id="my-event-details-scroll-body">
