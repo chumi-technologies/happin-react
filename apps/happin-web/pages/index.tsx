@@ -75,7 +75,7 @@ export default function Home() {
                 <p>Use the Collab App to test in real-time.</p>
               </div>
               <div className="flex flex-col items-center sm:flex-row">
-                <a target="_blank" href="https://apps.apple.com/app/id1527348429">
+                <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
                 <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
