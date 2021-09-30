@@ -23,7 +23,7 @@ const Layout = ({ children }: { children: any }) => {
 
   useEffect(() => {
     // 测试
-    if (router.route === '/') setHomePage(true)
+    if (router.route === '/') setHomePage(true); else setHomePage(false)
     // end 测试
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);

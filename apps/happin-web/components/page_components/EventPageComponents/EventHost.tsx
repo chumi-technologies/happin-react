@@ -78,9 +78,9 @@ const EventHost = (props: EventHostProps) => {
                 </div>
                 <div className="mt-6 mb-2 text-white font-semibold">Common questions:</div>
                 <Stack align="center" className="text-sm text-gray-300">
-                  <Link href="/"><a className="link-normal">Can I get a refund?</a></Link>
-                  <Link href="/"><a className="link-normal">How to confirm my order and tickets?</a></Link>
-                  <Link href="/"><a className="link-normal">Where are my tickets?</a></Link>
+                  <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613558-can-i-get-a-refund"  className="link-normal">Can I get a refund?</a>
+                  <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613572-can-i-confirm-my-order" className="link-normal">How to confirm my order and tickets?</a>
+                  <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613572-can-i-confirm-my-order" className="link-normal">Where are my tickets?</a>
                 </Stack>
                 {props.hostEmail ?
                   <>

@@ -13,16 +13,16 @@ const imageList = [
 ];
 const buildEvent = [
   {
-    title: 'Sell tickets online',
-    desc: 'Create events on Happin and sell tickets to your in-person and online events. You decide how much and how many.'
+    title: 'Create or share events',
+    desc: 'Copy paste URL, and get a perfect space for the event community immediately! '
   },
   {
-    title: 'Add Livestreaming, VIP Meet and Greets and more to your events',
-    desc: 'High-definition video at up to 1080p 60fps, to both mobile and desktop attendees. Happin also streams audio at 48khz full-sound bandwidth, providing natural audio reproduction.'
+    title: 'Deep connections in various ways',
+    desc: 'Not just chat, there are audio parties, event based content sharing and more.'
   },
   {
-    title: 'Review your analytics',
-    desc: 'Access our extensive reporting system plus view and download to see full event metrics.'
+    title: 'Build an engaging profile',
+    desc: 'Personalize your virtual gifts (emoji), and show up your personal brand!'
   },
 ];
 export default function Home() {
@@ -70,17 +70,16 @@ export default function Home() {
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                  With Collab Smart Prototype you create your interactions and animations once and store as presets in the cloud for future use.
+                Don't wait! Bring yourself. Join the private event community, attend audio pre-event/after party, send each other emoji gifts, talk over voice, video, text. Find your crew based on your interests!
                 </p>
-                <p>Use the Collab App to test in real-time.</p>
               </div>
               <div className="flex flex-col items-center sm:flex-row">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
-                <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
+              {/*   <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
                   <img className="h-12 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

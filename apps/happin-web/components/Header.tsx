@@ -180,21 +180,21 @@ export default function Header({ children }: { children?: any }) {
 
           {/* Central Block */}
           {/* Search */}
-          {!isEventPage && <div className="header__search">
+{/*           {!isEventPage && <div className="header__search">
             <label htmlFor="search" className="absolute left-4 leading-none inline-flex transition">
               <SearchIcon w={4} h={4} color="currentColor" />
             </label>
             <input id="search" type="text" className="header__search-input" placeholder="Search..." />
-          </div>}
+          </div>} */}
 
 
           {/* Right Block */}
           <div className="flex items-center">
             <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Host Event</a>
             <a className="text-sm p-2 font-medium text-gray-300 hover:text-white sm:inline-flex md:hidden" onClick={() => { show() }}>Support</a>
-            {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
+           {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
-            </button>}
+            </button>} */}
 
             {/* User Profile */}
             <Menu as="div" className="relative md:ml-5">
