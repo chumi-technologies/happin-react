@@ -74,7 +74,7 @@ export default function Home() {
                 </p>
                 <p>Use the Collab App to test in real-time.</p>
               </div>
-              <div className="flex flex-col items-center sm:flex-row">
+              <div className="flex flex-col items-center justify-center sm:flex-row">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
@@ -112,7 +112,7 @@ export default function Home() {
               </Stack>
             </div>
             <div
-              className="relative w-full h-full max-w-lg sm:max-w-none sm:w-9/12 md:w-full mx-auto flex justify-center items-center">
+              className="relative w-full h-full flex justify-center items-center">
               <SwitchTransition mode="out-in">
                 <CSSTransition
                   key={buildCur}
@@ -121,7 +121,17 @@ export default function Home() {
                   }}
                   classNames="home__fade"
                 >
-                  <img className="w-full" src={imageList[buildCur]} alt="" />
+                  <div className="relative w-full sm:w-3/4 md:w-full h-full flex justify-center items-center">
+                    <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />
+                    <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />
+                    <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">
+                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-01.jpeg" alt="" />
+                    </div>
+                    <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">
+                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-02.jpeg" alt="" />
+                    </div>
+                  </div>
+                  {/*<img className="w-full" src={imageList[buildCur]} alt="" />*/}
                 </CSSTransition>
               </SwitchTransition>
             </div>
