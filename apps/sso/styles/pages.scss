@@ -39,11 +39,14 @@
 }
 .login-container {
   @apply relative flex flex-col bg-white rounded-2xl;
-  width: calc(100% - 40px);
+  width: calc(100% - 30px);
   min-height: 600px;
   max-width: 500px;
-  margin-bottom: 70px;
   padding: 40px 30px 30px;
+  @media (min-width: 640px) {
+    margin-bottom: 70px;
+    width: calc(100% - 40px);
+  }
 }
 .login-close {
   @apply absolute right-3 top-3 flex items-center justify-center w-10 h-10 text-gray-500 rounded-full transition cursor-pointer hover:bg-gray-100 hover:text-gray-700 active:bg-gray-200;

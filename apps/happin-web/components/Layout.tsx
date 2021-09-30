@@ -12,6 +12,7 @@ const Layout = ({ children }: { children: any }) => {
   // SHOW HEADER AND MOBILE BAR FOR NOW, NEED TO CHANGE BACK ONCE HAPPIN WEB
   // ANGULAR IS DEPREICATED.
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
+  const [isHomePage, setHomePage] = useState(false);
   const [isCheckout, setIsCheckout] = useState(false);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
@@ -22,9 +23,7 @@ const Layout = ({ children }: { children: any }) => {
 
   useEffect(() => {
     // 测试
-    if (router.asPath.includes('/checkout/')) {
-      setIsCheckout(true);
-    }
+    if (router.route === '/') setHomePage(true)
     // end 测试
     if (router?.query?.token && router.asPath.includes('/checkout/')) {
       setIsMobileBarOpen(false);
@@ -59,16 +58,19 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
+      <main className={classnames('main-app', {'home-page': isHomePage})}>
+        {/* Mobile App Bar for mobile screens */}
+        {/*{isMobileBarOpen && (*/}
 
-      {/* Mobile App Bar for mobile screens */}
-      {isMobileBarOpen && (
-        <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen}></MobileAppBar>
-      )}
-      <div className={classnames({'in-app': openInApp, 'is-checkout': isCheckout})}>
+        {/*)}*/}
         {/* Header Section */}
-        {!openInApp && <Header />}
+        {!openInApp &&
+          <Header>
+            { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
+          </Header>
+        }
         {children}
-      </div>
+      </main>
     </>
   );
 };

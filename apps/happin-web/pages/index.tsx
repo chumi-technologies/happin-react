@@ -128,7 +128,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <footer className="px-4">
+      <footer>
         <div className="container divide-y divide-white divide-opacity-20">
           <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
             <div className="w-52 mb-8 sm:mb-10">

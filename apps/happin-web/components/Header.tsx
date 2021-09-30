@@ -12,7 +12,7 @@ import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
 import { useIntercom } from 'react-use-intercom';
 import classnames from 'classnames';
 
-export default function Header() {
+export default function Header({ children }: { children?: any }) {
   const { user, clearUser } = useUserState();
   const { dimmed, showSSO, showSSOSignUp } = useSSOState();
   const [showSearch, setSearch] = useState(false)
@@ -104,7 +104,8 @@ export default function Header() {
 
   return (
     <header className="header">
-      <div className="fixed top-0 left-0 right-0 z-10 flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
+      {children}
+      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
         {/* Mobile Search Form */}
         <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
           <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
@@ -146,15 +147,15 @@ export default function Header() {
                     <Menu.Items className="header__menu-dropdown left-0 origin-top-left divide-y divide-gray-800">
                       <div className="py-1">
                         {/*<Menu.Item>
-                          <Link href="/">
-                            <a className="header__menu-link">Home</a>
-                          </Link>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Link href="/">
-                            <a className="header__menu-link">Explore events</a>
-                          </Link>
-                        </Menu.Item>*/}
+                        <Link href="/">
+                          <a className="header__menu-link">Home</a>
+                        </Link>
+                      </Menu.Item>
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">Explore events</a>
+                        </Link>
+                      </Menu.Item>*/}
                         <Menu.Item>
                           <Link href="/">
                             <a className="header__menu-link md:hidden">Host Event</a>
@@ -168,13 +169,13 @@ export default function Header() {
             </Menu>
             {/* Left Menu */}
             {/*<HStack spacing={4} display={{ base: "none", lg: "flex" }}>
-              <Link href="/">
-                <a className="header__link">Home</a>
-              </Link>
-              <Link href="/">
-                <a className="header__link">Explore events</a>
-              </Link>
-            </HStack>*/}
+            <Link href="/">
+              <a className="header__link">Home</a>
+            </Link>
+            <Link href="/">
+              <a className="header__link">Explore events</a>
+            </Link>
+          </HStack>*/}
           </div>
 
           {/* Central Block */}
@@ -223,10 +224,10 @@ export default function Header() {
                           </a>
                         </Menu.Item>
                         <Menu.Item>
-                            <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
-                              <DownTwo theme="outline" size="16" fill="currentColor" />
-                              <span className="ml-2">Download Happin</span>
-                            </a>
+                          <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
+                            <DownTwo theme="outline" size="16" fill="currentColor" />
+                            <span className="ml-2">Download Happin</span>
+                          </a>
                         </Menu.Item>
                       </div>
                       <div className="py-1">
@@ -242,12 +243,12 @@ export default function Header() {
                         )}
                         {user && (
                           <>
-                          <Menu.Item>
-                            <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My tickets</a>
-                         </Menu.Item>
-                          <Menu.Item>
-                            <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
-                          </Menu.Item>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My tickets</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
+                            </Menu.Item>
                           </>
                         )}
                       </div>
@@ -259,7 +260,7 @@ export default function Header() {
           </div>
         </HStack>
       </div>
-      <div className="h-16 sm:h-20" />
+      {/*<div className="h-16 sm:h-20" />*/}
     </header>
-  );
+  )
 }

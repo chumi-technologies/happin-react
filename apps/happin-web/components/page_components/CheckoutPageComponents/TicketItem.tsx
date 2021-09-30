@@ -53,7 +53,7 @@ const TicketItem = (props: TicketItemProps) => {
   return (
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
-        <div className="flex-1">
+        <div className="flex-1 mr-2">
           <div className="sm:text-lg leading-none mb-1 font-semibold text-white">{data.title}</div>
           <div className="font-medium text-xs text-gray-400">
             <span className="text-white text-sm">{currencyFormatter(currency as string).format(data.price)}</span>

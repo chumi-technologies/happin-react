@@ -28,20 +28,20 @@
   }
 }
 
-// Header
-.is-checkout .header {
-  @apply hidden sm:block
+// Layout
+.main-app {
+  @apply flex flex-col h-screen;
+  &.home-page {
+    @apply h-auto
+  }
 }
-// Common Body
+.header {
+  .home-page &{
+    @apply sticky top-0 z-10;
+  }
+}
 .common__body {
-  @apply relative text-white overflow-hidden z-0;
-  height: calc(100vh - 64px);
-  @media (min-width: 640px) {
-    height: calc(100vh - 80px);
-  }
-  .in-app & {
-    @apply h-screen
-  }
+  @apply relative flex-1 h-0 text-white overflow-x-hidden z-0;
 }
 
 .link-blue {
