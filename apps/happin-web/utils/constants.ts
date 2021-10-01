@@ -4,7 +4,7 @@
  * SEO constants
  */
 export const SEO_TITLE = 'Happin | Deep connections with like-minded people through events';
-export const PRODUCTION_URL = 'https://web.happin.app';
+export const PRODUCTION_URL = 'https://happin.app';
 export const SEO_DESCRIPTION =
   'Happin is the easiest way to find like-minded people based on events, and talk over voice, video, and text. You can share or create all kinds of events and stay close with your friends and communities.';
 export const SEO_KEYWORDS =

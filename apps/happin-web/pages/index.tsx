@@ -70,7 +70,7 @@ export default function Home() {
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                Don't wait! Bring yourself. Join the private event community, attend audio pre-event/after party, send each other emoji gifts, talk over voice, video, text. Find your crew based on your interests!
+                {`Don't`} wait! Bring yourself. Join the private event community, attend audio pre-event/after party, send each other emoji gifts, talk over voice, video, text. Find your crew based on your interests!
                 </p>
               </div>
               <div className="flex flex-col items-center justify-center sm:flex-row">

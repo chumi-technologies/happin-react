@@ -96,7 +96,7 @@ const EventHost = (props: EventHostProps) => {
                   </> :
                   <>
                     <div className="h-px bg-gray-600 my-6" />
-                    <div className="mb-2 text-white font-semibold">The organizer didn't provide a contact email</div>
+                    <div className="mb-2 text-white font-semibold">The organizer {`didn't`} provide a contact email</div>
                     <div className="text-sm text-gray-300">You can send us a message by clicking the button below</div>
                     <button type="button"
                       className="mt-4 mb-1 btn btn-rose" onClick={()=>{show(); setIsOpen(false)}}>

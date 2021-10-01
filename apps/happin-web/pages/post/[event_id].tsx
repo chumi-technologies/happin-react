@@ -29,7 +29,7 @@ const Post = (props: EventData) => {
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{code: string, affiliate: string}>({affiliate: '', code: ''});
   let eventLocation = 'Stream Via Happin'
-  let eventDescription = ' - You can watch livestream on https://web.happin.app or download Happin App'
+  let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
   if (typeof window !== 'undefined') {
     if (window.innerWidth < 768) {
       update({hideDefaultLauncher: true})
