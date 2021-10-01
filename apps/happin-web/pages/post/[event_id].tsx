@@ -17,7 +17,7 @@ import ChatWithFans from  "../../components/page_components/EventPageComponents/
 import { useUserState } from "contexts/user-state";
 import { useIntercom } from 'react-use-intercom';
 
-const Events = (props: EventData) => {
+const Post = (props: EventData) => {
   const router = useRouter();
   const [hideSigninBar, setHideSigninBar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -178,7 +178,7 @@ const Events = (props: EventData) => {
   );
 };
 
-export default Events;
+export default Post;
 
 
 // fetch data on server upon every request.. not using static page pre render
