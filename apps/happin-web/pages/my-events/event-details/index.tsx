@@ -127,7 +127,15 @@ const MyEventDetails = () => {
         }
         router.push(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`);
       } else if (ticket.ticketType === 'PFM') {
-
+        if(router.query.id){
+          getTicketsListFromHappinServer((router.query.id).toString())
+        }
+        return;
+      } else if (ticket.ticketType === 'playback') {
+        if(router.query.id){
+          getPlayBackListFromServer((router.query.id).toString())
+        }
+        return;
       }
     } catch(err) {
       generateToast('Unknown error about checking in', toast);
@@ -297,6 +305,11 @@ const MyEventDetails = () => {
                                         </div>
                                       }
                                       {
+                                        t.ticketType ==='PFM' && !t.checked && <div className="flex-1 text-center sm:w-28">
+                                        <button onClick={()=>{ handleCheckIn(t)}} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Check In</button>
+                                        </div>
+                                      }
+                                      {
                                         t.ticketType==='PFM' && t.checked && (
                                             <div className="sm:font-semibold text-gray-500 sm:text-gray-700 mb-3 text-sm">
                                               <div className="text-sm mt-4">
@@ -312,8 +325,13 @@ const MyEventDetails = () => {
                                         )
                                       }
                                       {
-                                        (t.ticketType ==='live' || t.ticketType==='PFM' ) && !t.checked && <div className="flex-1 text-center sm:w-28">
+                                        t.ticketType ==='live' && !t.checked && <div className="flex-1 text-center sm:w-28">
                                         <button onClick={()=>{ handleCheckIn(t)}} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Check In</button>
+                                        </div>
+                                      }
+                                      {
+                                        t.ticketType ==='live' && t.checked && <div className="flex-1 text-center sm:w-28">
+                                        <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Playback</button>
                                         </div>
                                       }
                                     </div>
@@ -386,9 +404,16 @@ const MyEventDetails = () => {
                                   </div>
                                   <div className="tickets-cover__qrcode">
                                     <div className="flex sm:flex-col items-center w-full sm:text-center">
-                                      <div className="flex-1 text-center sm:w-28">
-                                        <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Replay Video</button>
-                                      </div>
+                                      {
+                                        !t.checked && <div className="flex-1 text-center sm:w-28">
+                                        <button onClick={()=>{ handleCheckIn(t)}} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Check In</button>
+                                        </div>
+                                      }
+                                      {
+                                        t.checked && <div className="flex-1 text-center sm:w-28">
+                                        <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Playback</button>
+                                        </div>
+                                      }
                                     </div>
                                   </div>
                                 </div>
