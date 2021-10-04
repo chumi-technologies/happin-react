@@ -12,7 +12,7 @@ const GroupEventCard = ({ groupEvent, setIsModalOpen }: GroupEventCardProp) => {
   const router = useRouter();
 
   const getTicket = () => {
-    router.push(`/events/${groupEvent?._id}`)
+    router.push(`/post/${groupEvent?._id}`)
     setIsModalOpen(false)
   }
 

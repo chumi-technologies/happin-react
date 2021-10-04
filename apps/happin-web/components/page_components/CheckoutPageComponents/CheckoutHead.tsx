@@ -33,7 +33,7 @@ const CheckoutHead = ({
   cartPopoverMsg: any,
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatchMerchListAction, ticketListState, merchListState, tokenPassedIn } = useCheckoutState();
+  const { eventDataForCheckout, cart, addItem, removeItem, codeUsed, affiliate, dispatchTicketListAction, dispatchMerchListAction, ticketListState, merchListState, tokenPassedIn, openInApp } = useCheckoutState();
   const { user, exchangeForCrowdCoreToken } = useUserState()
   // const [discountInput, setDiscountInput] = useState<string>('');
   const [presaleInput, setPresaleInput] = useState<string>('');
@@ -226,46 +226,46 @@ const CheckoutHead = ({
       return cart.items.merchItem.findIndex(item => item.identifier === t.identifier)
     } */
 
-// DO NOT DELETE
-/*   const checkToRemoveOptionBundleItem =(t: CartTicketItem, action: string): void=> {
-    let hasOptionBundleItem = false;
-    const merchsNeedToRemoved: CartMerchItem[] = [];
-    const edtingTicketListItem = getEdtingTicketListItem(t)
-    merchListState.filter(m => m.show && !m.forApp && m.isOptionalBundleItem).forEach(m => {
-      if (m.tickets.includes(t.ticketId)) {
-        //  optional bundle item 的 ticket array 包含了参数 cartTicketItem 的 ticketid
-        //  说明有可能cart里面 有optional的 bundle item, 需要查 cart 里面的 merch item
-        cart.items.merchItem.forEach((cartMerch) => {
-          if(cartMerch.merchId === m.id) {
-            hasOptionBundleItem = true;
-            merchsNeedToRemoved.push(cartMerch);
-          }
-        })
-      }
-    })
-
-    if (hasOptionBundleItem && merchsNeedToRemoved.length) {
-      merchsNeedToRemoved.forEach( m => {
-       if(action==='decrease') {
-          if (t.quantity === edtingTicketListItem.minPerOrder || t.quantity === 1) {
-            // remaining ticket quantity is equal to min per order or remain is 1
+  // DO NOT DELETE
+  /*   const checkToRemoveOptionBundleItem =(t: CartTicketItem, action: string): void=> {
+      let hasOptionBundleItem = false;
+      const merchsNeedToRemoved: CartMerchItem[] = [];
+      const edtingTicketListItem = getEdtingTicketListItem(t)
+      merchListState.filter(m => m.show && !m.forApp && m.isOptionalBundleItem).forEach(m => {
+        if (m.tickets.includes(t.ticketId)) {
+          //  optional bundle item 的 ticket array 包含了参数 cartTicketItem 的 ticketid
+          //  说明有可能cart里面 有optional的 bundle item, 需要查 cart 里面的 merch item
+          cart.items.merchItem.forEach((cartMerch) => {
+            if(cartMerch.merchId === m.id) {
+              hasOptionBundleItem = true;
+              merchsNeedToRemoved.push(cartMerch);
+            }
+          })
+        }
+      })
+  
+      if (hasOptionBundleItem && merchsNeedToRemoved.length) {
+        merchsNeedToRemoved.forEach( m => {
+         if(action==='decrease') {
+            if (t.quantity === edtingTicketListItem.minPerOrder || t.quantity === 1) {
+              // remaining ticket quantity is equal to min per order or remain is 1
+              deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
+            }
+          } else if (action === 'delete'){
             deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
           }
-        } else if (action === 'delete'){
           deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
-        }
-        deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
-
-      })
-    }
-
-    if (action === 'decrease') {
-      decreaseTicketAmount(edtingTicketListItem, cart, t.ticketId, dispatchTicketListAction, removeItem)
-    } else if(action === 'delete') {
-      deleteTicketFromCart(edtingTicketListItem, t.quantity, dispatchTicketListAction, removeItem)
-    }
-
-  } */
+  
+        })
+      }
+  
+      if (action === 'decrease') {
+        decreaseTicketAmount(edtingTicketListItem, cart, t.ticketId, dispatchTicketListAction, removeItem)
+      } else if(action === 'delete') {
+        deleteTicketFromCart(edtingTicketListItem, t.quantity, dispatchTicketListAction, removeItem)
+      }
+  
+    } */
 
 
 
@@ -446,12 +446,13 @@ const CheckoutHead = ({
       <div className="container">
         <div className="flex items-center py-3 sm:py-0 sm:h-20 ">
           <div className="flex items-center sm:flex-1 min-w-0">
-        {/*     <Link href="/">
-              <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
-                <Left theme="outline" size="24" fill="currentColor"/>
-                <span className="md:ml-2">Back</span>
-              </button>
-            </Link> */}
+            {!openInApp &&
+              <Link href={`/post/${eventDataForCheckout?.id}`}>
+                <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
+                  <Left theme="outline" size="24" fill="currentColor" />
+                </button>
+              </Link>
+            }
             <div className="flex-1 font-semibold min-w-0 hidden sm:block">
               <div className="truncate">{eventDataForCheckout?.title}</div>
               {eventDataForCheckout?.startTime && <div className="truncate text-sm text-yellow-500">Event starts on {moment(eventDataForCheckout?.startTime).format('MMMM Do, h:mma')}</div>}

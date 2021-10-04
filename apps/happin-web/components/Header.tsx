@@ -28,7 +28,7 @@ export default function Header({ children }: { children?: any }) {
   const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
   useEffect(() => {
-    if (router.asPath.includes('/events/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
+    if (router.asPath.includes('/post/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
       setIsEventPage(true);
     } else {
       setIsEventPage(false);
