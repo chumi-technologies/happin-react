@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: any }) => {
 
   useEffect(() => {
     // 测试
-    if (router.route === '/') setHomePage(true); else setHomePage(false)
+    if (router.asPath === '/') setHomePage(true); else setHomePage(false)
     // end 测试
     if (router.query?.token && router.asPath.includes('/checkout/')) {
       setTokenPassedIn(true);
@@ -37,8 +37,10 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (!(router.route === '/' || router.route.includes('/post'))) {
-      setShowFooter(false)
+    if (!(router.asPath === '/' || router.asPath.includes('/post'))) {
+      setShowFooter(false);
+    } else {
+      setShowFooter(true);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
 

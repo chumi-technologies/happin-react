@@ -227,7 +227,7 @@ const MyEventDetails = () => {
                             {eventDetails?.event?.acInfo?.location}
                           </div>
                           <div className="text-gray-400 text-sm">
-                            {`${eventDetails?.event?.city} ${eventDetails?.event?.state}`}
+                            {`${eventDetails?.event?.city || ''} ${eventDetails?.event?.state || ''}`}
                           </div>
                         </div>
                       </div>
@@ -240,7 +240,7 @@ const MyEventDetails = () => {
                   </div>
                 </div>
                 <div className="md:flex-1 min-w-0 mt-8 lg:mt-0">
-                  <div className="sticky top-0 bg-black z-10">
+                  <div className="top-0 bg-black z-10">
                     <div className="flex w-full p-1 border border-solid border-gray-600 rounded-full">
                       {
                         pageTab.map((item, index) => (
@@ -331,7 +331,7 @@ const MyEventDetails = () => {
                                       }
                                       {
                                         t.ticketType ==='live' && t.checked && <div className="flex-1 text-center sm:w-28">
-                                        <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Playback</button>
+                                        <button disabled={moment(new Date()).isAfter(moment(eventDetails?.event?.end_datetime))} onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Livestream</button>
                                         </div>
                                       }
                                     </div>
