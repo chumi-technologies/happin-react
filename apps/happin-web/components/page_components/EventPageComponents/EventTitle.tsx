@@ -54,7 +54,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
       {/* Badges */}
       <HStack spacing={3}>
         {isLiveNow || playbackStart && (
-          <div className="inline-flex items-center mb-2 py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
+          <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>{isLiveNow ? 'LIVE' : (playbackStart ? 'Replay' : '')}</span>
           </div>
@@ -62,7 +62,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
 
         {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
           return (
-            <div className="mb-2 py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
+            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
               {tag}
             </div>
           )

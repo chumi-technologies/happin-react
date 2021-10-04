@@ -1,14 +1,16 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import Header from "./Header";
 import MobileAppBar from "../components/MobileAppBar";
 import { useRouter } from "next/router";
 import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
+import Footer from "./Footer";
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isHomePage, setHomePage] = useState(false);
+  const [showFooter, setShowFooter] = useState(true);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
 
@@ -20,20 +22,23 @@ const Layout = ({ children }: { children: any }) => {
     // 测试
     if (router.route === '/') setHomePage(true); else setHomePage(false)
     // end 测试
-    if (router?.query?.token && router.asPath.includes('/checkout/')) {
+    if (router.query?.token && router.asPath.includes('/checkout/')) {
       setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
-    if (router?.query?.fromapp) {
+    if (router.query?.fromapp) {
       setIsMobileBarOpen(false);
       setOpenInApp(true);
     }
-    if (router?.query?.merchonly) {
+    if (router.query?.merchonly) {
       setOnlyShowMerch(true);
     }
     //box office mode is only opened from 2b app
-    if (router?.query?.role === 'boxoffice') {
+    if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
+    }
+    if (!(router.route === '/' || router.route.includes('/post'))) {
+      setShowFooter(false)
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
 
@@ -60,6 +65,7 @@ const Layout = ({ children }: { children: any }) => {
         }
         {children}
       </main>
+      {showFooter &&  <Footer></Footer>}
     </>
   );
 };

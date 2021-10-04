@@ -51,9 +51,11 @@ export default function Header({ children }: { children?: any }) {
   const whiteLabelDomain = async (domain: string) => {
     try {
       const response = await getWhiteLabelDomain(domain);
-      const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
-      setWhiteLabelLogo(logo)
-      setWhiteLabelHome(response.clientUrl);
+      if (response.domainLogo) {
+        const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
+        setWhiteLabelLogo(logo)
+        setWhiteLabelHome(response.clientUrl);
+      }
       setCheckingWhiteLable(false)
     } catch (err) {
       console.log(err)

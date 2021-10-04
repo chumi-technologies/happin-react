@@ -5,6 +5,8 @@ import classNames from "classnames";
 import { Stack } from '@chakra-ui/react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
+import { GetServerSidePropsResult } from 'next';
+import { getWhiteLabelDomain } from 'lib/api';
 
 const imageList = [
   '/images/home-feature-02.png',
@@ -137,77 +139,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <footer>
-        <div className="container divide-y divide-white divide-opacity-20">
-          <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
-            <div className="w-52 mb-8 sm:mb-10">
-              <h3 className="tracking-wide uppercase font-bold text-sm">Product</h3>
-              <ul className="foot-menu">
-                <li>
-                  <Link href="/">Download</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="w-52 mb-8 sm:mb-10">
-              <h3 className="tracking-wide uppercase font-bold text-sm">Happin</h3>
-              <ul className="foot-menu">
-                <li>
-                  <Link href="/">About Us</Link>
-                </li>
-                <li>
-                  <Link href="/">Upcoming LiveStreams</Link>
-                </li>
-                <li>
-                  <Link href="/">Brand Partners</Link>
-                </li>
-                <li>
-                  <Link href="/">Join our Mailing List</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="w-52 mb-8 sm:mb-10">
-              <h3 className="tracking-wide uppercase font-bold text-sm">Resources</h3>
-              <ul className="foot-menu">
-                <li>
-                  <Link href="/">News</Link>
-                </li>
-                <li>
-                  <Link href="/">Contact Us</Link>
-                </li>
-                <li>
-                  <Link href="/">Terms Of Service</Link>
-                </li>
-                <li>
-                  <Link href="/">Privacy Policy</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="w-52 mb-8 sm:mb-10">
-              <h3 className="tracking-wide uppercase font-bold text-sm">Socials</h3>
-              <ul className="foot-menu">
-                <li>
-                  <Link href="/">Facebook</Link>
-                </li>
-                <li>
-                  <Link href="/">Twitter</Link>
-                </li>
-                <li>
-                  <Link href="/">Instagram</Link>
-                </li>
-              </ul>
-            </div>
-            <div className="w-52 mb-8 sm:mb-10">
-              <h3 className="tracking-wide uppercase font-bold text-sm">Apps Download</h3>
-              <div className="mt-4">
-                <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
-                  <img className="h-10 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="py-6 text-sm text-gray-400">© 2021 Happin. All rights reserved.</div>
-        </div>
-      </footer>
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
@@ -273,3 +204,36 @@ export default function Home() {
     </div>
   );
 }
+
+
+const whiteLabelDomain = async (domain: string) => {
+  try {
+    const response = await getWhiteLabelDomain(domain);
+    if (response.groupEventId) {
+      return response.groupEventId
+    } else if(response.redirectToAc) {
+      return response.redirectToAc
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+export async function getServerSideProps(context: { req: {headers: {host: string}} }) : Promise<GetServerSidePropsResult<any>> {
+  //&& !context.req.headers.host.includes('localhost')
+  if (context.req.headers.host !== 'happin.app' && !context.req.headers.host.includes('localhost')) {
+    const eventId = await whiteLabelDomain(context.req.headers.host)
+    if (!eventId) {
+      return {props: {}}
+    }
+    return {
+      redirect: {
+        permanent: false,
+        destination: `/post/${eventId}`
+      }
+    }
+  }  
+  return {props: {}}
+}
+
+
