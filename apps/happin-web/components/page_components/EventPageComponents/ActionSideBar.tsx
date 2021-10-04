@@ -98,7 +98,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                 <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800">
                   <div className="text-sm pr-4">
                     {(hasPFM && !playbackStart) ? <>This event includes <a rel="noreferrer" href="https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting" target="_blank" className="link-white">VIP/Fan meeting</a>
-                    . Download the Happin app to meet your favourite artists`</> : 'Download the app and chat with other attendees.'}
+                    . Download the Happin app to meet your favourite artists</> : 'Download the app and chat with other attendees.'}
 
                   </div>
                   <HStack justify="space-between" mt={3}>
