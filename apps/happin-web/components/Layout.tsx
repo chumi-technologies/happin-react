@@ -6,11 +6,16 @@ import { useRouter } from "next/router";
 import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
 import Footer from "./Footer";
+import { getWhiteLabelDomain } from "lib/api";
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isHomePage, setHomePage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
+
+  const [whiteLabelLogo, setWhiteLabelLogo] = useState();
+  const [whiteLabelHome, setWhiteLabelHome] = useState('');
+  const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
 
@@ -51,6 +56,34 @@ const Layout = ({ children }: { children: any }) => {
     }
   }, [])
 
+
+  useEffect(()=> {
+    if (typeof window !== 'undefined') {
+      const hostname = window.location.hostname;
+      //const hostname = 'deadroyaltyproductions.happin.app'
+      // && !hostname.includes('localhost')
+      if (hostname !== 'happin.app' && !hostname.includes('localhost')) {
+        whiteLabelDomain(hostname)
+      } else {
+        setCheckingWhiteLable(false)
+      }
+    }
+  }, [])
+
+  const whiteLabelDomain = async (domain: string) => {
+    try {
+      const response = await getWhiteLabelDomain(domain);
+      if (response.domainLogo) {
+        const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
+        setWhiteLabelLogo(logo)
+        setWhiteLabelHome(response.clientUrl);
+      }
+      setCheckingWhiteLable(false)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   return (
     <>
       <Head>
@@ -61,13 +94,13 @@ const Layout = ({ children }: { children: any }) => {
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
         {!openInApp &&
-          <Header>
+          <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
             { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
           </Header>
         }
         {children}
       </main>
-      {showFooter &&  <Footer></Footer>}
+      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
     </>
   );
 };

@@ -12,22 +12,19 @@ import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
 import { useIntercom } from 'react-use-intercom';
 import classnames from 'classnames';
 
-export default function Header({ children }: { children?: any }) {
+export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
   const { user, clearUser } = useUserState();
   const { dimmed, showSSO, showSSOSignUp } = useSSOState();
-  const [showSearch, setSearch] = useState(false)
-  const [isEventPage, setIsEventPage] = useState(false)
+  /* const [showSearch, setSearch] = useState(false)
+  const [isEventPage, setIsEventPage] = useState(false) */
   const router = useRouter();
   const toast = useToast();
   const { show } = useIntercom();
 
-  const searchRef = useRef<HTMLInputElement>(null!);
+  //const searchRef = useRef<HTMLInputElement>(null!);
 
-  const [whiteLabelLogo, setWhiteLabelLogo] = useState();
-  const [whiteLabelHome, setWhiteLabelHome] = useState('');
-  const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
-  useEffect(() => {
+/*   useEffect(() => {
     if (router.asPath.includes('/post/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
       setIsEventPage(true);
     } else {
@@ -35,36 +32,10 @@ export default function Header({ children }: { children?: any }) {
     }
   }, [router.asPath])
 
-  useEffect(()=> {
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      //const hostname = 'deadroyaltyproductions.happin.app'
-      // && !hostname.includes('localhost')
-      if (hostname !== 'happin.app' && !hostname.includes('localhost')) {
-        whiteLabelDomain(hostname)
-      } else {
-        setCheckingWhiteLable(false)
-      }
-    }
-  }, [])
-
-  const whiteLabelDomain = async (domain: string) => {
-    try {
-      const response = await getWhiteLabelDomain(domain);
-      if (response.domainLogo) {
-        const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
-        setWhiteLabelLogo(logo)
-        setWhiteLabelHome(response.clientUrl);
-      }
-      setCheckingWhiteLable(false)
-    } catch (err) {
-      console.log(err)
-    }
-  }
 
   useEffect(() => {
     showSearch && searchRef.current.focus()
-  }, [showSearch])
+  }, [showSearch]) */
 
   useEffect(() => {
     if (dimmed) {
@@ -109,9 +80,9 @@ export default function Header({ children }: { children?: any }) {
       {children}
       <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
         {/* Mobile Search Form */}
-        <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
+      {/*   <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
           <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
-        </form>
+        </form> */}
         <HStack w="100%" h="100%" justify="space-between">
           {/* Left Block */}
           <div className="flex items-center">
