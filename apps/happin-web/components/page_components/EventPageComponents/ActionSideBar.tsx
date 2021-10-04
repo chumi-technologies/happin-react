@@ -14,23 +14,35 @@ import {
   WhatsappShareButton,
   WhatsappIcon,
 } from "react-share";
+import { EventData } from 'lib/model/event';
+import moment from 'moment';
 
 type ActionSideBarProps = {
   //isFavorite: boolean;
   //showDownload: boolean;
-  eventTitle?: string;
+  //eventTitle?: string;
   //onFavorite: () => void;
   //onDownload: () => void;
   //onShare: () => void;
-  hasPFM: boolean;
-  playbackStart: boolean
+  //hasPFM: boolean;
+  playbackStart: boolean,
+  eventData: EventData
 };
 const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
   const {
-    eventTitle = "",
-    hasPFM,
     playbackStart,
+    eventData
   } = props;
+
+  const generateShareText = ()=> {
+    let eventDescription = ''
+    if (eventData.event.acInfo.location !== 'happin.app' && eventData.event.acInfo.eventType !== 'hybrid') {
+      eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location}.`;
+    } else if (eventData.event.acInfo.eventType === 'hybrid') {
+      eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} and watch livestream on https://happin.app or download Happin App.`
+    }
+    return `${eventData.event.title} ${eventDescription}`
+  }
 
   const [openShare, setOpenShare] = useState(false);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -53,27 +65,28 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                 <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800 text-sm">
                   <HStack spacing={3}>
                     <EmailShareButton
-                      url={window.location.href}
-                      subject={eventTitle}
-                      body={window.location.href}
+                      url={`Get tickets on ` + window.location.href}
+                      subject={`You are invited to ${eventData.event.title}`}
+                      separator={'\n'}
+                      body={generateShareText()}
                     >
                       <EmailIcon size={32} round />
                     </EmailShareButton>
                     <FacebookShareButton
-                      url={window.location.href}
-                      quote={eventTitle}
+                      url={`\nGet tickets on ` + window.location.href}
+                      quote={generateShareText()}
                     >
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
                     <TwitterShareButton
-                      url={window.location.href}
-                      title={eventTitle}
+                      url={`\nGet tickets on ` + window.location.href}
+                      title={generateShareText()}
                     >
                       <TwitterIcon size={32} round />
                     </TwitterShareButton>
                     <WhatsappShareButton
-                      url={window.location.href}
-                      title={eventTitle}
+                      url={`\nGet tickets on ` + window.location.href}
+                      title={generateShareText()}
                     >
                       <WhatsappIcon size={32} round />
                     </WhatsappShareButton>
@@ -97,7 +110,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
               <div className="fade-scale-in absolute right-5 top-5 w-72">
                 <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800">
                   <div className="text-sm pr-4">
-                    {(hasPFM && !playbackStart) ? <>This event includes <a rel="noreferrer" href="https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting" target="_blank" className="link-white">VIP/Fan meeting</a>
+                    {(eventData.event.hasPFM && !playbackStart) ? <>This event includes <a rel="noreferrer" href="https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting" target="_blank" className="link-white">VIP/Fan meeting</a>
                     . Download the Happin app to meet your favourite artists</> : 'Download the app and chat with other attendees.'}
 
                   </div>
@@ -111,7 +124,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                   </HStack>
                 </div>
               </div>
-            ) : ((hasPFM && !playbackStart) && <div className="event-details__side-vip">VIP</div>)
+            ) : ((eventData.event.hasPFM && !playbackStart) && <div className="event-details__side-vip">VIP</div>)
           }
         </div>
       </VStack>

@@ -142,8 +142,7 @@ const Post = (props: EventData) => {
         <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
           <ActionSideBar
             playbackStart={!!eventData?.event?.ODPBStart}
-            eventTitle={eventData?.event?.title}
-            hasPFM={eventData.event.hasPFM}
+            eventData={eventData}
           />
 
           {/* Event Image */}

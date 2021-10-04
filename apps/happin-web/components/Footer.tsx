@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
   return <footer>
     {!whiteLabelLogo ?
@@ -7,7 +9,7 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
             <h3 className="tracking-wide uppercase font-bold text-sm">Product</h3>
             <ul className="foot-menu">
               <li>
-                <a href="https://happin.app/download" target="_blank" rel="noreferrer">Download</a>
+                <a href="https://livestream.happin.app/download" target="_blank" rel="noreferrer">Download</a>
               </li>
             </ul>
           </div>
@@ -15,7 +17,7 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
             <h3 className="tracking-wide uppercase font-bold text-sm">Happin</h3>
             <ul className="foot-menu">
               <li>
-                <a href="https://happin.app/live/list" target="_blank" rel="noreferrer">Upcoming LiveStreams</a>
+                <a href="https://livestream.happin.app/live/list" target="_blank" rel="noreferrer">Upcoming LiveStreams</a>
               </li>
               <li>
                 <a href="https://crowdcore.us18.list-manage.com/subscribe?u=79eb98f1418dc7d767f612d08&id=0a222497e3" target="_blank" rel="noreferrer">Join our Mailing List</a>
@@ -26,17 +28,21 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
             <h3 className="tracking-wide uppercase font-bold text-sm">Resources</h3>
             <ul className="foot-menu">
               <li>
-                <a href="https://happin.app/news-list" target="_blank" rel="noreferrer">News</a>
+                <a href="https://livestream.happin.app/news-list" target="_blank" rel="noreferrer">News</a>
               </li>
               <li>
                 <a href="mailto:admin@happin.app">Contact Us</a>
               </li>
-              <li>
-                <a href="https://happin.app/terms" target="_blank" rel="noreferrer">Terms Of Service</a>
-              </li>
-              <li>
-                <a href="https://happin.app/privacy" target="_blank" rel="noreferrer">Privacy Policy</a>
-              </li>
+              <Link href="/terms">
+                <li>
+                  <a>Terms Of Service</a>
+                </li>
+              </Link>
+              <Link href="/privacy">
+                <li>
+                  <a>Privacy Policy</a>
+                </li>
+              </Link>
             </ul>
           </div>
           <div className="w-52 mb-8 sm:mb-10">
@@ -65,7 +71,7 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
         <div className="py-6 text-sm text-gray-400">© 2021 Happin. All rights reserved.</div>
       </div> :
       <>
-        <div className="container flex justify-center" style={{height: '100px', alignItems: 'center' }}>
+        <div className="container flex justify-center" style={{ height: '100px', alignItems: 'center' }}>
           <h1 className="text-white text-center">POWERED BY Happin</h1>
         </div>
       </>
