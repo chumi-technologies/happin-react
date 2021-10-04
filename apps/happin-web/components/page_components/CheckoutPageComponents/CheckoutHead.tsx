@@ -447,11 +447,9 @@ const CheckoutHead = ({
         <div className="flex items-center py-3 sm:py-0 sm:h-20 ">
           <div className="flex items-center sm:flex-1 min-w-0">
             {!openInApp &&
-              <Link href={`/post/${eventDataForCheckout?.id}`}>
-                <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
-                  <Left theme="outline" size="24" fill="currentColor" />
-                </button>
-              </Link>
+              <button onClick={() => { router.back() }} className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
+                <Left theme="outline" size="24" fill="currentColor" />
+              </button>
             }
             <div className="flex-1 font-semibold min-w-0 hidden sm:block">
               <div className="truncate">{eventDataForCheckout?.title}</div>
