@@ -40,7 +40,7 @@ export default function Header({ children }: { children?: any }) {
       const hostname = window.location.hostname;
       //const hostname = 'deadroyaltyproductions.happin.app'
       // && !hostname.includes('localhost')
-      if (!hostname.includes('happin.app') && !hostname.includes('localhost')) {
+      if (hostname !== 'happin.app' && !hostname.includes('localhost')) {
         whiteLabelDomain(hostname)
       } else {
         setCheckingWhiteLable(false)
@@ -244,7 +244,7 @@ export default function Header({ children }: { children?: any }) {
                         {user && (
                           <>
                             <Menu.Item>
-                              <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My tickets</a>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>
                             <Menu.Item>
                               <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
