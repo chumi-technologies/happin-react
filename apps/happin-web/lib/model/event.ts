@@ -16,6 +16,11 @@ export interface MusicData {
     songs: any[];
 }
 
+export interface AudioData {
+    inviteUsers: string[];
+    registerCount: number;
+}
+
 export interface LocationInfo {
     eventType?: string;
     hasSeat: boolean;
@@ -67,10 +72,15 @@ export interface EventDetail {
     urlseo: string;
     isPromoteOn: boolean;
     isAudio: boolean;
-    creator: Creator;
+    creator?: Creator;
     acInfo: LocationInfo;
-    socialImg: string;
-    hasPFM: boolean
+    socialImg?: string;
+    hasPFM: boolean;
+    searchCode?: string;
+    audioData?: AudioData;
+    start_datetime_unix?: number;
+    create_datetime_unix?: number;
+    end_datetime_unix?: number;
 }
 
 export interface EventData {
