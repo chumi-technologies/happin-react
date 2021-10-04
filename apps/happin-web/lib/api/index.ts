@@ -1,4 +1,4 @@
-import { getEventDetail, getEventDetailForCheckout, getGroupEvents } from "./events";
+import { getEventDetail, getEventDetailForCheckout, getGroupEvents,getWhiteLabelDomain } from "./events";
 import { checkinTicket, 
 	getGATickets, 
 	getEventMerchs, 
@@ -11,8 +11,9 @@ import { checkinTicket,
 	getSavedEventTicketsList,
 	getTicketsList,
 	getTicketsPlayBackList } from "./tickets";
-import { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken } from "./user";
 import {submitPayment, getOrderStatus, getMerchOrdersSummary} from './order'
+import { getUserInfo, exchangeCrowdcoreToken,getFirebaseCustomToken, exchangeDashboardEventHostToken } from "./user";
+
 export { 
 	getEventDetail, 
 	getGroupEvents, 
@@ -34,5 +35,7 @@ export {
 	getTicketsList, 
 	getMerchOrdersSummary,
 	getTicketsPlayBackList,
-	getFirebaseCustomToken
+	getFirebaseCustomToken,
+	getWhiteLabelDomain,
+	exchangeDashboardEventHostToken
 };

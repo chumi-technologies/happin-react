@@ -28,13 +28,20 @@
   }
 }
 
-// Common Body
-.common__body {
-  @apply relative text-white overflow-hidden z-0;
-  height: calc(100vh - 64px);
-  @media (min-width: 640px) {
-    height: calc(100vh - 80px);
+// Layout
+.main-app {
+  @apply flex flex-col h-screen;
+  &.home-page {
+    @apply h-auto
   }
+}
+.header {
+  .home-page &{
+    @apply sticky top-0 z-10;
+  }
+}
+.common__body {
+  @apply relative flex-1 h-0 text-white overflow-x-hidden z-0;
 }
 
 .link-blue {

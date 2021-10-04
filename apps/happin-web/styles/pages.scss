@@ -81,14 +81,12 @@
 
 // Event Details
 .event-details__page{
-  @apply relative text-white z-0;
-  height: calc(100vh - 64px);
-  @media (min-width: 640px) {
-    height: calc(100vh - 80px);
-  }
+  @apply relative flex-1 h-0 text-white z-0;
 }
 .event-details__container {
   @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  //padding-right: 4.5rem;
+  //padding-left: 3.5rem;
   @media (min-width: 640px) {
     max-width: 720px;
   }
@@ -140,14 +138,10 @@
 
 // Check out
 .checkout__page {
-  @apply relative bg-black text-white overflow-x-hidden z-0 sm:h-screen;
-  //@media (min-width: 640px) {
-  //  height: calc(100vh - 80px);
-  //}
+  @apply relative flex-1 h-0 text-white overflow-x-hidden z-0;
 }
 .checkout__container {
   max-width: 600px;
-  padding-top: 44px;
   padding-bottom: 68px;
   @media (min-width: 640px) {
     padding: 0;
@@ -281,7 +275,7 @@
 }
 .checkout__cart-list {
   @apply p-1 overflow-y-auto;
-  max-height: calc(100vh - 252px);
+  max-height: calc(100vh - 208px);
   height: 100vh;
   @media (min-width: 640px) {
     max-height: 320px;
@@ -364,14 +358,14 @@
     right: -400px;
   }
   @media (min-width: 1024px) {
-    width: 800px;
-    height: 800px;
+    width: 750px;
+    height: 750px;
     right: -500px;
   }
   @media (min-width: 1280px) {
-    width: 1000px;
-    height: 1000px;
-    right: -600px;
+    width: 850px;
+    height: 850px;
+    right: -550px;
   }
 }
 .home__color-purple {
@@ -397,24 +391,23 @@
 }
 .home__fade-enter{
   opacity: 0;
-  transform: translateY(20px);
+  transform: scale(.95);
+  transition: all .4s cubic-bezier(0, 0, 0.2, 1);
 }
 .home__fade-exit{
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
+  transition: all .4s cubic-bezier(0, 0, 0.2, 1);
 }
 .home__fade-enter-active{
   opacity: 1;
-  transform: translateY(0);
+  transform: scale(1);
 }
 .home__fade-exit-active{
   opacity: 0;
-  transform: translateY(-20px);
+  transform: scale(.95);
 }
-.home__fade-enter-active,
-.home__fade-exit-active{
-  transition: opacity .4s cubic-bezier(0.4, 0, 0.2, 1), transform .4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+
 .home-section-build {
   left: 0;
   width: 80%;

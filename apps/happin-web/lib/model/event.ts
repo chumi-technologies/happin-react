@@ -81,6 +81,7 @@ export interface EventDetail {
     start_datetime_unix?: number;
     create_datetime_unix?: number;
     end_datetime_unix?: number;
+    deepLink: string
 }
 
 export interface EventData {

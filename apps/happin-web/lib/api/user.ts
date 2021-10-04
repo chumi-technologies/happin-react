@@ -4,15 +4,16 @@ import { UserResponse } from 'lib/model/user';
 const USER_INFO_PATH = '/user';
 const EXCHANGE_CROWDCORE_TOKEN_PATH = '/user/exchange-saas-token';
 const FIREBASE_CUSTOM_TOKEN_PATH ='/user/firebase-custom-token';
+const EXCHANGE_DASHBOARD_EVENT_HOST_PATH = '/user/chumi-server-token'
 
 const getUserInfo = async () => {
-    const response = await getFromHappin<UserResponse>(USER_INFO_PATH)
-    return response || {}
+   const response = await getFromHappin<UserResponse>(USER_INFO_PATH)
+   return response || {}
 }
 
 const exchangeCrowdcoreToken = async () => {
-    const response = await postToHappin(EXCHANGE_CROWDCORE_TOKEN_PATH,{})
-    return response || {}
+   const response = await postToHappin(EXCHANGE_CROWDCORE_TOKEN_PATH, {})
+   return response || {}
 }
 
 const getFirebaseCustomToken = async () => {
@@ -20,4 +21,10 @@ const getFirebaseCustomToken = async () => {
     return response || {}
 }
 
-export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken } 
+// will create event creator on crowdcore server, different than exchangeCrowdcoreToken
+const exchangeDashboardEventHostToken = async () => {
+   const response = await getFromHappin(EXCHANGE_DASHBOARD_EVENT_HOST_PATH)
+   return response || {}
+}
+
+export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken }
