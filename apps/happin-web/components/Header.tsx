@@ -175,7 +175,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                 <>
                   <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
                     <HamburgerButton theme="outline" size="22" fill="currentColor" />
-                    {!user && <Avatar size="sm" ml={2} bg="gray.600" />}
+                    {!user && <Avatar size="sm" style={{border: '1px solid #fdf846'}} ml={2} bg="gray.600" />}
                     {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
                   </Menu.Button>
                   <Transition
