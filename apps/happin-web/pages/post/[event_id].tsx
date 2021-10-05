@@ -40,8 +40,8 @@ const Post = (props: EventData) => {
   }, [])
 
   useEffect(() => {
-    const hideSigninBar = !localStorage.getItem('hide_signin_bar');
-    setHideSigninBar(!hideSigninBar);
+    const hideSigninBar = localStorage.getItem('hide_signin_bar');
+    setHideSigninBar(!!hideSigninBar);
     if (eventData) {
       setEventDeepLink(eventData.event.deepLink);
     }
