@@ -457,12 +457,6 @@
   }
 }
 
-#scroll-body::-webkit-scrollbar {
-  width: 0 !important;  /* Remove scrollbar space */
-  background: transparent !important;  /* Optional: just make scrollbar invisible */
-}
-
-
 // Footer
 .foot-menu {
   @apply space-y-3 list-none text-gray-300 text-sm mt-4;
