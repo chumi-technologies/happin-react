@@ -37,7 +37,8 @@ const EventAgenda = ({ eventData }: { eventData: EventData }) => {
   let agenda: any[] = [];
 
   const generateAgendaItems = () => {
-    const innerContents = eventData.pfms.map(pfm => {
+    // filter the invisible pfm (deleted)
+    const innerContents = eventData.pfms.filter(pfm => !pfm.invisible).map(pfm => {
       return {
         type: 'VIP/ Fan Meeting',
         description: 'Face to face, talk to your artist',
