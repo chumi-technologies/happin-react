@@ -46,7 +46,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
     } else if (eventData.event.acInfo.eventType === 'hybrid') {
       eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} or watch livestream on our Happin App.`
     }
-    return `${eventData.event.title} ${eventDescription} Prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)}`
+    return `${eventData.event.title} ${eventDescription} (prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)}) ${eventData.event.creator?.name ? '\nEvent organized by ' + eventData.event.creator?.name : ''}`
   }
   const { user } = useUserState();
   const [openShare, setOpenShare] = useState(false);
@@ -100,27 +100,27 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
                 <div className="py-3 px-4 border border-solid border-gray-700 rounded-lg bg-gray-800 text-sm">
                   <HStack spacing={3}>
                     <EmailShareButton
-                      url={`Get tickets on ` + window.location.href}
+                      url={`Get tickets now on ` + window.location.href}
                       subject={`You are invited to ${eventData.event.title}`}
-                      separator={'\n'}
+                      separator={'\n\n'}
                       body={generateShareText()}
                     >
                       <EmailIcon size={32} round />
                     </EmailShareButton>
                     <FacebookShareButton
-                      url={`\nGet tickets on ` + window.location.href}
+                      url={`\n\nGet tickets now on ` + window.location.href}
                       quote={generateShareText()}
                     >
                       <FacebookIcon size={32} round />
                     </FacebookShareButton>
                     <TwitterShareButton
-                      url={`\nGet tickets on ` + window.location.href}
+                      url={`\n\nGet tickets now on ` + window.location.href}
                       title={generateShareText()}
                     >
                       <TwitterIcon size={32} round />
                     </TwitterShareButton>
                     <WhatsappShareButton
-                      url={`\nGet tickets on ` + window.location.href}
+                      url={`\n\nGet tickets now on ` + window.location.href}
                       title={generateShareText()}
                     >
                       <WhatsappIcon size={32} round />
