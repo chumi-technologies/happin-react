@@ -10,7 +10,7 @@ const AgendaItem = ({ item }: any) => {
         mt={{ base: "16px", md: 7 }}
         templateColumns="100px 1fr"
       >
-        <div className="text-sm font-bold leading-none">{moment(item.time).format('h:mm A')}</div>
+        <div className="text-sm font-bold leading-none">{item.time ? moment(item.time).format('h:mm A') : ''}</div>
         <div>
           <div className="text-xs mb-2 uppercase">{item.type}</div>
           <div className="font-bold mb-1">{item.title}</div>
@@ -55,7 +55,7 @@ const EventAgenda = ({ eventData }: { eventData: EventData }) => {
     innerContents.sort((a,b) => { if (a.time > b.time) return 1; else return -1 });
     let previousDate: string;
     innerContents.forEach((inner, index) => {
-      const currentDate = moment(inner.time).format('MMM D');
+      const currentDate = inner.time ? moment(inner.time).format('MMM D') : 'TBA';
       if (index === 0) {
         previousDate = currentDate;
         agenda.push({date: currentDate, content: [inner]})

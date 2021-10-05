@@ -16,17 +16,18 @@ type EventTitleProps = {
   setIsModalOpen: (arg0: boolean) => void;
   eventTitle?: string;
   isLiveStream?: boolean;
-  tags?: string[];
   eventStartDate?: Date;
   eventEndDate?: Date;
   price?: number;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
   playbackStart: boolean;
+  category?: string;
+  categoryType?: string;
   setIsRedeemModalOpen: (arg0: boolean) => void;
 }
 
-const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playbackStart = false, isLiveStream = false, tags = [], eventStartDate, eventEndDate, price, location, groupEvents = [] }: EventTitleProps) => {
+const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -53,25 +54,26 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
     <>
       {/* Badges */}
       <HStack spacing={3}>
-        {isLiveNow || playbackStart && (
+        {(isLiveStream && (isLiveNow || playbackStart)) && (
           <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>{isLiveNow ? 'LIVE' : (playbackStart ? 'Replay' : '')}</span>
           </div>
         )}
 
-        {tags && tags.slice(0, 3).map((tag: string, index: Number) => {
-          return (
-            <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold" key={tag + index}>
-              {tag}
-            </div>
-          )
-        })}
+        {(category && categoryType) && <>
+          <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
+            {categoryType}
+          </div>
+          <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
+            {category}
+          </div>
+        </>}
       </HStack>
 
       {/* Event Title */}
       <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10', {
-        'mt-1 sm:mt-4': tags?.length || isLiveNow || playbackStart
+        'mt-1 sm:mt-4': category || categoryType || isLiveNow || playbackStart
       })}>
         {eventTitle}
       </h1>
@@ -89,7 +91,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, eventTitle, playback
       <VStack
         spacing={4}
         align="start"
-        mt={{base: 5, sm: 8}}
+        mt={{ base: 5, sm: 8 }}
       >
         {!playbackStart &&
           <div className="flex items-start w-full">

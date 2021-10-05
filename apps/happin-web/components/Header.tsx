@@ -199,7 +199,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         <Menu.Item>
                           <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
                             <DownTwo theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Download Happin</span>
+                            <span className="ml-2">Download App</span>
                           </a>
                         </Menu.Item>
                       </div>

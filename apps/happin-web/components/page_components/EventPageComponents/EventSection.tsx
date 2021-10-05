@@ -13,13 +13,14 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
       <EventTitle
         setIsModalOpen={setIsModalOpen}
         eventTitle={eventData?.event?.title}
-        tags={eventData?.event?.tags}
         isLiveStream={eventData?.event?.streamEnabled}
         eventStartDate={eventData?.event?.start_datetime}
         eventEndDate={eventData?.event?.end_datetime}
         price={eventData?.event?.min_price}
         location={eventData?.event?.acInfo}
         groupEvents={groupEvents}
+        category={eventData?.event?.category}
+        categoryType={eventData?.event?.categoryType}
         playbackStart={!!eventData?.event?.ODPBStart}
         setIsRedeemModalOpen={setIsRedeemModalOpen}/>
       <div id="about" className="pt-6 sm:pt-10">
