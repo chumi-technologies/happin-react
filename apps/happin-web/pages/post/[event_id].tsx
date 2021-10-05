@@ -15,7 +15,6 @@ import { useRouter } from "next/router";
 import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
 import ChatWithFans from  "../../components/page_components/EventPageComponents/ChatWithFans"
 import { useUserState } from "contexts/user-state";
-import { useIntercom } from 'react-use-intercom';
 
 const Post = (props: EventData) => {
   const router = useRouter();
@@ -24,17 +23,12 @@ const Post = (props: EventData) => {
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const { setEventDeepLink, user } = useUserState();
-  const { update } = useIntercom();
   const eventData = props;
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{code: string, affiliate: string}>({affiliate: '', code: ''});
   let eventLocation = 'Stream Via Happin'
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
-  if (typeof window !== 'undefined') {
-    if (window.innerWidth < 768) {
-      update({hideDefaultLauncher: true})
-    }
-  }
+
 
   useEffect(()=> {
     if(router.query.affiliate) {
