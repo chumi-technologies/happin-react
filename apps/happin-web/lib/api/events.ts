@@ -28,8 +28,8 @@ const getWhiteLabelDomain = async (domain: string)=> {
     return response || {}
 }
 
-const saveOrUnsavedEvent = async (eventId: string)=> {
-    const response = await postToHappin(SAVE_OR_UNSAVE_EVENT_PATH.replace('{eventID}', eventId), {});
+const saveOrUnsavedEvent = async (eventId: string, save: boolean)=> {
+    const response = await postToHappin(SAVE_OR_UNSAVE_EVENT_PATH.replace('{eventID}', eventId), save ? {saved: true} : {});
     return response || {}
 }
 

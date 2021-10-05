@@ -73,7 +73,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
 
   const saveOrUnsaved = async() => {
     try {
-      await saveOrUnsavedEvent(eventData.event._id);
+      await saveOrUnsavedEvent(eventData.event._id, !isFavorite);
       setIsFavorite(s => !s)
     } catch(err) {
       console.log(err)
