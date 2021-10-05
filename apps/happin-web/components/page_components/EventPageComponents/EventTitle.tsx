@@ -11,6 +11,7 @@ import { GroupEvent } from 'lib/model/groupEvent';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import classnames from 'classnames';
+import { currencyFormatter } from '../CheckoutPageComponents/util/currencyFormat';
 
 type EventTitleProps = {
   setIsModalOpen: (arg0: boolean) => void;
@@ -19,6 +20,7 @@ type EventTitleProps = {
   eventStartDate?: Date;
   eventEndDate?: Date;
   price?: number;
+  currency?: string;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
   playbackStart: boolean;
@@ -27,7 +29,7 @@ type EventTitleProps = {
   setIsRedeemModalOpen: (arg0: boolean) => void;
 }
 
-const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, groupEvents = [] }: EventTitleProps) => {
+const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -128,7 +130,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
         <div className="flex items-start sm:items-center w-full">
           <SvgIcon id="ticket" className="text-lg text-white" />
           <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from $${(price / 100).toFixed(2)}`}</div>
+            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price/100))}`}</div>
             {/* not showing redeem when it's offline event  */}
             {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
           </div>

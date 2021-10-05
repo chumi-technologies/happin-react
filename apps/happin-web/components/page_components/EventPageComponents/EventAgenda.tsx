@@ -48,7 +48,7 @@ const EventAgenda = ({ eventData }: { eventData: EventData }) => {
     })
     innerContents.push({
       type: 'Public Show',
-      description: 'Grab your tickets now. You can access the event and group chat 1 hour before the event starts.',
+      description: 'Grab your tickets now. You can access the event and private group chat.',
       time: new Date(eventData.event.start_datetime).getTime(),
       title: eventData.event.title,
     })

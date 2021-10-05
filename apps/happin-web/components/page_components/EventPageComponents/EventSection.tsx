@@ -23,6 +23,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         price={eventData?.event?.min_price}
         location={eventData?.event?.acInfo}
         groupEvents={groupEvents}
+        currency={eventData?.event?.currency}
         category={eventData?.event?.category}
         categoryType={eventData?.event?.categoryType}
         playbackStart={!!eventData?.event?.ODPBStart}

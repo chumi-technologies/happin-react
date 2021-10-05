@@ -75,6 +75,14 @@ const Post = (props: EventData) => {
     twitterImage: eventData?.event?.socialImg || eventData?.event?.cover
   }
 
+  const checkTokenExist = () => {
+    if (typeof window !== 'undefined') {
+      if (localStorage.getItem('happin_jwt') && localStorage.getItem('happin_refresh_token')) {
+        return true
+      } else return false
+    } else return true
+  }
+
 
   return (
     <>
@@ -95,7 +103,7 @@ const Post = (props: EventData) => {
       </Head>
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
-        {(!hideSigninBar && !user)  && (
+        {(!hideSigninBar && !checkTokenExist())  && (
           <SignInBar setIsFirstTimeVisitor={firstTimeVisitHandler} />
         )}
 

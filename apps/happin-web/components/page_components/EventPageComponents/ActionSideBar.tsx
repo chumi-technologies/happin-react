@@ -19,6 +19,7 @@ import moment from 'moment';
 import { useUserState } from 'contexts/user-state';
 import { useEffect } from 'react';
 import { getSavedEventTicketsList, saveOrUnsavedEvent } from 'lib/api';
+import { currencyFormatter } from '../CheckoutPageComponents/util/currencyFormat';
 
 type ActionSideBarProps = {
   //isFavorite: boolean;
@@ -43,9 +44,9 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
     if (eventData.event.acInfo.location !== 'happin.app' && eventData.event.acInfo.eventType !== 'hybrid') {
       eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location}.`;
     } else if (eventData.event.acInfo.eventType === 'hybrid') {
-      eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} and watch livestream on https://happin.app or download Happin App.`
+      eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} or watch livestream on our Happin App.`
     }
-    return `${eventData.event.title} ${eventDescription}`
+    return `${eventData.event.title} ${eventDescription} Prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)}`
   }
   const { user } = useUserState();
   const [openShare, setOpenShare] = useState(false);

@@ -190,7 +190,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>
                             <International theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Host Event Dashboard</span>
+                            <span className="ml-2">Submit Event</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
@@ -217,7 +217,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                               <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>
                             <Menu.Item>
-                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
+                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Log out</a>
                             </Menu.Item>
                           </>
                         )}
