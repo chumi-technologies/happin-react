@@ -63,10 +63,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
 
         {(category && categoryType) && <>
           <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
-            {categoryType}
-          </div>
-          <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
-            {category}
+            {categoryType + ' - ' + category}
           </div>
         </>}
       </HStack>
