@@ -2,15 +2,18 @@ import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState, useRef } from 'react';
 import { CloseSmall } from '@icon-park/react';
 import classnames from 'classnames';
+import { noConflict } from 'lodash';
+import { useEffect } from 'react';
 
 type EventDescriptionProps = {
   description?: string;
   rawDescription?: string;
 }
 
-const EventDescription = ({description, rawDescription = ""}: EventDescriptionProps) => {
+const EventDescription = ({ description, rawDescription = "" }: EventDescriptionProps) => {
   let focuButtonRef = useRef(null)
 
+  const [noTextContent, setNoTextContent] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false)
   const closeModal = () => {
     setIsOpen(false)
@@ -19,21 +22,31 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
     setIsOpen(true)
   }
 
+  useEffect(()=> {
+    if (rawDescription?.length === 0 && description?.length !== 0) {
+      setNoTextContent(true);
+    }
+  } ,[])
+  
+
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Description</div>
-      <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80)? "" : "overflow-hidden"}`} style={{maxHeight: '75px'}}>
-        {rawDescription}
-       {/*  <div>
-          <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
-          <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>
-          <Link href="#"><a className="link-blue">Spotify</a></Link>
-        </div> */}
-
-      </div>
-      {!(rawDescription?.length < 80) && (
+      {!noTextContent ? <>
+        <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80) ? "" : "overflow-hidden"}`} style={{ maxHeight: '75px' }}>
+          {rawDescription}
+        </div>
+        {(rawDescription?.length > 80) && (
           <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
         )}
+      </> :
+        <>
+          <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative`} style={{ maxHeight: '75px' }}>
+              Click more to see event description for this event
+          </div>
+          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+        </>}
+
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog
@@ -81,15 +94,15 @@ const EventDescription = ({description, rawDescription = ""}: EventDescriptionPr
                     Description
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute right-3 w-10 h-10 rounded-full hover:bg-gray-200 hover:text-gray-700 transition cursor-pointer text-gray-500" onClick={closeModal}>
-                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
+                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
                 <div className="flex-1 h-0 overflow-y-auto pb-6">
                   <div className="px-6">
                     {/*Description content here*/}
                     <div className="text-sm sm:text-base">
-                      <div  dangerouslySetInnerHTML={{ __html: description || '' }}/>
-                     {/*  <div>
+                      <div dangerouslySetInnerHTML={{ __html: description || '' }} />
+                      {/*  <div>
                         <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
                         <Link href="#"><a className="mr-2 link-blue">Instagram,</a></Link>
                         <Link href="#"><a className="link-blue">Spotify</a></Link>
