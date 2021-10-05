@@ -163,7 +163,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/my-events')}}>My events</a>
+            {user && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/my-events')}}>My events</a>}
             <a className="text-sm p-2 font-medium text-gray-300 hover:text-white sm:inline-flex md:hidden" onClick={() => { show() }}>Support</a>
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
