@@ -654,7 +654,7 @@ const PaymentInner = (props: any) => {
           postCloseMessageForApp()
         } else {
           setTimeout(() => {
-            router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+            router.push(`/my-events`)
           }, 1000)
         }
       }
@@ -710,7 +710,7 @@ const PaymentInner = (props: any) => {
             postCloseMessageForApp()
           } else {
             setTimeout(() => {
-              router.push(`https://happin.app/post/${eventDataForCheckout?.id}`)
+              router.push(`/my-events`)
             }, 1000)
           }
           return
