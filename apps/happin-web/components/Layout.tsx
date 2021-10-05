@@ -42,7 +42,7 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (!(router.asPath === '/' || router.asPath.includes('/post') || router.asPath.includes('/terms') || router.asPath.includes('/privacy'))) {
+    if (!(router.asPath === '/')) {
       setShowFooter(false);
     } else {
       setShowFooter(true);
