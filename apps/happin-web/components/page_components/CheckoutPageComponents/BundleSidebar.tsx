@@ -200,7 +200,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
           {checkSoldOut() ? <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" disabled className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">SOLD OUT</span>
-          </button> : <button onClick={addBundleButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
+          </button> : <button disabled={inputValue === 0} onClick={addBundleButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>
           </button>}

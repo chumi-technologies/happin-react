@@ -110,7 +110,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
       </div>
       <div className="flex items-center px-5 sm:px-6 py-4 border-t border-solid border-gray-700">
         {merch?.property[selectedPropertyIndex]?.originalPValue > 0 ? <div className="flex-1 ml-4 sm:ml-6">
-          <button onClick={addMerchButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
+          <button disabled={inputValue === 0} onClick={addMerchButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
             <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>
           </button>
