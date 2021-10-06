@@ -13,7 +13,7 @@ import { GetServerSidePropsResult } from "next";
 import { PRODUCTION_URL } from "utils/constants";
 import { useRouter } from "next/router";
 import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
-import ChatWithFans from  "../../components/page_components/EventPageComponents/ChatWithFans"
+import ChatWithFans from "../../components/page_components/EventPageComponents/ChatWithFans"
 import { useUserState } from "contexts/user-state";
 
 const Post = (props: EventData) => {
@@ -22,20 +22,21 @@ const Post = (props: EventData) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const { setEventDeepLink, user } = useUserState();
+  const { setEventDeepLink, user} = useUserState();
+  const [tokenExist, setTokenExist] = useState(true)
   const eventData = props;
   const groupEvents = props.groupEvents;
-  const [queryParams, setQueryParams] = useState<{code: string, affiliate: string}>({affiliate: '', code: ''});
+  const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string }>({ affiliate: '', code: '' });
   let eventLocation = 'Stream Via Happin'
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
 
 
-  useEffect(()=> {
-    if(router.query.affiliate) {
-      setQueryParams((x)=> {x.affiliate = router.query.affiliate as string; return {...x}})
+  useEffect(() => {
+    if (router.query.affiliate) {
+      setQueryParams((x) => { x.affiliate = router.query.affiliate as string; return { ...x } })
     }
-    if(router.query.sharecode) {
-      setQueryParams((x)=> {x.code = router.query.sharecode as string; return {...x}})
+    if (router.query.sharecode) {
+      setQueryParams((x) => { x.code = router.query.sharecode as string; return { ...x } })
     }
   }, [])
 
@@ -75,13 +76,15 @@ const Post = (props: EventData) => {
     twitterImage: eventData?.event?.socialImg || eventData?.event?.cover
   }
 
-  const checkTokenExist = () => {
-    if (typeof window !== 'undefined') {
-      if (localStorage.getItem('happin_jwt') && localStorage.getItem('happin_refresh_token')) {
-        return true
-      } else return false
-    } else return true
-  }
+  useEffect(() => {
+    if (localStorage.getItem('happin_jwt') && localStorage.getItem('happin_refresh_token')) {
+      setTokenExist(true)
+    } else setTokenExist(false)
+
+    if (user) {
+      setTokenExist(true)
+    }
+  }, [user])
 
 
   return (
@@ -103,7 +106,7 @@ const Post = (props: EventData) => {
       </Head>
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
-        {(!hideSigninBar && !checkTokenExist())  && (
+        {(!hideSigninBar && !tokenExist) && (
           <SignInBar setIsFirstTimeVisitor={firstTimeVisitHandler} />
         )}
 
@@ -171,7 +174,7 @@ const Post = (props: EventData) => {
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
               <EventSection setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar queryParams={queryParams}  eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen}/>
+            <BottomBar queryParams={queryParams} eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen} />
           </div>
         </div>
       </div>
