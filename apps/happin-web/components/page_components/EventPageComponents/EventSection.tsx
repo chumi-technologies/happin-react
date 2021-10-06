@@ -5,11 +5,12 @@ import EventAgenda from "./EventAgenda";
 import EventHost from "./EventHost";
 import { EventData } from "lib/model/event";
 import classnames from 'classnames';
-import { Link } from 'react-scroll';
+import { useState } from "react";
 
 const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: {
   setIsModalOpen: (arg: boolean) => void, eventData: EventData, groupEvents: any, setIsRedeemModalOpen: (arg: boolean) => void
 }) => {
+  const [tabCur, setTabCur] = useState(0)
 
   return (
     <>
@@ -28,40 +29,27 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         playbackStart={!!eventData?.event?.ODPBStart}
         setIsRedeemModalOpen={setIsRedeemModalOpen} />
       <div className="flex w-full p-1 border border-solid border-gray-600 rounded-full mt-10">
-        <Link
-          activeClass="active"
-          containerId="about-agenda-scroll-body"
-          to="about"
-          spy={true}
-          smooth={true}
-          duration={500}
-          className="event-details__tab">
+        <div className={classnames('event-details__tab', { active: tabCur === 0 })} onClick={() => { setTabCur(0) }}>
           About
-        </Link>
-        <Link
-          activeClass="active"
-          containerId="about-agenda-scroll-body"
-          to="agenda"
-          spy={true}
-          smooth={true}
-          duration={500}
-          className="event-details__tab" onClick={()=>{document.getElementById('agenda')?.scrollIntoView({behavior: "smooth"})}}>
+        </div>
+        <div className={classnames('event-details__tab', { active: tabCur === 1 })} onClick={() => { setTabCur(1) }}>
           Agenda
-        </Link>
+        </div>
       </div>
-      <div id="about-agenda-scroll-body">
+      {tabCur === 0 &&
         <div id="about" className="pt-6 sm:pt-10">
           <EventDescription
             description={eventData?.event?.content}
             rawDescription={eventData?.event?.contentPlainText} />
           <div className="h-px bg-gray-600 my-6 sm:mt-10" />
         </div>
-
+      }
+      {tabCur === 1 &&
         <div id="agenda" className="pt-6 sm:pt-10">
           <EventAgenda eventData={eventData} />
           <div className="h-px bg-gray-600 my-6 sm:my-10" />
         </div>
-      </div>
+      }
       <EventHost
         hostName={eventData?.event?.creator?.name}
         hostProfileImageUrl={eventData?.event?.creator?.avatar}

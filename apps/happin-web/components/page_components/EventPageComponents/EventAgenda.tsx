@@ -41,7 +41,7 @@ const EventAgenda = ({ eventData }: { eventData: EventData }) => {
     const innerContents = eventData.pfms.filter(pfm => !pfm.invisible).map(pfm => {
       return {
         type: 'VIP/ Fan Meeting',
-        description: 'Grab your tickets and download Happin APP, you will talk to the artists one on one.',
+        description: 'Face to face, talk to your artist',
         time: pfm.startTime,
         title: eventData.event.title,
       }
