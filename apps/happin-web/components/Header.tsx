@@ -128,7 +128,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         </Link>
                       </Menu.Item>*/}
                         <Menu.Item>
-                          <a className="header__menu-link md:hidden" onClick={clickHostEventHandler}>Host Event</a>
+                          <a className="header__menu-link md:hidden" onClick={clickHostEventHandler}>Submit Event</a>
                         </Menu.Item>
                       </div>
                     </Menu.Items>
