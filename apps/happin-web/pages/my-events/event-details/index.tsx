@@ -126,8 +126,8 @@ const MyEventDetails = () => {
         const res = await getFirebaseCustomToken();
           if (res && res.data && res.data.customToken) {
             customToken = res.data.customToken;
+            window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
         }
-        router.push(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`);
       } else if (ticket.ticketType === 'PFM') {
         if(router.query.id){
           getTicketsListFromHappinServer((router.query.id).toString())
@@ -151,7 +151,7 @@ const MyEventDetails = () => {
       const res = await getFirebaseCustomToken();
       if (res && res.data && res.data.customToken) {
         customToken = res.data.customToken;
-        window.open(`https://livestream.happin.app?customToken=${customToken}`, "_blank")
+        window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
       }
     } catch(err) {
       generateToast('Unknown error about replay-video', toast);
