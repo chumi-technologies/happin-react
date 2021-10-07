@@ -34,7 +34,7 @@ const instanceFirebaseAPI = axios.create({
 const getLocalStorageIDToken = () => {
   let idToken;
   if (typeof window !== 'undefined'){
-    idToken = window.localStorage.getItem('happin_jwt');
+    idToken = window.localStorage.getItem('happin_web_jwt');
   }
   return idToken;
 }
@@ -72,7 +72,7 @@ instanceHappin.interceptors.response.use(
         try {
           const response = await refreshToken();
           const {id_token, refresh_token} = response;
-          window.localStorage.setItem('happin_jwt', id_token);
+          window.localStorage.setItem('happin_web_jwt', id_token);
           window.localStorage.setItem('happin_refresh_token', refresh_token);
           instanceHappin.defaults.headers.common['authorization'] = `Bearer ${id_token}`;
           return instanceHappin(oringinalConfig)

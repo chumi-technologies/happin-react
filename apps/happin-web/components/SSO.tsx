@@ -53,7 +53,7 @@ const SSO = () => {
     const { action, payload } = e.data || {};
     if (action === 'close') hideSSO();
     if (action === 'get_token') {
-      localStorage.setItem('happin_jwt', payload.idToken);
+      localStorage.setItem('happin_web_jwt', payload.idToken);
       localStorage.setItem('happin_refresh_token', payload.refreshToken);
       await setUserInfo();
       hideSSO();

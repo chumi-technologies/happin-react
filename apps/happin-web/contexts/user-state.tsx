@@ -18,7 +18,7 @@ export function UserState({ children }: {children: any}) {
   const [eventDeepLink, setEventDeepLink] = useState<string>('');
 
   useEffect(() => {
-    const idToken = localStorage.getItem('happin_jwt')
+    const idToken = localStorage.getItem('happin_web_jwt')
     if (idToken) {
       setUserInfo()
     }
@@ -52,7 +52,7 @@ export function UserState({ children }: {children: any}) {
   const clearUser = () => {
     setUser(undefined);
     localStorage.removeItem('happin_refresh_token');
-    localStorage.removeItem('happin_jwt');
+    localStorage.removeItem('happin_web_jwt');
     localStorage.removeItem('chumi_jwt')
   }
 

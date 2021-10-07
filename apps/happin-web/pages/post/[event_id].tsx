@@ -77,7 +77,7 @@ const Post = (props: EventData) => {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('happin_jwt') && localStorage.getItem('happin_refresh_token')) {
+    if (localStorage.getItem('happin_web_jwt') && localStorage.getItem('happin_refresh_token')) {
       setTokenExist(true)
     } else setTokenExist(false)
 
