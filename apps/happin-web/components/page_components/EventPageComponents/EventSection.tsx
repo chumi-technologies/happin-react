@@ -12,9 +12,9 @@ import classNames from 'classnames';
 const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: {
   setIsModalOpen: (arg: boolean) => void, eventData: EventData, groupEvents: any, setIsRedeemModalOpen: (arg: boolean) => void
 }) => {
-  const [firstActive, setFirstActive] = useState(true)
-  const [tabCur, setTabCur] = useState(0)
-
+  //const [firstActive, setFirstActive] = useState(true)
+  //const [tabCur, setTabCur] = useState(0)
+  const [isAtive, setActive] = useState(0);
   return (
     <>
       <EventTitle
@@ -35,32 +35,28 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
       <div className="sticky top-0 bg-black z-10">
         <div className="flex w-full mt-8 sm:mt-14 p-1 border border-solid border-gray-600 rounded-full">
           <Link
-            className={classNames('event-details__tab', { 'first-active': firstActive })}
+            className={classNames('event-details__tab', {active: isAtive === 0})}
             activeClass="active"
             containerId="scroll-body"
+            onClick={()=>{setActive(0)}}
             to="about"
-            spy={true}
+            //spy={true}
             smooth={true}
             offset={-50}
             duration={500}
-            onSetActive={() => {
-              setFirstActive(true)
-            }}
           >
             About
           </Link>
           <Link
-            className="event-details__tab"
+            className={classNames('event-details__tab', {active: isAtive === 1})}
+            onClick={()=>{setActive(1)}}
             activeClass="active"
             containerId="scroll-body"
             to="agenda"
-            spy={true}
+            //spy={true}
             smooth={true}
             offset={-50}
             duration={500}
-            onSetActive={() => {
-              setFirstActive(false)
-            }}
           >
             Agenda
           </Link>
