@@ -26,7 +26,7 @@ const Post = (props: EventData) => {
   const [tokenExist, setTokenExist] = useState(true)
   const eventData = props;
   const groupEvents = props.groupEvents;
-  const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string }>({ affiliate: '', code: '' });
+  const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
   let eventLocation = 'Stream Via Happin'
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
 
@@ -37,6 +37,9 @@ const Post = (props: EventData) => {
     }
     if (router.query.sharecode) {
       setQueryParams((x) => { x.code = router.query.sharecode as string; return { ...x } })
+    }
+    if (router.query.token) {
+      setQueryParams((x) => { x.organizer_token = router.query.token as string; return { ...x } })
     }
   }, [])
 

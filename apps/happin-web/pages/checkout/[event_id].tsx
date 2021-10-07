@@ -37,11 +37,12 @@ const Checkout = () => {
   const [selectedRegularMerch, setSelectedRegularMerch] = useState<MerchItemDataProps>();
   const [selectedBundleMerch, setSelectedBundleMerch] = useState<MerchItemDataProps[]>();
   const [selectedBundleTicket, setSelectedBundleTicket] = useState<TicketItemDataProps>();
+  const [organizerToken, setOrganizerToken] = useState<boolean>(false)
 
   const [saleStart, setSaleStart] = useState<boolean>();
   const [inPresale, setInPresale] = useState<boolean>();
 
-  const [showingTab, setShowingTab] = useState<string>('');
+  const [showingTab, setShowingTab] = useState<string>();
 
   const [cartPopoverMsg, setCartPopoverMsg] = useState<any>({show: false});
 
@@ -103,6 +104,9 @@ const Checkout = () => {
           }
           // two code appear at same time is not possible
           await validateUrlCodeAndSetState(router.query.event_id as string, ((router.query.code || router.query.affiliate) as string));
+        }
+        if (router.query.organizer_token) {
+          setOrganizerToken(true);
         }
       }
     })()
@@ -517,7 +521,7 @@ const Checkout = () => {
 
               <div className="divide-y divide-gray-700">
                 {/* do not show ticket and merchs when not published */}
-                {(eventDataForCheckout && eventDataForCheckout.tags?.includes('Private')) && (
+                {(eventDataForCheckout && eventDataForCheckout.tags?.includes('Private') && !organizerToken ) && (
                   <div className="sm:text-lg" style={{
                     position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, 0)',
                     fontWeight: 600, textAlign: 'center', margin: '20px 0'
@@ -525,7 +529,7 @@ const Checkout = () => {
                     <h1>Event not yet published</h1>
                   </div>
                 )}
-                {(eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) &&
+                {((eventDataForCheckout && !eventDataForCheckout.tags?.includes('Private')) || organizerToken) &&
                   (<>
                     {!onlyShowMerch && <>
                       {
@@ -596,7 +600,7 @@ const Checkout = () => {
                             return (
                               <MerchItem
                                 key={item.id}
-                                currency={eventDataForCheckout.default_currency}
+                                currency={eventDataForCheckout?.default_currency as string}
                                 data={item}
                                 disabled={disabledFlag}
                                 onSelect={() => {
@@ -628,7 +632,7 @@ const Checkout = () => {
                             return (
                               <MerchItem
                                 key={item.id}
-                                currency={eventDataForCheckout.default_currency}
+                                currency={eventDataForCheckout?.default_currency as string}
                                 data={item}
                                 disabled={disabledFlag}
                                 onSelect={() => {
