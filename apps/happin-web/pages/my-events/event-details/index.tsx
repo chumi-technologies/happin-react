@@ -27,6 +27,7 @@ const MyEventDetails = () => {
   const [tickets,setTickets] = useState<any[]>([]);
   const [merchs,setMerchs] = useState<any[]>([]);
   const [playBackList,setPlayBackList] = useState<any[]>([]);
+  const [eventId,setEventId] = useState('');
 
   const getEventDetailsFromHappinServer = async(id:string)=> {
       try {
@@ -34,6 +35,7 @@ const MyEventDetails = () => {
         if (res && res.data) {
           const eventDetailsFromServer = res.data;
           setEventDetails(eventDetailsFromServer);
+          setEventId(eventDetailsFromServer.event.eid);
         }
       } catch(err) {
          generateToast('Unknown error about event tickets', toast);
@@ -176,10 +178,10 @@ const MyEventDetails = () => {
   },[])
 
   useEffect(() => {
-    if(router.query.id){
-      getMerchOrdersSummaryFromCrowdcoreServer((router.query.id).toString())
+    if(eventId){
+      getMerchOrdersSummaryFromCrowdcoreServer((eventId).toString())
     }    
-  },[])
+  },[eventId])
 
   useEffect(() => {
     if(router.query.id){
@@ -354,8 +356,8 @@ const MyEventDetails = () => {
                     {
                       tabCur === 1 && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 md:gap-5">
-                          { merchs && merchs.length>0 && merchs.map(m=>(
-                            <div key={m._id}>
+                          { merchs && merchs.length>0 && merchs.map((m,i)=>(
+                            <div key={i}>
                               <div className="flex items-center">
                                 <div className="w-28 h-28 mr-4">
                                   <img className="w-full h-full object-cover rounded-md" src={m.cover} alt="" />

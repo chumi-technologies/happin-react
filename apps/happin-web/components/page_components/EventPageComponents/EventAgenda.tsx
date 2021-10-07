@@ -10,7 +10,7 @@ const AgendaItem = ({ item }: any) => {
         mt={{ base: "16px", md: 7 }}
         templateColumns="100px 1fr"
       >
-        <div className="text-sm font-bold leading-none">{moment(item.time).format('h:mm A')}</div>
+        <div className="text-sm font-bold leading-none">{item.time ? moment(item.time).format('h:mm A') : ''}</div>
         <div>
           <div className="text-xs mb-2 uppercase">{item.type}</div>
           <div className="font-bold mb-1">{item.title}</div>
@@ -41,21 +41,21 @@ const EventAgenda = ({ eventData }: { eventData: EventData }) => {
     const innerContents = eventData.pfms.filter(pfm => !pfm.invisible).map(pfm => {
       return {
         type: 'VIP/ Fan Meeting',
-        description: 'Face to face, talk to your artist',
+        description: 'Grab your tickets and download Happin APP, you will talk to the artists one on one.',
         time: pfm.startTime,
         title: eventData.event.title,
       }
     })
     innerContents.push({
       type: 'Public Show',
-      description: 'Grab your tickets now. You can access the event and group chat 1 hour before the event starts.',
+      description: 'Grab your tickets now. You can access the event and private group chat.',
       time: new Date(eventData.event.start_datetime).getTime(),
       title: eventData.event.title,
     })
     innerContents.sort((a,b) => { if (a.time > b.time) return 1; else return -1 });
     let previousDate: string;
     innerContents.forEach((inner, index) => {
-      const currentDate = moment(inner.time).format('MMM D');
+      const currentDate = inner.time ? moment(inner.time).format('MMM D') : 'TBA';
       if (index === 0) {
         previousDate = currentDate;
         agenda.push({date: currentDate, content: [inner]})

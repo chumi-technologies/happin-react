@@ -9,7 +9,6 @@ import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
 import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
-import { useIntercom } from 'react-use-intercom';
 import classnames from 'classnames';
 
 export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
@@ -19,7 +18,6 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const [isEventPage, setIsEventPage] = useState(false) */
   const router = useRouter();
   const toast = useToast();
-  const { show } = useIntercom();
 
   //const searchRef = useRef<HTMLInputElement>(null!);
 
@@ -164,7 +162,6 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
           {/* Right Block */}
           <div className="flex items-center">
             {user && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/my-events')}}>My events</a>}
-            <a className="text-sm p-2 font-medium text-gray-300 hover:text-white sm:inline-flex md:hidden" onClick={() => { show() }}>Support</a>
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}
@@ -175,7 +172,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                 <>
                   <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
                     <HamburgerButton theme="outline" size="22" fill="currentColor" />
-                    {!user && <Avatar size="sm" ml={2} bg="gray.600" />}
+                    {!user && <Avatar size="sm" ml={2} bg="gray.600" ><span style={{background: '#fdf846', bottom: '25px', left: '25px' }} className="w-2 h-2 rounded-full absolute"></span></Avatar>}
                     {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
                   </Menu.Button>
                   <Transition
@@ -193,13 +190,13 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>
                             <International theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Host Event Dashboard</span>
+                            <span className="ml-2">Submit Event</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
                           <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
                             <DownTwo theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Download Happin</span>
+                            <span className="ml-2">Download App</span>
                           </a>
                         </Menu.Item>
                       </div>
@@ -220,7 +217,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                               <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>
                             <Menu.Item>
-                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Sign out</a>
+                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Log out</a>
                             </Menu.Item>
                           </>
                         )}

@@ -3,7 +3,6 @@ import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
 import Link from "next/link";
-import { useIntercom } from 'react-use-intercom';
 
 type EventHostProps = {
   hostName?: string;
@@ -13,7 +12,6 @@ type EventHostProps = {
 
 const EventHost = (props: EventHostProps) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { show } = useIntercom();
 
   return (
     <>
@@ -87,21 +85,19 @@ const EventHost = (props: EventHostProps) => {
                     <div className="h-px bg-gray-600 my-6" />
                     <div className="mb-2 text-white font-semibold">Have a question for the organizer?</div>
                     <div className="text-sm text-gray-300">See the event page for more information or</div>
-                    <button type="button"
-                      className="mt-4 mb-1 btn btn-rose">
-                      <a href={`mailto: ${props.hostEmail}`}>
-                        Contact the organizer
-                      </a>
-                    </button>
+                    <a href={`mailto: ${props.hostEmail}`}
+                       className="block mt-4 mb-1 btn btn-rose">
+                      Contact the organizer
+                    </a>
                   </> :
                   <>
                     <div className="h-px bg-gray-600 my-6" />
                     <div className="mb-2 text-white font-semibold">The organizer {`didn't`} provide a contact email</div>
                     <div className="text-sm text-gray-300">You can send us a message by clicking the button below</div>
-                    <button type="button"
-                      className="mt-4 mb-1 btn btn-rose" onClick={()=>{show(); setIsOpen(false)}}>
+                    <a href="mailto:admin@happin.app"
+                      className="block mt-4 mb-1 btn btn-rose" onClick={()=>{setIsOpen(false)}}>
                       Contact us
-                    </button>
+                    </a>
                   </>
                 }
               </div>

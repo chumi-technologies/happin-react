@@ -122,36 +122,6 @@ const MyEvents = () => {
                     </div>
                   </VStack> :
                   <>
-                    <VStack alignItems="stretch" spacing={{ base: 5, sm: 8 }}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3">
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3">
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                        <div className="group">
-                          <Skeleton minHeight="200px" speed={0.4}>
-                          </Skeleton>
-                        </div>
-                      </div>
-                    </VStack>
                   </>
                 }
               </div>

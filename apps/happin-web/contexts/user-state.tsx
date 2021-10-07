@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { exchangeCrowdcoreToken, getUserInfo } from "lib/api";
 import { User } from 'lib/model/user';
-import { useIntercom } from 'react-use-intercom';
 
 interface UserContext {
   setUserInfo: ()=> Promise<void>,
@@ -17,14 +16,9 @@ const userContext = createContext<UserContext>({} as UserContext);
 export function UserState({ children }: {children: any}) {
   const [user, setUser] = useState<User>();
   const [eventDeepLink, setEventDeepLink] = useState<string>('');
-  const {
-    boot,
-    shutdown,
-    update,
-  } = useIntercom();
 
   useEffect(() => {
-    const idToken = localStorage.getItem('happin_jwt')
+    const idToken = localStorage.getItem('happin_web_jwt')
     if (idToken) {
       setUserInfo()
     }
@@ -36,7 +30,6 @@ export function UserState({ children }: {children: any}) {
         const response = await getUserInfo();
         const user = response.data;
         setUser(user);
-        update({email: user.email, userId: user._id})
       } catch (err) {
         clearUser();
         console.log(err)
@@ -58,10 +51,8 @@ export function UserState({ children }: {children: any}) {
 
   const clearUser = () => {
     setUser(undefined);
-    shutdown()
-    boot()
     localStorage.removeItem('happin_refresh_token');
-    localStorage.removeItem('happin_jwt');
+    localStorage.removeItem('happin_web_jwt');
     localStorage.removeItem('chumi_jwt')
   }
 

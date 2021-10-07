@@ -7,6 +7,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
 import { GetServerSidePropsResult } from 'next';
 import { getWhiteLabelDomain } from 'lib/api';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useUserState } from 'contexts/user-state';
 
 const imageList = [
   '/images/home-feature-02.png',
@@ -28,14 +31,24 @@ const buildEvent = [
   },
 ];
 export default function Home() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false)
   const [buildCur, setBuildCur] = useState<number>(0);
+  const { clearUser } = useUserState();
   const closeModal = () => {
     setIsOpen(false)
   }
   const openModal = () => {
     setIsOpen(true)
   }
+  
+  useEffect(() => {
+    if (router.query.logout) {
+      clearUser();
+      router.push('/');
+    }
+  },[router])
+
   return (
     <div className="relative bg-black text-white z-0">
       <div className="relative overflow-hidden pt-48 pb-40 md:py-52 lg:py-64 home__banner">
