@@ -141,7 +141,8 @@ const PaymentInner = (props: any) => {
   const [showShipping, setShowShipping] = useState<boolean>(false);
   const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
-
+  let timeZone: string
+  
   let innerWidth: number = 0;
   if (typeof window !== 'undefined') {
     innerWidth = window.innerWidth;
@@ -219,7 +220,8 @@ const PaymentInner = (props: any) => {
         phone: userForm.phone,
         buyerName: userForm.fullName,
         affiliateCode: affiliate,
-        checkoutForm: checkoutFormAnswers
+        checkoutForm: checkoutFormAnswers,
+        timeZone
       }
       postPaymentToCrowdCore(formForPayPal, crowdcoreOrderId as string)
     });
@@ -339,7 +341,8 @@ const PaymentInner = (props: any) => {
       billingAddress,
       shipping: shippingForm,
       affiliateCode: affiliate,
-      checkoutForm: checkoutFormAnswers
+      checkoutForm: checkoutFormAnswers,
+      timeZone
     }
     await postPaymentToCrowdCore(formForPaidTicket, orderId as string, data)
 
@@ -372,7 +375,8 @@ const PaymentInner = (props: any) => {
       buyerName: data.fullName,
       shipping: shippingForm,
       affiliateCode: affiliate,
-      checkoutForm: checkoutFormAnswers
+      checkoutForm: checkoutFormAnswers,
+      timeZone
     }
     await postPaymentToCrowdCore(formForFreeTicket, orderId as string, data)
   };
@@ -523,6 +527,8 @@ const PaymentInner = (props: any) => {
     }
   }
   useEffect(() => {
+    timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    console.log('Client timezone', timeZone);
     const orderId = localStorage.getItem('orderId');
     //const activityId = localStorage.getItem('activityId');
     if (eventDataForCheckout) {
