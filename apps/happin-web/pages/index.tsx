@@ -223,9 +223,9 @@ const whiteLabelDomain = async (domain: string) => {
   try {
     const response = await getWhiteLabelDomain(domain);
     if (response.groupEventId) {
-      return response.groupEventId
+      return {eventId: response.groupEventId, isGroup: true}
     } else if(response.redirectToAc) {
-      return response.redirectToAc
+      return {eventId: response.redirectToAc, isGroup: false}
     }
   } catch (err) {
     console.log(err)
@@ -235,14 +235,14 @@ const whiteLabelDomain = async (domain: string) => {
 export async function getServerSideProps(context: { req: {headers: {host: string}} }) : Promise<GetServerSidePropsResult<any>> {
   //&& !context.req.headers.host.includes('localhost')
   if (context.req.headers.host !== 'happin.app' && !context.req.headers.host.includes('localhost')) {
-    const eventId = await whiteLabelDomain(context.req.headers.host)
-    if (!eventId) {
+    const response = await whiteLabelDomain(context.req.headers.host)
+    if (!response) {
       return {props: {}}
     }
     return {
       redirect: {
         permanent: false,
-        destination: `/post/${eventId}`
+        destination: response.isGroup? `https://livestream.happin.app/event-schedule/${response.eventId}?host=${context.req.headers.host}` :`/post/${response.eventId}`
       }
     }
   }  
