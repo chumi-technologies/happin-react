@@ -168,7 +168,7 @@ const Post = (props: EventData) => {
             />
             <img
               src={`${eventData?.event?.cover}`}
-              className="sm:relative lg:absolute w-full top-0 bottom-0 m-auto"
+              className="event-details__img"
             />
           </div>
 

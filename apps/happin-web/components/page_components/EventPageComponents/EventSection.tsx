@@ -14,7 +14,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
 }) => {
   //const [firstActive, setFirstActive] = useState(true)
   //const [tabCur, setTabCur] = useState(0)
-  const [isAtive, setActive] = useState(0);
+  const [isActive, setActive] = useState(0);
   return (
     <>
       <EventTitle
@@ -35,7 +35,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
       <div className="sticky top-0 bg-black z-10">
         <div className="flex w-full mt-8 sm:mt-14 p-1 border border-solid border-gray-600 rounded-full">
           <Link
-            className={classNames('event-details__tab', {active: isAtive === 0})}
+            className={classNames('event-details__tab', {active: isActive === 0})}
             activeClass="active"
             containerId="scroll-body"
             onClick={()=>{setActive(0)}}
@@ -48,7 +48,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
             About
           </Link>
           <Link
-            className={classNames('event-details__tab', {active: isAtive === 1})}
+            className={classNames('event-details__tab', {active: isActive === 1})}
             onClick={()=>{setActive(1)}}
             activeClass="active"
             containerId="scroll-body"
