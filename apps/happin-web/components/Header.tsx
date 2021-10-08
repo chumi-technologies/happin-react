@@ -8,7 +8,7 @@ import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
-import { exchangeDashboardEventHostToken, getWhiteLabelDomain } from 'lib/api';
+import { exchangeDashboardEventHostToken } from 'lib/api';
 import classnames from 'classnames';
 
 export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
@@ -18,6 +18,13 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const [isEventPage, setIsEventPage] = useState(false) */
   const router = useRouter();
   const toast = useToast();
+  const [isWhiteLable, setIsWhiteLable] = useState(false);
+
+  useEffect(()=> {
+    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost') {
+      setIsWhiteLable(true)
+    }
+  }, [])
 
   //const searchRef = useRef<HTMLInputElement>(null!);
 
@@ -159,7 +166,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            {user && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/my-events')}}>My events</a>}
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Submit Events</a>}
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}
