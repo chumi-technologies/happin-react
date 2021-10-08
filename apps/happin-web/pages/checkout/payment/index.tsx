@@ -141,7 +141,7 @@ const PaymentInner = (props: any) => {
   const [showShipping, setShowShipping] = useState<boolean>(false);
   const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
-  let timeZone: string
+  const [timeZone, setTimeZone] = useState<string>('');
   
   let innerWidth: number = 0;
   if (typeof window !== 'undefined') {
@@ -527,7 +527,7 @@ const PaymentInner = (props: any) => {
     }
   }
   useEffect(() => {
-    timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setTimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone)
     console.log('Client timezone', timeZone);
     const orderId = localStorage.getItem('orderId');
     //const activityId = localStorage.getItem('activityId');
