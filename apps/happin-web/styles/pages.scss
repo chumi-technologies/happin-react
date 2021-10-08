@@ -134,7 +134,12 @@
     max-height: calc(100vh - 120px);
   }
 }
-
+.event-details__img {
+  @apply relative w-full lg:w-auto lg:left-1/2 lg:top-1/2 lg:max-h-full;
+  @media (min-width: 1024px) {
+    transform: translate(-50%, -50%);
+  }
+}
 
 // Check out
 .checkout__page {
