@@ -16,6 +16,8 @@ interface UserContext {
   setAffiliation: (arg:boolean)=>void,
   partnerId:string,
   setPartnerId: (arg:string)=>void,
+  crowdCoreToken:boolean,
+  setCrowdCoreToken:(arg:boolean)=>void,
 }
 
 const userContext = createContext<UserContext>({} as UserContext);
@@ -26,6 +28,7 @@ export function UserState({ children }: {children: any}) {
   const [teamUser,setTeamUser]= useState<boolean>(false);
   const [affiliation,setAffiliation]= useState<boolean>(false);
   const [partnerId, setPartnerId ] = useState<string>('');
+  const [crowdCoreToken,setCrowdCoreToken] = useState<boolean>(false);
 
   const {
     boot,
@@ -60,6 +63,7 @@ export function UserState({ children }: {children: any}) {
           const response = await exchangeCrowdcoreToken();
           const token = response?.data?.token;
           localStorage.setItem('chumi_jwt',token);
+          setCrowdCoreToken(true);
       } catch (err) {
         console.log(err)
       }
@@ -73,11 +77,15 @@ export function UserState({ children }: {children: any}) {
     localStorage.removeItem('happin_refresh_token');
     localStorage.removeItem('happin_jwt');
     localStorage.removeItem('chumi_jwt')
+    setTeamUser(false);
+    setAffiliation(false);
+    setPartnerId('');
+    setCrowdCoreToken(false);
   }
 
   return (
     <userContext.Provider value={{ user, setUserInfo,clearUser, exchangeForCrowdCoreToken, eventDeepLink, setEventDeepLink, teamUser, setTeamUser, affiliation,
-      setAffiliation,partnerId,setPartnerId }}>
+      setAffiliation,partnerId,setPartnerId,crowdCoreToken,setCrowdCoreToken }}>
       {children}
     </userContext.Provider>
   );

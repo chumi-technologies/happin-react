@@ -14,7 +14,7 @@ import classnames from 'classnames';
 import jwt_decode from "jwt-decode";
 
 export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
-  const { user, clearUser,teamUser,setTeamUser,affiliation,setAffiliation,setPartnerId } = useUserState();
+  const { user, clearUser,teamUser,setTeamUser,affiliation,setAffiliation,setPartnerId,crowdCoreToken } = useUserState();
   const { dimmed, showSSO, showSSOSignUp } = useSSOState();
   /* const [showSearch, setSearch] = useState(false)
   const [isEventPage, setIsEventPage] = useState(false) */
@@ -50,11 +50,18 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
     (async () => {
       if(localStorage.getItem('chumi_jwt')){
         await getConnectedTeamFromCrowdcoreServer();
+      }
+    })()
+  }, [crowdCoreToken])
+
+  useEffect(() => {
+    (async () => {
+      if(localStorage.getItem('chumi_jwt')){
         const userInfo = await getSaasUserInfo();
         setSaasUserInfo(userInfo);
       }
     })()
-  }, [])
+  }, [crowdCoreToken])
 
   // const clickHostEventHandler = async () => {
   //   if (!user) {
@@ -197,7 +204,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
               )}
             </Menu>*/}
             {/* Team Menu */} 
-            {sasaUserInfo && 
+            {user && sasaUserInfo && 
               <div className="py-1">
                     <span className="text-gray-200 ml-2">{sasaUserInfo.username || sasaUserInfo.email}</span>
               </div>
