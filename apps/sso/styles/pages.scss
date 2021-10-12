@@ -43,7 +43,7 @@
   min-height: 600px;
   max-width: 500px;
   padding: 40px 30px 30px;
-  @media (min-width: 640px) {
+  @media (max-width: 640px) {
     margin-bottom: 70px;
     width: calc(100% - 40px);
   }

@@ -15,18 +15,20 @@ import { useRouter } from "next/router";
 import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
 import ChatWithFans from "../../components/page_components/EventPageComponents/ChatWithFans"
 import { useUserState } from "contexts/user-state";
+import { Button } from "@chakra-ui/react";
 
 const Post = (props: EventData) => {
   const router = useRouter();
   const [hideSigninBar, setHideSigninBar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
+  const [redeemComplete, setRedeemComplete] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
-  const { setEventDeepLink, user} = useUserState();
+  const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
   const eventData = props;
   const groupEvents = props.groupEvents;
-  const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string }>({ affiliate: '', code: '' });
+  const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
   let eventLocation = 'Stream Via Happin'
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
 
@@ -37,6 +39,9 @@ const Post = (props: EventData) => {
     }
     if (router.query.sharecode) {
       setQueryParams((x) => { x.code = router.query.sharecode as string; return { ...x } })
+    }
+    if (router.query.token) {
+      setQueryParams((x) => { x.organizer_token = router.query.token as string; return { ...x } })
     }
   }, [])
 
@@ -77,7 +82,7 @@ const Post = (props: EventData) => {
   }
 
   useEffect(() => {
-    if (localStorage.getItem('happin_jwt') && localStorage.getItem('happin_refresh_token')) {
+    if (localStorage.getItem('happin_web_jwt') && localStorage.getItem('happin_refresh_token')) {
       setTokenExist(true)
     } else setTokenExist(false)
 
@@ -128,7 +133,32 @@ const Post = (props: EventData) => {
             setIsModalOpen={setIsRedeemModalOpen}
           >
             <div className="m-5">
-              <RedeemEventCode setIsRedeemModalOpen={setIsRedeemModalOpen} happinEID={eventData.event._id} />
+              <RedeemEventCode setRedeemComplete={setRedeemComplete} setIsRedeemModalOpen={setIsRedeemModalOpen} happinEID={eventData.event._id} />
+            </div>
+          </PopUpModal>
+        )}
+        {/* redeem success modal */}
+        {redeemComplete && (
+          <PopUpModal
+            modalTitle="Redeem Completed"
+            isModalOpen={redeemComplete}
+            setIsModalOpen={setRedeemComplete}
+          >
+            <div className="m-5">
+              <p className="mt-6 text-md text-gray-400 text-center">Check your tickets by clicking the button below</p>
+              <div className="mt-6 flex" style={{ justifyContent: 'center' }}>
+                <Button
+                  variant="solid"
+                  colorScheme="cyan"
+                  fontSize={{ base: "medium", sm: "medium" }}
+                  h="40px"
+                  w="100%"
+                  mt={{ base: "10", sm: "5" }}
+                  onClick={()=>{router.push('/my-events')}}
+                >
+                  My Events
+                </Button>
+              </div>
             </div>
           </PopUpModal>
         )}
@@ -165,7 +195,7 @@ const Post = (props: EventData) => {
             />
             <img
               src={`${eventData?.event?.cover}`}
-              className="sm:relative lg:absolute w-full top-0 bottom-0 m-auto"
+              className="event-details__img"
             />
           </div>
 

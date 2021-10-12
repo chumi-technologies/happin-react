@@ -7,6 +7,9 @@ import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
 import { GetServerSidePropsResult } from 'next';
 import { getWhiteLabelDomain } from 'lib/api';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useUserState } from 'contexts/user-state';
 
 const imageList = [
   '/images/home-feature-02.png',
@@ -28,14 +31,24 @@ const buildEvent = [
   },
 ];
 export default function Home() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false)
   const [buildCur, setBuildCur] = useState<number>(0);
+  const { clearUser } = useUserState();
   const closeModal = () => {
     setIsOpen(false)
   }
   const openModal = () => {
     setIsOpen(true)
   }
+  
+  useEffect(() => {
+    if (router.query.logout) {
+      clearUser();
+      router.push('/');
+    }
+  },[router])
+
   return (
     <div className="relative bg-black text-white z-0">
       <div className="relative overflow-hidden pt-48 pb-40 md:py-52 lg:py-64 home__banner">
@@ -210,9 +223,9 @@ const whiteLabelDomain = async (domain: string) => {
   try {
     const response = await getWhiteLabelDomain(domain);
     if (response.groupEventId) {
-      return response.groupEventId
+      return {eventId: response.groupEventId, isGroup: true}
     } else if(response.redirectToAc) {
-      return response.redirectToAc
+      return {eventId: response.redirectToAc, isGroup: false}
     }
   } catch (err) {
     console.log(err)
@@ -222,14 +235,14 @@ const whiteLabelDomain = async (domain: string) => {
 export async function getServerSideProps(context: { req: {headers: {host: string}} }) : Promise<GetServerSidePropsResult<any>> {
   //&& !context.req.headers.host.includes('localhost')
   if (context.req.headers.host !== 'happin.app' && !context.req.headers.host.includes('localhost')) {
-    const eventId = await whiteLabelDomain(context.req.headers.host)
-    if (!eventId) {
+    const response = await whiteLabelDomain(context.req.headers.host)
+    if (!response) {
       return {props: {}}
     }
     return {
       redirect: {
         permanent: false,
-        destination: `/post/${eventId}`
+        destination: response.isGroup? `https://livestream.happin.app/event-schedule/${response.eventId}?host=${context.req.headers.host}` :`/post/${response.eventId}`
       }
     }
   }  

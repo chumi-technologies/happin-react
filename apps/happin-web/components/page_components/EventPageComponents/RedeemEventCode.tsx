@@ -3,7 +3,7 @@ import { useState } from "react"
 import { Button } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/react"
 
-const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID }: { setIsRedeemModalOpen: (arg: boolean) => void, happinEID: string }) => {
+const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID, setRedeemComplete }: { setIsRedeemModalOpen: (arg: boolean) => void, happinEID: string, setRedeemComplete: (arg: boolean) => void}) => {
   const [codeInput, setCodeInput] = useState<string | null>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const toast = useToast();
@@ -44,9 +44,8 @@ const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID }: { setIsRedeemModal
         generateToast('The invitation code already redeemed by you.')
         return
       }
-
-      generateToast('Redeem successful')
       setIsRedeemModalOpen(false)
+      setRedeemComplete(true)
     } catch (err) {
       console.log(err)
     } finally {

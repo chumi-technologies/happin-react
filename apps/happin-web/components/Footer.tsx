@@ -5,14 +5,14 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
     {!whiteLabelLogo ?
       <div className="container divide-y divide-white divide-opacity-20">
         <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
-          <div className="w-52 mb-8 sm:mb-10">
+{/*           <div className="w-52 mb-8 sm:mb-10">
             <h3 className="tracking-wide uppercase font-bold text-sm">Product</h3>
             <ul className="foot-menu">
               <li>
                 <a href="https://livestream.happin.app/download" target="_blank" rel="noreferrer">Download</a>
               </li>
             </ul>
-          </div>
+          </div> */}
           <div className="w-52 mb-8 sm:mb-10">
             <h3 className="tracking-wide uppercase font-bold text-sm">Happin</h3>
             <ul className="foot-menu">
