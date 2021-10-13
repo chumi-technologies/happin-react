@@ -56,8 +56,8 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
     //console.log(data);
     const formToSubmit = thirdPartyEventData;
     formToSubmit.cover = data.cover;
-    formToSubmit.startDate = data.startTime.getTime();
-    formToSubmit.endDate = data.endTime.getTime();
+    formToSubmit.startDate = Math.round(data.startTime.getTime()/1000);
+    formToSubmit.endDate = Math.round(data.endTime.getTime()/1000);
     formToSubmit.title = data.title;
     formToSubmit.content = data.description;
     formToSubmit.type = data.type;
@@ -97,7 +97,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                   <Left theme="outline" size="24" fill="currentColor" />
                 </button>
                 <div className="flex-1 font-semibold min-w-0 sm:block">
-                  <div className="text-white text-center">Share Third Party Event</div>
+                  <div className="text-white text-center">Share third party event</div>
                 </div>
               </div>
 

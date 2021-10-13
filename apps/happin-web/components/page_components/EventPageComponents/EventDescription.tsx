@@ -4,13 +4,15 @@ import { CloseSmall } from '@icon-park/react';
 import classnames from 'classnames';
 import { noConflict } from 'lodash';
 import { useEffect } from 'react';
+import router from 'next/router';
 
 type EventDescriptionProps = {
   description?: string;
   rawDescription?: string;
+  sourceURL?: string
 }
 
-const EventDescription = ({ description, rawDescription = "" }: EventDescriptionProps) => {
+const EventDescription = ({ description, rawDescription = "", sourceURL }: EventDescriptionProps) => {
   let focuButtonRef = useRef(null)
 
   const [noTextContent, setNoTextContent] = useState<boolean>(false);
@@ -32,19 +34,23 @@ const EventDescription = ({ description, rawDescription = "" }: EventDescription
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Description</div>
+      {}
       {!noTextContent ? <>
         <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative ${(rawDescription?.length < 80) ? "" : "overflow-hidden"}`} style={{ maxHeight: '75px' }}>
           {rawDescription}
         </div>
         {(rawDescription?.length > 80) && (
-          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+          <> {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{window.open(sourceURL, '_blank')}}>More ...</div>
+          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
+          </>
         )}
       </> :
         <>
           <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative`} style={{ maxHeight: '75px' }}>
               Click more to see event description for this event
           </div>
-          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+          {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{window.open(sourceURL, '_blank')}}>More ...</div>
+          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
         </>}
 
       {/*Dialog*/}

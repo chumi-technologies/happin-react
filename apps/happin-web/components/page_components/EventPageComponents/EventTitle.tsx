@@ -27,9 +27,10 @@ type EventTitleProps = {
   category?: string;
   categoryType?: string;
   setIsRedeemModalOpen: (arg0: boolean) => void;
+  sourceURL?: string;
 }
 
-const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
+const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -65,7 +66,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
 
         {(category && categoryType) && <>
           <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
-            {categoryType + ' - ' + category}
+            {categoryType + `${sourceURL ? '': ' - ' + category }`}
           </div>
         </>}
       </HStack>
@@ -126,15 +127,16 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
           <SvgIcon id="livestream" className="text-lg text-white" />
           <div className="ml-3 text-white">Livestream</div>
         </div>}
+        {!sourceURL &&
+          <div className="flex items-start sm:items-center w-full">
+            <SvgIcon id="ticket" className="text-lg text-white" />
+            <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
+              <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price / 100))}`}</div>
+              {/* not showing redeem when it's offline event  */}
+              {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
+            </div>
+          </div>}
 
-        <div className="flex items-start sm:items-center w-full">
-          <SvgIcon id="ticket" className="text-lg text-white" />
-          <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price/100))}`}</div>
-            {/* not showing redeem when it's offline event  */}
-            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
-          </div>
-        </div>
       </VStack>
 
       {/* About and Agenda links */}
