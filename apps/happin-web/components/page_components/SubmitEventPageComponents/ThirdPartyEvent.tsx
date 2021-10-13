@@ -108,7 +108,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
           <div className="flex items-center justify-center" style={{ margin: 'auto' }}>
             <div className="mt-10 flex items-center justify-center" style={{ width: '80%', padding: '20px', flexDirection:'column' }}>
               <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3 text-center">Congrats! you just successfully submitted an event, the event group chat is automatically created under your
-                moderation, please find it on your happin mobile app. Don't forget to share with your friends!
+                moderation, please find it on your happin mobile app. {`Don't`} forget to share with your friends!
               </h1>
               <button onClick={()=>{router.push(`/post/${eventId}`)}} style={{width: '200px'}} className="btn btn-yellow !px-0 !font-semibold !rounded-full flex-1 mt-10" >
                 <span className="text-sm sm:text-base">Check your event</span>
