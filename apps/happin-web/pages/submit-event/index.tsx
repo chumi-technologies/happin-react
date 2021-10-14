@@ -11,8 +11,8 @@ export interface IThirdPartyEvent {
   cover: string,
   type: string,
   subType: string,
-  startDate: string | number,
-  endDate: string | number,
+  startDate: number,
+  endDate: number,
   tags: string[],
   currency: string,
   country: string,
@@ -31,6 +31,7 @@ export default function SubmitEvent() {
   const [urlSubmitting, setUrlSubmitting] = useState<boolean>(false);
   const [thirdPartyEventSubmit, setThirdPartyEventSubmit] = useState<boolean>(false);
   const [thirdPartyEventData, setThirdPartyEventData] = useState<IThirdPartyEvent>();
+  const [thirdPartyReadOnlyProps, setThirdPartyReadOnlyProps] = useState<string[]>();
   const { showSSOSignUp } = useSSOState();
   const generateToast = (message: string) => {
     toast({
@@ -56,6 +57,7 @@ export default function SubmitEvent() {
       const response = await crawlThirdPartyEvent(inputURL);
       const eventData: IThirdPartyEvent = response.data.result;
       eventData.sourceUrl = response.data.sourceUrl;
+      setThirdPartyReadOnlyProps(response.data.readonlyProperties)
       setThirdPartyEventData(eventData);
       setThirdPartyEventSubmit(true);
     } catch (err) {
@@ -107,6 +109,8 @@ export default function SubmitEvent() {
         )}
       {thirdPartyEventSubmit && (
         <ThirdPartyEvent
+          thirdPartyReadOnlyProps={thirdPartyReadOnlyProps as string[]}
+          setThirdPartyReadOnlyProps={setThirdPartyReadOnlyProps}
           thirdPartyEventData={thirdPartyEventData as IThirdPartyEvent}
           setThirdPartyEventSubmit={setThirdPartyEventSubmit}
           setThirdPartyEventData={setThirdPartyEventData}
