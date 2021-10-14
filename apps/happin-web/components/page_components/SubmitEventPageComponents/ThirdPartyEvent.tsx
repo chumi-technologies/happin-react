@@ -183,8 +183,9 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <Select
+                                  iconColor={'#fff'}
                                   className="form-field"
-                                  style={{ paddingTop: '0', marginTop: '6px' }}
+                                  style={{ paddingTop: '0', marginTop: '6px', border:'2px solid #454545' }}
                                   selected={value} onBlur={onBlur}
                                   onChange={(val) => { onChange(val.target.value); }}
                                   placeholder="Select a type">
