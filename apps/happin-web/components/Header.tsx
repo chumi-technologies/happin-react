@@ -21,7 +21,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const [isWhiteLable, setIsWhiteLable] = useState(false);
 
   useEffect(()=> {
-    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost') {
+    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('deploy-preview')) {
       setIsWhiteLable(true)
     }
   }, [])
