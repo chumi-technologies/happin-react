@@ -27,14 +27,26 @@ const EventList = () => {
         if (partnerId && affiliation) {
           // @ts-ignore
           const affiliationEventList = res.activities.filter(a=>affiliation.acid.includes(a._id));
-          setEventsList(affiliationEventList);
-          setPageCount(Math.ceil(res.count / 9))
-          setLoading(false);
+          if(affiliationEventList.length>0) {
+            setEventsList(affiliationEventList);
+            setPageCount(Math.ceil(affiliationEventList.length / 9))
+            setLoading(false);
+          } else {
+            setEventsList([]);
+            setPageCount(1);
+            setLoading(false);
+          }
         } else {
           const eventsListFromServer = res.activities;
-          setEventsList(eventsListFromServer);
-          setPageCount(Math.ceil(res.count / 9))
-          setLoading(false);
+          if(eventsListFromServer.length>0) {
+            setEventsList(eventsListFromServer);
+            setPageCount(Math.ceil(res.count / 9))
+            setLoading(false);
+          } else {
+            setEventsList([]);
+            setPageCount(1);
+            setLoading(false);
+          }
         }
       }
     }
@@ -99,16 +111,11 @@ const EventList = () => {
         await getEventsListFromServer();
       })()
     }
-  }, []);
+  }, [teamUser]);
 
-  useEffect(() => {
-    // every time change team, teamUser is set and rerender the events list
-    const token = localStorage.getItem('chumi_jwt');
-    if (token) {
-      getEventsListFromServer()
-    }
-  }, [teamUser,partnerId])
-
+  // console.log(teamUser,'teamUser');
+  // console.log(partnerId,'partnerId');
+  // console.log(affiliation,'affiliation')
   return (
     <>
       <Head>

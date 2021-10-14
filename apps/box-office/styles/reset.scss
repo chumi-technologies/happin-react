@@ -5,6 +5,7 @@ body {
   -webkit-tap-highlight-color: transparent;
   @media (min-width: 640px) {
     &::-webkit-scrollbar {
+      background-color: #000;
       width: 10px;
       height: 10px;
     }

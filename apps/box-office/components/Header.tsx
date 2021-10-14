@@ -116,15 +116,15 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const switchBackMyAccount = async()=>{
     try {
       if (localStorage.getItem('chumi_jwt')) {
-      let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
+        let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
         if(decoded.originUserID){
           const newToken = await swtichTeam(decoded.originUserID);
           localStorage.setItem('chumi_jwt',newToken.token);
           const userInfo = await getSaasUserInfo();
           setSaasUserInfo(userInfo);
-          setTeamUser(false);
           setPartnerId('');
           setAffiliation(undefined);
+          setTeamUser(false);
         }
       }
     } catch (err) {

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
 export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
-  return <footer>
+  return <footer className="bg-black">
     {!whiteLabelLogo ?
       <div className="container divide-y divide-white divide-opacity-20">
         <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
