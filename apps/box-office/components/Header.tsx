@@ -14,7 +14,7 @@ import classnames from 'classnames';
 import jwt_decode from "jwt-decode";
 
 export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
-  const { user, clearUser,teamUser,setTeamUser,affiliation,setAffiliation,setPartnerId,crowdCoreToken } = useUserState();
+  const { user, clearUser,teamUser,setTeamUser,affiliation,setAffiliation,partnerId,setPartnerId,crowdCoreToken } = useUserState();
   const { dimmed, showSSO, showSSOSignUp } = useSSOState();
   /* const [showSearch, setSearch] = useState(false)
   const [isEventPage, setIsEventPage] = useState(false) */
@@ -50,13 +50,6 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
     (async () => {
       if(localStorage.getItem('chumi_jwt')){
         await getConnectedTeamFromCrowdcoreServer();
-      }
-    })()
-  }, [crowdCoreToken])
-
-  useEffect(() => {
-    (async () => {
-      if(localStorage.getItem('chumi_jwt')){
         const userInfo = await getSaasUserInfo();
         setSaasUserInfo(userInfo);
       }
@@ -86,9 +79,9 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   // }
   const getConnectedTeamFromCrowdcoreServer = async ()=> {
     try{
-      const teams = await getConnectedTeam();
+      const teams:connectTeamResponse[] = await getConnectedTeam();
       if (teams && teams.length>0) {
-        setConnectedTeam(teams)
+        setConnectedTeam(teams);
       }
     } catch(err) {
       console.log(err)
@@ -103,17 +96,18 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
     })
   }
 
-  const switchConnetedteam = async(id:string)=> {
+  const switchConnetedteam = async(id:string,teamId:string)=> {
     try {
+      const newTeam = connectedTeam.filter(t=>t._id === teamId)[0];
+      if(newTeam.role === 'affiliation') {
+        setPartnerId(sasaUserInfo.userId);
+        setAffiliation(newTeam);
+      }      
       const newToken = await swtichTeam(id);
       localStorage.setItem('chumi_jwt',newToken.token);
       const userInfo = await getSaasUserInfo();
       setSaasUserInfo(userInfo);
-      setTeamUser(true);
-      if (connectedTeam.filter(t=>t.globalId._id === id).find(t => t.role  === 'affiliation')) {
-        setAffiliation(true);
-        setPartnerId(id);
-      }
+      setTeamUser(true);     
     } catch (err) {
       console.log(err)
     }
@@ -129,7 +123,8 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
           const userInfo = await getSaasUserInfo();
           setSaasUserInfo(userInfo);
           setTeamUser(false);
-          setAffiliation(false);
+          setPartnerId('');
+          setAffiliation(undefined);
         }
       }
     } catch (err) {
@@ -245,7 +240,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                           <div className="py-1">
                             {
                               (connectedTeam && connectedTeam.length>0) && connectedTeam.map( team=>
-                                <a key={team._id} className="header__menu-link" onClick={()=>{switchConnetedteam(team?.globalId?._id)}}>{team?.globalId?.username || team?.globalId?.displayname }</a>
+                                <a key={team._id} className="header__menu-link" onClick={()=>{switchConnetedteam(team?.globalId?._id,team._id)}}>{`${team?.globalId?.username || team?.globalId?.displayname } ( ${team?.role} )`}</a>
                               )
                             }
                           </div>

@@ -64,7 +64,6 @@ const Dashboard = () => {
     })();
   }, [router.isReady])
 
-  console.log(eventDetailData,"eventDetailData")
   return (
     <div className="common__body">
     <DashboardHead eventDetailData={eventDetailData}/>

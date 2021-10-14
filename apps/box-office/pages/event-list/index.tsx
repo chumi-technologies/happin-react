@@ -15,7 +15,7 @@ const EventList = () => {
 
   const toast = useToast();
   const router = useRouter();
-  const { exchangeForCrowdCoreToken,teamUser,affiliation,partnerId } = useUserState()
+  const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId } = useUserState()
   const [ eventsList, setEventsList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pageCount,setPageCount] = useState<number>(1);
@@ -24,11 +24,18 @@ const EventList = () => {
     try {
       const res: EventResponse = await getEvents('0');
       if (res && res.activities) {
-        const eventsListFromServer = res.activities;
-        setEventsList(eventsListFromServer);
-        // pageSize is 8 according to api design
-        setPageCount(Math.ceil(res.count / 8))
-        setLoading(false);
+        if (partnerId && affiliation) {
+          // @ts-ignore
+          const affiliationEventList = res.activities.filter(a=>affiliation.acid.includes(a._id));
+          setEventsList(affiliationEventList);
+          setPageCount(Math.ceil(res.count / 9))
+          setLoading(false);
+        } else {
+          const eventsListFromServer = res.activities;
+          setEventsList(eventsListFromServer);
+          setPageCount(Math.ceil(res.count / 9))
+          setLoading(false);
+        }
       }
     }
     catch (err) {
@@ -73,10 +80,11 @@ const EventList = () => {
     if (localStorage.getItem('chumi_jwt')) {
       let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
       if (new Date().getTime() > (decoded.exp * 1000)) {
-        // token expires && revoke new token
+        // token expires && ask user re login
         (async () => {
-          await generateChumiJWTToken();
-          await getEventsListFromServer();
+          generateToast('Token expires, please login in again', toast);
+          clearUser();
+          router.push('/')
         })()
       } else {
         (async () => {
@@ -99,7 +107,7 @@ const EventList = () => {
     if (token) {
       getEventsListFromServer()
     }
-  }, [teamUser])
+  }, [teamUser,partnerId])
 
   return (
     <>

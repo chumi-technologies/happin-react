@@ -1,11 +1,11 @@
 import { getFromCrowdCore } from './base';
 
-const DASHBOARD_STAT_AFFILIATION_PATH = '/partnership/affiliation-stats-box-office?partnerId=${partnerId}&acid=${acid}&owner=${ownerId}'
+const DASHBOARD_STAT_AFFILIATION_PATH = '/partnership/affiliation-stats-box-office/${partnerId}/acid/${acid}/owner/${ownerId}'
 const DASHBOARD_STAT_PATH = '/activity/sale-stat-for-box-office/${acid}'
-const EVENT_PATH = '/activity?pageSize=8&status=all&sortBy=start-time-asc&showStats=true&page=${page}'
+const EVENT_PATH = '/activity?pageSize=9&status=all&sortBy=start-time-desc&showStats=true&page=${page}'
 const EVENT_BY_ID_PATH = '/activity/${id}'
 
-const getDashboardStatAffiliation = async(acid: string, partnerId: string, ownerId: string)=> {
+const getDashboardStatAffiliation = async(partnerId: string,acid: string, ownerId: string)=> {
     const response = await getFromCrowdCore(DASHBOARD_STAT_AFFILIATION_PATH.replace('${partnerId}',partnerId).replace('${acid}',acid).replace('${ownerId}',ownerId))
     return response || {};
 }

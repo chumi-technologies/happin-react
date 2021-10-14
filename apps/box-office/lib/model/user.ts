@@ -24,6 +24,7 @@ export interface connectTeamResponse {
    role: string;
    globalId: globalId;
    memberId: string;
+   acid?:string[];
 }
 
 export interface globalId {

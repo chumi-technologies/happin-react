@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { exchangeCrowdcoreToken, getUserInfo, swtichTeam } from "lib/api";
-import { User } from 'lib/model/user';
+import { User,connectTeamResponse } from 'lib/model/user';
 import { useIntercom } from 'react-use-intercom';
 
 interface UserContext {
@@ -12,8 +12,8 @@ interface UserContext {
   setEventDeepLink : (arg: string)=>void,
   teamUser:boolean,
   setTeamUser: (arg:boolean)=>void,
-  affiliation:boolean,
-  setAffiliation: (arg:boolean)=>void,
+  affiliation:connectTeamResponse|undefined,
+  setAffiliation: (arg:connectTeamResponse|undefined)=>void,
   partnerId:string,
   setPartnerId: (arg:string)=>void,
   crowdCoreToken:boolean,
@@ -26,7 +26,7 @@ export function UserState({ children }: {children: any}) {
   const [user, setUser] = useState<User>();
   const [eventDeepLink, setEventDeepLink] = useState<string>('');
   const [teamUser,setTeamUser]= useState<boolean>(false);
-  const [affiliation,setAffiliation]= useState<boolean>(false);
+  const [affiliation,setAffiliation]= useState<connectTeamResponse>();
   const [partnerId, setPartnerId ] = useState<string>('');
   const [crowdCoreToken,setCrowdCoreToken] = useState<boolean>(false);
 
@@ -78,7 +78,7 @@ export function UserState({ children }: {children: any}) {
     localStorage.removeItem('happin_jwt');
     localStorage.removeItem('chumi_jwt')
     setTeamUser(false);
-    setAffiliation(false);
+    setAffiliation(undefined);
     setPartnerId('');
     setCrowdCoreToken(false);
   }

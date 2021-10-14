@@ -22,9 +22,10 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
   const [sellByCash,setSellByCash ] = useState<boolean>(false);
   const [sellByCardUrl,setSellByCardUrl ] = useState<string>('');
   const [sellByCashUrl,setSellByCashUrl ] = useState<string>('');
+  
   useEffect(() => {
     (async () => {
-      if(localStorage.getItem('chumi_jwt')){
+      if(localStorage.getItem('chumi_jwt') && partnerId && (eventDetailData._id)){
         try{
           const result = await getSellByCardOrByCashAffiliation(partnerId,eventDetailData._id);
           if (result) {
@@ -38,7 +39,8 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
         }
       }
     })()
-  }, [eventDetailData,partnerId])
+  }, [eventDetailData])
+
   const openSellByCardTab = ()=>{
     window.open(sellByCardUrl, "_blank")
   }
@@ -56,9 +58,7 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
         <div className="font-normal text-xl sm:text-2xl mt-1 mb-1 mx-1 text-gray-800">{moment(eventDetailData.startTime).format('MMMM Do, h:mma')}</div>
         </div>
             <div className="flex text-gray-800">
-              <Link href={`/dashboard?acid=${eventDetailData._id}`}>
                 <a className="dashboard__head-tab">Dashboard</a>
-              </Link>
                 <a onClick={openSellByCardTab} className={sellByCard?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by card</a>
                 <a onClick={openSellByCashTab} className={sellByCash?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by cash</a>
             </div>

@@ -32,7 +32,7 @@ const Affiliate = () => {
     }
     (async () => {
       try {
-        const result = await getDashboardStatAffiliation(String(acid), String(partnerId), String(ownerId))
+        const result = await getDashboardStatAffiliation(String(partnerId),String(acid), String(ownerId))
         const processedData = processDashboardData(result)
         setDashbordData(processedData);
       } catch (err) {
@@ -71,7 +71,6 @@ const Affiliate = () => {
     result.ticketBreakDown = data.sort((a,b) => b.count - a.count);
     return result;
   }
-
 
   return (
     <div className="common__body">
