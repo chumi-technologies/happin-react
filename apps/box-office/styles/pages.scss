@@ -10,7 +10,7 @@
   }
 }
 .header__menu_back_button {
-  @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-200 py-1 pr-1 pl-3 cursor-pointer transition;
+  @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-200 py-1 pr-1 pl-1 cursor-pointer transition;
   &:hover, &.active {
     @apply text-gray-300 bg-gray-800
   }

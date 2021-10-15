@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Skeleton, VStack } from '@chakra-ui/react';
 import { useToast } from '@chakra-ui/react';
 import Router, { useRouter } from "next/router";
@@ -15,6 +15,7 @@ const EventList = () => {
 
   const toast = useToast();
   const router = useRouter();
+  const eventListRef = useRef<HTMLInputElement>(null);
   const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId } = useUserState()
   const [ eventsList, setEventsList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -73,6 +74,10 @@ const EventList = () => {
         const eventsListFromServer = res.activities;
         setEventsList(eventsListFromServer);
       }
+      if(eventListRef && eventListRef.current ) {
+        eventListRef.current.tabIndex = 0;
+        eventListRef.current.focus();
+      }   
     }
     catch (err) {
       generateToast('Unknown error about events list', toast);
@@ -113,9 +118,6 @@ const EventList = () => {
     }
   }, [teamUser]);
 
-  // console.log(teamUser,'teamUser');
-  // console.log(partnerId,'partnerId');
-  // console.log(affiliation,'affiliation')
   return (
     <>
       <Head>
@@ -129,7 +131,7 @@ const EventList = () => {
                 {!loading ?
                   <VStack alignItems="stretch" spacing={{ base: 5, sm: 8 }}>
                     <div id="event-list">
-                      <div className="mb-5 font-semibold text-xl sm:text-2xl text-gray-900">{eventsList && eventsList.length > 0 && `Events List`}</div>
+                      <div ref={eventListRef} className="mb-5 font-semibold text-xl sm:text-2xl text-gray-900">{eventsList && eventsList.length > 0 && `Events List`}</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3 text-gray-900">
                         {
                           eventsList && eventsList.length > 0 && eventsList.map(item => <EventListItem data={item} key={item._id} onItemClick={handleEventClick}/>)

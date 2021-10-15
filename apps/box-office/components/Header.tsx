@@ -201,7 +201,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
             {/* Team Menu */} 
             {user && sasaUserInfo && 
               <div className="py-1">
-                    <span className="text-gray-200 ml-2">{sasaUserInfo.username || sasaUserInfo.email}</span>
+                    <span className="text-gray-200 mx-1 text-sm sm:text-xl ">{sasaUserInfo.username || sasaUserInfo.email}</span>
               </div>
             }
             {user && !teamUser && (
@@ -210,7 +210,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                     <>
                       <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
                         <HamburgerButton theme="outline" size="22" fill="currentColor" />        
-                         <span  className="text-gray-200 m-0.5">Team</span>
+                         <span  className="text-gray-200 mx-0.5">Team</span>
                       </Menu.Button>
                       <Transition
                         show={open}
@@ -253,7 +253,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
             {
               (teamUser && sasaUserInfo) && ( 
                 <>
-                  <a className=" header__menu_back_button m-2" onClick={()=>{switchBackMyAccount()}}>Back to Me</a>
+                  <a className=" header__menu_back_button mx-0.5" onClick={()=>{switchBackMyAccount()}}>Back to Me</a>
                 </>
               )
             }

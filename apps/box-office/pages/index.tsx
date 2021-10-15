@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState,useEffect } from 'react';
 import Link from 'next/link';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import classNames from "classnames";
@@ -7,6 +7,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
 import { GetServerSidePropsResult } from 'next';
 import { getWhiteLabelDomain } from 'lib/api';
+import { useUserState } from 'contexts/user-state';
+import { useRouter } from 'next/router'
 
 const imageList = [
   '/images/home-feature-02.png',
@@ -30,12 +32,22 @@ const buildEvent = [
 export default function Home() {
   const [isOpen, setIsOpen] = useState(false)
   const [buildCur, setBuildCur] = useState<number>(0);
+  const { user } = useUserState();
+  const router = useRouter();
+
   const closeModal = () => {
     setIsOpen(false)
   }
   const openModal = () => {
     setIsOpen(true)
   }
+
+  useEffect(() => {
+    if (user) {
+      router.push('/event-list');
+    }
+  }, [user])
+
   return (
     <div className="relative bg-black text-white z-0">
       <div className="relative overflow-hidden pt-48 pb-40 md:py-52 lg:py-64 home__banner">

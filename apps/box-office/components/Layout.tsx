@@ -77,7 +77,7 @@ const Layout = ({ children }: { children: any }) => {
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
           <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
-            { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
+            {/*{ isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }*/}
           </Header>
         {children}
       </main>
