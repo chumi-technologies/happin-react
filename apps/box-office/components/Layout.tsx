@@ -80,12 +80,12 @@ const Layout = ({ children }: { children: any }) => {
       <main className={classnames('main-app', {'home-page': isHomePage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
-          {showHeader && <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
+          {(showHeader && !isHomePage) && <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
             {/*{ isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }*/}
           </Header>}
         {children}
       </main>
-      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
+      {(showFooter && !isHomePage) &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
     </>
   );
 };
