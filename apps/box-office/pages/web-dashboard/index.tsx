@@ -4,7 +4,10 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 //import LineChart from '@components/LineChart'
 //import ApexCharts from 'apexcharts'
 import { useRouter } from 'next/router';
-import { getDashboardStat} from 'lib/api';
+import { getDashboardStat,getEventById } from 'lib/api';
+import { generateToast } from '../../components/util/toast';
+import { useToast } from '@chakra-ui/react';
+import DashboardHead from '@components/page_components/DashboardPageComponents/DashboardHead';
 
 interface dashboardData {
   ticketSale: number,
@@ -13,10 +16,17 @@ interface dashboardData {
   default_currency: string,
   checkinStat: {_id: string, checked: number, total: number }[]
 }
+interface eventDetailData {
+  _id:string,
+  title: string,
+  startTime:string,
+}
 
-const Dashboard = () => {
+const WebDashboard = () => {
   const router = useRouter();
+  const toast = useToast();
   const [dashboardData, setDashbordData] = useState({} as dashboardData);
+  const [eventDetailData,setEventDetailData] = useState({} as eventDetailData)
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -29,12 +39,34 @@ const Dashboard = () => {
         const result = await getDashboardStat(String(acid))
         setDashbordData(result);
       } catch (err) {
+        generateToast('Unknown error about dashboard data', toast);
+        router.push(`/event-list`)
+        console.log(err)
+      }
+    })();
+  }, [router.isReady])
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    const { query: { acid } } = router;
+    if (!acid) {
+      return
+    }
+    (async () => {
+      try {
+        const result = await getEventById(String(acid))
+        setEventDetailData(result);
+      } catch (err) {
+        generateToast('Unknown error about dashboard data', toast);
+        router.push(`/event-list`)
         console.log(err)
       }
     })();
   }, [router.isReady])
 
   return (
+    <div className="common__body">
+    <DashboardHead eventDetailData={eventDetailData}/>
     <div className="px-3 pt-3">
       <div className="card">
         <div className="font-medium mb-2">Total Revenue</div>
@@ -103,7 +135,8 @@ const Dashboard = () => {
  */}        {/* <LineChart data={data} /> */}
       </div>
     </div>
+    </div>
   )
 }
 
-export default Dashboard
+export default WebDashboard

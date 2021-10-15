@@ -11,6 +11,7 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isHomePage, setHomePage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
 
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
@@ -29,6 +30,9 @@ const Layout = ({ children }: { children: any }) => {
       setShowFooter(false);
     } else {
       setShowFooter(true);
+    }
+    if (router.query?.fromapp) {
+      setShowHeader(false);
     }
   }, [router.query, router.asPath])
 
@@ -76,9 +80,9 @@ const Layout = ({ children }: { children: any }) => {
       <main className={classnames('main-app', {'home-page': isHomePage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
-          <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
+          {showHeader && <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
             {/*{ isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }*/}
-          </Header>
+          </Header>}
         {children}
       </main>
       {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}

@@ -1,7 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { exchangeCrowdcoreToken, getUserInfo, swtichTeam } from "lib/api";
 import { User,connectTeamResponse } from 'lib/model/user';
-import { useIntercom } from 'react-use-intercom';
 
 interface UserContext {
   setUserInfo: ()=> Promise<void>,
@@ -30,12 +29,6 @@ export function UserState({ children }: {children: any}) {
   const [partnerId, setPartnerId ] = useState<string>('');
   const [crowdCoreToken,setCrowdCoreToken] = useState<boolean>(false);
 
-  const {
-    boot,
-    shutdown,
-    update,
-  } = useIntercom();
-
   useEffect(() => {
     const idToken = localStorage.getItem('happin_jwt')
     if (idToken) {
@@ -49,7 +42,6 @@ export function UserState({ children }: {children: any}) {
         const response = await getUserInfo();
         const user = response.data;
         setUser(user);
-        update({email: user.email, userId: user._id})
       } catch (err) {
         clearUser();
         console.log(err)
@@ -72,8 +64,6 @@ export function UserState({ children }: {children: any}) {
 
   const clearUser = () => {
     setUser(undefined);
-    shutdown()
-    boot()
     localStorage.removeItem('happin_refresh_token');
     localStorage.removeItem('happin_jwt');
     localStorage.removeItem('chumi_jwt')
@@ -85,7 +75,7 @@ export function UserState({ children }: {children: any}) {
 
   return (
     <userContext.Provider value={{ user, setUserInfo,clearUser, exchangeForCrowdCoreToken, eventDeepLink, setEventDeepLink, teamUser, setTeamUser, affiliation,
-      setAffiliation,partnerId,setPartnerId,crowdCoreToken,setCrowdCoreToken }}>
+      setAffiliation,partnerId,setPartnerId,crowdCoreToken,setCrowdCoreToken}}>
       {children}
     </userContext.Provider>
   );
