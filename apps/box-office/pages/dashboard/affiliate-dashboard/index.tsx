@@ -83,7 +83,7 @@ const Affiliate = () => {
     { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData}/>}
     <div className="px-3 pt-3">
       <div className="card">
-        <div className="font-medium mb-2">Total Revenue</div>
+        <div className="text-gray-700 font-medium mb-2">Total Revenue</div>
         <div className="flex items-center">
           <div className="flex-1">
             <div className="text-2xl font-bold flex items-center text-gray-500 font-medium mt-1">
@@ -105,7 +105,7 @@ const Affiliate = () => {
         <div className="card mt-3" key={index}>
           <div className="text-gray-700 text-sm mb-1">Ticket Name: </div>
           <div className="mb-3">
-            <span>{ticket._id}</span>
+            <span className="text-gray-700">{ticket._id}</span>
           </div>
           <div className="text-gray-700 text-sm mb-1">Number Sold: {ticket.count}</div>
           {ticket.commision !== 0 && (

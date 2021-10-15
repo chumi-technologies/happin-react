@@ -25,9 +25,9 @@ const DashboardHead = ({ eventDetailData }: MyEventProps) => {
 
   useEffect(() => {
     (async () => {
-      if(localStorage.getItem('chumi_jwt')&&(eventDetailData._id)){
+      if(localStorage.getItem('chumi_jwt') && partnerId && (eventDetailData._id)){
         try{
-          const result = await getSellByCardOrByCash(eventDetailData._id);
+          const result = await getSellByCardOrByCash(partnerId,eventDetailData._id);
           if (result) {
             setSellByCard(result.byCard);
             setSellByCash(result.byCash);
@@ -46,7 +46,7 @@ const DashboardHead = ({ eventDetailData }: MyEventProps) => {
   const openSellByCashTab = ()=>{
     window.open(sellByCashUrl, "_blank")
   }
-  
+
   return (
       <div className="dashboard_container bg-gray-200">
         <button className="bg-gray-200 hover:bg-gray-200 text-xl text-black text-center py-2 px-4 rounded hover:bg-gray-400" onClick={() => {

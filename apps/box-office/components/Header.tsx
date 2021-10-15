@@ -52,6 +52,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
         await getConnectedTeamFromCrowdcoreServer();
         const userInfo = await getSaasUserInfo();
         setSaasUserInfo(userInfo);
+        setPartnerId(userInfo.userId);
       }
     })()
   }, [crowdCoreToken])
@@ -100,7 +101,6 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
     try {
       const newTeam = connectedTeam.filter(t=>t._id === teamId)[0];
       if(newTeam.role === 'affiliation') {
-        setPartnerId(sasaUserInfo.userId);
         setAffiliation(newTeam);
       }      
       const newToken = await swtichTeam(id);
@@ -122,7 +122,6 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
           localStorage.setItem('chumi_jwt',newToken.token);
           const userInfo = await getSaasUserInfo();
           setSaasUserInfo(userInfo);
-          setPartnerId('');
           setAffiliation(undefined);
           setTeamUser(false);
         }

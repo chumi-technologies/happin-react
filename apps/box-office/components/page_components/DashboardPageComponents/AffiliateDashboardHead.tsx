@@ -2,7 +2,7 @@ import React, { useEffect, useState }  from 'react';
 import Link from 'next/link';
 import moment from "moment";
 import { useRouter } from 'next/router';
-import { getSellByCardOrByCashAffiliation } from 'lib/api';
+import { getSellByCardOrByCash } from 'lib/api';
 import { useUserState } from 'contexts/user-state';
 
 export type MyEventProps = {
@@ -27,7 +27,7 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
     (async () => {
       if(localStorage.getItem('chumi_jwt') && partnerId && (eventDetailData._id)){
         try{
-          const result = await getSellByCardOrByCashAffiliation(partnerId,eventDetailData._id);
+          const result = await getSellByCardOrByCash(partnerId,eventDetailData._id);
           if (result) {
             setSellByCard(result.byCard);
             setSellByCash(result.byCash);

@@ -1,4 +1,15 @@
 @import 'mixin';
+
+// ========================================
+// Dashboard page
+// ========================================
+.card {
+  @apply p-4 rounded-md bg-white
+}
+.expend {
+  @apply flex items-center justify-center w-8 h-8 border-gray-200 border-2 border-solid rounded-full text-gray-500;
+}
+
 // Header
 .header__link {
   @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-white transition whitespace-nowrap
@@ -84,16 +95,6 @@
     transition: all .075s cubic-bezier(0.4, 0, 1, 1);
   }
 }
-// ========================================
-// Dashboard page
-// ========================================
-.card {
-  @apply p-4 rounded-md bg-white
-}
-.expend {
-  @apply flex items-center justify-center w-8 h-8 border-gray-200 border-2 border-solid rounded-full text-gray-500;
-}
-
 
 // Home
 //.home__banner {
