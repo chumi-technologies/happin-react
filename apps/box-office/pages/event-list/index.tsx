@@ -87,9 +87,9 @@ const EventList = () => {
 
   const handleEventClick = async(acid:string,ownerId:string)=>{
     if(affiliation && partnerId) {
-      router.push(`/web-dashboard/web-affiliate-dashboard?partnerId=${partnerId}&ownerId=${ownerId}&acid=${acid}`);
+      router.push(`/dashboard/affiliate-dashboard?partnerId=${partnerId}&ownerId=${ownerId}&acid=${acid}`);
     } else {
-      router.push(`/web-dashboard?acid=${acid}`);
+      router.push(`/dashboard?acid=${acid}`);
     }
   }
 
