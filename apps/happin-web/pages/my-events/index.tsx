@@ -105,7 +105,7 @@ const MyEvents = () => {
                          {upcomingTickets && upcomingTickets.length === 0 
                            && pastTickets && pastTickets.length === 0 
                            && savedTickets && savedTickets.length === 0 
-                           && <div className="mb-5 font-semibold text-xl sm:text-xl">You did not join event, you can explore more events on Happin app. OR you can "create your event".</div>}                
+                           && <div className="mb-5 font-semibold text-xl sm:text-xl">{`You did not join event, you can explore more events on Happin app. OR you can "create your event"`}.</div>}                
                     </div>
                     <div id="upcoming">
                       <div className="mb-5 font-semibold text-xl sm:text-2xl">{upcomingTickets && upcomingTickets.length > 0 && `Upcoming`}</div>
