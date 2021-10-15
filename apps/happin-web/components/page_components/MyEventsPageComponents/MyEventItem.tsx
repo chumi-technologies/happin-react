@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import SvgIcon from '@components/SvgIcon';
 import { Tooltip, VStack } from '@chakra-ui/react';
 import { MyEventItemDataProps } from 'lib/model/myEvents';
+import {getMerchOrdersSummary, getTicketsPlayBackList} from "../../../lib/api";
+import { useUserState } from 'contexts/user-state';
+import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
+import { useToast } from '@chakra-ui/react';
 import Link from 'next/link';
 import moment from 'moment';
+import jwt_decode from "jwt-decode";
 
 export type MyEventItemProps = {
   data: MyEventItemDataProps;
@@ -11,6 +16,56 @@ export type MyEventItemProps = {
 
 const MyEventItem = ({ data }: MyEventItemProps) => {
 
+  const toast = useToast();
+  const { exchangeForCrowdCoreToken } = useUserState()
+
+  const [merchs,setMerchs] = useState<any[]>([]);
+  const [playBackList,setPlayBackList] = useState<any[]>([]);
+
+  const getMerchOrdersSummaryFromCrowdcoreServer = async(id:string)=> {
+    try {
+      if(localStorage.getItem('chumi_jwt')) {
+        let decoded: any = jwt_decode(localStorage.getItem('chumi_jwt') as string);
+        if (new Date().getTime() > (decoded.exp * 1000)) {
+        // token expires && revoke new token
+        generateChumiJWTToken();
+        }
+      } else {
+        // exchange token & store the crowdcore server token in local stoarge
+        generateChumiJWTToken();
+      }
+      const res = await getMerchOrdersSummary(id)
+      if (res && res.merchandises) {
+        const merchFromServer = res.merchandises;
+        setMerchs(merchFromServer);
+      }
+    } catch(err) {
+       console.log(err)
+    }
+  }
+
+  const getPlayBackListFromServer = async (id:string) => {
+    try {
+      const res = await getTicketsPlayBackList(id);
+      if (res && res.data && res.data.tickets) {
+        const playBackListFromServer = res.data.tickets;
+        setPlayBackList(playBackListFromServer);
+      }
+    }
+    catch (err) {
+      generateToast('Unknown error about playback tickets', toast);
+      console.log(err)
+    }
+  }
+
+  const generateChumiJWTToken = async ()=>{
+    try {
+      await exchangeForCrowdCoreToken();
+    }
+    catch(err) {
+      console.log(err)
+    }
+  }
   const generateLocationInfo = (data:any)=>{
     if (data.acInfo?.location) {
       return <div className="truncate flex-1 ml-2 text-sm text-gray-200">{ data.acInfo?.location}</div>
@@ -20,6 +75,18 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
       return <div className="truncate flex-1 ml-2 text-sm text-gray-200">{'Unknown'}</div>
     }
   }
+
+  useEffect(() => {
+    if(data.eid){
+      getMerchOrdersSummaryFromCrowdcoreServer((data.eid).toString())
+    }    
+  },[])
+
+  useEffect(() => {
+    if(data._id){
+      getPlayBackListFromServer((data._id).toString())
+    }
+  }, []);
 
   return (
     <div className="group cursor-pointer">
@@ -44,14 +111,16 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
                 </div>
               </Link>
             </Tooltip>
-            <Tooltip label="Merch" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
+            {merchs && merchs.length>0 &&
+              <Tooltip label="Merch" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               <Link href={`/my-events/event-details?id=${data._id}&page=1`}
                     as={`/my-events/event-details/${data._id}/merch`}>
                 <div className="my-events__cover-action">
                   <SvgIcon id="bag-bold" />
                 </div>
               </Link>
-            </Tooltip>
+            </Tooltip>}
+            { playBackList && playBackList.length>0 &&
             <Tooltip label="Replay Video" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               <Link href={`/my-events/event-details?id=${data._id}&page=2`}
                     as={`/my-events/event-details/${data._id}/replay-video`}>
@@ -59,15 +128,18 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
                   <SvgIcon id="video-bold" />
                 </div>
               </Link>
-            </Tooltip>
+            </Tooltip>}
           </VStack>
         </div>
-        <div className="aspect-w-16 aspect-h-9">
-          <div className="bg-black bg-opacity-0 group-hover:bg-opacity-20 transition z-10" />
-          <img src={data.cover}
-               alt={data.title}
-               className="w-full h-full object-center object-cover rounded-md" />
-        </div>
+        <Link href={`/my-events/event-details?id=${data._id}&page=0`}
+            as={`/my-events/event-details/${data._id}/tickets`}>
+            <div className="aspect-w-16 aspect-h-9">
+              <div className="bg-black bg-opacity-0 group-hover:bg-opacity-20 transition z-10" />
+              <img src={data.cover}
+                   alt={data.title}
+                   className="w-full h-full object-center object-cover rounded-md" />
+            </div>
+        </Link>
       </div>
       <div className="flex md:hidden mt-3 bg-gray-700 rounded-full justify-between">
         <Link href={`/my-events/event-details?id=${data._id}&page=0`}
@@ -98,6 +170,8 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
           </div>
         </Link>
       </div>
+      <Link href={`/my-events/event-details?id=${data._id}&page=0`}
+              as={`/my-events/event-details/${data._id}/tickets`}>
       <div className="mt-3">
         <div className="text-sm mb-1 text-gray-200">{moment(data.start_datetime).format('MMMM Do, h:mma')}</div>
         <div className="truncate font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}
@@ -107,6 +181,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
             {generateLocationInfo(data)}
         </div>
       </div>
+      </Link>
     </div>
   );
 };

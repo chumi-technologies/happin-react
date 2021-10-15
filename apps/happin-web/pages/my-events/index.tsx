@@ -79,7 +79,12 @@ const MyEvents = () => {
     }
     else {
       // exchange token & store the crowdcore server token in local stoarge
-      generateChumiJWTToken();
+      (async () => {
+        await getEventTicketsListFromServer();
+        await getSavedEventTicketsListFromServer();
+        generateChumiJWTToken();
+        setLoading(false);
+      })()
     }
   }, []);
 
@@ -96,6 +101,12 @@ const MyEvents = () => {
               <div className="py-5">
                 {!loading ?
                   <VStack alignItems="stretch" spacing={{ base: 5, sm: 8 }}>
+                    <div id="no-events"> 
+                         {upcomingTickets && upcomingTickets.length === 0 
+                           && pastTickets && pastTickets.length === 0 
+                           && savedTickets && savedTickets.length === 0 
+                           && <div className="mb-5 font-semibold text-xl sm:text-xl">You did not join event, you can explore more events on Happin app. OR you can "create your event".</div>}                
+                    </div>
                     <div id="upcoming">
                       <div className="mb-5 font-semibold text-xl sm:text-2xl">{upcomingTickets && upcomingTickets.length > 0 && `Upcoming`}</div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3">
