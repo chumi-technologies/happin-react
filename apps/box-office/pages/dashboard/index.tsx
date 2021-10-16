@@ -69,7 +69,7 @@ const Dashboard = () => {
       }
     })();
   }, [router.isReady])
-  console.log(dashboardData,'dashboardData')
+
   return (
     <div className="common__body">
     { showNavBar && <DashboardHead eventDetailData={eventDetailData}/>}

@@ -39,7 +39,7 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
         }
       }
     })()
-  }, [eventDetailData])
+  }, [eventDetailData._id,partnerId])
 
   const openSellByCardTab = ()=>{
     window.open(sellByCardUrl, "_blank")
