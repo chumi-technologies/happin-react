@@ -134,8 +134,7 @@ const EventList = () => {
       })()
     }
   }, [teamUser]);
- console.log(partnerId,'partnerId');
- console.log(affiliation,'affiliation')
+
   return (
     <>
       <Head>

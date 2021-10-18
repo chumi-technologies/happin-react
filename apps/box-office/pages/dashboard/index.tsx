@@ -4,7 +4,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 //import LineChart from '@components/LineChart'
 //import ApexCharts from 'apexcharts'
 import { useRouter } from 'next/router';
-import { getDashboardStat,getEventById } from 'lib/api';
+import { getDashboardStat,getEventById,generateAffiliateReport,getAffiliateReport } from 'lib/api';
 import { generateToast } from '../../components/util/toast';
 import { useToast } from '@chakra-ui/react';
 import DashboardHead from '@components/page_components/DashboardPageComponents/DashboardHead';
@@ -20,6 +20,7 @@ interface eventDetailData {
   _id:string,
   title: string,
   startTime:string,
+  timezone:string,
 }
 
 const Dashboard = () => {
@@ -29,6 +30,43 @@ const Dashboard = () => {
   const [eventDetailData,setEventDetailData] = useState({} as eventDetailData)
   const [showNavBar,setShowNavBar] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
+  const [reportLoading, setReportLoading] = useState<boolean>(false);
+
+  const handleDownloadAffiliateReport = async(acid:string)=>{
+    try {
+      setReportLoading(true);
+      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      let form = {
+        acids:[acid],
+        reportType:"affiliate",
+        timezone:timeZone,
+      }
+      const { _id } = await generateAffiliateReport(form);
+
+      let loopTimes = 0;
+      while(true) {
+        if (loopTimes < 2) {
+          await new Promise(resolve => setTimeout(resolve, 2000));
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
+        const results = await getAffiliateReport(_id);
+        if (results[0].status === 'completed') {
+          window.open(results[0].resultUrl, '_blank');
+          return;
+        } else if (results[0].status === 'fail') {
+          generateToast('Failed to generate report. Please try again later',toast);
+          return;
+        }
+        loopTimes += 1;
+      }
+
+    } catch(err) {
+      console.log(err)
+    } finally {
+      setReportLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -61,7 +99,10 @@ const Dashboard = () => {
     { showNavBar && <DashboardHead eventDetailData={eventDetailData} loading={loading} />}
     <div className="px-3 pt-3">
       <div className="card">
+        <div className="flex">
         <div className="font-medium mb-2 text-gray-700">Total Revenue</div>
+        <div className="text-gray-700 mb-2 ml-auto"><button onClick={()=>{handleDownloadAffiliateReport(eventDetailData._id)}} className="dashboard_report_button">{reportLoading?`Downloading...`:`Download Affiliate Report`}</button></div>
+        </div>
         <div className="flex items-center">
           <div className="flex-1">
             <div className="text-2xl font-bold text-rose-500">{((dashboardData.ticketSale || 0) / 100).toFixed(2)} {dashboardData.default_currency}</div>

@@ -10,6 +10,12 @@
   @apply flex items-center justify-center w-8 h-8 border-gray-200 border-2 border-solid rounded-full text-gray-500;
 }
 
+.dashboard_report_button {
+  @apply flex items-center rounded-full border-2 border-solid border-gray-700 bg-gray-200 text-gray-700 py-1 pr-1 pl-1 cursor-pointer transition;
+  &:hover, &.active {
+    @apply text-gray-600 bg-gray-400
+  }
+}
 // Header
 .header__link {
   @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-white transition whitespace-nowrap

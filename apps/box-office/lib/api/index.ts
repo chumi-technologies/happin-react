@@ -2,6 +2,7 @@ import { getDashboardStatAffiliation,getDashboardStat,getEvents,getEventById } f
 import { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken } from './user';
 import {getWhiteLabelDomain} from './events';
 import {getConnectedTeam, swtichTeam, getSaasUserInfo, getSellByCardOrByCash} from './team';
+import {generateAffiliateReport,getAffiliateReport} from './report'
 export {
 	getDashboardStatAffiliation,
 	getDashboardStat,
@@ -15,5 +16,7 @@ export {
 	getSaasUserInfo,
 	getWhiteLabelDomain,
 	getConnectedTeam,
-	getSellByCardOrByCash
+	getSellByCardOrByCash,
+	generateAffiliateReport,
+	getAffiliateReport
 }
