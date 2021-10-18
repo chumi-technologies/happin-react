@@ -17,10 +17,7 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo: any }) {
             <h3 className="tracking-wide uppercase font-bold text-sm">Happin</h3>
             <ul className="foot-menu">
               <li>
-                <a href="https://livestream.happin.app/live/list" target="_blank" rel="noreferrer">Upcoming LiveStreams</a>
-              </li>
-              <li>
-                <a href="https://crowdcore.us18.list-manage.com/subscribe?u=79eb98f1418dc7d767f612d08&id=0a222497e3" target="_blank" rel="noreferrer">Join our Mailing List</a>
+                <a href="mailto:partnership@happin.app">Partnership</a>
               </li>
             </ul>
           </div>

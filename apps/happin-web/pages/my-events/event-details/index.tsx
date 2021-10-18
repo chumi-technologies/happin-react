@@ -285,7 +285,7 @@ const MyEventDetails = () => {
                                       </div>
                                       <div>
                                         <div className="text-sm text-gray-500">Ticket type</div>
-                                        <div className="font-bold lg:text-lg">{t.ticketType}</div>
+                                        <div className="font-bold lg:text-lg">{t.ticketType==='offline'?`In person`:`${t.ticketType}`}</div>
                                       </div>
                                       <div>
                                         <div className="text-sm text-gray-500">Invitation code</div>
