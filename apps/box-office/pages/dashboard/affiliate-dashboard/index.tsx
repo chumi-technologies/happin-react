@@ -24,6 +24,7 @@ const Affiliate = () => {
   const [dashboardData, setDashbordData] = useState({} as dashboardData);
   const [eventDetailData,setEventDetailData] = useState({} as eventDetailData)
   const [showNavBar,setShowNavBar] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -41,26 +42,11 @@ const Affiliate = () => {
         const result = await getDashboardStatAffiliation(String(partnerId),String(acid), String(ownerId))
         const processedData = processDashboardData(result)
         setDashbordData(processedData);
+        const eventDetails = await getEventById(String(acid))
+        setEventDetailData(eventDetails);
+        setLoading(false);
       } catch (err) {
         generateToast('Unknown error about affiliation', toast);
-        router.push(`/event-list`)
-        console.log(err)
-      }
-    })();
-  }, [router.isReady])
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const { query: { acid } } = router;
-    if (!acid) {
-      return
-    }
-    (async () => {
-      try {
-        const result = await getEventById(String(acid))
-        setEventDetailData(result);
-      } catch (err) {
-        generateToast('Unknown error about dashboard data', toast);
         router.push(`/event-list`)
         console.log(err)
       }
@@ -80,7 +66,7 @@ const Affiliate = () => {
 
   return (
     <div className="common__body">
-    { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData}/>}
+    { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData} loading={loading}/>}
     <div className="px-3 pt-3">
       <div className="card">
         <div className="text-gray-700 font-medium mb-2">Total Revenue</div>

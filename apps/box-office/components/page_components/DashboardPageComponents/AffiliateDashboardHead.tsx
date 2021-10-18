@@ -11,9 +11,10 @@ export type MyEventProps = {
     title: string,
     startTime:string,
   }
+  loading: boolean;
 }
 
-const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
+const AffiliateDashboardHead = ({ eventDetailData,loading }: MyEventProps) => {
 
   const router = useRouter();
   const { partnerId } = useUserState();
@@ -49,20 +50,25 @@ const AffiliateDashboardHead = ({ eventDetailData }: MyEventProps) => {
   }
 
   return (
-      <div className="dashboard_container bg-gray-200">
-        <button className="bg-gray-200 hover:bg-gray-200 text-xl text-black text-center py-2 px-4 rounded hover:bg-gray-400" onClick={() => {
-          router.push(`/event-list`)
-        }}>{`< Back`}</button>
-        <div className="flex justify-center text-center">
-        <div className="font-bold text-xl sm:text-2xl mt-1 mb-1 mx-1 text-gray-800">{eventDetailData.title}</div>
-        <div className="font-normal text-xl sm:text-2xl mt-1 mb-1 mx-1 text-gray-800">{moment(eventDetailData.startTime).format('MMMM Do, h:mma')}</div>
+    <>
+      {!loading &&
+      <>
+        <div className="dashboard_container bg-gray-200">
+          <button className="bg-gray-200 hover:bg-gray-200 text-xl text-black text-center py-2 px-4 rounded hover:bg-gray-400" onClick={() => {
+            router.push(`/event-list`)
+          }}>{`< Back`}</button>
+          <div className="flex justify-center text-center">
+          <div className="font-bold text-xl sm:text-2xl mt-1 mb-1 mx-1 text-gray-800">{eventDetailData.title}</div>
+          <div className="font-normal text-xl sm:text-2xl mt-1 mb-1 mx-1 text-gray-800">{moment(eventDetailData.startTime).format('MMMM Do, h:mma')}</div>
+          </div>
+              <div className="flex text-gray-800">
+                  <a className="dashboard__head-tab">Dashboard</a>
+                  <a onClick={openSellByCardTab} className={sellByCard?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by card</a>
+                  <a onClick={openSellByCashTab} className={sellByCash?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by cash</a>
+              </div>
         </div>
-            <div className="flex text-gray-800">
-                <a className="dashboard__head-tab">Dashboard</a>
-                <a onClick={openSellByCardTab} className={sellByCard?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by card</a>
-                <a onClick={openSellByCashTab} className={sellByCash?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by cash</a>
-            </div>
-      </div>
+      </>}
+    </>
   );
 };
 

@@ -28,6 +28,7 @@ const Dashboard = () => {
   const [dashboardData, setDashbordData] = useState({} as dashboardData);
   const [eventDetailData,setEventDetailData] = useState({} as eventDetailData)
   const [showNavBar,setShowNavBar] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -44,24 +45,9 @@ const Dashboard = () => {
         }
         const result = await getDashboardStat(String(acid))
         setDashbordData(result);
-      } catch (err) {
-        generateToast('Unknown error about dashboard data', toast);
-        router.push(`/event-list`)
-        console.log(err)
-      }
-    })();
-  }, [router.isReady])
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const { query: { acid } } = router;
-    if (!acid) {
-      return
-    }
-    (async () => {
-      try {
-        const result = await getEventById(String(acid))
-        setEventDetailData(result);
+        const eventDetails = await getEventById(String(acid))
+        setEventDetailData(eventDetails);
+        setLoading(false);
       } catch (err) {
         generateToast('Unknown error about dashboard data', toast);
         router.push(`/event-list`)
@@ -72,7 +58,7 @@ const Dashboard = () => {
 
   return (
     <div className="common__body">
-    { showNavBar && <DashboardHead eventDetailData={eventDetailData}/>}
+    { showNavBar && <DashboardHead eventDetailData={eventDetailData} loading={loading} />}
     <div className="px-3 pt-3">
       <div className="card">
         <div className="font-medium mb-2 text-gray-700">Total Revenue</div>

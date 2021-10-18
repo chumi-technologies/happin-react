@@ -13,10 +13,6 @@ const Layout = ({ children }: { children: any }) => {
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
-  const [whiteLabelLogo, setWhiteLabelLogo] = useState();
-  const [whiteLabelHome, setWhiteLabelHome] = useState('');
-  const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
-
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
@@ -31,45 +27,11 @@ const Layout = ({ children }: { children: any }) => {
     } else {
       setShowFooter(true);
     }
+    
     if (router.query?.fromapp) {
-      setShowHeader(false);
+      setShowHeader(false);    
     }
   }, [router.query, router.asPath])
-
-  useEffect(()=> {
-    const hideMobileBar = localStorage.getItem('hide_mobile_bar');
-    if (hideMobileBar) {
-      setIsMobileBarOpen(false);
-    }
-  }, [])
-
-
-  useEffect(()=> {
-    if (typeof window !== 'undefined') {
-      const hostname = window.location.hostname;
-      //const hostname = 'deadroyaltyproductions.happin.app'
-      // && !hostname.includes('localhost')
-      if (hostname !== 'happin.app' && !hostname.includes('localhost')) {
-        whiteLabelDomain(hostname)
-      } else {
-        setCheckingWhiteLable(false)
-      }
-    }
-  }, [])
-
-  const whiteLabelDomain = async (domain: string) => {
-    try {
-      const response = await getWhiteLabelDomain(domain);
-      if (response.domainLogo) {
-        const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
-        setWhiteLabelLogo(logo)
-        setWhiteLabelHome(response.clientUrl);
-      }
-      setCheckingWhiteLable(false)
-    } catch (err) {
-      console.log(err)
-    }
-  }
 
   return (
     <>
@@ -80,12 +42,11 @@ const Layout = ({ children }: { children: any }) => {
       <main className={classnames('main-app', {'home-page': isHomePage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
-          {(showHeader && !isHomePage) && <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
-            {/*{ isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }*/}
+          {(showHeader && !isHomePage) && <Header>
           </Header>}
         {children}
       </main>
-      {(showFooter && !isHomePage) &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
+      {(showFooter && !isHomePage) &&  <Footer></Footer>}
     </>
   );
 };

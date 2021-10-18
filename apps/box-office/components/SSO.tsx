@@ -11,7 +11,7 @@ enum ESSOMode {
 }
 
 const SSO = () => {
-  const { setUserInfo } = useUserState();
+  const { setUserInfo,exchangeForCrowdCoreToken} = useUserState();
   const { ssoState: { visible, mode, role }, hideSSO } = useSSOState();
   const [origin, setOrigin] = useState('');
   const router = useRouter();
@@ -22,8 +22,6 @@ const SSO = () => {
       setOrigin(window.location.href);
     }
   }, [router]);
-
-
 
   const url = new URL(process.env.NEXT_PUBLIC_HAPPIN_SSO || '');
   url.searchParams.set('origin', origin)

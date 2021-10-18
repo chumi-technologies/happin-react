@@ -12,6 +12,11 @@ export interface User {
     pointOneGifts: number;
 }
 
+export interface SaasUser {
+    username: string;
+    userId: string;
+    email:string;
+}
 
 export interface UserResponse {
     data: User;

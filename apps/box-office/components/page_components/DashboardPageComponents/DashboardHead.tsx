@@ -11,9 +11,10 @@ export type MyEventProps = {
     title: string,
     startTime:string,
   }
+  loading: boolean;
 }
 
-const DashboardHead = ({ eventDetailData }: MyEventProps) => {
+const DashboardHead = ({ eventDetailData,loading }: MyEventProps) => {
 
   const router = useRouter();
   const { partnerId } = useUserState();
@@ -49,7 +50,10 @@ const DashboardHead = ({ eventDetailData }: MyEventProps) => {
   }
 
   return (
-      <div className="dashboard_container bg-gray-200">
+    <>
+      {!loading &&
+        <>
+        <div className="dashboard_container bg-gray-200">
         <button className="bg-gray-200 hover:bg-gray-200 text-xl text-black text-center py-2 px-4 rounded hover:bg-gray-400" onClick={() => {
           router.push(`/event-list`)
         }}>{`< Back`}</button>
@@ -65,6 +69,8 @@ const DashboardHead = ({ eventDetailData }: MyEventProps) => {
                 <a onClick={openSellByCashTab} className={sellByCash?"dashboard__head-tab":"dashboard__head-tab_disable"}>Sell by cash</a>
             </div>
       </div>
+      </>}
+    </>
   );
 };
 

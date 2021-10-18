@@ -4,19 +4,20 @@ import { useToast } from '@chakra-ui/react';
 import Router, { useRouter } from "next/router";
 import { generateToast } from '../../components/util/toast';
 import { EventResponse } from '../../lib/model/myEvents';
-import { getEvents } from '../../lib/api';
+import { getEvents,getConnectedTeam, getSaasUserInfo } from '../../lib/api';
 import { useUserState } from 'contexts/user-state';
 import EventListItem from '@components/page_components/EventListPageComponents/EventListItem';
 import jwt_decode from "jwt-decode";
 import Head from 'next/head';
 import ReactPaginate from 'react-paginate';
+import {connectTeamResponse} from 'lib/model/user';
 
 const EventList = () => {
 
   const toast = useToast();
   const router = useRouter();
   const eventListRef = useRef<HTMLInputElement>(null);
-  const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId } = useUserState()
+  const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId,setConnectedTeam,setSaasUserInfo,setPartnerId,setCrowdCoreToken } = useUserState()
   const [ eventsList, setEventsList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pageCount,setPageCount] = useState<number>(1);
@@ -25,7 +26,9 @@ const EventList = () => {
     try {
       const res: EventResponse = await getEvents('0');
       if (res && res.activities) {
-        if (partnerId && affiliation) {
+        const partnerIdFromLocalStorage = localStorage.getItem('partnerId');
+        const affiliationFromLocalStorage = localStorage.getItem('affiliation');
+        if (partnerIdFromLocalStorage && affiliationFromLocalStorage) {
           // @ts-ignore
           const affiliationEventList = res.activities.filter(a=>affiliation.acid.includes(a._id));
           if(affiliationEventList.length>0) {
@@ -57,9 +60,23 @@ const EventList = () => {
     }
   }
 
-  const generateChumiJWTToken = async () => {
+  const generateInitialState = async () => {
     try {
       await exchangeForCrowdCoreToken();
+      setCrowdCoreToken(true);
+      if(localStorage.getItem('chumi_jwt')){
+        const teams:connectTeamResponse[] = await getConnectedTeam();
+        if (teams && teams.length>0) {
+          setConnectedTeam(teams);
+          localStorage.setItem("connectedTeam",JSON.stringify(teams));
+        }
+        localStorage.setItem('teamUser',JSON.stringify(false));
+        const userInfo = await getSaasUserInfo();
+        localStorage.setItem('saasUserInfo',JSON.stringify(userInfo))
+        setSaasUserInfo(userInfo);
+        localStorage.setItem('partnerId',JSON.stringify(userInfo.userId))
+        setPartnerId(userInfo.userId);
+      }
     }
     catch (err) {
       console.log(err)
@@ -112,12 +129,13 @@ const EventList = () => {
     else {
       // exchange token & store the crowdcore server token in local stoarge     
       (async () => {
-        await generateChumiJWTToken();
+        await generateInitialState();
         await getEventsListFromServer();
       })()
     }
   }, [teamUser]);
-
+ console.log(partnerId,'partnerId');
+ console.log(affiliation,'affiliation')
   return (
     <>
       <Head>
