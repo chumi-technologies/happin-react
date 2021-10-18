@@ -72,6 +72,16 @@ module.exports = {
       500: '500ms',
       700: '700ms',
       1000: '1000ms'
+    },    
+    zIndex: {
+      '0': 0,
+     '10': 10,
+     '20': 20,
+     '30': 30,
+     '40': 40,
+     '50': 50,
+     '100': 100,
+      'auto': 'auto',
     },
     screens: {
       sm: '640px',
@@ -90,6 +100,9 @@ module.exports = {
   },
   corePlugins: {
     container: false,
+    preflight: false, // 已经用了chakra的reset
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/aspect-ratio')
+  ],
 }

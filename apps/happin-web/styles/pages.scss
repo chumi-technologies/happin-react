@@ -490,3 +490,11 @@
     @apply text-gray-300 hover:text-rose-500 transition
   }
 }
+
+// Event Set
+.event-set__follow {
+  @apply py-2 ml-3 text-sm inline-flex items-center justify-center font-semibold rounded-full;
+  @media (min-width: 640px) {
+    @apply py-3 text-base px-6
+  }
+}

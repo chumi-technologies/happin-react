@@ -3,6 +3,7 @@ import {LocationInfo} from './event';
 
 export type MyEventItemDataProps = {
   _id: string;
+  eid:string;
   livestream: boolean;
   cover: string;
   title: string;

@@ -1,3 +1,5 @@
+@import 'mixin';
+
 // ========================================
 // Dashboard page
 // ========================================
@@ -6,4 +8,299 @@
 }
 .expend {
   @apply flex items-center justify-center w-8 h-8 border-gray-200 border-2 border-solid rounded-full text-gray-500;
+}
+
+// Header
+.header__link {
+  @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-white transition whitespace-nowrap
+}
+.header__menu {
+  @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-500 py-1 pr-1 pl-3 cursor-pointer transition;
+  &:hover, &.active {
+    @apply text-gray-300 bg-gray-800
+  }
+}
+.header__menu_back_button {
+  @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-200 py-1 pr-1 pl-1 cursor-pointer transition;
+  &:hover, &.active {
+    @apply text-gray-300 bg-gray-800
+  }
+}
+
+.header__menu-dropdown {
+  @apply absolute z-50 w-52 mt-2 px-2 bg-gray-900 rounded-lg focus:outline-none;
+}
+.header__menu-link {
+  @apply text-white flex rounded-md items-center w-full px-2 py-2 my-1 text-sm transition font-medium;
+  &:hover {
+    @apply bg-gray-700
+  }
+}
+.header__search {
+  @apply relative hidden sm:flex items-center w-full text-gray-500 focus-within:text-gray-300;
+  max-width: 268px;
+  @media (min-width: 1280px) {
+    max-width: 360px;
+  }
+}
+.header__search-input {
+  @apply block w-full pl-10 pr-3 py-2 rounded-full border-2 border-solid border-gray-800 bg-transparent text-white transition placeholder-gray-400;
+  &:hover {
+    @apply border-gray-700
+  }
+  &:focus {
+    @apply bg-gray-900
+  }
+}
+.header__phone-search {
+  @apply block w-full px-3 py-3 border-0 bg-gray-900 text-white transition placeholder-gray-400;
+}
+.fade-enter {
+  transition: all .1s cubic-bezier(0, 0, 0.2, 1);
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: scale(.95);
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+  transform: scale(1);
+}
+.fade-leave {
+  transition: all .075s cubic-bezier(0.4, 0, 1, 1);
+}
+.checkout-enter {
+  transition: all .4s cubic-bezier(0.33, 1, 0.68, 1);
+  @media (min-width: 768px) {
+    transition: all .1s cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+.checkout-enter-from, .checkout-leave-to {
+  opacity: 0;
+  transform: translateY(100%);
+  @media (min-width: 768px) {
+    transform: scale(.95);
+  }
+}
+.checkout-enter-to, .checkout-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+  @media (min-width: 768px) {
+    transform: scale(1);
+  }
+}
+.checkout-leave {
+  transition: all .3s cubic-bezier(0.11, 0, 0.5, 0);
+  @media (min-width: 768px) {
+    transition: all .075s cubic-bezier(0.4, 0, 1, 1);
+  }
+}
+
+// Home
+//.home__banner {
+//  background: url("../public/images/home-banner.png") center top no-repeat;
+//}
+
+.home__page__button {
+  margin-top: 8rem;
+  margin-bottom: 2rem;
+  background-color: #FFFFFF;
+  border: 1px solid rgb(209,213,219);
+  border-radius: 1rem;
+  box-sizing: border-box;
+  color: #111827;
+  font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  padding: .75rem 1rem;
+  text-align: center;
+  text-decoration: none #D1D5DB solid;
+  text-decoration-thickness: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.home__page__button:hover {
+  background-color: rgb(249,250,251);
+}
+
+.home__page__button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.home__page__button:focus-visible {
+  box-shadow: none;
+}
+
+
+.right-circle {
+  width: 360px;
+  height: 360px;
+  right: -260px;
+  @media (min-width: 640px) {
+    width: 450px;
+    height: 450px;
+    right: -300px;
+  }
+  @media (min-width: 768px) {
+    width: 600px;
+    height: 600px;
+    right: -400px;
+  }
+  @media (min-width: 1024px) {
+    width: 750px;
+    height: 750px;
+    right: -500px;
+  }
+  @media (min-width: 1280px) {
+    width: 850px;
+    height: 850px;
+    right: -550px;
+  }
+}
+.home__color-purple {
+  background-color: #5956E9;
+}
+.home__color-pink {
+  background-color: #FAB8C4;
+}
+.home__how-works-item {
+  @apply px-5 py-4 transition cursor-pointer rounded-lg bg-gray-800 hover:bg-gray-700;
+  &.active {
+    @apply bg-rose-500;
+    .home__how-works-item--desc {
+      @apply text-white text-opacity-90;
+    }
+  }
+  &-title {
+    @apply text-lg font-medium mb-2;
+  }
+  &--desc {
+    @apply text-sm sm:text-base text-gray-400 transition;
+  }
+}
+.home__fade-enter{
+  opacity: 0;
+  transform: scale(.95);
+  transition: all .4s cubic-bezier(0, 0, 0.2, 1);
+}
+.home__fade-exit{
+  opacity: 1;
+  transform: scale(1);
+  transition: all .4s cubic-bezier(0, 0, 0.2, 1);
+}
+.home__fade-enter-active{
+  opacity: 1;
+  transform: scale(1);
+}
+.home__fade-exit-active{
+  opacity: 0;
+  transform: scale(.95);
+}
+
+.home-section-build {
+  left: 0;
+  width: 80%;
+  margin: 0 auto;
+  --aspectRatio: 100%;
+  background-color: theme('colors.gray.50');
+  @media (min-width: 640px) {
+    left: 0;
+    width: 80%;
+  }
+  @media (min-width: 768px) {
+    left: 0;
+    width: 430px;
+  }
+  @media (min-width: 1024px) {
+    left: 0;
+    width: 500px;
+  }
+  @media (min-width: 1280px) {
+    width: 500px;
+  }
+  img {
+    width: 100%;
+  }
+  .item-1 {
+    right: 0;
+    width: 100%;
+    z-index: 1;
+    &:before {
+      display: none;
+    }
+    @media (min-width: 640px) {
+      width: 100%;
+    }
+    @media (min-width: 768px) {
+      right: -5%;
+      width: 110%;
+    }
+    @media (min-width: 1024px) {
+      right: -5%;
+      width: 110%;
+    }
+    @media (min-width: 1280px) {
+      right: -10%;
+      width: 120%;
+    }
+  }
+}
+
+
+// Event list
+#react-paginate ul {
+   display: inline-block;
+   margin-left: 20px;
+   padding-left: 0;
+}
+
+#react-paginate li {
+   display: inline-block;
+   border: 1px solid rgb(224, 224, 224);
+   color: #000;
+   cursor: pointer;
+   margin-right: 3px;
+   border-radius: 5px;
+   margin-bottom: 5px;
+}
+
+ #react-paginate li a {
+     padding: 2px 5px;
+     display: inline-block;
+     color: #000;
+     outline: none;
+ }
+
+#react-paginate li.active {
+   background: rgb(224, 224, 224);
+   outline: none;
+}
+
+// DashBoard
+.dashboard__head-tab {
+  @apply text-black rounded-md items-center w-full px-2 py-2 my-1 text-sm text-center transition font-medium;
+  &:hover {
+    @apply bg-gray-400
+  }
+}
+.dashboard__head-tab_disable {
+  @apply text-black rounded-md items-center w-full px-2 py-2 my-1 text-sm text-center transition font-medium;
+  pointer-events: none;
+  &:hover {
+    @apply bg-gray-400
+  }
+}
+
+// Footer
+.foot-menu {
+  @apply space-y-3 list-none text-gray-300 text-sm mt-4;
+  li a {
+    @apply text-gray-300 hover:text-rose-500 transition
+  }
 }

@@ -63,7 +63,7 @@ const RedeemEventCode = ({ setIsRedeemModalOpen, happinEID, setRedeemComplete }:
         maxLength={6}
         className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" onInput={onInputHandler}
         placeholder="Enter code" />
-      <p className="mt-6 text-sm text-gray-400">Ticket code is case sensitive.</p>
+      <p className="mt-6 text-sm text-gray-400">Redemption code is case sensitive. Every Happin livestream ticket has a unique code, you will find it on confirmation email or app.</p>
       <Button
         variant="solid"
         colorScheme="cyan"

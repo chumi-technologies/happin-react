@@ -1,6 +1,9 @@
-import { getDashboardStatAffiliation } from "api/chumi-server"
+import { getDashboardStatAffiliation,getEventById } from "lib/api"
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { generateToast } from '../../../components/util/toast';
+import { useToast } from '@chakra-ui/react';
+import AffiliateDashboardHead from '@components/page_components/DashboardPageComponents/AffiliateDashboardHead';
 
 interface dashboardData {
   totalRevnue: number,
@@ -9,21 +12,42 @@ interface dashboardData {
   ticketBreakDown?: {count: number, default_currency: string, commision: number, _id: string}[]
 }
 
+interface eventDetailData {
+  _id:string,
+  title: string,
+  startTime:string,
+}
+
 const Affiliate = () => {
   const router = useRouter();
+  const toast = useToast();
   const [dashboardData, setDashbordData] = useState({} as dashboardData);
+  const [eventDetailData,setEventDetailData] = useState({} as eventDetailData)
+  const [showNavBar,setShowNavBar] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     if (!router.isReady) return;
-    const { query: { acid, partnerId, ownerId } } = router;
+    const { query: { acid, partnerId, ownerId, fromapp } } = router;
     if (!acid || !partnerId || !ownerId) {
       return
     }
     (async () => {
       try {
-        const result = await getDashboardStatAffiliation(String(acid), String(partnerId), String(ownerId))
+        if(fromapp) {
+          setShowNavBar(false);
+        } else {
+          setShowNavBar(true);
+        }
+        const result = await getDashboardStatAffiliation(String(partnerId),String(acid), String(ownerId))
         const processedData = processDashboardData(result)
         setDashbordData(processedData);
+        const eventDetails = await getEventById(String(acid))
+        setEventDetailData(eventDetails);
+        setLoading(false);
       } catch (err) {
+        generateToast('Unknown error about affiliation', toast);
+        router.push(`/event-list`)
         console.log(err)
       }
     })();
@@ -40,11 +64,12 @@ const Affiliate = () => {
     return result;
   }
 
-
   return (
+    <div className="common__body">
+    { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData} loading={loading}/>}
     <div className="px-3 pt-3">
       <div className="card">
-        <div className="font-medium mb-2">Total Revenue</div>
+        <div className="text-gray-700 font-medium mb-2">Total Revenue</div>
         <div className="flex items-center">
           <div className="flex-1">
             <div className="text-2xl font-bold flex items-center text-gray-500 font-medium mt-1">
@@ -66,7 +91,7 @@ const Affiliate = () => {
         <div className="card mt-3" key={index}>
           <div className="text-gray-700 text-sm mb-1">Ticket Name: </div>
           <div className="mb-3">
-            <span>{ticket._id}</span>
+            <span className="text-gray-700">{ticket._id}</span>
           </div>
           <div className="text-gray-700 text-sm mb-1">Number Sold: {ticket.count}</div>
           {ticket.commision !== 0 && (
@@ -74,7 +99,7 @@ const Affiliate = () => {
           )}
         </div>
       ))}
-
+    </div>
     </div>
   )
 }
