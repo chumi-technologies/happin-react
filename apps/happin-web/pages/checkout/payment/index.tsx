@@ -130,7 +130,8 @@ const PaymentInner = (props: any) => {
     affiliate,
     openInApp,
     generalTicketInfo,
-    userInfoFromUrl
+    userInfoFromUrl,
+    boxOfficeMode
   } = useCheckoutState();
   const { user } = useUserState();
   const [validateCodeLoading, setValidateCodeLoading] = useState<boolean>(false);
@@ -657,7 +658,12 @@ const PaymentInner = (props: any) => {
         localStorage.removeItem('orderId')
         localStorage.removeItem('activityId');
         if (openInApp) {
-          postCloseMessageForApp()
+          if (boxOfficeMode) {
+            localStorage.setItem('clearcart', '1');
+            router.back();
+          } else {
+            postCloseMessageForApp()
+          }
         } else {
           setTimeout(() => {
             router.push(`/my-events`)
@@ -713,7 +719,12 @@ const PaymentInner = (props: any) => {
           localStorage.removeItem('orderId');
           localStorage.removeItem('activityId');
           if (openInApp) {
-            postCloseMessageForApp()
+            if (boxOfficeMode) {
+              localStorage.setItem('clearcart', '1');
+              router.back();
+            } else {
+              postCloseMessageForApp()
+            }
           } else {
             setTimeout(() => {
               router.push(`/my-events`)
