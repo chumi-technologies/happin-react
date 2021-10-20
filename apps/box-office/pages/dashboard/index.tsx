@@ -35,8 +35,8 @@ const Dashboard = () => {
   const [hideDownloadButton,setHideDownloadButton] = useState<boolean>(false);
 
   const handleDownloadAffiliateReport = async(acid:string)=>{
-    const { query: { fromapp,token } } = router;
-    if(fromapp && token) {
+    const { query: { fromapp,token,role } } = router;
+    if(fromapp && token && role) {
       try {
         setReportLoading(true);
         setDownloadUrl('');
@@ -131,8 +131,7 @@ const Dashboard = () => {
           if(localStorage.getItem('saasUerRole')) {
             let role = localStorage.getItem('saasUerRole')
             if (role) {
-              let teamRole = JSON.parse(role);
-              if (teamRole === 'checkin' || teamRole ==='viewonly') {
+              if (role === 'checkin' || role ==='viewonly') {
                 setHideDownloadButton(true);
               } else {
                 setHideDownloadButton(false);

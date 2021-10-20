@@ -69,7 +69,7 @@ export function UserState({ children }: {children: any}) {
     }
     const saasUserRoleFS = localStorage.getItem('saasUerRole');
     if(saasUserRoleFS) {
-      setSaasUserRole(JSON.parse(saasUserRoleFS));
+      setSaasUserRole(saasUserRoleFS);
     }
   }, [])
 
