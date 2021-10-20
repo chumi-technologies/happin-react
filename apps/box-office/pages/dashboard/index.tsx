@@ -70,14 +70,15 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    const { query: { acid,fromapp } } = router;
+    const { query: { acid,fromapp,token } } = router;
     if (!acid) {
       return
     }
     (async () => {
       try {
-        if(fromapp) {
+        if(fromapp && token) {
           setShowNavBar(false);
+          localStorage.setItem('chumi_jwt', token as string);
         } else {
           setShowNavBar(true);
         }
@@ -93,6 +94,8 @@ const Dashboard = () => {
       }
     })();
   }, [router.isReady])
+
+
 
   return (
     <div className="common__body">
