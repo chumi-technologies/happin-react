@@ -81,7 +81,7 @@ export default function Header({ children}: { children?: any }) {
         localStorage.setItem('affiliation',JSON.stringify(newTeam))
         setAffiliation(newTeam);
       }
-      localStorage.setItem('saasUerRole',JSON.stringify(newTeam.role))
+      localStorage.setItem('saasUerRole',newTeam.role)
       setSaasUserRole(newTeam.role)
       const newToken = await swtichTeam(id);
       localStorage.setItem('chumi_jwt',newToken.token);
@@ -104,7 +104,7 @@ export default function Header({ children}: { children?: any }) {
           localStorage.setItem('chumi_jwt',newToken.token);
           const userInfo = await getSaasUserInfo();
           setSaasUserRole(userInfo.permission)
-          localStorage.setItem('saasUerRole',JSON.stringify(userInfo.permission))
+          localStorage.setItem('saasUerRole',userInfo.permission);
           setSaasUserInfo(userInfo);
           localStorage.setItem('saasUserInfo',JSON.stringify(userInfo))
           setAffiliation(undefined);

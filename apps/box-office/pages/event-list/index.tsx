@@ -75,7 +75,7 @@ const EventList = () => {
         localStorage.setItem('saasUserInfo',JSON.stringify(userInfo))
         setSaasUserInfo(userInfo);
         if(userInfo.permission) {
-          localStorage.setItem('saasUerRole',JSON.stringify(userInfo.permission))
+          localStorage.setItem('saasUerRole',userInfo.permission);
           setSaasUserRole(userInfo.permission)
         }
         localStorage.setItem('partnerId',JSON.stringify(userInfo.userId))
