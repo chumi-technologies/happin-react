@@ -14,7 +14,7 @@ import jwt_decode from "jwt-decode";
 
 export default function Header({ children}: { children?: any }) {
   const { user, clearUser,teamUser,setTeamUser,affiliation,setAffiliation,partnerId,setPartnerId,
-    crowdCoreToken,connectedTeam,setConnectedTeam,sasaUserInfo,setSaasUserInfo } = useUserState();
+    crowdCoreToken,connectedTeam,setConnectedTeam,sasaUserInfo,setSaasUserInfo,setSaasUserRole } = useUserState();
   const { dimmed, showSSO, showSSOSignUp } = useSSOState();
   /* const [showSearch, setSearch] = useState(false)
   const [isEventPage, setIsEventPage] = useState(false) */
@@ -80,7 +80,9 @@ export default function Header({ children}: { children?: any }) {
       if(newTeam.role === 'affiliation') {
         localStorage.setItem('affiliation',JSON.stringify(newTeam))
         setAffiliation(newTeam);
-      }      
+      }
+      localStorage.setItem('saasUerRole',JSON.stringify(newTeam.role))
+      setSaasUserRole(newTeam.role)
       const newToken = await swtichTeam(id);
       localStorage.setItem('chumi_jwt',newToken.token);
       const userInfo = await getSaasUserInfo();
@@ -101,6 +103,8 @@ export default function Header({ children}: { children?: any }) {
           const newToken = await swtichTeam(decoded.originUserID);
           localStorage.setItem('chumi_jwt',newToken.token);
           const userInfo = await getSaasUserInfo();
+          setSaasUserRole(userInfo.permission)
+          localStorage.setItem('saasUerRole',JSON.stringify(userInfo.permission))
           setSaasUserInfo(userInfo);
           localStorage.setItem('saasUserInfo',JSON.stringify(userInfo))
           setAffiliation(undefined);
