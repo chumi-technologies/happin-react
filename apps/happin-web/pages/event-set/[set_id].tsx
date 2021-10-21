@@ -132,7 +132,7 @@ const EventSet = () => {
               <div className="mt-3 sm:mt-6">
                 <div className="space-y-5">
                   {collectionData?.events.map(event =>
-                    <div className="group flex cursor-pointer" onClick={() => { router.push(`/post/${event._id}`) }}>
+                    <div key={event._id} className="group flex cursor-pointer" onClick={() => { router.push(`/post/${event._id}`) }}>
                       <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden">
                         <img className="w-full h-full object-cover group-hover:opacity-80 transition" src={event.cover} />
                       </div>
