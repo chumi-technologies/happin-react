@@ -42,9 +42,9 @@ export default function MyEventSets() {
     <>
       <div className="create-event-collection__container">
         <div className="lg:pr-10 mt-1 sm:mt-4 black-title flex" style={{ justifyContent: 'space-between' }}>
-          <h1 className=" text-xl sm:text-3xl md:text-4xl text-white font-bold ">Your event collections   
+          <h1 className=" text-xl sm:text-3xl md:text-4xl text-white font-bold " style={{position: 'relative'}}>Your event collections&nbsp;
           <Tooltip label="Collection page is your unique channel to show all of your recommended events. You can share it with your community, so members can consistently follow you and attend events." >
-            <QuestionIcon color="white" className="text-sm"/>
+            <QuestionIcon style={{position: 'absolute', top: '0'}} color="white" className="text-sm"/>
           </Tooltip></h1>            
           <button onClick={() => { router.push('/create-event-set') }} style={{ width: '200px' }} className="btn btn-yellow !px-0 !font-semibold !rounded-full" >
             <span className="text-sm sm:text-base">Create new collection</span>
