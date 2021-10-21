@@ -1,4 +1,4 @@
-import { getEventDetail, getEventDetailForCheckout, crawlThirdPartyEvent, getGroupEvents,getWhiteLabelDomain, saveOrUnsavedEvent, getEventCategories, postEventToHappin } from "./events";
+import { getEventDetail, getEventDetailForCheckout, crawlThirdPartyEvent, getGroupEvents,getWhiteLabelDomain, saveOrUnsavedEvent, getEventCategories, postEventToHappin, getEventCollection, searchEvent, postEventCollectionToHappin, editEventCollection, getEventCollections } from "./events";
 import { checkinTicket, 
 	getGATickets, 
 	getEventMerchs, 
@@ -41,5 +41,10 @@ export {
 	saveOrUnsavedEvent,
 	getEventCategories,
 	crawlThirdPartyEvent,
-	postEventToHappin
+	postEventToHappin,
+	getEventCollection,
+	searchEvent,
+	postEventCollectionToHappin,
+	editEventCollection,
+	getEventCollections
 };

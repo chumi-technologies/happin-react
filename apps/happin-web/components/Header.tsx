@@ -218,6 +218,9 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         )}
                         {user && (
                           <>
+                           <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-event-sets')}}>Event collection</a>
+                            </Menu.Item>
                             <Menu.Item>
                               <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>

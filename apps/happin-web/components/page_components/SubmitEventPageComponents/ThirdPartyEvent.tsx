@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Left } from '@icon-park/react';
 import { Controller, useForm } from "react-hook-form";
-import { Select, Spinner } from "@chakra-ui/react";
+import { Select, Spinner, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { getEventCategories, postEventToHappin } from "lib/api";
 // @ts-ignore
@@ -43,6 +43,15 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
   const [eventTags, setEventTags] = useState<string[]>();
   const [eventSubmitted, setEventSubmitted] = useState<boolean>(false);
   const [eventId, setEventId] = useState<string>();
+
+  const toast = useToast();
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
 
   useEffect(() => {
     getEventTags()
@@ -88,7 +97,10 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
       setEventId(response.data._id);
       setEventSubmitted(true);
     } catch (err) {
-      console.log(err)
+      console.log(err.data.code)
+      if (err.data.code === 9111000) {
+        generateToast('Duplicate event');
+      }
     }
   }
 
@@ -161,7 +173,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             <Controller
                               name="description"
                               control={control}
-                              defaultValue={thirdPartyEventData?.content || ''} 
+                              defaultValue={thirdPartyEventData?.content || ''}
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <textarea
                                   disabled={thirdPartyReadOnlyProps?.includes('content')}
@@ -206,7 +218,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                                       onBlur={onBlur}
                                       inputAutocompleteValue={value?.formatted_address || value}
                                       options={{ types: ['address'] }}
-                                      onPlaceSelected={(place:any) => { onChange(place) }}
+                                      onPlaceSelected={(place: any) => { onChange(place) }}
                                     />
                                   }
                                 </>
@@ -219,16 +231,27 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             <Controller
                               name="type"
                               control={control}
+                              defaultValue={thirdPartyEventData?.type || ''}
                               render={({ field: { onChange, onBlur, value } }) => (
-                                <Select
-                                  iconColor={'#fff'}
-                                  className="form-field"
-                                  style={{ paddingTop: '0', marginTop: '6px', border: '2px solid #454545' }}
-                                  selected={value} onBlur={onBlur}
-                                  onChange={(val) => { onChange(val.target.value); }}
-                                  placeholder="Select a type">
-                                  {eventTags?.map(category => <option value={category} key={category}>{category}</option>)}
-                                </Select>
+                                <>
+                                  {thirdPartyReadOnlyProps?.includes('type') ?
+                                    <input
+                                      disabled
+                                      value={thirdPartyEventData?.type || ''}
+                                      className="form-field"
+                                    />
+                                    :
+                                    <Select
+                                      iconColor={'#fff'}
+                                      className="form-field"
+                                      style={{ paddingTop: '0', marginTop: '6px', border: '2px solid #454545' }}
+                                      selected={value} onBlur={onBlur}
+                                      onChange={(val) => { onChange(val.target.value); }}
+                                      placeholder="Select a type">
+                                      {eventTags?.map(category => <option value={category} key={category}>{category}</option>)}
+                                    </Select>
+                                  }
+                                </>
                               )}
                               rules={{
                                 required: true

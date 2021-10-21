@@ -113,7 +113,7 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
             </div>
           </div>}
         <div className="flex items-start w-full">
-          <SvgIcon id="location" className="text-lg text-white" />
+          {(location?.location || location?.venueName) && <SvgIcon id="location" className="text-lg text-white" />}
           <div className="ml-3">
             <div className="text-white leading-none mb-1">
               {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.venueName)}
