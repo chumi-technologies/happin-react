@@ -58,7 +58,7 @@ const Dashboard = () => {
           const results = await getAffiliateReport(_id);
           if (results[0].status === 'completed') {
             setDownloadUrl(results[0].resultUrl);
-            generateToast('please copy this URL to your browser for downloading the report.',toast);
+            generateToast('If you do not see report downloading, please copy URL to your browser',toast);
             return;
           } else if (results[0].status === 'fail') {
             generateToast('Failed to generate report. Please try again later',toast);
@@ -75,6 +75,7 @@ const Dashboard = () => {
     } else {
       try {
         setReportLoading(true);
+        setDownloadUrl('');
         let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
         let form = {
           acids:[acid],
@@ -92,8 +93,9 @@ const Dashboard = () => {
           }
           const results = await getAffiliateReport(_id);
           if (results[0].status === 'completed') {
+            setDownloadUrl(results[0].resultUrl);
             window.open(results[0].resultUrl, '_blank');
-            generateToast('Please make sure you unblock the download from browser.',toast);
+            generateToast('If you do not see report downloading, please copy URL to your browser.',toast);
             return;
           } else if (results[0].status === 'fail') {
             generateToast('Failed to generate report. Please try again later',toast);
