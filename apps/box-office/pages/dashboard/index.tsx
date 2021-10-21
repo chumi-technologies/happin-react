@@ -153,8 +153,6 @@ const Dashboard = () => {
     })();
   }, [router.isReady])
 
-
-
   return (
     <div className="common__body">
     { showNavBar && <DashboardHead eventDetailData={eventDetailData} loading={loading} />}
@@ -179,12 +177,15 @@ const Dashboard = () => {
             <div className="text-gray-700 text-sm mb-1">Total tickets sold</div>
             <div className="text-teal-500 mb-3 font-medium">{dashboardData.sold || 0 }</div>
             <div className="text-gray-700 text-sm mb-1">Total avaible tickets</div>
-            <div className="text-teal-500 font-medium">{dashboardData.total - dashboardData.sold || 0}</div>
+            <div className="text-teal-500 font-medium">{(dashboardData.total - dashboardData.sold)<0 ? 0 :(dashboardData.total - dashboardData.sold) || 0 }</div>
           </div>
           <div className="w-24 h-24">
             <CircularProgressbar
               value={((dashboardData.sold / dashboardData.total) || 0) * 100}
-              text={`${(((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)}%`}
+              text={(((dashboardData.sold / dashboardData.total) || 0) * 100)>=100 ? `100%`:
+                `${
+                (((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)
+              }%`}
               strokeWidth={6}
               styles={buildStyles({
                 pathColor: '#00A699',
