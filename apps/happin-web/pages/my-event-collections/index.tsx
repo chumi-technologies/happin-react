@@ -66,7 +66,7 @@ export default function MyEventSets() {
                       {!collections?.length ?
                         <>
                           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">You don't have any collections, please create one first.</h1>
+                            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">You {`don't`} have any collections, please create one first.</h1>
                           </div>
                         </>
                         :
