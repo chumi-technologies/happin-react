@@ -5,7 +5,7 @@ import { getEventCollections } from 'lib/api';
 import { User } from 'lib/model/user';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ICollectionData } from 'pages/event-set/[set_id]';
+import { ICollectionData } from 'pages/event-collection/[set_id]';
 import { useEffect, useState } from 'react';
 
 export default function MyEventSets() {
@@ -46,7 +46,7 @@ export default function MyEventSets() {
           <Tooltip label="Collection page is your unique channel to show all of your recommended events. You can share it with your community, so members can consistently follow you and attend events." >
             <QuestionIcon style={{position: 'absolute', top: '0'}} color="white" className="text-sm"/>
           </Tooltip></h1>            
-          <button onClick={() => { router.push('/create-event-set') }} style={{ width: '200px' }} className="btn btn-yellow !px-0 !font-semibold !rounded-full" >
+          <button onClick={() => { router.push('/create-event-collection') }} style={{ width: '200px' }} className="btn btn-yellow !px-0 !font-semibold !rounded-full" >
             <span className="text-sm sm:text-base">Create new collection</span>
           </button>
         </div>
@@ -66,7 +66,7 @@ export default function MyEventSets() {
                       {!collections?.length ?
                         <>
                           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">You dont have any collections, please create one first.</h1>
+                            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">You don't have any collections, please create one first.</h1>
                           </div>
                         </>
                         :
@@ -75,7 +75,7 @@ export default function MyEventSets() {
                             collections?.map(data =>
                               <div key={data._id} className="group cursor-pointer">
                                 <div className="relative">
-                                  <Link href={`/create-event-set?id=${data._id}`}>
+                                  <Link href={`/create-event-collection?id=${data._id}`}>
                                     <div className="aspect-w-16 aspect-h-9">
                                       <div className="bg-black bg-opacity-0 group-hover:bg-opacity-20 transition z-10" />
                                       <img src={data.cover}
@@ -84,7 +84,7 @@ export default function MyEventSets() {
                                     </div>
                                   </Link>
                                 </div>
-                                <Link href={`/create-event-set?id=${data._id}`}>
+                                <Link href={`/create-event-collection?id=${data._id}`}>
                                   <div className="mt-3">
                                     <div className="truncate text-white font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}
                                     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import SvgIcon from '@components/SvgIcon';
-import { Avatar, Box, HStack, useToast  } from '@chakra-ui/react';
+import { Avatar, Box, HStack, useToast } from '@chakra-ui/react';
 import EventDescription from '@components/page_components/EventPageComponents/EventDescription';
 import { getEventCollection } from "lib/api";
 import { useUserState } from "contexts/user-state";
@@ -54,13 +54,13 @@ const EventSet = () => {
   const getData = async (id: string) => {
     try {
       const response = await getEventCollection(id);
-      if (!response.isApproved) {
+/*       if (!response.isApproved) {
         if (!localStorage.getItem('happin_web_jwt') && !localStorage.getItem('happin_refresh_token')) {
           router.push('/');
           return
         }
         setIsPreview(true);
-      }
+      } */
       setCollectionData(response);
     } catch (err) {
       console.log(err)
@@ -105,7 +105,7 @@ const EventSet = () => {
             <h1 className="black-title text-2xl sm:text-3xl md:text-4xl leading-7 text-white font-bold mt-2">
               {collectionData?.title}
             </h1>
-           
+
             <div className="flex justify-between items-center py-6 sm:py-10">
               <HStack spacing={{ base: 3, sm: 5 }}>
                 <Avatar boxSize={{ base: 12, sm: 14 }} src={collectionData?.creator.photourl} />
@@ -114,7 +114,7 @@ const EventSet = () => {
                   {/* <div className="text-sm sm:text-base text-gray-300">Happin Live</div> */}
                 </div>
               </HStack>
-             
+
             </div>
             <div className="h-px bg-gray-600" />
             <div className="py-6 sm:py-10">
@@ -141,15 +141,18 @@ const EventSet = () => {
                         <div className="mt-1 sm:mt-2 text-yellow-500 text-sm font-semibold">{moment.utc(event.start_datetime).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')}</div>
                         <div className="truncate mt-1">
                           <div className="flex items-start w-full">
-                          {(event.acInfo?.location || event.acInfo?.venueName) && <SvgIcon id="location" className="text-lg text-white" />}
-                          <div className="ml-3">
-                            <div className="text-white leading-none mb-1">
-                              {event.streamEnabled ? (`Happin Livestream${(event.acInfo?.eventType === "hybrid" && event.acInfo?.venueName) ? ` / ${event.acInfo?.venueName}` : ""}`) : (event.acInfo?.venueName)} <span className="text-gray-400 text-sm">{event.acInfo?.location !== "happin.app" && (event.acInfo?.location)}</span>
+                            {(event.acInfo?.location || event.acInfo?.venueName) && <SvgIcon id="location" className="text-lg text-white" />}
+                            <div className="ml-3">
+                              <div className="text-white leading-none mb-1">
+                                {event.streamEnabled ? (`Happin Livestream${(event.acInfo?.eventType === "hybrid" && event.acInfo?.venueName) ? ` / ${event.acInfo?.venueName}` : ""}`) : (event.acInfo?.venueName)} <span className="text-gray-400 text-sm">{event.acInfo?.location !== "happin.app" && (event.acInfo?.location)}</span>
+                              </div>
                             </div>
                           </div>
-                          </div>
                         </div>
-                        <div className="text-right sm:text-left mt-2 font-semibold text-rose-500">{event.min_price ? (currencyFormatter(event.currency as string).format(event.min_price / 100)) : 'FREE'}</div>
+                        {event.min_price < 0 ? <></>:
+                          <>
+                            <div className="text-right sm:text-left mt-2 font-semibold text-rose-500">{event.min_price ? (currencyFormatter(event.currency as string).format(event.min_price / 100)) : 'FREE'}</div>
+                          </>}
                       </div>
                     </div>
                   )}

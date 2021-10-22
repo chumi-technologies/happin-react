@@ -202,7 +202,7 @@ export default function CreateEventSet() {
         >
           <div style={{margin: '0 1.25rem 1.25rem'}}>
             <p className="black-title text-md text-white text-center font-bold">Collection saved and will be reviewd within three days</p>
-            <p className="black-title mt-6 text-md text-white text-center">To edit or preview, click <u><Link href={`https://happin.app/create-event-set?id=${newCollectionId}`}>here</Link></u></p>
+            <p className="black-title mt-6 text-md text-white text-center">To edit or preview, click <u><Link href={`https://happin.app/create-event-collection?id=${newCollectionId}`}>here</Link></u></p>
           </div>
         </PopUpModal>
       )}
@@ -210,7 +210,7 @@ export default function CreateEventSet() {
         <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10 mt-1 sm:mt-4">{editMode ? 'Edit' : 'Create'} event collection</h1>
         {editMode ?
           <>
-            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">Preview link: {<u><Link href={`https://happin.app/event-set/${router.query.id}`}>{`https://happin.app/event-set/${router.query.id}`}</Link></u>}</h1>
+            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">Preview link: {<u><Link href={`https://happin.app/event-collection/${router.query.id}`}>{`https://happin.app/event-collection/${router.query.id}`}</Link></u>}</h1>
             <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">Status: {isApproved ? 'Approved' : 'Not Approved'}</h1>
           </> :
           <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">

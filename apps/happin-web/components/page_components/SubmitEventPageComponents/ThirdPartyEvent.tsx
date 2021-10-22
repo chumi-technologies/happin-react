@@ -217,6 +217,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                                       className="form-field"
                                       apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY}
                                       onBlur={onBlur}
+                                      placeholder="Location not required if it's an online event"
                                       inputAutocompleteValue={value?.formatted_address || value}
                                       options={{ types: ['address'] }}
                                       onPlaceSelected={(place: any) => { onChange(place) }}
