@@ -94,13 +94,14 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
     try {
       const response = await postEventToHappin(formToSubmit);
       console.log(response);
+      if(response.code === 9111000) {
+        generateToast('Duplicate event');
+        return
+      }
       setEventId(response.data._id);
       setEventSubmitted(true);
     } catch (err) {
-      console.log(err.data.code)
-      if (err.data.code === 9111000) {
-        generateToast('Duplicate event');
-      }
+      console.log(err)
     }
   }
 
