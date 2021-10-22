@@ -125,7 +125,7 @@ export default function CreateEventSet() {
           categories: [data.category]
         }
         await editEventCollection(form, router.query.id as string);
-        generateToast('Collection saved and will be reviewd within three days');
+        generateToast('Collection saved and will be reviewed within three days');
       } else {
         const { category, ...rest } = data
         const events = selectedEvent.map(event => event._id);
@@ -202,7 +202,7 @@ export default function CreateEventSet() {
         >
           <div style={{margin: '0 1.25rem 1.25rem'}}>
             <p className="black-title text-md text-white text-center font-bold">Collection saved and will be reviewd within three days</p>
-            <p className="black-title mt-6 text-md text-white text-center">To edit or preview, click <u><Link href={`https://happin.app/create-evnet-set?id=${newCollectionId}`}>here</Link></u></p>
+            <p className="black-title mt-6 text-md text-white text-center">To edit or preview, click <u><Link href={`https://happin.app/create-event-set?id=${newCollectionId}`}>here</Link></u></p>
           </div>
         </PopUpModal>
       )}
