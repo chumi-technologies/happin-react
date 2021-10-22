@@ -55,6 +55,10 @@ export default function SubmitEvent() {
     try {
       setUrlSubmitting(true);
       const response = await crawlThirdPartyEvent(inputURL);
+      if (response.code === 32001) {
+        generateToast('This URL has been submitted already.')
+        return
+      }
       const eventData: IThirdPartyEvent = response.data.result;
       eventData.sourceUrl = response.data.sourceUrl;
       setThirdPartyReadOnlyProps(response.data.readonlyProperties)
