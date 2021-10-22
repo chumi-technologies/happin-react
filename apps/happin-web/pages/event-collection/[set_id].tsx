@@ -54,13 +54,13 @@ const EventSet = () => {
   const getData = async (id: string) => {
     try {
       const response = await getEventCollection(id);
-/*       if (!response.isApproved) {
+      if (!response.isApproved) {
         if (!localStorage.getItem('happin_web_jwt') && !localStorage.getItem('happin_refresh_token')) {
           router.push('/');
           return
         }
         setIsPreview(true);
-      } */
+      }
       setCollectionData(response);
     } catch (err) {
       console.log(err)
