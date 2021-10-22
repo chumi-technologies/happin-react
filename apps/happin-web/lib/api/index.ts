@@ -1,4 +1,4 @@
-import { getEventDetail, getEventDetailForCheckout, getGroupEvents,getWhiteLabelDomain, saveOrUnsavedEvent } from "./events";
+import { getEventDetail, getEventDetailForCheckout, crawlThirdPartyEvent, getGroupEvents,getWhiteLabelDomain, saveOrUnsavedEvent, getEventCategories, postEventToHappin, getEventCollection, searchEvent, postEventCollectionToHappin, editEventCollection, getEventCollections } from "./events";
 import { checkinTicket, 
 	getGATickets, 
 	getEventMerchs, 
@@ -38,5 +38,13 @@ export {
 	getFirebaseCustomToken,
 	getWhiteLabelDomain,
 	exchangeDashboardEventHostToken,
-	saveOrUnsavedEvent
+	saveOrUnsavedEvent,
+	getEventCategories,
+	crawlThirdPartyEvent,
+	postEventToHappin,
+	getEventCollection,
+	searchEvent,
+	postEventCollectionToHappin,
+	editEventCollection,
+	getEventCollections
 };

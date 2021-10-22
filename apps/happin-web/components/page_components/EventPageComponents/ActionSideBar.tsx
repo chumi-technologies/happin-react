@@ -46,7 +46,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
     } else if (eventData.event.acInfo.eventType === 'hybrid') {
       eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} or watch livestream on our Happin App.`
     } 
-    return `${eventData.event.title} ${eventDescription} (prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)}) ${eventData.event.creator?.name ? '\nEvent organized by ' + eventData.event.creator?.name : ''} \n\nGet tickets now on `
+    return `${eventData.event.title} ${eventDescription} ${eventData.event.sourceUrl ? '' : `(prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)})`} ${eventData.event.creator?.name ? '\nEvent organized by ' + eventData.event.creator?.name : ''} \n\nGet tickets now on `
   }
   const { user } = useUserState();
   const [openShare, setOpenShare] = useState(false);

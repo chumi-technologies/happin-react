@@ -221,7 +221,7 @@ export async function getServerSideProps(context: { params: { event_id: string }
     const titleWithACID = context.params.event_id
     const tokens = titleWithACID.split('-');
     const acid = tokens[tokens.length - 1];
-    const res = await getEventDetail(acid, 'crowdcore')
+    const res = await getEventDetail(acid, 'both')
     const props = res.data
     if (res.data?.event?.groupAcid) {
       const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")

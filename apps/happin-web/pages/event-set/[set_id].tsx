@@ -1,17 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { Avatar, Box, HStack } from '@chakra-ui/react';
-import { Check, Plus } from '@icon-park/react';
-import EventDescription from '@components/page_components/EventPageComponents/EventDescription';
-import Link from "next/link";
 import SvgIcon from '@components/SvgIcon';
-import classnames from 'classnames';
+import { Avatar, Box, HStack, useToast  } from '@chakra-ui/react';
+import EventDescription from '@components/page_components/EventPageComponents/EventDescription';
+import { getEventCollection } from "lib/api";
+import { useUserState } from "contexts/user-state";
+import { EventDetail } from "lib/model/event";
+import { User } from "lib/model/user";
+import { currencyFormatter } from "@components/page_components/CheckoutPageComponents/util/currencyFormat";
+import moment from 'moment-timezone';
+
+export interface ICollectionData {
+  _id: string;
+  cover: string;
+  description: string;
+  categories: string[];
+  events: EventDetail[];
+  title: string;
+  creator: User;
+}
 
 const EventSet = () => {
   const router = useRouter();
-  // Use event_id for api calls to request the event details
-  const { event_id } = router.query;
-  const [isFollowed, setFollowed] = useState(false)
+  const [isPreview, setIsPreview] = useState<boolean>(false);
+  const [collectionData, setCollectionData] = useState<ICollectionData>();
+  const { user } = useUserState();
+  const toast = useToast()
+
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
+
+  useEffect(() => {
+    if (router.query.set_id) {
+      getData(router.query.set_id as string);
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (user && isPreview && collectionData) {
+      if (user._id !== collectionData.creator._id) {
+        generateToast('You are not allowed to view this event collection');
+        router.push('/')
+        return
+      }
+    }
+  }, [user, isPreview, collectionData])
+
+  const getData = async (id: string) => {
+    try {
+      const response = await getEventCollection(id);
+      if (!response.isApproved) {
+        if (!localStorage.getItem('happin_web_jwt') && !localStorage.getItem('happin_refresh_token')) {
+          router.push('/');
+          return
+        }
+        setIsPreview(true);
+      }
+      setCollectionData(response);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  /*   const [isFollowed, setFollowed] = useState(false) */
   return (
     <div className="common__body">
       {/* Top Popups for First-Time Visitors */}
@@ -25,95 +81,78 @@ const EventSet = () => {
             h="100%"
             position="absolute"
             style={{ filter: "blur(40px)", transform: "scale(1.5)" }}
-            backgroundImage="url('/images/pic.png')"
+            backgroundImage={`url(${collectionData?.cover})`}
             backgroundPosition="center"
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
           />
           <img
-            src="/images/pic.png"
+            src={collectionData?.cover}
             className="event-details__img"
           />
         </div>
         {/* Event Texts */}
         <div className="w-full lg:w-7/12 xl:w-1/2 sm:pb-20">
           <div className="event-details__container relative py-6 sm:py-8 md:py-14">
+            <HStack spacing={3}>
+              {collectionData &&
+                <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
+                  {collectionData?.categories[0]}
+                </div>}
+
+            </HStack>
             {/* Event Title */}
-            <h1 className="black-title text-2xl sm:text-3xl md:text-4xl leading-7 text-white font-bold">
-              A New Adventure for Summoners
+            <h1 className="black-title text-2xl sm:text-3xl md:text-4xl leading-7 text-white font-bold mt-2">
+              {collectionData?.title}
             </h1>
-            <div className="mt-1 text-gray-300 text-sm sm:text-base font-medium">
-              <span className="mr-3">Category:</span>
-              <Link href="/"><a className="link-normal">Music Concerts</a></Link>
-              <span className="mx-2">&</span>
-              <Link href="/"><a className="link-normal">Performance / Kpop</a></Link>
-            </div>
+           
             <div className="flex justify-between items-center py-6 sm:py-10">
               <HStack spacing={{ base: 3, sm: 5 }}>
-                <Avatar boxSize={{base: 12, sm: 14}} src="https://images.chumi.co/file--1622759851453.jpeg" />
+                <Avatar boxSize={{ base: 12, sm: 14 }} src={collectionData?.creator.photourl} />
                 <div>
-                  <div className="font-semibold text-sm sm:text-lg leading-5">Hosted By Happin Live</div>
-                  <div className="text-sm sm:text-base text-gray-300">Happin Live</div>
+                  <div className="font-semibold text-sm sm:text-lg leading-5">Hosted By {collectionData?.creator.displayname}</div>
+                  {/* <div className="text-sm sm:text-base text-gray-300">Happin Live</div> */}
                 </div>
               </HStack>
-              <button
-                className={classnames('event-set__follow btn', isFollowed ? 'btn-dark-light' : 'btn-rose')}
-                onClick={() => setFollowed(s => !s)}
-              >
-                {
-                  isFollowed ? <Check theme="outline" size="14" fill="#999" strokeWidth={6} /> :
-                    <Plus theme="outline" size="16" fill="currentColor" strokeWidth={5}/>
-                }
-                <span className="ml-2 sm:ml-3">{isFollowed ? 'Followed' : 'Follow'}</span>
-              </button>
+             
             </div>
             <div className="h-px bg-gray-600" />
             <div className="py-6 sm:py-10">
-              <EventDescription description="ontrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. "
-              />
+              {collectionData?.description &&
+                <EventDescription rawDescription={collectionData?.description} description={collectionData?.description}
+                />
+              }
             </div>
             <div className="h-px bg-gray-600" />
             <div className="pt-6 sm:pt-10">
               <div className="black-title flex items-center justify-between text-xl sm:text-2xl font-semibold">
-                <div>Upcoming events</div>
-                <Link href="/"><a className="font-medium text-sm sm:text-base text-gray-400 hover:text-white transition">MORE</a></Link>
+                <div>Collection events</div>
+                {/*  <Link href="/"><a className="font-medium text-sm sm:text-base text-gray-400 hover:text-white transition">MORE</a></Link> */}
               </div>
               <div className="mt-3 sm:mt-6">
                 <div className="space-y-5">
-                  <div className="group flex cursor-pointer">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden">
-                      <img className="w-full h-full object-cover group-hover:opacity-80 transition" src="https://images.chumi.co/file--1628107226253.png" />
-                    </div>
-                    <div className="flex-1 min-w-0 ml-5">
-                      <div className="truncate sm:text-lg leading-6 text-white font-semibold group-hover:text-rose-500 transition">Dead Royalty Presents: Calcium</div>
-                      <div className="mt-1 sm:mt-2 text-yellow-500 text-sm font-semibold">Mon Oct 11 ・ 1:10 AM CST</div>
-                      <div className="truncate mt-1">
-                        <SvgIcon id="location" className="inline-block text-sm text-gray-300" />
-                        <span className="align-middle ml-2 text-gray-300 text-sm">
-                          Happin Livestream
-                        </span>
+                  {collectionData?.events.map(event =>
+                    <div key={event._id} className="group flex cursor-pointer" onClick={() => { router.push(`/post/${event._id}`) }}>
+                      <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden">
+                        <img className="w-full h-full object-cover group-hover:opacity-80 transition" src={event.cover} />
                       </div>
-                      <div className="text-right sm:text-left mt-2 font-semibold text-rose-500">FREE</div>
-                    </div>
-                  </div>
-                  <div className="group flex cursor-pointer">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-md overflow-hidden">
-                      <img className="w-full h-full object-cover group-hover:opacity-80 transition" src="https://images.chumi.co/file--1626728221701.png" />
-                    </div>
-                    <div className="flex-1 min-w-0 ml-5">
-                      <div className="truncate sm:text-lg leading-6 text-white font-semibold group-hover:text-rose-500 transition">Astrologically Screwed and Other Psychic Revelations</div>
-                      <div className="mt-1 sm:mt-2 text-yellow-500 text-sm font-semibold">Mon Oct 11 ・ 1:10 AM CST</div>
-                      <div className="truncate mt-1">
-                        <SvgIcon id="location" className="inline-block text-sm text-gray-300" />
-                        <span className="align-middle ml-2 text-gray-300 text-sm">
-                          Happin Livestream
-                        </span>
-                      </div>
-                      <div className="text-right sm:text-left mt-2 font-semibold">
-                        <span className="font-medium text-sm mr-1">From</span>$20.00
+                      <div className="flex-1 min-w-0 ml-5">
+                        <div className="truncate sm:text-lg leading-6 text-white font-semibold group-hover:text-rose-500 transition">{event.title}</div>
+                        <div className="mt-1 sm:mt-2 text-yellow-500 text-sm font-semibold">{moment.utc(event.start_datetime).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')}</div>
+                        <div className="truncate mt-1">
+                          <div className="flex items-start w-full">
+                          {(event.acInfo?.location || event.acInfo?.venueName) && <SvgIcon id="location" className="text-lg text-white" />}
+                          <div className="ml-3">
+                            <div className="text-white leading-none mb-1">
+                              {event.streamEnabled ? (`Happin Livestream${(event.acInfo?.eventType === "hybrid" && event.acInfo?.venueName) ? ` / ${event.acInfo?.venueName}` : ""}`) : (event.acInfo?.venueName)} <span className="text-gray-400 text-sm">{event.acInfo?.location !== "happin.app" && (event.acInfo?.location)}</span>
+                            </div>
+                          </div>
+                          </div>
+                        </div>
+                        <div className="text-right sm:text-left mt-2 font-semibold text-rose-500">{event.min_price ? (currencyFormatter(event.currency as string).format(event.min_price / 100)) : 'FREE'}</div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
