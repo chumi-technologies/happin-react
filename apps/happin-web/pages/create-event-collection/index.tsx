@@ -346,7 +346,11 @@ export default function CreateEventSet() {
                                   action='https://api.crowdcore.com/prod/activity/uploadImage'
                                   type="drag" accept='image/*' style={{ display: 'block', borderRadius: '0.5rem', border: '2px #454545 dashed', height: 200 }}
                                   onSuccess={(file: any) => { setUploadingCover(false); onChange(file.location) }} onProgress={(_step: any, _file: any) => { setUploadingCover(true) }}>
-                                  {!value && !uploadingCover && <div className="flex items-center h-full justify-center "><h1 className="black-title text-base sm:text-xl text-center p-5" style={{ color: '#454545' }}>Drag & drop or click to add image (JPEG, PNG)</h1></div>}
+                                  {!value && !uploadingCover && <div className="flex items-center h-full justify-center " style={{flexDirection: 'column'}}><h1 className="black-title text-base sm:text-xl text-center p-5" style={{ color: '#454545' }}>
+                                    Drag & drop or click to add image (JPEG, PNG)</h1>
+                                    <h1 className="black-title text-base sm:text-xl text-center " style={{ color: '#454545' }}>
+                                    Best resolution is width 660 x height 800</h1>
+                                    </div>}
                                   {(value && !uploadingCover) && <div className="flex items-center h-full justify-center "><img className="h-full" style={{ padding: '10px' }} src={value.startsWith('https://') ? value : 'https://images.chumi.co/' + value} alt="" /></div>}
                                   {uploadingCover && <div className="flex items-center h-full justify-center "><Spinner size="xl" color="yellow"></Spinner></div>}
                                 </Upload>
