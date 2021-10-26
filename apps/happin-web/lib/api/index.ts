@@ -13,6 +13,7 @@ import { checkinTicket,
 	getTicketsPlayBackList } from "./tickets";
 import {submitPayment, getOrderStatus, getMerchOrdersSummary} from './order'
 import { getUserInfo, exchangeCrowdcoreToken,getFirebaseCustomToken, exchangeDashboardEventHostToken } from "./user";
+import { getBlogListBrief, getBlogByName, getBlogById, getBlogByURLTitle } from "./blog";
 
 export { 
 	getEventDetail, 
@@ -46,5 +47,9 @@ export {
 	searchEvent,
 	postEventCollectionToHappin,
 	editEventCollection,
-	getEventCollections
+	getEventCollections,
+	getBlogListBrief,
+	getBlogByName,
+	getBlogById,
+	getBlogByURLTitle
 };
