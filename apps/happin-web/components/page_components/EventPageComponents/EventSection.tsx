@@ -30,6 +30,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         category={eventData?.event?.category}
         categoryType={eventData?.event?.categoryType}
         playbackStart={!!eventData?.event?.ODPBStart}
+        sourceURL={eventData?.event?.sourceUrl}
         setIsRedeemModalOpen={setIsRedeemModalOpen} />
       {/* About and Agenda links */}
       <div className="sticky top-0 bg-black z-10">
@@ -74,8 +75,9 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         <Element name="about" className="py-6 sm:py-10">
           <EventDescription
             description={eventData?.event?.content}
-            rawDescription={eventData?.event?.contentPlainText} />
-
+            rawDescription={eventData?.event?.contentPlainText} 
+            sourceURL={eventData?.event?.sourceUrl}
+            />
         </Element>
       {/*}*/}
       <div className="h-px bg-gray-600" />

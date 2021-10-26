@@ -462,6 +462,27 @@
   }
 }
 
+// event submit 
+.event-submit__container {
+  @apply w-full px-4 sm:px-8 mx-auto lg:m-0;
+  //padding-right: 4.5rem;
+  //padding-left: 3.5rem;
+}
+
+.event-submit__inner {
+  width: 40%;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+}
+
+.event-submit__form {
+  margin-bottom: 50px;
+  @media (max-width: 768px) {
+    margin-bottom: 80px;
+  }
+}
+
 // Footer
 .foot-menu {
   @apply space-y-3 list-none text-gray-300 text-sm mt-4;
@@ -471,6 +492,10 @@
 }
 
 // Event Set
+.create-event-collection__container {
+  @apply w-full px-4 sm:px-8 mx-auto lg:m-0;
+}
+
 .event-set__follow {
   @apply py-2 ml-3 text-sm inline-flex items-center justify-center font-semibold rounded-full;
   @media (min-width: 640px) {

@@ -21,7 +21,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const [isWhiteLable, setIsWhiteLable] = useState(false);
 
   useEffect(()=> {
-    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost') {
+    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('deploy-preview')) {
       setIsWhiteLable(true)
     }
   }, [])
@@ -135,7 +135,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         </Link>
                       </Menu.Item>*/}
                         <Menu.Item>
-                          <a className="header__menu-link md:hidden" onClick={clickHostEventHandler}>Submit Event</a>
+                          <a className="header__menu-link md:hidden" onClick={()=>{router.push('/submit-event')}}>Submit Event</a>
                         </Menu.Item>
                       </div>
                     </Menu.Items>
@@ -166,7 +166,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Submit Events</a>}
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit Events</a>}
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}
@@ -195,7 +195,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>
                             <International theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Submit Event</span>
+                            <span className="ml-2">Organizer Dashboard</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
@@ -218,6 +218,9 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         )}
                         {user && (
                           <>
+                           <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-event-collections')}}>Event collection</a>
+                            </Menu.Item>
                             <Menu.Item>
                               <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>

@@ -17,7 +17,7 @@ const EventList = () => {
   const toast = useToast();
   const router = useRouter();
   const eventListRef = useRef<HTMLInputElement>(null);
-  const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId,setConnectedTeam,setSaasUserInfo,setPartnerId,setCrowdCoreToken } = useUserState()
+  const { clearUser,exchangeForCrowdCoreToken,teamUser,affiliation,partnerId,setConnectedTeam,setSaasUserInfo,setPartnerId,setCrowdCoreToken,setSaasUserRole } = useUserState()
   const [ eventsList, setEventsList] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pageCount,setPageCount] = useState<number>(1);
@@ -74,6 +74,10 @@ const EventList = () => {
         const userInfo = await getSaasUserInfo();
         localStorage.setItem('saasUserInfo',JSON.stringify(userInfo))
         setSaasUserInfo(userInfo);
+        if(userInfo.permission) {
+          localStorage.setItem('saasUerRole',userInfo.permission);
+          setSaasUserRole(userInfo.permission)
+        }
         localStorage.setItem('partnerId',JSON.stringify(userInfo.userId))
         setPartnerId(userInfo.userId);
       }

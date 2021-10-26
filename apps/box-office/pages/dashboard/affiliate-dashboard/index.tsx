@@ -65,7 +65,7 @@ const Affiliate = () => {
   }
 
   return (
-    <div className="common__body">
+    <div className="common__body max-w-lg mx-auto">
     { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData} loading={loading}/>}
     <div className="px-3 pt-3">
       <div className="card">

@@ -84,6 +84,7 @@ export interface EventDetail {
     deepLink: string;
     category: string;
     categoryType: string;
+    sourceUrl?: string;
 }
 
 export interface EventData {

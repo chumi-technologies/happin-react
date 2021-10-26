@@ -21,6 +21,8 @@ interface UserContext {
   setConnectedTeam: (arg:connectTeamResponse[]|[])=>void,
   sasaUserInfo:SaasUser|undefined,
   setSaasUserInfo:(args:SaasUser|undefined)=>void,
+  saasUserRole:string,
+  setSaasUserRole:(args:string)=>void,
 }
 
 const userContext = createContext<UserContext>({} as UserContext);
@@ -34,6 +36,7 @@ export function UserState({ children }: {children: any}) {
   const [crowdCoreToken,setCrowdCoreToken] = useState<boolean>(false);
   const [connectedTeam,setConnectedTeam] = useState<connectTeamResponse[]>([]);
   const [sasaUserInfo,setSaasUserInfo] = useState<SaasUser>();
+  const [saasUserRole,setSaasUserRole] = useState<string>('');
 
   useEffect(() => {
     const idToken = localStorage.getItem('happin_jwt')
@@ -63,6 +66,10 @@ export function UserState({ children }: {children: any}) {
     const affiliationFS = localStorage.getItem('affiliation');
     if(affiliationFS) {
       setAffiliation(JSON.parse(affiliationFS));
+    }
+    const saasUserRoleFS = localStorage.getItem('saasUerRole');
+    if(saasUserRoleFS) {
+      setSaasUserRole(saasUserRoleFS);
     }
   }, [])
 
@@ -100,6 +107,7 @@ export function UserState({ children }: {children: any}) {
     setCrowdCoreToken(false);
     setConnectedTeam([]);
     setSaasUserInfo(undefined);
+    setSaasUserRole('')
     localStorage.removeItem('happin_refresh_token');
     localStorage.removeItem('happin_jwt');
     localStorage.removeItem('chumi_jwt');
@@ -108,11 +116,12 @@ export function UserState({ children }: {children: any}) {
     localStorage.removeItem('partnerId');
     localStorage.removeItem('affiliation');
     localStorage.removeItem('teamUser');
+    localStorage.removeItem('saasUerRole');
   }
 
   return (
     <userContext.Provider value={{ user, setUserInfo,clearUser, exchangeForCrowdCoreToken, eventDeepLink, setEventDeepLink, teamUser, setTeamUser, affiliation,
-      setAffiliation,partnerId,setPartnerId,crowdCoreToken,setCrowdCoreToken,connectedTeam, setConnectedTeam, sasaUserInfo, setSaasUserInfo}}>
+      setAffiliation,partnerId,setPartnerId,crowdCoreToken,setCrowdCoreToken,connectedTeam, setConnectedTeam, sasaUserInfo, setSaasUserInfo, saasUserRole,setSaasUserRole}}>
       {children}
     </userContext.Provider>
   );

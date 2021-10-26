@@ -31,54 +31,115 @@ const Dashboard = () => {
   const [showNavBar,setShowNavBar] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(true);
   const [reportLoading, setReportLoading] = useState<boolean>(false);
+  const [downloadUrl,setDownloadUrl] = useState<string>();
+  const [hideDownloadButton,setHideDownloadButton] = useState<boolean>(false);
 
   const handleDownloadAffiliateReport = async(acid:string)=>{
-    try {
-      setReportLoading(true);
-      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      let form = {
-        acids:[acid],
-        reportType:"affiliate",
-        timezone:timeZone,
-      }
-      const { _id } = await generateAffiliateReport(form);
-
-      let loopTimes = 0;
-      while(true) {
-        if (loopTimes < 2) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
-        } else {
-          await new Promise(resolve => setTimeout(resolve, 5000));
+    const { query: { fromapp,token,role } } = router;
+    if(fromapp && token && role) {
+      try {
+        setReportLoading(true);
+        setDownloadUrl('');
+        let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        let form = {
+          acids:[acid],
+          reportType:"affiliate",
+          timezone:timeZone,
         }
-        const results = await getAffiliateReport(_id);
-        if (results[0].status === 'completed') {
-          window.open(results[0].resultUrl, '_blank');
-          return;
-        } else if (results[0].status === 'fail') {
-          generateToast('Failed to generate report. Please try again later',toast);
-          return;
-        }
-        loopTimes += 1;
-      }
+        const { _id } = await generateAffiliateReport(form);
 
-    } catch(err) {
-      console.log(err)
-    } finally {
-      setReportLoading(false);
+        let loopTimes = 0;
+        while(true) {
+          if (loopTimes < 2) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          const results = await getAffiliateReport(_id);
+          if (results[0].status === 'completed') {
+            setDownloadUrl(results[0].resultUrl);
+            generateToast('If you do not see report downloading, please copy URL to your browser',toast);
+            return;
+          } else if (results[0].status === 'fail') {
+            generateToast('Failed to generate report. Please try again later',toast);
+            return;
+          }
+          loopTimes += 1;
+        }
+
+      } catch(err) {
+        console.log(err)
+      } finally {
+        setReportLoading(false);
+      }
+    } else {
+      try {
+        setReportLoading(true);
+        setDownloadUrl('');
+        let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        let form = {
+          acids:[acid],
+          reportType:"affiliate",
+          timezone:timeZone,
+        }
+        const { _id } = await generateAffiliateReport(form);
+
+        let loopTimes = 0;
+        while(true) {
+          if (loopTimes < 2) {
+            await new Promise(resolve => setTimeout(resolve, 2000));
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 5000));
+          }
+          const results = await getAffiliateReport(_id);
+          if (results[0].status === 'completed') {
+            setDownloadUrl(results[0].resultUrl);
+            window.open(results[0].resultUrl, '_blank');
+            generateToast('If you do not see report downloading, please copy URL to your browser.',toast);
+            return;
+          } else if (results[0].status === 'fail') {
+            generateToast('Failed to generate report. Please try again later',toast);
+            return;
+          }
+          loopTimes += 1;
+        }
+
+      } catch(err) {
+        console.log(err)
+      } finally {
+        setReportLoading(false);
+      }
     }
   }
 
   useEffect(() => {
     if (!router.isReady) return;
-    const { query: { acid,fromapp } } = router;
+    const { query: { acid,fromapp,token,role } } = router;
     if (!acid) {
       return
     }
     (async () => {
       try {
-        if(fromapp) {
+        if(fromapp && token && role) {
           setShowNavBar(false);
+          localStorage.setItem('chumi_jwt', token as string);
+          localStorage.setItem('saasUerRole', role as string);
+          if(role === 'checkin' || role ==='viewonly') {
+            setHideDownloadButton(true);
+          } else {
+            setHideDownloadButton(false);
+          }
         } else {
+          if(localStorage.getItem('saasUerRole')) {
+            let role = localStorage.getItem('saasUerRole')
+            if (role) {
+              if (role === 'checkin' || role ==='viewonly') {
+                setHideDownloadButton(true);
+              } else {
+                setHideDownloadButton(false);
+              }
+            }
+          }
           setShowNavBar(true);
         }
         const result = await getDashboardStat(String(acid))
@@ -95,13 +156,12 @@ const Dashboard = () => {
   }, [router.isReady])
 
   return (
-    <div className="common__body">
+    <div className="common__body max-w-lg mx-auto">
     { showNavBar && <DashboardHead eventDetailData={eventDetailData} loading={loading} />}
     <div className="px-3 pt-3">
       <div className="card">
         <div className="flex">
         <div className="font-medium mb-2 text-gray-700">Total Revenue</div>
-        <div className="text-gray-700 mb-2 ml-auto"><button onClick={()=>{handleDownloadAffiliateReport(eventDetailData._id)}} className="dashboard_report_button">{reportLoading?`Downloading...`:`Download Affiliate Report`}</button></div>
         </div>
         <div className="flex items-center">
           <div className="flex-1">
@@ -119,12 +179,15 @@ const Dashboard = () => {
             <div className="text-gray-700 text-sm mb-1">Total tickets sold</div>
             <div className="text-teal-500 mb-3 font-medium">{dashboardData.sold || 0 }</div>
             <div className="text-gray-700 text-sm mb-1">Total avaible tickets</div>
-            <div className="text-teal-500 font-medium">{dashboardData.total - dashboardData.sold || 0}</div>
+            <div className="text-teal-500 font-medium">{(dashboardData.total - dashboardData.sold)<0 ? 0 :(dashboardData.total - dashboardData.sold) || 0 }</div>
           </div>
           <div className="w-24 h-24">
             <CircularProgressbar
               value={((dashboardData.sold / dashboardData.total) || 0) * 100}
-              text={`${(((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)}%`}
+              text={(((dashboardData.sold / dashboardData.total) || 0) * 100)>=100 ? `100%`:
+                `${
+                (((dashboardData.sold / dashboardData.total) || 0) * 100).toFixed(2)
+              }%`}
               strokeWidth={6}
               styles={buildStyles({
                 pathColor: '#00A699',
@@ -145,9 +208,6 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="card mt-3">
-        <div className="text-gray-700 font-medium mb-2">More trending report/Ticket Sales Overview?</div>
-      </div>
-      <div className="card mt-3">
         <div className="text-gray-700 font-medium mb-2">Total Check In</div>
         <div className="mb-5">
           <span className="text-2xl font-medium text-blue-500">{(dashboardData.checkinStat?.reduce((acc, cur)=> cur.checked + acc, 0)) ||0}</span>
@@ -162,10 +222,9 @@ const Dashboard = () => {
             </div>
           </div>
         ))}
-      
+        { !hideDownloadButton && <div className="mb-2"><button onClick={()=>{handleDownloadAffiliateReport(eventDetailData._id)}} className="dashboard_report_button">{reportLoading?`Downloading...`:`Download Affiliate Report`}</button></div>}
+        {downloadUrl && <div className="text-gray-700 font-medium mb-2">{downloadUrl}</div> }
         <div className="h-px bg-gray-100 my-5"></div>
-{/*         <div className="font-medium mb-2">5 hours range from 4 hours before the show</div>
- */}        {/* <LineChart data={data} /> */}
       </div>
     </div>
     </div>
