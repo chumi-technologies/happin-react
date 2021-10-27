@@ -11,13 +11,14 @@ import { checkinTicket,
 	getSavedEventTicketsList,
 	getTicketsList,
 	getTicketsPlayBackList } from "./tickets";
-import {submitPayment, getOrderStatus, getMerchOrdersSummary} from './order'
-import { getUserInfo, exchangeCrowdcoreToken,getFirebaseCustomToken, exchangeDashboardEventHostToken } from "./user";
+import {submitPayment, getOrderStatus, getMerchOrdersSummary,getPointPackages,getPaymentMethods,submitPointPayment} from './order'
+import { getUserInfo, searchUser, exchangeCrowdcoreToken,getFirebaseCustomToken, exchangeDashboardEventHostToken } from "./user";
 
 export { 
 	getEventDetail, 
 	getGroupEvents, 
 	getUserInfo,
+	searchUser,
 	exchangeCrowdcoreToken,
 	checkinTicket, 
 	getEventDetailForCheckout,
@@ -38,5 +39,8 @@ export {
 	getFirebaseCustomToken,
 	getWhiteLabelDomain,
 	exchangeDashboardEventHostToken,
-	saveOrUnsavedEvent
+	saveOrUnsavedEvent,
+	getPointPackages,
+	getPaymentMethods,
+	submitPointPayment
 };
