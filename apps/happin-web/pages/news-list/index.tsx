@@ -65,7 +65,7 @@ const NewsList = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {blogList.map(blog =>
               <div key={blog._id} className="relative flex flex-col bg-white bg-opacity-5 border border-solid border-gray-900 rounded-md overflow-hidden text-white">
-                <Link href={`/news-list/article/${blog._id}`}>
+                <Link href={`/news-list/article/${blog.urlTitle}`}>
                   <a className="aspect-h-9 aspect-w-16">
                     <img src={blog.covername.startsWith('https://') ? blog.covername : 'https://images.chumi.co/' + blog.covername}
                       className="w-full h-full object-cover transition hover:opacity-80" />
@@ -76,7 +76,7 @@ const NewsList = () => {
                   {blog?.tags?.map((tag: string) => <div key={tag} className="inline-flex py-0.5 px-2 bg-yellow-500 text-black text-xs rounded-md font-medium">{tag}</div>)}
                   <div className="text-sm text-gray-300 font-medium">{moment(blog.postDate).format('MMM DD, YYYY')}</div>
                   </div>
-                  <Link href={`/news-list/article/${blog._id}`}>
+                  <Link href={`/news-list/article/${blog.urlTitle}`}>
                     <a className="block font-semibold mb-3 text-lg transition hover:text-rose-500">{blog.title}</a>
                   </Link>
                   <p className="ellipsis-3 text-sm text-gray-200">{blog.subDescription}</p>

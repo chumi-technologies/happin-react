@@ -5,6 +5,7 @@ import { GetServerSidePropsResult } from "next";
 import { getBlogById, getBlogByURLTitle } from "lib/api";
 import moment from "moment";
 import Head from "next/head";
+import _ from 'lodash';
 
 interface IArticle {
   author: string;
@@ -50,6 +51,7 @@ const Article = (props: IArticle) => {
         <meta name="description" key="description" content={props.seodescription} />
         <meta name="keywords" key="keywords" content={props.seokeywords} />
         <title>{props.title}</title>
+        <meta property="og:image" key="og:image" content={props?.covername?.startsWith('https://') ? props?.covername : 'https://images.chumi.co/' + props?.covername} />
         <meta property="og:title" key="og:title" content={props.title} />
         <meta property="og:description" key="og:description" content={props.seodescription} />
         <meta property="og:site_name" key="og:site_name" content={props.title} />
@@ -128,14 +130,20 @@ export async function getServerSideProps(context: { params: { article_id: string
     } else {
       result = await getBlogById(articleTitle);
     }
-    const props = result
+    const props = result;
 
+    if (_.isEmpty(result) && articleTitle !== '5fcc40be77e25200098835df') {
+      throw new Error('Article not found');
+    }
     return {
       props,
     }
   } catch (err) {
-    console.log(err)
     return {
+      redirect: {
+        permanent: false,
+        destination: "/404",
+      },
       props: {},
     };
   }
