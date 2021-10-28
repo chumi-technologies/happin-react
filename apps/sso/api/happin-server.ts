@@ -45,4 +45,13 @@ const signUpHappin = async (firebaseToken: string, payload: signUpHappinPayload)
   return data;
 }
 
-export { getChumiServerToken, getFirebaseCustomToken, signUpHappin };
+const getHappinUser = async (firebaseToken: string) => {
+  const { data: { code, data } } = await getAxiosWithAuth(firebaseToken).get(`/user`);
+  console.log(data)
+  if (code !== 200) {
+    throw new Error(`Fail to get user`)
+  }
+  return data;
+}
+
+export { getChumiServerToken, getFirebaseCustomToken, signUpHappin, getHappinUser };
