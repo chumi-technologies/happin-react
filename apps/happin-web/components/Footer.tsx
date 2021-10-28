@@ -5,7 +5,7 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
     {!whiteLabelLogo ?
       <div className="container divide-y divide-white divide-opacity-20">
         <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
-{/*           <div className="w-52 mb-8 sm:mb-10">
+          {/*           <div className="w-52 mb-8 sm:mb-10">
             <h3 className="tracking-wide uppercase font-bold text-sm text-white">Product</h3>
             <ul className="foot-menu">
               <li>
@@ -24,9 +24,11 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
           <div className="w-52 mb-8 sm:mb-10">
             <h3 className="tracking-wide uppercase font-bold text-sm text-white">Resources</h3>
             <ul className="foot-menu">
-              <li>
-                <a href="https://livestream.happin.app/news-list" target="_blank" rel="noreferrer">News</a>
-              </li>
+              <Link href="/news-list">
+                <li>
+                  <a>News</a>
+                </li>
+              </Link>
               <li>
                 <a href="mailto:admin@happin.app">Contact Us</a>
               </li>
