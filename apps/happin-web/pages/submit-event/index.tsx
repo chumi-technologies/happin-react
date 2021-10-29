@@ -1,6 +1,7 @@
 import { useToast, Spinner } from "@chakra-ui/react";
 import { useSSOState } from "contexts/sso-state";
-import { crawlThirdPartyEvent } from "lib/api";
+import { useUserState } from "contexts/user-state";
+import { crawlThirdPartyEvent, exchangeDashboardEventHostToken } from "lib/api";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import ThirdPartyEvent from "../../components/page_components/SubmitEventPageComponents/ThirdPartyEvent";
@@ -33,12 +34,30 @@ export default function SubmitEvent() {
   const [thirdPartyEventData, setThirdPartyEventData] = useState<IThirdPartyEvent>();
   const [thirdPartyReadOnlyProps, setThirdPartyReadOnlyProps] = useState<string[]>();
   const { showSSOSignUp } = useSSOState();
+  const { user } = useUserState();
   const generateToast = (message: string) => {
     toast({
       title: message,
       position: 'top',
       isClosable: true,
     })
+  }
+
+  const redirectToTicketingHome = async () => {
+    if (!user) {
+      router.push('https://ticketing.happin.app')
+    } else {
+      try {
+        const res = await exchangeDashboardEventHostToken();
+        if (res.code !== 200) {
+          throw new Error(res.message)
+        }
+        const sassToken = res.data.token;
+        router.push(`https://ticketing.happin.app?token=${sassToken}`)
+      } catch (err) {
+        console.log(err)
+      }
+    }
   }
 
   const onURLClickHandler = async () => {
@@ -96,7 +115,7 @@ export default function SubmitEvent() {
                     </button>
                     <br />
                     <p className="black-title text-base sm:text-xl text-white font-bold  m-8 text-center">OR</p>
-                    <button onClick={() => { router.push('https://ticketing.happin.app') }} style={{ width: '100%' }} className="btn btn-rose !px-0 !font-semibold !rounded-full" >
+                    <button onClick={redirectToTicketingHome} style={{ width: '100%' }} className="btn btn-rose !px-0 !font-semibold !rounded-full" >
                       <span className="text-sm sm:text-base">Create event as organizer</span>
                     </button>
                   </div>
