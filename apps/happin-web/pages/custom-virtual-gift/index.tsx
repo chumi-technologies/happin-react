@@ -97,9 +97,9 @@ export default function CustomVirtualGift() {
           <div className="container">
             <div className="flex items-center justify-between py-3 sm:py-0 sm:h-20">
               <div className="font-bold text-lg sm:text-2xl">Custom virtual gift</div>
-              <div className="fixed sm:static left-0 right-0 bottom-0">
+              <div className="fixed sm:static left-0 right-0 bottom-0 z-20">
                 <button
-                  className="btn btn-rose flex sm:inline-flex items-center justify-center w-full sm:w-auto !font-semibold !rounded-none sm:!rounded-full !py-4 !px-5"
+                  className="btn btn-rose flex sm:inline-flex items-center justify-center w-full sm:w-auto !font-semibold !rounded-none sm:!rounded-full !py-4 sm:!py-3 !px-5"
                   onClick={() => {
                     setIsEdit(false)
                     setIsOpen(true)
@@ -151,6 +151,7 @@ export default function CustomVirtualGift() {
                 ))
               }
             </div>
+            <div className="h-14 sm:hidden" />
           </div>
         </div>
       </div>
