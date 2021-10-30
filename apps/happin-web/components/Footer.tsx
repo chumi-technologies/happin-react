@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
   return <footer>
     {!whiteLabelLogo ?
-      <div className="container divide-y divide-white divide-opacity-20">
+      <div className="container divide-y divide-white divide-opacity-20 bg-black">
         <div className="flex flex-col sm:justify-between flex-wrap sm:flex-row pt-10">
           {/*           <div className="w-52 mb-8 sm:mb-10">
             <h3 className="tracking-wide uppercase font-bold text-sm text-white">Product</h3>

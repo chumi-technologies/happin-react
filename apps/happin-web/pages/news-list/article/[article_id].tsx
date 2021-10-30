@@ -44,6 +44,12 @@ const Article = (props: IArticle) => {
       });
     }
   }, [router])
+  useEffect(()=>{
+    document.documentElement.style.background = "#fff"
+    return () =>{
+      document.documentElement.style.removeProperty('background')
+    }
+  },[])
 
   return (
     <>
@@ -61,9 +67,9 @@ const Article = (props: IArticle) => {
       </Head>
       <div>
         {!isPreview ?
-          <div className="py-6 sm:py-10 md:py-16 lg:py-24">
+          <div className="py-6 sm:py-10 md:py-16 lg:py-24 bg-white">
             <div className="container">
-              <div className="text-white article-container">
+              <div className="article-container">
                 <div className="text-center">
                   {props?.tags?.map(tag => <div key={tag} className="uppercase text-rose-500 font-semibold mb-3 sm:mb-4">{tag}</div>)}
                   <h1 className="black-title text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 lg:mb-6">{props?.title}</h1>
@@ -73,7 +79,7 @@ const Article = (props: IArticle) => {
                     <div className="font-medium">
                       <span>{props?.author}</span>
                       <span className="mx-3">·</span>
-                      <span className="text-sm text-gray-300">{moment(props?.postDate).format('MMM DD, YYYY')}</span>
+                      <span className="text-sm text-gray-600">{moment(props?.postDate).format('MMM DD, YYYY')}</span>
                     </div>
 
                   </div>
@@ -86,7 +92,7 @@ const Article = (props: IArticle) => {
               </div>
             </div>
           </div> :
-          <div className="py-6 sm:py-10 md:py-16 lg:py-24">
+          <div className="py-6 sm:py-10 md:py-16 lg:py-24 bg-white">
             <div className="container">
               <div className="text-white article-container">
                 <div className="text-center">
@@ -98,7 +104,7 @@ const Article = (props: IArticle) => {
                     <div className="font-medium">
                       <span>{blog?.author}</span>
                       <span className="mx-3">·</span>
-                      <span className="text-sm text-gray-300">{blog && moment(blog.postDate).format('MMM DD, YYYY')}</span>
+                      <span className="text-sm text-gray-600">{blog && moment(blog.postDate).format('MMM DD, YYYY')}</span>
                     </div>
 
                   </div>
