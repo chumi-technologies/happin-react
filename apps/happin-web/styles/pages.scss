@@ -462,7 +462,7 @@
   }
 }
 
-// event submit 
+// event submit
 .event-submit__container {
   @apply w-full px-4 sm:px-8 mx-auto lg:m-0;
   //padding-right: 4.5rem;
@@ -504,3 +504,26 @@
 }
 
 
+// Custom Virtual Gift
+.custom-gift__upload {
+  max-width: 300px;
+  margin: 0 auto;
+}
+.custom-gift__image {
+  @apply relative table-cell align-middle text-center rounded-lg overflow-hidden bg-gray-900;
+  width: 300px;
+  height: 300px;
+  .filepond--image-preview-overlay {
+    opacity: 1;
+  }
+  img {
+    @apply w-auto h-auto max-w-full max-h-full
+  }
+  .custom-gift__image-wrapper {
+
+  }
+
+}
+.custom-gift__delete {
+  @apply absolute top-2 flex items-center justify-center w-8 h-8 text-white rounded-full bg-black border-2 opacity-80 border-transparent hover:border-gray-300 hover:opacity-100 cursor-pointer z-10 transition
+}

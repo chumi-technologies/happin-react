@@ -229,3 +229,26 @@
     }
   }
 }
+
+
+// FilePond
+
+.filepond--panel-root {
+  background-color: theme('colors.gray.700') !important;
+}
+.filepond--drop-label {
+ color: theme('colors.gray.300') !important;
+}
+.filepond--label-action {
+  @apply transition;
+  &:hover {
+    color: #fff;
+  }
+}
+.filepond--root .filepond--drop-label {
+  bottom: 0;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
