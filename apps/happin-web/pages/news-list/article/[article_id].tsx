@@ -119,8 +119,9 @@ const Article = (props: IArticle) => {
           </div>
         }
 
-        <Footer />
+       
       </div>
+      <Footer />
     </>
   );
 };
