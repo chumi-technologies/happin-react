@@ -148,6 +148,20 @@ const PaymentInner = (props: any) => {
   if (typeof window !== 'undefined') {
     innerWidth = window.innerWidth;
   }
+
+  let isIos = (() => {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  })()
+
   // for stripe, in case stripe payment failed , can pay again with this secret
   const [clientSecret, setClientSecret] = useState<string>();
 
@@ -665,9 +679,14 @@ const PaymentInner = (props: any) => {
             postCloseMessageForApp()
           }
         } else {
-          setTimeout(() => {
-            router.push(`/my-events`)
-          }, 1000)
+          if (isIos) {
+            localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
+            router.push('/purchase-success')
+          } else {
+            setTimeout(() => {
+              router.push(`/my-events`)
+            }, 1000)
+          }
         }
       }
     } catch (err) {
@@ -681,31 +700,6 @@ const PaymentInner = (props: any) => {
     }
   }
 
-  /*   const handlePaymentError = (errCode: string) => {
-      console.log('payment error: ', errCode)
-      switch (errCode) {
-        case 'incorrect_cvc':
-          generateToast('Incorrect CVC code, please check your card input', toast)
-          break;
-        case 'incomplete_cvc':
-          generateToast('Incomplete CVC code, please check your card input', toast)
-          break;
-        case 'incomplete_zip':
-          generateToast('Incomplete ZIP code, please check your card input', toast)
-          break;
-        case 'expired_card':
-          generateToast('Your card has expired.', toast)
-          break;
-        case 'card_declined':
-          generateToast('Your card was declined.', toast)
-          break;
-        case 'processing_error':
-          generateToast('An error occured while processing your card. Please try again later', toast)
-        default:
-          generateToast('Unknown error, please contact us', toast)
-          break
-      }
-    } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
@@ -726,9 +720,14 @@ const PaymentInner = (props: any) => {
               postCloseMessageForApp()
             }
           } else {
-            setTimeout(() => {
-              router.push(`/my-events`)
-            }, 1000)
+            if (isIos) {
+              localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
+              router.push('/purchase-success')
+            } else {
+              setTimeout(() => {
+                router.push(`/my-events`)
+              }, 1000)
+            }
           }
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
