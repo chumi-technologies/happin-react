@@ -681,7 +681,7 @@ const PaymentInner = (props: any) => {
         } else {
           if (isIos) {
             localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
-            router.push('/purchase-success')
+            router.push('/checkout/purchase-success')
           } else {
             setTimeout(() => {
               router.push(`/my-events`)
@@ -722,7 +722,7 @@ const PaymentInner = (props: any) => {
           } else {
             if (isIos) {
               localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
-              router.push('/purchase-success')
+              router.push('/checkout/purchase-success')
             } else {
               setTimeout(() => {
                 router.push(`/my-events`)
