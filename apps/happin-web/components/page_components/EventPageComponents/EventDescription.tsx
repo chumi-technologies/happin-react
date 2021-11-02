@@ -10,9 +10,9 @@ type EventDescriptionProps = {
   description?: string;
   rawDescription?: string;
   sourceURL?: string;
-  setPreventScrolling: (arg: any) => void,
-  setOpenIframe: (arg:any) => void,
-  canUseIframe: boolean,
+  setPreventScrolling?: (arg: any) => void,
+  setOpenIframe?: (arg:any) => void,
+  canUseIframe?: boolean,
 }
 
 const EventDescription = ({ description, rawDescription = "", sourceURL, setOpenIframe, canUseIframe, setPreventScrolling }: EventDescriptionProps) => {
@@ -36,8 +36,10 @@ const EventDescription = ({ description, rawDescription = "", sourceURL, setOpen
   const openThirdPartyEventSite = ()=> {
     if (canUseIframe) {
       (document.querySelector('#scroll-body') as Element).scrollTo(0, 0);
-      setOpenIframe(true);
-      setPreventScrolling(true);
+      if (setPreventScrolling && setOpenIframe) {
+        setOpenIframe(true);
+        setPreventScrolling(true);
+      }
     } else {
       window.open(sourceURL, '_blank')
     }
