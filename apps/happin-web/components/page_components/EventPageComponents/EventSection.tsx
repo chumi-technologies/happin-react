@@ -9,8 +9,13 @@ import { useState } from "react";
 import { Link, Element } from 'react-scroll';
 import classNames from 'classnames';
 
-const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen }: {
-  setIsModalOpen: (arg: boolean) => void, eventData: EventData, groupEvents: any, setIsRedeemModalOpen: (arg: boolean) => void
+const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen, setOpenIframe, canUseIframe, setPreventScrolling }: {
+  setIsModalOpen: (arg: boolean) => void, 
+  eventData: EventData, groupEvents: any, 
+  setIsRedeemModalOpen: (arg: boolean) => void,
+  setPreventScrolling: (arg: any) => void,
+  setOpenIframe: (arg:any) => void,
+  canUseIframe: boolean,
 }) => {
   //const [firstActive, setFirstActive] = useState(true)
   //const [tabCur, setTabCur] = useState(0)
@@ -74,6 +79,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
       {/*{tabCur === 0 &&*/}
         <Element name="about" className="py-6 sm:py-10">
           <EventDescription
+            setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling}
             description={eventData?.event?.content}
             rawDescription={eventData?.event?.contentPlainText} 
             sourceURL={eventData?.event?.sourceUrl}

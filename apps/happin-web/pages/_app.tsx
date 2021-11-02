@@ -20,6 +20,8 @@ function App({ Component, pageProps }: AppProps) {
             <SSO />
             <Layout>
               <Component {...pageProps} />
+              {/* third party event iframe portal */}
+              <div id="third_party_event_iframe"></div>
             </Layout>
           </SSOState>
         </CheckoutState>

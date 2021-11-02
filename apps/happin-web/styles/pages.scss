@@ -141,6 +141,40 @@
   }
 }
 
+#event_details_iframe {
+  position: absolute;
+  right: 0%;
+  z-index: 99;
+  width: 100vw;
+  height: 90vh;
+  top: 10%;
+  background-color:gray;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.event-details__backdrop {
+  top: 100%;
+  left:0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(40,41,44,.9);
+  transition: top 0.3s ease-in-out;
+}
+
+.event-details__show_backdrop {
+  top: 0;
+}
+
+.event-details__close_iframe {
+  position: absolute;
+  font-size: 30px;
+  color:#fff;
+  top: 2%;
+  left: 50%;
+  z-index: 999;
+}
+
 // Check out
 .checkout__page {
   @apply relative flex-1 h-0 text-white overflow-x-hidden z-0;
