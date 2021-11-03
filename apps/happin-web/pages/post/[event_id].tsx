@@ -66,17 +66,10 @@ const Post = (props: EventData) => {
   useEffect(() => {
     if (eventData.event.sourceUrl) {
       setThirdPartyUrl(eventData.event.sourceUrl);
-      const forbid = forbidDomain.filter(domain => {
-        if (eventData.event.sourceUrl?.includes(domain)) {
-          return true
-        } else {
-          return false
-        }
-      })
-      if (forbid.length) {
-        setCanUseIframe(false)
-      } else {
+      if (eventData.event.sourceUrlAllowIframe) {
         setCanUseIframe(true)
+      } else {
+        setCanUseIframe(false)
       }
     }
   }, [])
