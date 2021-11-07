@@ -201,19 +201,19 @@ export default function CreateEventSet() {
           setIsModalOpen={setCreateCompleteModal}
         >
           <div style={{margin: '0 1.25rem 1.25rem'}}>
-            <p className="black-title text-md text-white text-center font-bold">Collection saved and will be reviewd within three days</p>
-            <p className="black-title mt-6 text-md text-white text-center">To edit or preview, click <u><Link href={`https://happin.app/create-event-collection?id=${newCollectionId}`}>here</Link></u></p>
+            <p className="black-title text-md text-gray-50 text-center font-bold">Collection saved and will be reviewd within three days</p>
+            <p className="black-title mt-6 text-md text-gray-50 text-center">To edit or preview, click <u><Link href={`https://happin.app/create-event-collection?id=${newCollectionId}`}>here</Link></u></p>
           </div>
         </PopUpModal>
       )}
       <div className="create-event-collection__container">
-        <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10 mt-1 sm:mt-4">{editMode ? 'Edit' : 'Create'} event collection</h1>
+        <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10 mt-1 sm:mt-4">{editMode ? 'Edit' : 'Create'} event collection</h1>
         {editMode ?
           <>
-            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">Preview link: {<u><Link href={`https://happin.app/event-collection/${router.query.id}`}>{`https://happin.app/event-collection/${router.query.id}`}</Link></u>}</h1>
-            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">Status: {isApproved ? 'Approved' : 'Not Approved'}</h1>
+            <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">Preview link: {<u><Link href={`https://happin.app/event-collection/${router.query.id}`}>{`https://happin.app/event-collection/${router.query.id}`}</Link></u>}</h1>
+            <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">Status: {isApproved ? 'Approved' : 'Not Approved'}</h1>
           </> :
-          <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">
+          <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">
             Collection page is your unique channel to show all of your recommended events. You can share it with your community, so members can consistently follow you and attend events.
           </h1>
         }

@@ -584,7 +584,7 @@ const Checkout = () => {
                       {/* show bundle optional item here (not free but has relation to ticket) , only show under live ticket
                           in person ticket tab, not showing in add on ticket tab
                       */}
-                      {(merchListState.length > 0 && (showingTab !== 'merch') )&& (<div className="py-5 sm:py-8 text-white">
+                      {(merchListState.length > 0 && (showingTab !== 'merch') )&& (<div className="py-5 sm:py-8 text-gray-50">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
                           merchListState.map((item) => {
@@ -616,7 +616,7 @@ const Checkout = () => {
                     </div>)}
                     </>}
                     {/* merch items start */}
-                    {(merchListState.length > 0 && hasRegularMerch() && ((showingTab === 'merch') || onlyShowMerch)) && (<div id="merch" className="py-5 sm:py-8 text-white">
+                    {(merchListState.length > 0 && hasRegularMerch() && ((showingTab === 'merch') || onlyShowMerch)) && (<div id="merch" className="py-5 sm:py-8 text-gray-50">
                       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                         {
                           merchListState.map((item) => {

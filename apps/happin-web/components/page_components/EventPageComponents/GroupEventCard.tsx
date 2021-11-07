@@ -24,7 +24,7 @@ const GroupEventCard = ({ groupEvent, setIsModalOpen }: GroupEventCardProp) => {
         {moment.utc(groupEvent?.startTime).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
       </div>
       {(groupEvent?.price !== null && groupEvent?.price !== undefined) && (
-        <div className="text-sm font-semibold text-white mb-1">{`Price from ${currencyFormatter(groupEvent.default_currency as string).format(groupEvent.price)}`}</div>
+        <div className="text-sm font-semibold text-gray-50 mb-1">{`Price from ${currencyFormatter(groupEvent.default_currency as string).format(groupEvent.price)}`}</div>
       )}
       <div className={`text-sm text-gray-400 ${(groupEvent?.contentPlainText?.length < 80)? "" : "truncate"}`}>{groupEvent?.contentPlainText}</div>
     </div>

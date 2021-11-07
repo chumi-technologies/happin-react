@@ -42,10 +42,10 @@ export default function MyEventSets() {
     <>
       <div className="create-event-collection__container">
         <div className="lg:pr-10 mt-1 sm:mt-4 black-title flex" style={{ justifyContent: 'space-between' }}>
-          <h1 className=" text-xl sm:text-3xl md:text-4xl text-white font-bold " style={{position: 'relative'}}>Your event collections&nbsp;
+          <h1 className=" text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold " style={{position: 'relative'}}>Your event collections&nbsp;
           <Tooltip label="Collection page is your unique channel to show all of your recommended events. You can share it with your community, so members can consistently follow you and attend events." >
             <QuestionIcon style={{position: 'absolute', top: '0'}} color="white" className="text-sm"/>
-          </Tooltip></h1>            
+          </Tooltip></h1>
           <button onClick={() => { router.push('/create-event-collection') }} style={{ width: '200px' }} className="btn btn-yellow !px-0 !font-semibold !rounded-full" >
             <span className="text-sm sm:text-base">Create new collection</span>
           </button>
@@ -66,7 +66,7 @@ export default function MyEventSets() {
                       {!collections?.length ?
                         <>
                           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <h1 className="black-title text-base sm:text-xl text-white mt-1 sm:mt-3">You {`don't`} have any collections, please create one first.</h1>
+                            <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">You {`don't`} have any collections, please create one first.</h1>
                           </div>
                         </>
                         :
@@ -86,7 +86,7 @@ export default function MyEventSets() {
                                 </div>
                                 <Link href={`/create-event-collection?id=${data._id}`}>
                                   <div className="mt-3">
-                                    <div className="truncate text-white font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}
+                                    <div className="truncate text-gray-50 font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}
                                     </div>
                                   </div>
                                 </Link>

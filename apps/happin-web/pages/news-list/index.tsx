@@ -49,7 +49,7 @@ const NewsList = () => {
 
   return (
     <div>
-      <div className="news__banner text-center text-white py-12 sm:py-16 lg:py-24">
+      <div className="news__banner text-center text-gray-50 py-12 sm:py-16 lg:py-24">
         <div className="container">
           <h1 className="black-title text-3xl sm:text-5xl lg:text-6xl font-bold mb-5 sm:mb-6 md:mb-8 lg:mb-10">News</h1>
           <div className="news__search">
@@ -64,7 +64,7 @@ const NewsList = () => {
         <div className="container">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
             {blogList.map(blog =>
-              <div key={blog._id} className="relative flex flex-col bg-white bg-opacity-5 border border-solid border-gray-900 rounded-md overflow-hidden text-white">
+              <div key={blog._id} className="relative flex flex-col bg-white bg-opacity-5 border border-solid border-black rounded-md overflow-hidden text-gray-50">
                 <Link href={`/news-list/article/${blog.urlTitle}`}>
                   <a className="aspect-h-9 aspect-w-16">
                     <img src={blog.covername.startsWith('https://') ? blog.covername : 'https://images.chumi.co/' + blog.covername}

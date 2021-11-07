@@ -83,7 +83,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   return (
     <header className="header">
       {children}
-      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
+      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-gray-900">
         {/* Mobile Search Form */}
       {/*   <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
           <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
@@ -109,7 +109,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
             <Menu as="div" className="relative md:hidden">
               {({ open }) => (
                 <>
-                  <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-900', { 'bg-gray-800 text-white hover:bg-gray-800': open })}>
+                  <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-gray-50 hover:bg-gray-900', { 'bg-gray-800 text-gray-50 hover:bg-gray-800': open })}>
                     <More theme="outline" size="24" fill="currentColor" />
                   </Menu.Button>
                   <Transition
@@ -190,7 +190,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                     leaveFrom="fade-leave-from"
                     leaveTo="fade-leave-to"
                   >
-                    <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-800">
+                    <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-700">
                       <div className="py-1">
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>

@@ -133,9 +133,9 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         <div className="px-5 sm:px-6">
           <div className="relative flex items-start py-4 sm:py-6 border-b border-solid border-gray-700">
             <div className="w-full pr-7">
-              <div className="leading-none mb-2 font-semibold text-white">{ticket?.title}</div>
+              <div className="leading-none mb-2 font-semibold text-gray-50">{ticket?.title}</div>
               <div className="font-medium text-xs text-gray-400">
-                <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
+                <span className="text-gray-50 text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)}</span>
                 {/*  {generalTicketInfo && (
                   generalTicketInfo.taxNeeded ? <span className="text-white text-sm">{eventDataForCheckout?.default_currency} {ticket?.price} {generalTicketInfo.absorbFee ? '+ Tax' : '+ Tax, + Fee'}</span>
                     : <span className="text-white text-sm">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(ticket?.price)} {generalTicketInfo.absorbFee ? '' : '+ Fee'}</span>)} */}
@@ -165,7 +165,7 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
                   />
                 </div>
                 <div className="flex-1 min-w-0 ml-5">
-                  <div className="text-white font-semibold mb-1">{item.name}</div>
+                  <div className="text-gray-50 font-semibold mb-1">{item.name}</div>
                   <div className="text-gray-400 text-tiny mb-3">{item.description}</div>
                   {
                     // isOpen is added here to ensure the select component is reset after close
@@ -198,10 +198,10 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
         />
         <div className="flex-1 ml-4 sm:ml-6">
           {checkSoldOut() ? <button className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
-            <SvgIcon id="buy" disabled className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="buy" disabled className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">SOLD OUT</span>
           </button> : <button disabled={inputValue === 0} onClick={addBundleButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
-            <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="buy" className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>
           </button>}
 

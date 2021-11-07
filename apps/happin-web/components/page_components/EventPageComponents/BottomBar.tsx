@@ -56,12 +56,12 @@ const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpe
             <span className="text-sm sm:text-base">Chat with Fans</span>
           </button>
           {!offSaleTimeHasPast(eventData) && <button disabled={isSoldOut || checkOffLineEventStarted(eventData)} onClick={buyTicketClickHandler} style={{ padding: '0.55rem' }} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
-            <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="ticket" className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">{isSoldOut ? "Sold Out" : checkOffLineEventStarted(eventData) ? "Event Started" : "Get Tickets"}</span>
           </button>}
 
           {offSaleTimeHasPast(eventData) && <button disabled={true} style={{ padding: '0.55rem' }} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
-            <SvgIcon id="ticket" className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="ticket" className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">{eventData.event.acInfo.offSaleSetting?.offSaleText}</span>
           </button>}
         </div>

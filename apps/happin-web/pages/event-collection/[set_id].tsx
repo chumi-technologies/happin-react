@@ -102,7 +102,7 @@ const EventSet = () => {
 
             </HStack>
             {/* Event Title */}
-            <h1 className="black-title text-2xl sm:text-3xl md:text-4xl leading-7 text-white font-bold mt-2">
+            <h1 className="black-title text-2xl sm:text-3xl md:text-4xl leading-7 text-gray-50 font-bold mt-2">
               {collectionData?.title}
             </h1>
 
@@ -127,7 +127,7 @@ const EventSet = () => {
             <div className="pt-6 sm:pt-10">
               <div className="black-title flex items-center justify-between text-xl sm:text-2xl font-semibold">
                 <div>Collection events</div>
-                {/*  <Link href="/"><a className="font-medium text-sm sm:text-base text-gray-400 hover:text-white transition">MORE</a></Link> */}
+                {/*  <Link href="/"><a className="font-medium text-sm sm:text-base text-gray-400 hover:text-gray-50 transition">MORE</a></Link> */}
               </div>
               <div className="mt-3 sm:mt-6">
                 <div className="space-y-5">
@@ -137,13 +137,13 @@ const EventSet = () => {
                         <img className="w-full h-full object-cover group-hover:opacity-80 transition" src={event.cover} />
                       </div>
                       <div className="flex-1 min-w-0 ml-5">
-                        <div className="truncate sm:text-lg leading-6 text-white font-semibold group-hover:text-rose-500 transition">{event.title}</div>
+                        <div className="truncate sm:text-lg leading-6 text-gray-50 font-semibold group-hover:text-rose-500 transition">{event.title}</div>
                         <div className="mt-1 sm:mt-2 text-yellow-500 text-sm font-semibold">{moment.utc(event.start_datetime).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')}</div>
                         <div className="truncate mt-1">
                           <div className="flex items-start w-full">
-                            {(event.acInfo?.location || event.acInfo?.venueName) && <SvgIcon id="location" className="text-lg text-white" />}
+                            {(event.acInfo?.location || event.acInfo?.venueName) && <SvgIcon id="location" className="text-lg text-gray-50" />}
                             <div className="ml-3">
-                              <div className="text-white leading-none mb-1">
+                              <div className="text-gray-50 leading-none mb-1">
                                 {event.streamEnabled ? (`Happin Livestream${(event.acInfo?.eventType === "hybrid" && event.acInfo?.venueName) ? ` / ${event.acInfo?.venueName}` : ""}`) : (event.acInfo?.venueName)} <span className="text-gray-400 text-sm">{event.acInfo?.location !== "happin.app" && (event.acInfo?.location)}</span>
                               </div>
                             </div>

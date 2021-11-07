@@ -41,7 +41,7 @@ export default function Home() {
   const openModal = () => {
     setIsOpen(true)
   }
-  
+
   useEffect(() => {
     if (router.query.logout) {
       clearUser();
@@ -50,7 +50,7 @@ export default function Home() {
   },[router])
 
   return (
-    <div className="relative bg-black text-white z-0">
+    <div className="relative bg-gray-900 text-gray-50 z-0">
       <div className="relative overflow-hidden pt-48 pb-40 md:py-52 lg:py-64 home__banner">
         <div className="container">
           <div className="absolute -left-14 lg:-left-20 xl:-left-28 top-12 w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-56 xl:h-56 rounded-full bg-yellow-500" />
@@ -193,15 +193,15 @@ export default function Home() {
                 <div className="relative flex items-center mb-6">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg sm:text-xl font-bold leading-6 text-white"
+                    className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
                   >
                     xxxx is waiting for android version
                   </Dialog.Title>
-                  <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
+                  <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-semibold text-xl" placeholder="Enter Your Email" />
+                <input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />
                 <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. Are you an android user? Leave your email here to push Happin team.</p>
                 <button
                   type="button"
@@ -245,7 +245,7 @@ export async function getServerSideProps(context: { req: {headers: {host: string
         destination: response.isGroup? `https://livestream.happin.app/event-schedule/${response.eventId}?host=${context.req.headers.host}` :`/post/${response.eventId}`
       }
     }
-  }  
+  }
   return {props: {}}
 }
 

@@ -54,9 +54,9 @@ const TicketItem = (props: TicketItemProps) => {
     <div className="py-5 sm:py-8">
       <div className="flex items-start media-sm">
         <div className="flex-1 mr-2">
-          <div className="sm:text-lg leading-none mb-1 font-semibold text-white">{data.title}</div>
+          <div className="sm:text-lg leading-none mb-1 font-semibold text-gray-50">{data.title}</div>
           <div className="font-medium text-xs text-gray-400">
-            <span className="text-white text-sm">{currencyFormatter(currency as string).format(data.price)}</span>
+            <span className="text-gray-50 text-sm">{currencyFormatter(currency as string).format(data.price)}</span>
             {data.price!==0 && (taxNeeded  ? <span className="ml-1">{absorbFee ? '+ Tax' : '+ Tax + Fee'}</span> : <span className="ml-1">{absorbFee ? '' : '+ Fee'}</span>)}
             {renderDiscountNumberFromUrlCode()}
           </div>
@@ -105,13 +105,13 @@ const TicketItem = (props: TicketItemProps) => {
         }
       </HStack>
       {
-        data.notes && <div className="text-white text-xs sm:text-sm mt-2">{data.notes}</div>
+        data.notes && <div className="text-gray-50 text-xs sm:text-sm mt-2">{data.notes}</div>
       }
       {
         data.ticketType === ETicketType.PFM && (
           <div>
               <a href='https://help.happin.app/en/articles/4891884-what-is-vip-fan-meeting' rel="noreferrer" target='_blank'
-              className="inline-block text-white font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s
+              className="inline-block text-gray-50 font-medium text-xs cursor-pointer underline hover:text-rose-500">What’s
                 VIP room?</a>
           </div>
         )

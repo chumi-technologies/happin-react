@@ -94,7 +94,7 @@ const Article = (props: IArticle) => {
           </div> :
           <div className="py-6 sm:py-10 md:py-16 lg:py-24 bg-white">
             <div className="container">
-              <div className="text-white article-container">
+              <div className="text-gray-50 article-container">
                 <div className="text-center">
                   {blog?.tags.map(tag => <div key={tag} className="uppercase text-rose-500 font-semibold mb-3 sm:mb-4">{tag}</div>)}
                   <h1 className="black-title text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 lg:mb-6">{blog?.title}</h1>
@@ -119,7 +119,7 @@ const Article = (props: IArticle) => {
           </div>
         }
 
-       
+
       </div>
       <Footer />
     </>

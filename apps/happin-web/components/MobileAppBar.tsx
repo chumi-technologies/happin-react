@@ -9,7 +9,7 @@ const MobileAppBar = ({ setIsMobileBarOpen }: { setIsMobileBarOpen: any }) => {
     setIsMobileBarOpen((s: any) => !s);
   }
   return (
-   <div className="px-4 py-4 text-white bg-rose-500 sm:hidden">
+   <div className="px-4 py-4 text-gray-50 bg-rose-500 sm:hidden">
       <div className="text-sm font-bold">
         Happin is better on app, try our event social app!
       </div>

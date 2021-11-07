@@ -10,8 +10,8 @@ import { Link, Element } from 'react-scroll';
 import classNames from 'classnames';
 
 const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModalOpen, setOpenIframe, canUseIframe, setPreventScrolling }: {
-  setIsModalOpen: (arg: boolean) => void, 
-  eventData: EventData, groupEvents: any, 
+  setIsModalOpen: (arg: boolean) => void,
+  eventData: EventData, groupEvents: any,
   setIsRedeemModalOpen: (arg: boolean) => void,
   setPreventScrolling: (arg: any) => void,
   setOpenIframe: (arg:any) => void,
@@ -38,7 +38,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
         sourceURL={eventData?.event?.sourceUrl}
         setIsRedeemModalOpen={setIsRedeemModalOpen} />
       {/* About and Agenda links */}
-      <div className="sticky top-0 bg-black z-10">
+      <div className="sticky top-0 bg-gray-900 z-10">
         <div className="flex w-full mt-8 sm:mt-14 p-1 border border-solid border-gray-600 rounded-full">
           <Link
             className={classNames('event-details__tab', {active: isActive === 0})}
@@ -81,7 +81,7 @@ const EventSection = ({ setIsModalOpen, eventData, groupEvents, setIsRedeemModal
           <EventDescription
             setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling}
             description={eventData?.event?.content}
-            rawDescription={eventData?.event?.contentPlainText} 
+            rawDescription={eventData?.event?.contentPlainText}
             sourceURL={eventData?.event?.sourceUrl}
             />
         </Element>
