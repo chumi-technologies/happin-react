@@ -33,8 +33,11 @@ const Layout = ({ children }: { children: any }) => {
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
 
-    if (router.query?.token && router.query?.headerHidden) {
+    if (router.query?.headerHidden) {
       setShowHeader(false); 
+    }
+
+    if (router.query?.token) {
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
 
