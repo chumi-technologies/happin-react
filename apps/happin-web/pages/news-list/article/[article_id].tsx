@@ -132,13 +132,13 @@ export async function getServerSideProps(context: { params: { article_id: string
   try {
     const articleTitle = context.params.article_id;
     let result;
-    if (articleTitle.includes('-')) {
+
+    if (articleTitle.includes('-') || !articleTitle.match(/^[0-9a-fA-F]{24}$/)) {
       result = await getBlogByURLTitle(articleTitle);
     } else {
       result = await getBlogById(articleTitle);
     }
     const props = result;
-
     if (_.isEmpty(result) && articleTitle !== '5fcc40be77e25200098835df') {
       throw new Error('Article not found');
     }
