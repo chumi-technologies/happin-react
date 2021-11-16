@@ -576,4 +576,16 @@
       margin-top: 2rem;
     }
   }
+  h1 {
+    @apply text-2xl sm:text-3xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h2 {
+    @apply text-xl sm:text-2xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h3 {
+    @apply text-lg sm:text-xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h4 {
+    @apply text-base sm:text-lg font-semibold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
 }
