@@ -539,7 +539,10 @@ const Checkout = () => {
                               ticketListState.map((item) => {
                                 if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
                                   || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
-
+                                  // not displaying end time expired tickets
+                                  if (((typeof item.end === 'number' ) && (moment(new Date()).isAfter(moment(item.end * 1000))))) {
+                                    return <Fragment key={item.id}></Fragment>
+                                  }
                                   let disabledFlag = false;
                                   if (!saleStart) {
                                     disabledFlag = true
@@ -558,7 +561,10 @@ const Checkout = () => {
                               ticketListState.map((item) => {
                                 if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
                                   && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
-
+                                  // not displaying end time expired tickets
+                                  if (((typeof item.end === 'number' ) && (moment(new Date()).isAfter(moment(item.end * 1000))))) {
+                                    return <Fragment key={item.id}></Fragment>
+                                  }
                                   // for inperson ticket, if event has started, disable all the in person tickets,
                                   // by passing the disabled into ticketItem
                                   let disabledFlag = false;
