@@ -461,6 +461,10 @@ const Checkout = () => {
     return hasRegularMerch;
   }
 
+  const checkExpiredTicket = (item: TicketItemDataProps) => {
+    return ((typeof item.end === 'number' ) && (moment(new Date()).isAfter(moment(item.end * 1000))))
+  }
+
   return (
     <div className="checkout__page">
       <div className="flex flex-col-reverse md:flex-col h-full">
@@ -536,16 +540,16 @@ const Checkout = () => {
                         showingTab === 'Livestream-Tickets' && (
                           <div id="Livestream-Tickets" className="divide-y divide-gray-700">
                             {
-                              ticketListState.map((item) => {
-                                if ((item.ticketType === ETicketType.LIVESTREAM || item.ticketType === ETicketType.PFM
-                                  || item.ticketType === ETicketType.PLAYBACK) && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
-
+                              ticketListState.map((ticket) => {
+                                if ((ticket.ticketType === ETicketType.LIVESTREAM || ticket.ticketType === ETicketType.PFM
+                                  || ticket.ticketType === ETicketType.PLAYBACK) 
+                                  && ticket.visibility !== ETicketVisibility.INVISIBLE && ticket.visibility !== ETicketVisibility.HIDDEN && !checkExpiredTicket(ticket)) {                              
                                   let disabledFlag = false;
                                   if (!saleStart) {
                                     disabledFlag = true
                                   }
-                                  return renderTicketBaseOnAvailability(item, disabledFlag);
-                                } else return <Fragment key={item.id}></Fragment>
+                                  return renderTicketBaseOnAvailability(ticket, disabledFlag);
+                                } else return <Fragment key={ticket.id}></Fragment>
                               })
                             }
                           </div>
@@ -555,10 +559,9 @@ const Checkout = () => {
                         showingTab === 'In-Person-Tickets' && (
                           <div id="In-Person-Tickets" className="divide-y divide-gray-700">
                             {
-                              ticketListState.map((item) => {
-                                if ((item.ticketType === ETicketType.INPERSON || item.ticketType === ETicketType.FREEINPERSON)
-                                  && item.visibility !== ETicketVisibility.INVISIBLE && item.visibility !== ETicketVisibility.HIDDEN) {
-
+                              ticketListState.map((ticket) => {
+                                if ((ticket.ticketType === ETicketType.INPERSON || ticket.ticketType === ETicketType.FREEINPERSON)
+                                  && ticket.visibility !== ETicketVisibility.INVISIBLE && ticket.visibility !== ETicketVisibility.HIDDEN && !checkExpiredTicket(ticket)) {
                                   // for inperson ticket, if event has started, disable all the in person tickets,
                                   // by passing the disabled into ticketItem
                                   let disabledFlag = false;
@@ -572,8 +575,8 @@ const Checkout = () => {
                                   /* if (eventDataForCheckout && moment(eventDataForCheckout?.endTime).isBefore(moment(new Date()))) {
                                     return <Fragment key={item.id}></Fragment>
                                   } */
-                                  return renderTicketBaseOnAvailability(item, disabledFlag);
-                                } else return <Fragment key={item.id}></Fragment>
+                                  return renderTicketBaseOnAvailability(ticket, disabledFlag);
+                                } else return <Fragment key={ticket.id}></Fragment>
                               })
                             }
                           </div>
