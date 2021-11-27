@@ -34,6 +34,9 @@
   &.home-page {
     @apply h-auto
   }
+  &.reward-page {
+    background-color: #ffb15d;
+  }
 }
 .header {
   .home-page &{

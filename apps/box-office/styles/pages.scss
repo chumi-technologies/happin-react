@@ -310,3 +310,30 @@
     @apply text-gray-300 hover:text-rose-500 transition
   }
 }
+
+
+// Reward
+.reward__page {
+  background: url("../public/images/reward-bg.jpg") top center no-repeat;
+  background-size: 100%;
+  @apply overflow-y-auto pb-3;
+}
+.reward__clock {
+  @apply rounded-md bg-rose-500 font-medium py-1 mx-0.5 w-8 text-center;
+}
+.reward__tag {
+  @apply px-3 py-2 text-white font-medium text-center text-sm;
+  background-color: #202020;
+}
+.reward__title {
+  @apply text-center font-bold text-lg mt-2 text-white;
+}
+.reward__btn {
+  @apply inline-flex items-center text-left text-white font-bold text-sm py-2 pr-2 pl-3 rounded-full w-20;
+  background-image:linear-gradient( 90deg, rgb(254,146,4) 0%, rgb(254,75,71) 100%);
+  box-shadow: 0 4px 11.52px 0.48px rgba(255, 95, 51, 0.23);
+  &.finished {
+    background-image: none;
+    @apply bg-gray-200 text-gray-400 shadow-none justify-center;
+  }
+}

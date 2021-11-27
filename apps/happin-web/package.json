@@ -35,7 +35,6 @@
     "postcss-nested": "^5.0.5",
     "rc-upload": "^4.3.1",
     "react": "17.0.2",
-    "react-countdown": "^2.3.2",
     "react-datepicker": "^4.2.1",
     "react-dom": "17.0.2",
     "react-google-autocomplete": "^2.4.3",
