@@ -2,11 +2,17 @@ import Axios from 'axios';
 
 const happinServerHost = process.env.NEXT_PUBLIC_HAPPIN_SERVER_HOST;
 
+// TODO: Time to use the fetch api?
+
 const getAxiosWithAuth = (firebaseToken: string) => Axios.create({
   baseURL: `${happinServerHost}/prod`,
   headers: {
     'authorization': firebaseToken,
   },
+});
+
+const postAxiosNoAuth = () => Axios.create({
+  baseURL: `${happinServerHost}/prod`,
 });
 
 const getChumiServerToken = async (firebaseToken: string) => {
@@ -25,6 +31,15 @@ const getFirebaseCustomToken = async (firebaseToken: string) => {
   const { data: { code, data: { customToken } } } = await getAxiosWithAuth(firebaseToken).get(`/user/firebase-custom-token`);
   if (code !== 200 || !customToken) {
     throw new Error('Fail to getFirebaseCustomToken')
+  }
+  return customToken;
+}
+
+const getAdminToken = async (email: string, password: string): Promise<any> => {
+  console.log('getAdminToken()');
+  const { data: { code, data: { customToken }}} = await postAxiosNoAuth().post('/user/admin-login', {account: email, password});
+  if (code !== 200 || !customToken) {
+    throw new Error('Fail to get auth token');
   }
   return customToken;
 }
@@ -54,4 +69,4 @@ const getHappinUser = async (firebaseToken: string) => {
   return data;
 }
 
-export { getChumiServerToken, getFirebaseCustomToken, signUpHappin, getHappinUser };
+export { getChumiServerToken, getFirebaseCustomToken, getAdminToken, signUpHappin, getHappinUser };

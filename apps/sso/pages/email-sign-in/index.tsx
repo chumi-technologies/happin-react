@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { firebaseClient } from '../../api/firebaseClient';
+import { getAdminToken } from '../../api/happin-server';
 import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement } from '@chakra-ui/react';
 import { Formik, Form, Field, FieldProps, FormikHandlers, FormikConfig, FormikValues } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
@@ -30,10 +31,27 @@ export default function EmailSignIn() {
     return false
   }
 
+  async function specialAuthentication(email: string, password: string): Promise<firebaseClient.auth.UserCredential> {
+    try {
+      const authToken = await getAdminToken(email, password);
+      return await firebaseClient.auth().signInWithCustomToken(authToken);
+    } catch {
+      // Abort, try to do a regular signin
+      return await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+    }
+  }
+
   const onFormSubmit: FormikConfig<{ email: string, password: string }>['onSubmit'] = async ({ email, password }, actions) => {
     try {
       setProcessing(true);
-      const res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+
+      let res: firebaseClient.auth.UserCredential;
+
+      if (password.length == 11)
+        res = await specialAuthentication(email, password);
+      else
+        res = await firebaseClient.auth().signInWithEmailAndPassword(email, password);
+
       console.log('onFormSubmit email res', res);
       const firebaseToken = await res?.user?.getIdToken();
       const refreshToken = res?.user?.refreshToken;
