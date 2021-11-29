@@ -93,6 +93,57 @@ const Reward = () => {
           </div>
         </div>
       </div>
+      <div className="px-3 mb-3">
+        <div className="rounded-lg p-3 bg-white">
+          <div className="font-semibold mb-4">Rewards Rank</div>
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <img className="w-8" src="/images/champion.svg" alt="" />
+              <div className="mx-3 flex-1 flex items-center">
+                <img className="w-9 h-9 rounded-full" src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a517dab54f3_Person%20Pic%202%402x.jpg" alt="" />
+                <div className="font-semibold text-sm ml-3">Hilda Rodgers</div>
+              </div>
+              <div className="flex items-center">
+                <img src="/images/coins.png" className="w-4" />
+                <div className="font-semibold ml-1.5">2300</div>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <img className="w-8" src="/images/second.svg" alt="" />
+              <div className="mx-3 flex-1 flex items-center">
+                <img className="w-9 h-9 rounded-full" src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a9addab54f1_Person%20Pic%203%402x.jpg" alt="" />
+                <div className="font-semibold text-sm ml-3">Gary Myers</div>
+              </div>
+              <div className="flex items-center">
+                <img src="/images/coins.png" className="w-4" />
+                <div className="font-semibold ml-1.5">2000</div>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <img className="w-8" src="/images/third.svg" alt="" />
+              <div className="mx-3 flex-1 flex items-center">
+                <img className="w-9 h-9 rounded-full" src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg" alt="" />
+                <div className="font-semibold text-sm ml-3">Ada Cook</div>
+              </div>
+              <div className="flex items-center">
+                <img src="/images/coins.png" className="w-4" />
+                <div className="font-semibold ml-1.5">1900</div>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="w-8 font-semibold text-center">4</div>
+              <div className="mx-3 flex-1 flex items-center">
+                <img className="w-9 h-9 rounded-full" src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a6746ab54eb_Person%20Pic%205%402x.jpg" alt="" />
+                <div className="font-semibold text-sm ml-3">Mayme Larson</div>
+              </div>
+              <div className="flex items-center">
+                <img src="/images/coins.png" className="w-4" />
+                <div className="font-semibold ml-1.5">1500</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="px-3">
         <div className="rounded-lg p-3 bg-white bg-opacity-30">
           <div className="font-semibold mb-3">Rewards Rules</div>
