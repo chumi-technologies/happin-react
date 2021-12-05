@@ -11,6 +11,7 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isHomePage, setHomePage] = useState(false);
   const [isRewardPage, setRewardPage] = useState(false);
+  const [isAppRewardPage, setAppRewardPage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
@@ -37,6 +38,11 @@ const Layout = ({ children }: { children: any }) => {
       setRewardPage(true)
       setShowHeader(false);
     }
+
+    if (router.asPath === '/appreward') {
+      setAppRewardPage(true)
+      setShowHeader(false);
+    }
   }, [router.query, router.asPath])
 
   return (
@@ -45,7 +51,7 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage})}>
+      <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
           {(showHeader && !isHomePage) && <Header>
