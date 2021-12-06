@@ -211,7 +211,7 @@ button {
     @apply bg-gray-500
   }
   &.disabled, &:disabled {
-    @apply bg-gray-100 text-gray-300;
+    @apply bg-gray-700 text-gray-400;
   }
 }
 

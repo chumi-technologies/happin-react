@@ -14,6 +14,9 @@ const Layout = ({ children }: { children: any }) => {
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
+  const [isRewardPage, setRewardPage] = useState(false);
+  const [isAppRewardPage, setAppRewardPage] = useState(false);
+
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
   const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
@@ -34,7 +37,7 @@ const Layout = ({ children }: { children: any }) => {
     }
 
     if (router.query?.headerHidden) {
-      setShowHeader(false); 
+      setShowHeader(false);
     }
 
     if (router.query?.token) {
@@ -56,6 +59,17 @@ const Layout = ({ children }: { children: any }) => {
       setShowFooter(false);
     } else {
       setShowFooter(true);
+    }
+    if (router.asPath === '/reward') {
+      setRewardPage(true)
+      setShowHeader(false);
+      setShowFooter(false);
+    }
+
+    if (router.asPath === '/appreward') {
+      setAppRewardPage(true)
+      setShowHeader(false);
+      setShowFooter(false);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
 
@@ -100,7 +114,7 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <main className={classnames('main-app', {'home-page': isHomePage})}>
+      <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
         {(!openInApp && showHeader) &&
