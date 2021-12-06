@@ -243,7 +243,7 @@ const CheckoutHead = ({
           })
         }
       })
-  
+
       if (hasOptionBundleItem && merchsNeedToRemoved.length) {
         merchsNeedToRemoved.forEach( m => {
          if(action==='decrease') {
@@ -255,16 +255,16 @@ const CheckoutHead = ({
             deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
           }
           deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem)
-  
+
         })
       }
-  
+
       if (action === 'decrease') {
         decreaseTicketAmount(edtingTicketListItem, cart, t.ticketId, dispatchTicketListAction, removeItem)
       } else if(action === 'delete') {
         deleteTicketFromCart(edtingTicketListItem, t.quantity, dispatchTicketListAction, removeItem)
       }
-  
+
     } */
 
 
@@ -279,8 +279,8 @@ const CheckoutHead = ({
           </div>
           <div className="flex-1 min-w-0 ml-4 flex flex-col">
             <div className="flex items-start mb-2">
-              <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+              <div className="text-gray-50 text-sm font-semibold w-2/3">{t.name}</div>
+              <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
             </div>
             <div className="flex items-end justify-between flex-1">
               <div className="flex items-center">
@@ -294,7 +294,7 @@ const CheckoutHead = ({
                 />
               </div>
               <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
-                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
             </div>
@@ -313,8 +313,8 @@ const CheckoutHead = ({
           </div>
           <div className="flex-1 min-w-0 ml-4 flex flex-col">
             <div className="flex items-start mb-2">
-              <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
-              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+              <div className="text-gray-50 text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+              <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
             </div>
             <div className="flex items-end justify-between flex-1">
               <div className="flex items-center">
@@ -328,7 +328,7 @@ const CheckoutHead = ({
                 />
               </div>
               <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
-                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
             </div>
@@ -347,8 +347,8 @@ const CheckoutHead = ({
           </div>
           <div className="flex-1 min-w-0 ml-4 flex flex-col">
             <div className="flex items-start mb-2">
-              <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-              <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+              <div className="text-gray-50 text-sm font-semibold w-2/3">{t.name}</div>
+              <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
             </div>
             <div className="flex items-end justify-between flex-1">
               <div className="flex items-center">
@@ -362,14 +362,14 @@ const CheckoutHead = ({
                 />
               </div>
               <div onClick={() => { bundleDeleteHandler(t) }}
-                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                 <Delete theme="outline" size="14" fill="currentColor" />
               </div>
             </div>
 
             {/* bundle merchs */}
             <div className="flex justify-between flex-1 mt-5 " style={{ flexDirection: 'column' }}>
-              <div className="text-white text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
+              <div className="text-gray-50 text-sm font-semibold w-2/3 mb-5">Bundle includes: </div>
               {t.merchs.map(m => (
                 <div className="flex p-4 border-l border-solid border-white border-opacity-20" key={m.identifier}>
                   <div className="w-16 h-16 rounded-md overflow-hidden">
@@ -377,7 +377,7 @@ const CheckoutHead = ({
                   </div>
                   <div className="flex-1 min-w-0 ml-4 flex flex-col">
                     <div className="flex items-start mb-2">
-                      <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                      <div className="text-gray-50 text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
                     </div>
                     <div className="flex items-end justify-between flex-1">
                       <div className="flex items-center">
@@ -447,7 +447,7 @@ const CheckoutHead = ({
         <div className="flex items-center py-3 sm:py-0 sm:h-20 ">
           <div className="flex items-center sm:flex-1 min-w-0">
             {!openInApp &&
-              <button onClick={() => { router.back() }} className="btn inline-flex items-center text-gray-300 hover:text-white !px-0 mr-5 md:mr-7">
+              <button onClick={() => { router.back() }} className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
                 <Left theme="outline" size="24" fill="currentColor" />
               </button>
             }
@@ -479,11 +479,11 @@ const CheckoutHead = ({
                   leaveTo="checkout-leave-to"
                 >
                   <Popover.Panel className="checkout__cart right-0 origin-top-right">
-                    <div className="text-white">
+                    <div className="text-gray-50">
                       <div className="px-5 h-12 flex items-center justify-between md:hidden border-b border-solid border-white border-opacity-10">
                         <div className="font-bold leading-none">My Cart</div>
                         <Popover.Button as={Fragment}>
-                          <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
+                          <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                             <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                           </div>
                         </Popover.Button>
@@ -502,13 +502,13 @@ const CheckoutHead = ({
                       {/*                       <div className="flex px-5 pt-5 border-t border-solid border-white border-opacity-10">
                         {!codeUsed && (
                           <>
-                            <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                            <input type="text" value={discountInput} onChange={onDiscountCodeChangeHandler} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-gray-50 transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                             <button onClick={onApplyDiscountCodeClicked} className="btn btn-rose !py-0 w-32 h-11 !font-semibold">{validateCodeLoading? 'Processing': 'Apply'}</button>
                           </>)}
                         {codeUsed &&
                           (
                             <>
-                              <input type="text" readOnly={true} value={codeUsed} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" ></input>
+                              <input type="text" readOnly={true} value={codeUsed} className="block w-full px-4 h-11 font-medium rounded-lg bg-gray-800 focus:bg-gray-700 text-gray-50 transition placeholder-gray-500 mr-3" placeholder="Discount Code" ></input>
                               <button disabled className="btn btn-rose !py-0 w-32 h-11 !font-semibold">Applied</button></>)}
                       </div> */}
                       <div className="px-5 pb-5 flex justify-between mt-5 pt-5 border-t border-solid border-white border-opacity-10">
@@ -598,15 +598,15 @@ const CheckoutHead = ({
                 <div className="relative flex items-center mb-6">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg sm:text-xl font-bold leading-6 text-white"
+                    className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
                   >
                     Please enter <span className="text-rose-500">Pre-Sale Code</span>
                   </Dialog.Title>
-                  <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={closeModal}>
+                  <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input value={presaleInput} onChange={onPresaleCodeChangeHandler} type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-white text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-black font-bold text-xl sm:text-2xl" placeholder="Enter code" />
+                <input value={presaleInput} onChange={onPresaleCodeChangeHandler} type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-bold text-xl sm:text-2xl" placeholder="Enter code" />
                 <p className="mt-6 text-sm text-gray-400">Pre-sale code is case sensitive, you will reicive the code from the host.</p>
                 <button
                   type="button"

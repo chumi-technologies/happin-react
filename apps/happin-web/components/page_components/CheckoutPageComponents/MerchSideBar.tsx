@@ -62,7 +62,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
         <div className="px-5 sm:px-6">
           <div className="relative flex items-start py-6">
             <div className="w-full pr-7">
-              <div className="leading-none font-semibold text-white">Merch Details</div>
+              <div className="leading-none font-semibold text-gray-50">Merch Details</div>
             </div>
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
@@ -82,7 +82,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
 
             </div>
             <div className="flex-1 min-w-0 ml-5">
-              <div className="text-white font-semibold mb-1">{merch?.name}</div>
+              <div className="text-gray-50 font-semibold mb-1">{merch?.name}</div>
               <div className="text-gray-400 text-tiny mb-3">{merch?.description}</div>
               {
                 // isOpen is added here to ensure the select component is reset after close
@@ -111,12 +111,12 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
       <div className="flex items-center px-5 sm:px-6 py-4 border-t border-solid border-gray-700">
         {merch?.property[selectedPropertyIndex]?.originalPValue > 0 ? <div className="flex-1 ml-4 sm:ml-6">
           <button disabled={inputValue === 0} onClick={addMerchButtonHandler} className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
-            <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="buy" className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Add to Cart</span>
           </button>
         </div> : <div className="flex-1 ml-4 sm:ml-6">
           <button disabled className="btn btn-rose h-11 !py-0 !px-0 !font-semibold flex items-center justify-center w-full">
-            <SvgIcon id="buy" className="text-lg text-white mr-1 sm:mr-2" />
+            <SvgIcon id="buy" className="text-lg text-gray-50 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">SOLD OUT</span>
           </button>
         </div>}

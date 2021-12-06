@@ -21,7 +21,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   const [isWhiteLable, setIsWhiteLable] = useState(false);
 
   useEffect(()=> {
-    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost') {
+    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('deploy-preview')) {
       setIsWhiteLable(true)
     }
   }, [])
@@ -83,7 +83,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
   return (
     <header className="header">
       {children}
-      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-black">
+      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-gray-900">
         {/* Mobile Search Form */}
       {/*   <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
           <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
@@ -109,7 +109,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
             <Menu as="div" className="relative md:hidden">
               {({ open }) => (
                 <>
-                  <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-white hover:bg-gray-900', { 'bg-gray-800 text-white hover:bg-gray-800': open })}>
+                  <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-gray-50 hover:bg-gray-900', { 'bg-gray-800 text-gray-50 hover:bg-gray-800': open })}>
                     <More theme="outline" size="24" fill="currentColor" />
                   </Menu.Button>
                   <Transition
@@ -135,7 +135,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         </Link>
                       </Menu.Item>*/}
                         <Menu.Item>
-                          <a className="header__menu-link md:hidden" onClick={clickHostEventHandler}>Submit Event</a>
+                          <a className="header__menu-link md:hidden" onClick={()=>{router.push('/submit-event')}}>Submit Event</a>
                         </Menu.Item>
                       </div>
                     </Menu.Items>
@@ -166,7 +166,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={clickHostEventHandler}>Submit Events</a>}
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit Events</a>}
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}
@@ -190,12 +190,12 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                     leaveFrom="fade-leave-from"
                     leaveTo="fade-leave-to"
                   >
-                    <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-800">
+                    <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-700">
                       <div className="py-1">
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>
                             <International theme="outline" size="16" fill="currentColor" />
-                            <span className="ml-2">Submit Event</span>
+                            <span className="ml-2">Organizer Dashboard</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
@@ -218,6 +218,9 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         )}
                         {user && (
                           <>
+                           <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-event-collections')}}>Event collection</a>
+                            </Menu.Item>
                             <Menu.Item>
                               <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
                             </Menu.Item>

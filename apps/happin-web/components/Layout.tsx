@@ -12,6 +12,7 @@ const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isHomePage, setHomePage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
+  const [showHeader, setShowHeader] = useState(true);
 
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
@@ -31,6 +32,15 @@ const Layout = ({ children }: { children: any }) => {
       setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
     }
+
+    if (router.query?.headerHidden) {
+      setShowHeader(false); 
+    }
+
+    if (router.query?.token) {
+      localStorage.setItem('chumi_jwt', router?.query?.token as string);
+    }
+
     if (router.query?.fromapp) {
       setIsMobileBarOpen(false);
       setOpenInApp(true);
@@ -93,7 +103,7 @@ const Layout = ({ children }: { children: any }) => {
       <main className={classnames('main-app', {'home-page': isHomePage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
-        {!openInApp &&
+        {(!openInApp && showHeader) &&
           <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
             { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
           </Header>

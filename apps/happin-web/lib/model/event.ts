@@ -84,6 +84,8 @@ export interface EventDetail {
     deepLink: string;
     category: string;
     categoryType: string;
+    sourceUrl?: string;
+    sourceUrlAllowIframe?: boolean;
 }
 
 export interface EventData {

@@ -4,13 +4,18 @@ import { CloseSmall } from '@icon-park/react';
 import classnames from 'classnames';
 import { noConflict } from 'lodash';
 import { useEffect } from 'react';
+import router from 'next/router';
 
 type EventDescriptionProps = {
   description?: string;
   rawDescription?: string;
+  sourceURL?: string;
+  setPreventScrolling?: (arg: any) => void,
+  setOpenIframe?: (arg:any) => void,
+  canUseIframe?: boolean,
 }
 
-const EventDescription = ({ description, rawDescription = "" }: EventDescriptionProps) => {
+const EventDescription = ({ description, rawDescription = "", sourceURL, setOpenIframe, canUseIframe, setPreventScrolling }: EventDescriptionProps) => {
   let focuButtonRef = useRef(null)
 
   const [noTextContent, setNoTextContent] = useState<boolean>(false);
@@ -27,6 +32,18 @@ const EventDescription = ({ description, rawDescription = "" }: EventDescription
       setNoTextContent(true);
     }
   } ,[])
+
+  const openThirdPartyEventSite = ()=> {
+    if (canUseIframe) {
+      (document.querySelector('#scroll-body') as Element).scrollTo(0, 0);
+      if (setPreventScrolling && setOpenIframe) {
+        setOpenIframe(true);
+        setPreventScrolling(true);
+      }
+    } else {
+      window.open(sourceURL, '_blank')
+    }
+  }
   
 
   return (
@@ -37,14 +54,17 @@ const EventDescription = ({ description, rawDescription = "" }: EventDescription
           {rawDescription}
         </div>
         {(rawDescription?.length > 80) && (
-          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+          <> {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>More ...</div>
+          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
+          </>
         )}
       </> :
         <>
           <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative`} style={{ maxHeight: '75px' }}>
               Click more to see event description for this event
           </div>
-          <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>
+          {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>More ...</div>
+          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
         </>}
 
       {/*Dialog*/}

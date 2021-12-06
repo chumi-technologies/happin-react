@@ -171,6 +171,15 @@ export const postToCrowdCore = async(path:string, payload: any) => {
   }
 }
 
+export const updateToHappin = async(path:string, payload: any) => {
+  try {
+    const result = await instanceHappin.put(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
+
 export const updateToCrowdCore = async(path:string, payload: any) => {
   try {
     const result = await instanceCrowCore.put(path, payload);

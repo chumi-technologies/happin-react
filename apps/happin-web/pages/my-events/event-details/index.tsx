@@ -168,19 +168,19 @@ const MyEventDetails = () => {
   useEffect(() => {
     if(router.query.id){
       getEventDetailsFromHappinServer((router.query.id).toString())
-    }    
+    }
   },[])
 
   useEffect(() => {
     if(router.query.id){
       getTicketsListFromHappinServer((router.query.id).toString())
-    }    
+    }
   },[])
 
   useEffect(() => {
     if(eventId){
       getMerchOrdersSummaryFromCrowdcoreServer((eventId).toString())
-    }    
+    }
   },[eventId])
 
   useEffect(() => {
@@ -211,9 +211,9 @@ const MyEventDetails = () => {
                       align="start"
                     >
                       <div className="flex items-start w-full">
-                        <SvgIcon id="clock" className="text-lg text-white" />
+                        <SvgIcon id="clock" className="text-lg text-gray-50" />
                         <div className="ml-3 flex-1">
-                          <div className="text-white leading-none mb-1">{`Date & Time`}</div>
+                          <div className="text-gray-50 leading-none mb-1">{`Date & Time`}</div>
                           <div className="flex items-start sm:items-center flex-col sm:flex-row text-gray-400">
                             <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">
                               {`${moment(eventDetails?.event?.start_datetime).format('dddd MMMM Do, h:mma')} - ${moment(eventDetails?.event?.end_datetime).format('dddd MMMM Do, h:mma')}  
@@ -223,9 +223,9 @@ const MyEventDetails = () => {
                         </div>
                       </div>
                       <div className="flex items-start w-full">
-                        <SvgIcon id="location" className="text-lg text-white" />
+                        <SvgIcon id="location" className="text-lg text-gray-50" />
                         <div className="ml-3">
-                          <div className="text-white leading-none mb-1">
+                          <div className="text-gray-50 leading-none mb-1">
                             {eventDetails?.event?.acInfo?.location}
                           </div>
                           <div className="text-gray-400 text-sm">
@@ -234,15 +234,15 @@ const MyEventDetails = () => {
                         </div>
                       </div>
                     {eventDetails.isLive && <div className="flex items-center w-full">
-                        <SvgIcon id="livestream" className="text-lg text-white" />
-                        <div className="ml-3 text-white">Livestream</div>
+                        <SvgIcon id="livestream" className="text-lg text-gray-50" />
+                        <div className="ml-3 text-gray-50">Livestream</div>
                       </div>
                     }
                     </VStack>
                   </div>
                 </div>
                 <div className="md:flex-1 min-w-0 mt-8 lg:mt-0">
-                  <div className="top-0 bg-black z-10">
+                  <div className="top-0 bg-gray-900 z-10">
                     <div className="flex w-full p-1 border border-solid border-gray-600 rounded-full">
                       {
                         pageTab.map((item, index) => (
@@ -341,7 +341,7 @@ const MyEventDetails = () => {
                                 </div>
                               </div>
                             </div>
-                              { 
+                              {
                                 t.note && <div className="w-11/12 mx-auto bg-gray-700 px-4 py-3 rounded-b-xl">
                                 <div className="font-semibold mb-1 text-sm">Extra information</div>
                                   <div className="text-gray-200 text-sm">{t.note}</div>
@@ -425,7 +425,7 @@ const MyEventDetails = () => {
                               <div className="font-semibold mb-1 text-sm">Extra information</div>
                               <div className="text-gray-200 text-sm">{t.note}</div>
                             </div>}
-                          </div>               
+                          </div>
                             )
                           )}
                         </VStack>

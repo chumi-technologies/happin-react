@@ -60,6 +60,9 @@
 .ellipsis-2 {
   @include ellipsis(2)
 }
+.ellipsis-3 {
+  @include ellipsis(3)
+}
 .web-scroll {
   @media (min-width: 640px) {
     @include dark-scroll

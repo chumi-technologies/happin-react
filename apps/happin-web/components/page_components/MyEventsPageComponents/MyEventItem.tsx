@@ -79,7 +79,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
   useEffect(() => {
     if(data.eid){
       getMerchOrdersSummaryFromCrowdcoreServer((data.eid).toString())
-    }    
+    }
   },[])
 
   useEffect(() => {
@@ -91,7 +91,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
   return (
     <div className="group cursor-pointer">
       <div className="relative">
-{/*        // Todo live stream tickets 
+{/*        // Todo live stream tickets
         {
           data.livestream && (
             <div className="absolute left-3 top-3 inline-flex items-center bg-rose-500 rounded-md px-1.5 py-0.5 z-20">
@@ -177,7 +177,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
         <div className="truncate font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}
         </div>
         <div className="flex items-center">
-          <SvgIcon id="location" className="text-sm text-white" />
+          <SvgIcon id="location" className="text-sm text-gray-50" />
             {generateLocationInfo(data)}
         </div>
       </div>

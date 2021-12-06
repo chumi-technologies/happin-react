@@ -65,11 +65,11 @@ const Affiliate = () => {
   }
 
   return (
-    <div className="common__body">
+    <div className="common__body max-w-lg mx-auto">
     { showNavBar && <AffiliateDashboardHead eventDetailData={eventDetailData} loading={loading}/>}
     <div className="px-3 pt-3">
       <div className="card">
-        <div className="text-gray-700 font-medium mb-2">Total Revenue</div>
+        <div className="text-gray-700 font-medium mb-2">Total Commision</div>
         <div className="flex items-center">
           <div className="flex-1">
             <div className="text-2xl font-bold flex items-center text-gray-500 font-medium mt-1">

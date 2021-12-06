@@ -12,7 +12,7 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children }: any) => {
         <div className="flex items-center justify-center">
           <div className="text-lg font-bold">{modalTitle}</div>
           {/* Close Icon */}
-          <div className="flex items-center justify-center absolute right-3 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300" onClick={() => {
+          <div className="flex items-center justify-center absolute right-3 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={() => {
             setIsModalOpen(false)
           }}>
             <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>

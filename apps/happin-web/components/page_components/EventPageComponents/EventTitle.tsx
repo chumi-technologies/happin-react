@@ -27,9 +27,10 @@ type EventTitleProps = {
   category?: string;
   categoryType?: string;
   setIsRedeemModalOpen: (arg0: boolean) => void;
+  sourceURL?: string;
 }
 
-const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
+const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -57,7 +58,7 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
       {/* Badges */}
       <HStack spacing={3}>
         {(isLiveStream && (isLiveNow || playbackStart)) && (
-          <div className="inline-flex items-center py-1 px-2 leading-none text-white bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
+          <div className="inline-flex items-center py-1 px-2 leading-none text-gray-50 bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>{isLiveNow ? 'LIVE' : (playbackStart ? 'Replay' : '')}</span>
           </div>
@@ -65,13 +66,13 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
 
         {(category && categoryType) && <>
           <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
-            {categoryType + ' - ' + category}
+            {categoryType + `${sourceURL ? '': ' - ' + category }`}
           </div>
         </>}
       </HStack>
 
       {/* Event Title */}
-      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-white font-bold lg:pr-10', {
+      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10', {
         'mt-1 sm:mt-4': category || categoryType || isLiveNow || playbackStart
       })}>
         {eventTitle}
@@ -94,9 +95,9 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
       >
         {!playbackStart &&
           <div className="flex items-start w-full">
-            <SvgIcon id="clock" className="text-lg text-white" />
+            <SvgIcon id="clock" className="text-lg text-gray-50" />
             <div className="ml-3 flex-1">
-              <div className="text-white leading-none mb-1">Date & Time</div>
+              <div className="text-gray-50 leading-none mb-1">Date & Time</div>
               <div className="flex items-start sm:items-center flex-col sm:flex-row text-gray-400">
                 <div className="flex-1 mr-2 text-sm mb-2 sm:mb-0">
                   {`${moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A')} - ${moment.utc(eventEndDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')} (${moment.duration(moment(eventEndDate).diff(moment(eventStartDate))).asMinutes()} mins)`}
@@ -112,9 +113,9 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
             </div>
           </div>}
         <div className="flex items-start w-full">
-          <SvgIcon id="location" className="text-lg text-white" />
+          {(location?.location || location?.venueName) && <SvgIcon id="location" className="text-lg text-gray-50" />}
           <div className="ml-3">
-            <div className="text-white leading-none mb-1">
+            <div className="text-gray-50 leading-none mb-1">
               {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.venueName)}
             </div>
             <div className="text-gray-400 text-sm">
@@ -123,18 +124,19 @@ const EventTitle = ({ setIsModalOpen, setIsRedeemModalOpen, category, categoryTy
           </div>
         </div>
         {(isLiveStream && !playbackStart) && <div className="flex items-center w-full">
-          <SvgIcon id="livestream" className="text-lg text-white" />
-          <div className="ml-3 text-white">Livestream</div>
+          <SvgIcon id="livestream" className="text-lg text-gray-50" />
+          <div className="ml-3 text-gray-50">Livestream</div>
         </div>}
+        {!sourceURL &&
+          <div className="flex items-start sm:items-center w-full">
+            <SvgIcon id="ticket" className="text-lg text-gray-50" />
+            <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
+              <div className="flex-1 text-gray-50 mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price / 100))}`}</div>
+              {/* not showing redeem when it's offline event  */}
+              {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
+            </div>
+          </div>}
 
-        <div className="flex items-start sm:items-center w-full">
-          <SvgIcon id="ticket" className="text-lg text-white" />
-          <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
-            <div className="flex-1 text-white mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price/100))}`}</div>
-            {/* not showing redeem when it's offline event  */}
-            {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
-          </div>
-        </div>
       </VStack>
 
       {/* About and Agenda links */}

@@ -1,7 +1,7 @@
 @import 'mixin';
 // Header
 .header__link {
-  @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-white transition whitespace-nowrap
+  @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-gray-50 transition whitespace-nowrap
 }
 .header__menu {
   @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-500 py-1 pr-1 pl-3 cursor-pointer transition;
@@ -10,10 +10,10 @@
   }
 }
 .header__menu-dropdown {
-  @apply absolute z-50 w-52 mt-2 px-2 bg-gray-900 rounded-lg focus:outline-none;
+  @apply absolute z-50 w-52 mt-2 px-2 bg-gray-800 rounded-lg focus:outline-none;
 }
 .header__menu-link {
-  @apply text-white flex rounded-md items-center w-full px-2 py-2 my-1 text-sm transition font-medium;
+  @apply text-gray-50 flex rounded-md items-center w-full px-2 py-2 my-1 text-sm transition font-medium;
   &:hover {
     @apply bg-gray-700
   }
@@ -26,7 +26,7 @@
   }
 }
 .header__search-input {
-  @apply block w-full pl-10 pr-3 py-2 rounded-full border-2 border-solid border-gray-800 bg-transparent text-white transition placeholder-gray-400;
+  @apply block w-full pl-10 pr-3 py-2 rounded-full border-2 border-solid border-gray-800 bg-transparent text-gray-50 transition placeholder-gray-400;
   &:hover {
     @apply border-gray-700
   }
@@ -35,7 +35,7 @@
   }
 }
 .header__phone-search {
-  @apply block w-full px-3 py-3 border-0 bg-gray-900 text-white transition placeholder-gray-400;
+  @apply block w-full px-3 py-3 border-0 bg-gray-900 text-gray-50 transition placeholder-gray-400;
 }
 .fade-enter {
   transition: all .1s cubic-bezier(0, 0, 0.2, 1);
@@ -81,7 +81,7 @@
 
 // Event Details
 .event-details__page{
-  @apply relative flex-1 h-0 text-white z-0;
+  @apply relative flex-1 h-0 text-gray-50 z-0;
 }
 .event-details__container {
   @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
@@ -94,15 +94,15 @@
 .event-details__tab {
   @apply flex items-center justify-center flex-1 rounded-full h-8 sm:h-10 cursor-pointer font-medium text-gray-400 transition text-sm md:text-base;
   &:hover {
-    @apply text-white;
+    @apply text-gray-50;
   }
   &.active, &.first-active {
-    @apply bg-gray-700 text-white;
+    @apply bg-gray-700 text-gray-50;
   }
 }
 .event-details__side-action {
   @apply flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 text-xl rounded-full border-2 border-solid border-gray-600 text-gray-400 cursor-pointer transition;
-  background-color: rgba(#000, .7);
+  background-color: rgba(#121212, .7);
   &:hover {
     @apply text-gray-200 bg-gray-900
   }
@@ -194,9 +194,44 @@
     @apply bg-gray-900
   }
 }
+#event_details_iframe {
+  position: absolute;
+  right: 0%;
+  z-index: 99;
+  width: 100vw;
+  height: 90vh;
+  top: 10%;
+  background-color:gray;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  border-top:1px solid #fff
+}
+
+.event-details__backdrop {
+  top: 100%;
+  left:0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(40,41,44,.9);
+  transition: top 0.3s ease-in-out;
+}
+
+.event-details__show_backdrop {
+  top: 0;
+}
+
+.event-details__close_iframe {
+  position: absolute;
+  font-size: 30px;
+  color:#fff;
+  top: 2%;
+  left: 50%;
+  z-index: 999;
+}
+
 // Check out
 .checkout__page {
-  @apply relative flex-1 h-0 text-white overflow-x-hidden z-0;
+  @apply relative flex-1 h-0 text-gray-50 overflow-x-hidden z-0;
 }
 .checkout__container {
   max-width: 600px;
@@ -218,7 +253,7 @@
     @apply text-gray-300;
   }
   &.active {
-    @apply text-white;
+    @apply text-gray-50;
     &:after {
       @apply h-px;
     }
@@ -240,7 +275,7 @@
   }
 }
 .checkout__ticket-select {
-  @apply w-24 sm:w-36 py-1 sm:py-2 text-sm sm:text-base border-2 border-solid border-gray-600 bg-transparent text-white;
+  @apply w-24 sm:w-36 py-1 sm:py-2 text-sm sm:text-base border-2 border-solid border-gray-600 bg-transparent text-gray-50;
   &:hover {
     @apply border-gray-500 bg-gray-900;
   }
@@ -252,7 +287,7 @@
   }
 }
 .checkout__merch-select {
-  @apply w-full py-0 h-8 text-sm border border-solid border-gray-500 bg-transparent text-white;
+  @apply w-full py-0 h-8 text-sm border border-solid border-gray-500 bg-transparent text-gray-50;
   &:hover {
     @apply border-gray-400 bg-gray-700;
   }
@@ -296,7 +331,7 @@
 }
 
 .badge-count {
-  @apply absolute right-1 top-1 origin-top-right rounded-full text-white bg-rose-500 h-5 text-center px-1.5 text-sm;
+  @apply absolute right-1 top-1 origin-top-right rounded-full text-gray-50 bg-rose-500 h-5 text-center px-1.5 text-sm;
   min-width: 20px;
   transform: translate(50%, -50%);
 }
@@ -373,7 +408,7 @@
     @apply text-gray-300;
   }
   &.active {
-    @apply text-white;
+    @apply text-gray-50;
     &:after {
       @apply h-px;
     }
@@ -383,7 +418,7 @@
   @apply flex items-center justify-center w-8 h-8 text-lg rounded-full bg-black bg-opacity-30 text-gray-400 cursor-pointer transition;
   background-color: rgba(#000, .7);
   &:hover {
-    @apply text-white bg-rose-500
+    @apply text-gray-50 bg-rose-500
   }
 }
 
@@ -515,6 +550,27 @@
   }
 }
 
+// event submit
+.event-submit__container {
+  @apply w-full px-4 sm:px-8 mx-auto lg:m-0;
+  //padding-right: 4.5rem;
+  //padding-left: 3.5rem;
+}
+
+.event-submit__inner {
+  width: 40%;
+  @media (max-width: 768px) {
+    width: 80%;
+  }
+}
+
+.event-submit__form {
+  margin-bottom: 50px;
+  @media (max-width: 768px) {
+    margin-bottom: 80px;
+  }
+}
+
 // Footer
 .foot-menu {
   @apply space-y-3 list-none text-gray-300 text-sm mt-4;
@@ -524,9 +580,65 @@
 }
 
 // Event Set
+.create-event-collection__container {
+  @apply w-full px-4 sm:px-8 mx-auto lg:m-0;
+}
+
 .event-set__follow {
   @apply py-2 ml-3 text-sm inline-flex items-center justify-center font-semibold rounded-full;
   @media (min-width: 640px) {
     @apply py-3 text-base px-6
+  }
+}
+
+
+// News
+.news__banner {
+  background-color: #182739;
+  background-image: linear-gradient(
+      298deg, rgb(14 20 35 / 68%) 37.16%, rgb(14 35 45 / 81%) 37.16%, rgb(65 7 7 / 28%) 67.78%);
+}
+.news__search {
+  @apply relative flex items-center w-full mx-auto text-gray-500 focus-within:text-gray-300;
+  max-width: 420px;
+  @media (min-width: 1280px) {
+    max-width: 500px;
+  }
+}
+.news__search-input {
+  @apply block w-full pl-14 pr-4 py-3 lg:py-4 rounded-full border-2 border-solid border-transparent bg-black text-gray-50 transition placeholder-gray-400 bg-opacity-60;
+  &:hover {
+    @apply bg-opacity-80
+  }
+  &:focus {
+    @apply bg-opacity-100 border-gray-300 border-opacity-30
+  }
+}
+
+// Article
+.article-container {
+  @apply mx-auto;
+  max-width: 760px;
+}
+.article-content {
+  @apply mx-auto;
+  max-width: 680px;
+  p {
+    margin-top: 1.5rem;
+    @media (min-width: 640px) {
+      margin-top: 2rem;
+    }
+  }
+  h1 {
+    @apply text-2xl sm:text-3xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h2 {
+    @apply text-xl sm:text-2xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h3 {
+    @apply text-lg sm:text-xl font-bold mt-2 sm:mt-3 mb-2 sm:mb-3;
+  }
+  h4 {
+    @apply text-base sm:text-lg font-semibold mt-2 sm:mt-3 mb-2 sm:mb-3;
   }
 }

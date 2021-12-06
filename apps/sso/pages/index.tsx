@@ -5,7 +5,7 @@ import { ERole, ESSOMode, useAppState } from '../contexts/state'
 import { useRouter } from 'next/dist/client/router'
 import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url'
 import { RoleToggle } from '@components/RoleToggle'
-import { signUpHappin } from 'api/happin-server'
+import { getHappinUser, signUpHappin } from 'api/happin-server'
 import { toast } from 'react-toastify';
 
 
@@ -44,7 +44,7 @@ export default function Home() {
             if (!signin) {
               try {
                 await signUpHappin(firebaseToken, { version: 2 });
-              } catch(err) {
+              } catch (err) {
                 if (err.message.includes('already associated')) {
                   toggleMode()
                   toast.error('User exists, please log in');
@@ -55,13 +55,24 @@ export default function Home() {
                 return
               }
             }
+            // check user exist or not
+            try {
+              await getHappinUser(firebaseToken);
+            } catch (err) {
+              if(err.response) {
+                if (err.response.data.code === 401) {
+                  await signUpHappin(firebaseToken, { version: 2 });
+                  console.log('sign up')
+                }
+              }
+            }
             if (origin.includes('ticketing.happin')) {
               const redirectURL = role === ERole.organizer ? await getSaaSDashboardURL(firebaseToken) : await getHappinWebURL(firebaseToken);
               window.parent.postMessage({ action: 'redirect', payload: { url: redirectURL } }, origin);
             }
             window.parent.postMessage({ action: 'get_token', payload: { idToken: firebaseToken, refreshToken } }, origin);
           }
-          setTimeout(()=> {
+          setTimeout(() => {
             setProcessing(false)
           }, 2000)
           resolve(res);
@@ -76,23 +87,23 @@ export default function Home() {
   return (
     <>
       <div className="text-center">
-        {processing && 
-        <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Processing...</h2>
+        {processing &&
+          <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Processing...</h2>
         }
-        {!processing &&  <>{
+        {!processing && <>{
           signin
-          ? <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Login</h2>
-          : <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Sign up</h2>
+            ? <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Login</h2>
+            : <h2 className="black-title text-4xl font-semibold mb-12 mt-6">Sign up</h2>
         }</>}
-       
+
         <RoleToggle className="toggle-tab average w-52" />
       </div>
       <div className="w-full max-w-xs mx-auto mt-10">
         {
           role === ERole.fan ?
-          <Link href="/phone">
-            <button className="btn btn-outline-light w-full mb-4">Continue with phone</button>
-          </Link> : null
+            <Link href="/phone">
+              <button className="btn btn-outline-light w-full mb-4">Continue with phone</button>
+            </Link> : null
         }
         <Link href={signin ? '/email-sign-in' : '/email-sign-up'}>
           <button className="btn btn-outline-light w-full mb-4">Continue with email</button>
@@ -105,10 +116,10 @@ export default function Home() {
       <div className="flex-grow" />
       {
         signin
-        ? <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid  pt-3 text-sm text-gray-500">
+          ? <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid  pt-3 text-sm text-gray-500">
             Can’t login? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600" onClick={toggleMode}>Sign up</a></Link> for new user?
           </div>
-        : <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid  pt-3 text-sm text-gray-500">
+          : <div className="w-full max-w-sm mx-auto text-center border-t border-gray-200 border-solid  pt-3 text-sm text-gray-500">
             Already onboard? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600" onClick={toggleMode}>Log in</a></Link>
           </div>
       }

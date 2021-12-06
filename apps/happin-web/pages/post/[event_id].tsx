@@ -16,6 +16,22 @@ import RedeemEventCode from "../../components/page_components/EventPageComponent
 import ChatWithFans from "../../components/page_components/EventPageComponents/ChatWithFans"
 import { useUserState } from "contexts/user-state";
 import { Button } from "@chakra-ui/react";
+import { ArrowDownIcon } from '@chakra-ui/icons';
+import ReactDom from 'react-dom';
+
+// third party event website that set x-frame-option to origin, can't open in iframe
+const forbidDomain = [
+  'veeps.com'
+]
+
+const ThirdPartyIframe = (props: any) => {
+  return (
+    <div className={`event-details__backdrop ${props.openIframe ? 'event-details__show_backdrop' : ''}`} style={{ position: props.openIframe ? 'absolute' : 'fixed' }}>
+      <a className="event-details__close_iframe" onClick={() => { props.closeIframe() }}><ArrowDownIcon style={{ borderRadius: '50%', border: '1px solid white' }} /></a>
+      <iframe frameBorder="0" id="event_details_iframe" scrolling="auto" src={props.thirdPartyUrl}></iframe>
+    </div>
+  )
+}
 
 const Post = (props: EventData) => {
   const router = useRouter();
@@ -24,6 +40,7 @@ const Post = (props: EventData) => {
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
   const [redeemComplete, setRedeemComplete] = useState(false);
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const [preventScrolling, setPreventScrolling] = useState<boolean>(false);
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
   const eventData = props;
@@ -32,6 +49,32 @@ const Post = (props: EventData) => {
   let eventLocation = 'Stream Via Happin'
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
 
+  const [openIframe, setOpenIframe] = useState<boolean>(false);
+  const [thirdPartyUrl, setThirdPartyUrl] = useState<string>();
+  const [canUseIframe, setCanUseIframe] = useState(false);
+  const [iframePortal, setIframePortal] = useState(<></>);
+
+  useEffect(() => {
+    setIframePortal(ReactDom.createPortal(<ThirdPartyIframe openIframe={openIframe} thirdPartyUrl={thirdPartyUrl} closeIframe={closeIframe} />, document.querySelector('#third_party_event_iframe') as Element))
+  }, [openIframe, thirdPartyUrl])
+
+  const closeIframe = () => {
+    setOpenIframe(false);
+    setPreventScrolling(false);
+  }
+
+  useEffect(() => {
+    if (eventData.event.sourceUrl) {
+      setThirdPartyUrl(eventData.event.sourceUrl);
+      if (eventData.event.sourceUrlAllowIframe) {
+        setCanUseIframe(true)
+      } else {
+        setCanUseIframe(false)
+      }
+    }
+  }, [])
+
+  ////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (router.query.affiliate) {
@@ -109,6 +152,7 @@ const Post = (props: EventData) => {
         <meta name="twitter:image" key="twitter:image" content={seoProps.twitterImage} />
         <meta name="twitter:card" key="twitter:card" content="summary_large_image" />
       </Head>
+      {iframePortal}
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
         {(!hideSigninBar && !tokenExist) && (
@@ -154,7 +198,7 @@ const Post = (props: EventData) => {
                   h="40px"
                   w="100%"
                   mt={{ base: "10", sm: "5" }}
-                  onClick={()=>{router.push('/my-events')}}
+                  onClick={() => { router.push('/my-events') }}
                 >
                   My Events
                 </Button>
@@ -174,7 +218,7 @@ const Post = (props: EventData) => {
             </div>
           </PopUpModal>
         )}
-        <div id="scroll-body" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
+        <div id="scroll-body" className={`relative lg:flex h-full lg:flex-row web-scroll ${preventScrolling ? 'overflow-y-hidden' : 'overflow-y-auto'}`}>
           <ActionSideBar
             playbackStart={!!eventData?.event?.ODPBStart}
             eventData={eventData}
@@ -202,9 +246,9 @@ const Post = (props: EventData) => {
           {/* Event Texts */}
           <div className="w-full lg:w-7/12 xl:w-1/2 pb-16 sm:pb-20">
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
-              <EventSection setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
+              <EventSection setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling} setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar queryParams={queryParams} eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen} />
+            <BottomBar setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling} queryParams={queryParams} eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen} />
           </div>
         </div>
       </div>
@@ -221,7 +265,7 @@ export async function getServerSideProps(context: { params: { event_id: string }
     const titleWithACID = context.params.event_id
     const tokens = titleWithACID.split('-');
     const acid = tokens[tokens.length - 1];
-    const res = await getEventDetail(acid, 'crowdcore')
+    const res = await getEventDetail(acid, 'both')
     const props = res.data
     if (res.data?.event?.groupAcid) {
       const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")

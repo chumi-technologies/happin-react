@@ -143,11 +143,25 @@ const PaymentInner = (props: any) => {
   const [checkoutQuestions, setCheckoutQuestions] = useState<any[]>([]);
   const [promoteCode, setPromoteCode] = useState<string>('');
   const [timeZone, setTimeZone] = useState<string>('');
-  
+
   let innerWidth: number = 0;
   if (typeof window !== 'undefined') {
     innerWidth = window.innerWidth;
   }
+
+  let isIos = (() => {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+  })()
+
   // for stripe, in case stripe payment failed , can pay again with this secret
   const [clientSecret, setClientSecret] = useState<string>();
 
@@ -665,9 +679,14 @@ const PaymentInner = (props: any) => {
             postCloseMessageForApp()
           }
         } else {
-          setTimeout(() => {
-            router.push(`/my-events`)
-          }, 1000)
+          if (isIos) {
+            localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
+            router.push('/checkout/purchase-success')
+          } else {
+            setTimeout(() => {
+              router.push(`/my-events`)
+            }, 1000)
+          }
         }
       }
     } catch (err) {
@@ -681,31 +700,6 @@ const PaymentInner = (props: any) => {
     }
   }
 
-  /*   const handlePaymentError = (errCode: string) => {
-      console.log('payment error: ', errCode)
-      switch (errCode) {
-        case 'incorrect_cvc':
-          generateToast('Incorrect CVC code, please check your card input', toast)
-          break;
-        case 'incomplete_cvc':
-          generateToast('Incomplete CVC code, please check your card input', toast)
-          break;
-        case 'incomplete_zip':
-          generateToast('Incomplete ZIP code, please check your card input', toast)
-          break;
-        case 'expired_card':
-          generateToast('Your card has expired.', toast)
-          break;
-        case 'card_declined':
-          generateToast('Your card was declined.', toast)
-          break;
-        case 'processing_error':
-          generateToast('An error occured while processing your card. Please try again later', toast)
-        default:
-          generateToast('Unknown error, please contact us', toast)
-          break
-      }
-    } */
 
   const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
     let retryTimes = 0
@@ -726,9 +720,14 @@ const PaymentInner = (props: any) => {
               postCloseMessageForApp()
             }
           } else {
-            setTimeout(() => {
-              router.push(`/my-events`)
-            }, 1000)
+            if (isIos) {
+              localStorage.setItem('purchase_item', eventDataForCheckout?.title as string)
+              router.push('/checkout/purchase-success')
+            } else {
+              setTimeout(() => {
+                router.push(`/my-events`)
+              }, 1000)
+            }
           }
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
@@ -1171,8 +1170,8 @@ const PaymentInner = (props: any) => {
                               </div>
                               <div className="flex-1 min-w-0 ml-4 flex flex-col">
                                 <div className="flex items-start mb-2">
-                                  <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-                                  <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                  <div className="text-gray-50 text-sm font-semibold w-2/3">{t.name}</div>
+                                  <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
                                 </div>
                                 <div className="flex items-end justify-between flex-1">
                                   <div className="flex items-center">
@@ -1185,7 +1184,7 @@ const PaymentInner = (props: any) => {
                                     />
                                   </div>
                                   <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
-                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                                     <Delete theme="outline" size="14" fill="currentColor" />
                                   </div>
                                 </div>
@@ -1202,8 +1201,8 @@ const PaymentInner = (props: any) => {
                               </div>
                               <div className="flex-1 min-w-0 ml-4 flex flex-col">
                                 <div className="flex items-start mb-2">
-                                  <div className="text-white text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
-                                  <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
+                                  <div className="text-gray-50 text-sm font-semibold w-2/3">({m.property}) {m.name}</div>
+                                  <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(m.price * m.quantity)}</div>
                                 </div>
                                 <div className="flex items-end justify-between flex-1">
                                   <div className="flex items-center">
@@ -1216,7 +1215,7 @@ const PaymentInner = (props: any) => {
                                     />
                                   </div>
                                   <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
-                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                                     <Delete theme="outline" size="14" fill="currentColor" />
                                   </div>
                                 </div>
@@ -1232,8 +1231,8 @@ const PaymentInner = (props: any) => {
                               </div>
                               <div className="flex-1 min-w-0 ml-4 flex flex-col">
                                 <div className="flex items-start mb-2">
-                                  <div className="text-white text-sm font-semibold w-2/3">{t.name}</div>
-                                  <div className="text-white font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
+                                  <div className="text-gray-50 text-sm font-semibold w-2/3">{t.name}</div>
+                                  <div className="text-gray-50 font-bold w-1/3 text-right whitespace-nowrap">{currencyFormatter(eventDataForCheckout?.default_currency as string).format(t.price * t.quantity)}</div>
                                 </div>
                                 <div className="flex items-end justify-between flex-1">
                                   <div className="flex items-center">
@@ -1246,7 +1245,7 @@ const PaymentInner = (props: any) => {
                                     />
                                   </div>
                                   <div onClick={() => { bundleDeleteHandler(t) }}
-                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-white transition">
+                                    className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
                                     <Delete theme="outline" size="14" fill="currentColor" />
                                   </div>
                                 </div>
@@ -1257,7 +1256,7 @@ const PaymentInner = (props: any) => {
                         }
                         {cart.items.bundleItem && cart.items.bundleItem.map(t => {
                           return (
-                            <div className="flex p-4 text-white justify-between font-medium text-sm" key={t.identifier}>
+                            <div className="flex p-4 text-gray-50 justify-between font-medium text-sm" key={t.identifier}>
                               {t.merchs && `Bundle items: `}
                               {t.merchs && t.merchs.map(m => (
                                 <div key={m.identifier}>
@@ -1280,7 +1279,7 @@ const PaymentInner = (props: any) => {
                             }}
                             value={codeUsed || promoteCode}
                             type="text"
-                            className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-white transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
+                            className="block w-full px-4 h-11 font-medium text-sm rounded-lg bg-gray-700 focus:bg-gray-600 text-gray-50 transition placeholder-gray-500 mr-3" placeholder="Discount Code" />
                           <button
                             onClick={ApplyPromoCode}
                             disabled={validateCodeLoading || !!affiliate}
@@ -1290,7 +1289,7 @@ const PaymentInner = (props: any) => {
                       </div>
 
                       <div className="px-4 sm:px-5 divide-y divide-white divide-opacity-10">
-                        <div className="text-white font-medium text-sm py-4">
+                        <div className="text-gray-50 font-medium text-sm py-4">
                           {cart.items.ticketItem && cart.items.ticketItem.map(t => {
                             return (
                               <div className="flex justify-between py-1" key={t.ticketId}>
@@ -1320,7 +1319,7 @@ const PaymentInner = (props: any) => {
                           }
                           {cart.items.bundleItem && cart.items.bundleItem.map(t => {
                             return (
-                              <div className="text-white font-medium text-sm py-4" key={t.identifier}>
+                              <div className="text-gray-50 font-medium text-sm py-4" key={t.identifier}>
                                 {t.merchs && `Bundle items: `}
                                 {t.merchs && t.merchs.map(m => (
                                   <div key={m.identifier}>
@@ -1367,7 +1366,7 @@ const PaymentInner = (props: any) => {
                             <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format(((priceBreakDown?.stripeFee + priceBreakDown?.happinProcessFee) || 0) / 100)}</div>
                           </div>
                         </div>
-                        <div className="flex justify-between text-white py-4 font-semibold text-lg sm:text-xl">
+                        <div className="flex justify-between text-gray-50 py-4 font-semibold text-lg sm:text-xl">
                           {!isCashOnly ? <div>Total</div> : <div>Cash Total</div>}
                           <div>{currencyFormatter(eventDataForCheckout?.default_currency as string).format((priceBreakDown?.total || 0) / 100)}</div>
                         </div>
@@ -1408,7 +1407,7 @@ const PaymentInner = (props: any) => {
                             <div className="mt-5 text-center">
                               {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
                               <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-gray-50 transition">Terms and Conditions</a></span>
                               </Checkbox>
                             </div>
                           </div>
@@ -1428,7 +1427,7 @@ const PaymentInner = (props: any) => {
                             <div className="mt-5 text-center">
                               {generalTicketInfo?.refundPolicy && <p className="text-sm text-gray-400 mb-3">Refund Policy: {generalTicketInfo?.refundPolicy}</p>}
                               <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                                <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-gray-50 transition">Terms and Conditions</a></span>
                               </Checkbox>
                             </div>
                             <br></br>
@@ -1488,7 +1487,7 @@ const PaymentInner = (props: any) => {
                 <div className="relative flex items-center justify-center">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg sm:text-xl font-bold leading-6 text-white"
+                    className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
                   >
                     <span className="text-rose-500">We are processing your order...</span>
                   </Dialog.Title>

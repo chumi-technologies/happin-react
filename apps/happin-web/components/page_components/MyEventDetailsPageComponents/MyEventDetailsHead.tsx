@@ -26,7 +26,7 @@ const MyEventDetailsHead = ({eventDetail}:MyEventDetailsProp) => {
       <div className="container">
         <div className="flex items-center h-16 md:h-20">
           <Link href="/my-events">
-            <button className="btn inline-flex items-center text-gray-300 hover:text-white !px-0">
+            <button className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0">
               <Left theme="outline" size="24" fill="currentColor"/>
               {/* <span className="md:ml-2">Back</span> */}
             </button>

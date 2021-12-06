@@ -156,7 +156,7 @@ const Dashboard = () => {
   }, [router.isReady])
 
   return (
-    <div className="common__body">
+    <div className="common__body max-w-lg mx-auto">
     { showNavBar && <DashboardHead eventDetailData={eventDetailData} loading={loading} />}
     <div className="px-3 pt-3">
       <div className="card">
