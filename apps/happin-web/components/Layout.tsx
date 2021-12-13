@@ -10,7 +10,7 @@ import { getWhiteLabelDomain } from "lib/api";
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
-  const [isHomePage, setHomePage] = useState(false);
+  const [isProduction, setIsProduction] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
@@ -28,9 +28,6 @@ const Layout = ({ children }: { children: any }) => {
   const router = useRouter()
 
   useEffect(() => {
-    // 测试
-    if (router.asPath === '/') setHomePage(true); else setHomePage(false)
-    // end 测试
     if (router.query?.token && router.asPath.includes('/checkout/')) {
       setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
@@ -55,15 +52,16 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (!(router.asPath === '/')) {
-      setShowFooter(false);
-    } else {
+    if (router.asPath === '/' || router.asPath === '/events') {
+      setIsProduction(true)
       setShowFooter(true);
+    } else {
+      setShowFooter(false);
+      setIsProduction(false)
     }
     if (router.asPath === '/reward') {
       setRewardPage(true)
       setShowHeader(false);
-      setShowFooter(false);
     }
 
     if (router.asPath === '/appreward') {
@@ -114,7 +112,7 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
+      <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
         {(!openInApp && showHeader) &&
@@ -123,8 +121,8 @@ const Layout = ({ children }: { children: any }) => {
           </Header>
         }
         {children}
+        {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
       </main>
-      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
     </>
   );
 };
