@@ -13,7 +13,8 @@ const paymentGatewayHost = process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_HOST
 
 const HEADER: { [key: string]: string } = {
   'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
+  'local-email': 'ceciliaxu9692@gmail.com'
 };
 
 const instanceHappin = axios.create({
@@ -156,6 +157,15 @@ export const getFromHappin = async<T = any>(path: string) => {
 export const postToHappin = async(path:string, payload: any) => {
   try {
     const result = await instanceHappin.post(path, payload);
+    return result.data
+  } catch (error) {
+    throw error
+  }
+}
+
+export const postToHappin_noBody = async(path:string) => {
+  try {
+    const result = await instanceHappin.post(path);
     return result.data
   } catch (error) {
     throw error
