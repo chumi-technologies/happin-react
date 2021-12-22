@@ -1,5 +1,4 @@
 import axios from 'axios';
-import jwt_decode from "jwt-decode";
 
 interface refreshTokenResponse {
   refresh_token: string;
@@ -9,7 +8,6 @@ interface refreshTokenResponse {
 const happinApiHost = process.env.NEXT_PUBLIC_HAPPIN_SERVER_HOST
 const crowdCoreApiHost = process.env.NEXT_PUBLIC_CROWD_CORE_HOST
 const firebaseTokenHost = process.env.NEXT_PUBLIC_FIREBASE_TOKEN_HOST
-const paymentGatewayHost = process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_HOST
 
 const HEADER: { [key: string]: string } = {
   'Accept': 'application/json',
@@ -23,11 +21,6 @@ const instanceHappin = axios.create({
 
 const instanceCrowCore = axios.create({
   baseURL: crowdCoreApiHost,
-  headers: HEADER
-})
-
-const instancePaymentGateway = axios.create({
-  baseURL: paymentGatewayHost,
   headers: HEADER
 })
 
@@ -53,22 +46,6 @@ const getLocalStorageRefreshToken = () => {
   }
   return refreshToken;
 }
-
-instancePaymentGateway.interceptors.request.use(
-  (config) => {
-    const idToken = getLocalStorageCrowdCoreIDToken();
-    if(idToken) {
-      let decoded: any = jwt_decode(idToken);
-       if(decoded.happinUID) {
-         config.headers['userid'] = decoded.happinUID;
-       }
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error)
-  }
-)
 
 instanceHappin.interceptors.request.use(
   (config) => {
@@ -207,26 +184,9 @@ export const getFromCrowdCore = async<T = any>(path: string) => {
   }
 }
 
-export const getFromPaymentGateway = async<T = any>(path: string) => {
-  try {
-    const result = await instancePaymentGateway.get<T>(path)
-    return result.data
-  } catch (error) {
-    throw error
-  }
-}
 
-export const postToPaymentGateway = async(path:string, payload: any) => {
-  try {
-    const result = await instancePaymentGateway.post(path, payload);
-    return result.data
-  } catch (error) {
-    throw error
-  }
-}
 
 export {
   happinApiHost,
   crowdCoreApiHost,
-  paymentGatewayHost,
 }
