@@ -15,8 +15,7 @@ export default function Events() {
           </div>
           <div className="relative black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold sm:py-6 lg:py-8 xl:py-10 w-2/3 z-30">
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
-            Happin events. <br/>
-            One place to find all the fun.
+            Find all fun and exciting experiences in one place.
           </div>
         </div>
       </div>
@@ -24,7 +23,7 @@ export default function Events() {
         <div className="container">
           <div className="relative inline-block text-lg sm:text-xl lg:text-2xl font-semibold mb-8 sm:mb-10 lg:mb-14">
             <img className="absolute top-0 -right-10 w-6 lg:-top-1 lg:-right-12 lg:w-8" src="/images/light.svg" alt="" />
-            Major ticketing website integrated.
+            Major ticketing websites integrated. <br/> Get cash back buying tickets with Happin.
           </div>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-5 md:gap-8 lg:gap-10">
             <div className="relative bg-yellow-500 aspect-h-1 aspect-w-1 rounded-full">
@@ -34,22 +33,22 @@ export default function Events() {
             </div>
             <div className="relative bg-blue-500 aspect-h-1 aspect-w-1 rounded-full">
               <div className="absolute inset-0 flex items-center justify-center">
-                <img width="70%" src="/images/ticketmaster.svg" alt="" />
+                <img width="70%" src="/images/universe.png" alt="" />
               </div>
             </div>
             <div className="relative home__color-purple aspect-h-1 aspect-w-1 rounded-full">
               <div className="absolute inset-0 flex items-center justify-center">
-                <img width="70%" src="/images/ticketmaster.svg" alt="" />
+                <img width="70%" src="/images/eventbrite.svg" alt="" />
               </div>
             </div>
             <div className="relative bg-green-500 aspect-h-1 aspect-w-1 rounded-full">
               <div className="absolute inset-0 flex items-center justify-center">
-                <img width="70%" src="/images/ticketmaster.svg" alt="" />
+                <img width="70%" src="/images/ticketweb.png" alt="" />
               </div>
             </div>
             <div className="relative bg-rose-500 aspect-h-1 aspect-w-1 rounded-full">
               <div className="absolute inset-0 flex items-center justify-center">
-                <img width="70%" src="/images/ticketmaster.svg" alt="" />
+                <img width="70%" src="/images/dice.svg" alt="" />
               </div>
             </div>
           </div>
@@ -69,7 +68,7 @@ export default function Events() {
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                  When you buy tickets on Happin app, you will earn Happin coins for social features, and future discounts.
+                  When you buy tickets on Happin app, you will earn cash back or virtual coins for social features.
                 </p>
               </div>
               <div className="flex justify-center md:justify-start">

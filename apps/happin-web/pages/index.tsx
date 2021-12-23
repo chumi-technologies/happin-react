@@ -18,16 +18,16 @@ const imageList = [
 ];
 const buildEvent = [
   {
-    title: 'Create or share events',
-    desc: 'Copy paste URL, and get a perfect space for the event community immediately! '
+    title: 'Create/Share/Discover Events and Experiences',
+    desc: 'Find all fun and exciting experiences in one place.'
   },
   {
-    title: 'Deep connections in various ways',
-    desc: 'Not just chat, there are audio parties, event based content sharing and more.'
+    title: 'Match and connect with like-minded attendees you like',
+    desc: 'Swipe to match attendees and create or join event based group chats.'
   },
   {
-    title: 'Build an engaging profile',
-    desc: 'Personalize your virtual gifts (emoji), and show up your personal brand!'
+    title: 'Host audio parties and Livestream with friends.',
+    desc: 'Chat with fans in real time, and make new friends.'
   },
 ];
 export default function Home() {
@@ -69,7 +69,7 @@ export default function Home() {
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
             <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
             <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            Play. Chat. <br/>Get friends.
+            Meet. Chat. Experience.
           </div>
         </div>
       </div>
@@ -79,16 +79,16 @@ export default function Home() {
         <div className="container">
           <div className="flex items-center flex-col md:flex-row text-center md:text-left">
             <div className="relative sm:w-3/5 md:w-1/2 xl:w-7/12 black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-7 md:mb-0 text-rose-500">
-              A new experience to attend events
+              An experience based social network
             </div>
             <div className="md:pl-12 lg:pl-16 md:w-1/2 xl:w-5/12">
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                  With Collab Smart Prototype you create your interactions and animations once and store as presets in the cloud for future use.
+                  Happin is the easiest way to find like-minded people based on experience, and talk over voice, Livestream, and text.
                 </p>
                 <p className="mb-4 md:mb-5">
-                  Use the Collab App to test in real-time.
+                  You can share or create all kinds of events and stay close with your friends and communities.
                 </p>
               </div>
               <div className="flex justify-center md:justify-start">
