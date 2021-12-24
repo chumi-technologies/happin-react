@@ -13,7 +13,8 @@ const paymentGatewayHost = process.env.NEXT_PUBLIC_PAYMENT_GATEWAY_HOST
 
 const HEADER: { [key: string]: string } = {
   'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
+  'local-email': 'ceciliaxu9692@gmail.com'
 };
 
 const instanceHappin = axios.create({

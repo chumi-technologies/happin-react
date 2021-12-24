@@ -141,6 +141,52 @@
   }
 }
 // Topup
+
+.topup__tab {
+  cursor:pointer;
+  @apply relative py-2 font-semibold text-lg text-gray-400;
+  &.active {
+    @apply text-gray-50;
+    &:after {
+      content: '';
+      @apply absolute left-0 right-0 bottom-0 h-1 rounded-full bg-rose-500;
+    }
+  }
+}
+
+.topup-amount {
+  justify-content: center;
+}
+
+.original-decoration {
+  text-decoration: line-through;
+}
+
+.strikethrough {
+  position: relative;
+}
+.strikethrough:before {
+  position: absolute;
+  content: "";
+  left: -5px;
+  top: 50%;
+  right: 0;
+  border-top: 1px solid;
+  border-color: inherit;
+  width:50px;
+  
+  -webkit-transform:rotate(-10deg);
+  -moz-transform:rotate(-10deg);
+  -ms-transform:rotate(-10deg);
+  -o-transform:rotate(-10deg);
+  transform:rotate(-10deg);
+}
+
+.topup-amount-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
 .topup_continue_button {
   background-color: #fe4365;
   border: 1px solid rgb(0,0,0);
