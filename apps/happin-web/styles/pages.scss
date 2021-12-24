@@ -1732,7 +1732,7 @@
         -webkit-appearance: none;
         margin: 0;
         }
-    
+
         /* Firefox */
         input[type=number] {
         -moz-appearance: textfield;
@@ -2704,21 +2704,21 @@
       .flex-grow {
         flex: 1;
       }
-      
+
       //.modal-title {
       //  font-size: 22px;
       //  font-weight: 500;
       //  text-align: center;
       //  margin-bottom: 30px;
       //}
-      
+
       .modal-title-sm {
         font-size: 15px;
         font-weight: 500;
         text-align: center;
         margin-bottom: 30px;
       }
-      
+
       .get_ticket_option {
         display: flex;
         flex-direction: column;
@@ -2728,7 +2728,7 @@
             width: 250px;
         }
       }
-      
+
       .get_ticket_option_tip {
         text-align: center;
         color: #717171;
@@ -2769,9 +2769,71 @@
             margin: 0 5px 5px 0;
         }
     }
-      
+
     .report_reasons {
         label {margin: 10px}
 
     }
+}
+
+
+// Live-Stream
+.livestream__slick-control {
+  &.slick-arrow {
+    height: 100%;
+    border-radius: 2px;
+    background: rgba(#fff, .05);
+    &:not(.slick-disabled):hover {
+      background: rgba(#fff, .1);
+    }
+  }
+  &.slick-next {
+    @apply -right-6
+  }
+  &.slick-prev {
+    @apply -left-6
+  }
+}
+.livestream__btn-follow {
+  @apply inline-flex items-center py-1.5 px-4 font-medium focus:outline-none text-sm font-semibold border-0 rounded-full text-white bg-rose-500 transition;
+  &:hover {
+    @apply bg-rose-600;
+  }
+  &:active {
+    @apply bg-rose-700;
+  }
+  &.disabled, &:disabled {
+    @apply bg-rose-300 opacity-30;
+  }
+}
+.livestream__sender-wrapper {
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+.livestream__sender-input {
+  max-height: 78px;
+  min-height: 18px;
+  font-size: 14px;
+  line-height: 18px;
+  @apply block pr-1 text-gray-50 font-medium h-full outline-none select-text cursor-text whitespace-pre-wrap break-all focus:outline-none;
+  @include darkScroll;
+  &[placeholder]:empty::before {
+    content: attr(placeholder);
+    @apply text-gray-500;
+  }
+  &.disabled {
+    @apply cursor-not-allowed
+  }
+}
+.livestream__sender-emoji {
+  @apply inline-flex items-center justify-center h-8 w-8 mr-2 text-gray-50 cursor-pointer rounded-md transition hover:bg-gray-700 active:bg-gray-600;
+  &.disabled {
+    @apply text-gray-500 hover:bg-transparent active:bg-transparent cursor-default
+  }
+}
+.livestream__sender-button {
+  @apply inline-flex items-center justify-center h-8 w-8 ml-1.5 cursor-pointer transition text-gray-200 hover:text-rose-500 active:text-rose-300;
+  &.disabled {
+    @apply text-gray-500 hover:text-gray-500 active:text-gray-500 cursor-default;
+  }
 }
