@@ -12,9 +12,18 @@ import { useEffect } from 'react';
 import { useUserState } from 'contexts/user-state';
 
 const imageList = [
-  '/images/home-feature-02.png',
-  '/images/home-feature-02.png',
-  '/images/home-feature-02.png',
+  {
+    firstImg: '/images/Discover Event1-min.png',
+    secImg: '/images/Discover Event-min.png',
+  },
+  {
+    firstImg: '/images/Match-min.png',
+    secImg: '/images/Group-min.png',
+  },
+  {
+    firstImg: '/images/Host Livestream-min.png',
+    secImg: '/images/AudioRoom-min.png',
+  },
 ];
 const buildEvent = [
   {
@@ -95,9 +104,9 @@ export default function Home() {
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
-              {/*   <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
+              <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
                   <img className="h-12 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
-                </div> */}
+              </div>
               </div>
             </div>
           </div>
@@ -142,10 +151,10 @@ export default function Home() {
                     <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />
                     <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />
                     <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">
-                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-01.jpeg" alt="" />
+                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].firstImg} alt={buildEvent[buildCur].title} />
                     </div>
                     <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">
-                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-02.jpeg" alt="" />
+                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].secImg} alt={buildEvent[buildCur].title} />
                     </div>
                   </div>
                   {/*<img className="w-full" src={imageList[buildCur]} alt="" />*/}
@@ -198,20 +207,20 @@ export default function Home() {
                     as="h3"
                     className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
                   >
-                    xxxx is waiting for android version
+                    Request for android version
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />
-                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. Are you an android user? Leave your email here to push Happin team.</p>
-                <button
-                  type="button"
-                  className="mt-6 btn btn-rose w-full !rounded-full"
-                >
-                  Confirm
-                </button>
+                {/*<input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />*/}
+                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. <br/>Are you an android user? Send an email to "IwantAndroidHappin@happin.app" to push Happin team.</p>
+                {/*<button*/}
+                {/*  type="button"*/}
+                {/*  className="mt-6 btn btn-rose w-full !rounded-full"*/}
+                {/*>*/}
+                {/*  Confirm*/}
+                {/*</button>*/}
               </div>
             </Transition.Child>
           </div>
