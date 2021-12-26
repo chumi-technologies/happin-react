@@ -178,7 +178,7 @@
 
 // Check out
 .checkout__page {
-  @apply relative flex-1 h-0 text-gray-50 overflow-x-hidden z-0;
+  @apply relative flex-1 h-0 text-gray-50 md:overflow-x-hidden z-0;
 }
 .checkout__container {
   max-width: 600px;
@@ -2778,11 +2778,24 @@
 
 
 // Live-Stream
+.live-stream__container {
+  @media (min-width: 1280px) {
+    @apply w-full mx-auto;
+    max-width: 1280px;
+  }
+}
+.live-stream__inner {
+  @apply relative flex flex-col md:flex-row md:overflow-hidden;
+  @media (min-width: 768px) {
+    height: calc(100vh - 80px);
+  }
+  @media (min-width: 1280px) {
+    height: auto;
+  }
+}
 .livestream__slick-control {
   &.slick-arrow {
-    height: 100%;
-    border-radius: 2px;
-    background: rgba(#fff, .05);
+    @apply h-full rounded-none bg-white bg-opacity-5;
     &:not(.slick-disabled):hover {
       background: rgba(#fff, .1);
     }
@@ -2806,17 +2819,25 @@
     @apply bg-rose-300 opacity-30;
   }
 }
+.livestream__btn-following {
+  @apply inline-flex items-center py-1.5 px-4 font-medium focus:outline-none text-sm font-semibold border-0 rounded-full text-gray-300 bg-gray-700 transition;
+  &:active {
+    @apply bg-gray-600;
+  }
+  &.disabled, &:disabled {
+    @apply bg-gray-600 opacity-40;
+  }
+}
 .livestream__sender-wrapper {
   margin-top: 7px;
   margin-bottom: 7px;
 }
 .livestream__sender-input {
+  @include darkScroll;
+  @apply block pr-1 text-gray-50 font-medium h-full outline-none text-sm select-text cursor-text whitespace-pre-wrap break-all focus:outline-none;
   max-height: 78px;
   min-height: 18px;
-  font-size: 14px;
   line-height: 18px;
-  @apply block pr-1 text-gray-50 font-medium h-full outline-none select-text cursor-text whitespace-pre-wrap break-all focus:outline-none;
-  @include darkScroll;
   &[placeholder]:empty::before {
     content: attr(placeholder);
     @apply text-gray-500;
@@ -2836,4 +2857,25 @@
   &.disabled {
     @apply text-gray-500 hover:text-gray-500 active:text-gray-500 cursor-default;
   }
+}
+.live-stream__live-list {
+  @media (min-width: 1280px) and (max-width: 1320px){
+    @apply px-6
+  }
+}
+.live-stream__cover-filter {
+  transform: scale(1.5);
+  filter: blur(16px);
+}
+.live-stream__chat-room {
+  @apply flex-1 overflow-y-auto px-1 md:max-h-full;
+  @include dark-scroll;
+  @media (max-width: 767px){
+    min-height: 240px;
+    max-height: 240px;
+  }
+}
+.live-stream__chat-item {
+  @apply flex text-gray-100 py-1 px-3 text-sm;
+  line-height: 18px;
 }
