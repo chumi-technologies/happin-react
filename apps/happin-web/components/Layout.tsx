@@ -17,7 +17,6 @@ const Layout = ({ children }: { children: any }) => {
 
   const [isRewardPage, setRewardPage] = useState(false);
   const [isAppRewardPage, setAppRewardPage] = useState(false);
-  const [isLiveStreamPage, setLiveStreamPage] = useState(false);
 
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
@@ -76,11 +75,13 @@ const Layout = ({ children }: { children: any }) => {
       setShowFooter(false);
     }
 
+  }, [router.query, router.asPath, setBoxOfficeMode])
+
+  useEffect(() => {
     if (router.asPath.includes('/live-stream/')) {
-      setLiveStreamPage(true)
       setShowHeader(!(windowWidth < 640))
     }
-  }, [router.query, router.asPath, setBoxOfficeMode, windowWidth])
+  }, [router.asPath, windowWidth])
 
   useEffect(()=> {
     const hideMobileBar = localStorage.getItem('hide_mobile_bar');

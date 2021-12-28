@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { Avatar } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
 import { Check, Left, Plus, Right } from '@icon-park/react';
@@ -6,7 +6,7 @@ import Slider from 'react-slick';
 import classnames from 'classnames';
 import { Picker } from 'emoji-mart';
 import Sender from "@components/page_components/LiveStreamComponents/Sender";
-import LiveList, { LiveListProp, liveVideo } from '@components/page_components/LiveStreamComponents/LiveList';
+import LiveList from '@components/page_components/LiveStreamComponents/LiveList';
 import ChatItem from '@components/page_components/LiveStreamComponents/ChatItem';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
@@ -360,7 +360,7 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
           </div>
         </div>
       </div>
-      <div className="px-0 mt-10 hidden xl:block">
+      <div className="px-0 pb-10 mt-10 hidden xl:block">
         <LiveList list={liveList} />
       </div>
       <BottomSheet
