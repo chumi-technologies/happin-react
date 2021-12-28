@@ -7,6 +7,7 @@ import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
 import Footer from "./Footer";
 import { getWhiteLabelDomain } from "lib/api";
+import { useResize } from '../utils/hooks';
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
@@ -16,6 +17,7 @@ const Layout = ({ children }: { children: any }) => {
 
   const [isRewardPage, setRewardPage] = useState(false);
   const [isAppRewardPage, setAppRewardPage] = useState(false);
+  const [isLiveStreamPage, setLiveStreamPage] = useState(false);
 
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
@@ -26,6 +28,8 @@ const Layout = ({ children }: { children: any }) => {
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
   const router = useRouter()
+
+  const windowWidth = useResize();
 
   useEffect(() => {
     // 测试
@@ -71,7 +75,12 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
       setShowFooter(false);
     }
-  }, [router.query, router.asPath, setBoxOfficeMode])
+
+    if (router.asPath.includes('/live-stream/')) {
+      setLiveStreamPage(true)
+      setShowHeader(!(windowWidth < 640))
+    }
+  }, [router.query, router.asPath, setBoxOfficeMode, windowWidth])
 
   useEffect(()=> {
     const hideMobileBar = localStorage.getItem('hide_mobile_bar');
@@ -124,7 +133,7 @@ const Layout = ({ children }: { children: any }) => {
         }
         {children}
       </main>
-      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
+      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo} />}
     </>
   );
 };

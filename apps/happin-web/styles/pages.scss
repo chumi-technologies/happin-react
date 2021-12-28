@@ -2793,6 +2793,11 @@
     height: auto;
   }
 }
+.live-stream__video-bar {
+  @apply absolute bottom-0 inset-x-0 sm:relative;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, .5) 100%);
+}
 .livestream__slick-control {
   &.slick-arrow {
     @apply h-full rounded-none bg-white bg-opacity-5;
@@ -2820,9 +2825,9 @@
   }
 }
 .livestream__btn-following {
-  @apply inline-flex items-center py-1.5 px-4 font-medium focus:outline-none text-sm font-semibold border-0 rounded-full text-gray-300 bg-gray-700 transition;
+  @apply inline-flex items-center py-1.5 px-4 font-medium focus:outline-none text-sm font-semibold border-0 rounded-full text-gray-300 bg-white bg-opacity-10 transition;
   &:active {
-    @apply bg-gray-600;
+    @apply bg-opacity-20;
   }
   &.disabled, &:disabled {
     @apply bg-gray-600 opacity-40;
@@ -2869,10 +2874,13 @@
 }
 .live-stream__chat-room {
   @apply flex-1 overflow-y-auto px-1 md:max-h-full;
-  @include dark-scroll;
   @media (max-width: 767px){
     min-height: 240px;
     max-height: 240px;
+  }
+  @media (max-width: 640px){
+    min-height: 50vh;
+    max-height: 50vh;
   }
 }
 .live-stream__chat-item {

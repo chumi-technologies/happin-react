@@ -8,6 +8,8 @@ import { Picker } from 'emoji-mart';
 import Sender from "@components/page_components/LiveStreamComponents/Sender";
 import LiveList, { LiveListProp, liveVideo } from '@components/page_components/LiveStreamComponents/LiveList';
 import ChatItem from '@components/page_components/LiveStreamComponents/ChatItem';
+import { BottomSheet } from 'react-spring-bottom-sheet';
+import 'react-spring-bottom-sheet/dist/style.css'
 
 function Arrow(props: any) {
   const { className, onClick, children } = props;
@@ -118,8 +120,8 @@ const liveList = [
     _id: '01',
     link: '/',
     title: 'Merry Christmas guys!',
-    cover: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/9baa756fa1b7627b2e1b91c2161e55ee~c5_720x720.webp?x-expires=1640588400&x-signature=yGdKrcOr%2FKKQ4%2F2r9caKW0%2FEgiA%3D',
-    avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/9baa756fa1b7627b2e1b91c2161e55ee~c5_720x720.webp?x-expires=1640588400&x-signature=yGdKrcOr%2FKKQ4%2F2r9caKW0%2FEgiA%3D',
+    cover: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
+    avatar: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
     username: 'JeesieJe123'
   },
   {
@@ -134,8 +136,8 @@ const liveList = [
     _id: '03',
     link: '/',
     title: 'Merry Christmas guys!',
-    cover: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/9baa756fa1b7627b2e1b91c2161e55ee~c5_720x720.webp?x-expires=1640588400&x-signature=yGdKrcOr%2FKKQ4%2F2r9caKW0%2FEgiA%3D',
-    avatar: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/9baa756fa1b7627b2e1b91c2161e55ee~c5_720x720.webp?x-expires=1640588400&x-signature=yGdKrcOr%2FKKQ4%2F2r9caKW0%2FEgiA%3D',
+    cover: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
+    avatar: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
     username: 'JeesieJe123'
   },
   {
@@ -162,7 +164,8 @@ interface ISenderRef {
 const Livestream = () => {
   const senderRef = useRef<ISenderRef>(null!);
   const [emojiShow, setEmojiShow] = useState(false);
-  const [isFollowed, setIsFollowed] = useState(true);
+  const [isFollowed, setIsFollowed] = useState(false);
+  const [chatShow, setChatShow] = useState(false);
   const settings = {
     dots: false,
     infinite: false,
@@ -197,13 +200,15 @@ const Livestream = () => {
         settings: {
           slidesToShow: 5,
           slidesToScroll: 5,
+          arrows: false
         }
       },
       {
         breakpoint: 480,
         settings: {
           slidesToShow: 4,
-          slidesToScroll: 4
+          slidesToScroll: 4,
+          arrows: false
         }
       }
     ],
@@ -222,31 +227,42 @@ const Livestream = () => {
   return (
     <div className="live-stream__container">
       <div className="live-stream__inner xl:rounded-lg xl:mt-2">
-        <div className="flex-1 min-w-0 md:overflow-x-hidden hide-scrollbar">
-          <div className="flex items-center bg-gray-800 px-4 h-16 border-b border-black border-opacity-40">
-            <Avatar boxSize={10} src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg" name="Alice" />
-            <div className="flex-1 mx-4">
-              <div className="font-semibold text-gray-50">Louis C.K.</div>
-              <div className="font-medium text-sm text-gray-400 inline-flex items-center">
-                <SvgIcon id="group" className="text-base text-gray-300 mr-1" />
-                <span>123</span>
+        <div className="relative flex-1 min-w-0 md:overflow-x-hidden hide-scrollbar">
+          <div className="live-stream__video-bar">
+            <div className="flex items-center justify-end px-2 sm:hidden">
+              <div
+                className={classnames('text-gray-50 transition text-2xl p-2',
+                  {'text-rose-500': chatShow})}
+                onClick={() => setChatShow(s => !s)}
+              >
+                <SvgIcon id="comment" className="text-2xl" />
               </div>
             </div>
-            {
-              <button
-                className={classnames(isFollowed ? 'livestream__btn-following' : 'livestream__btn-follow')}
-                onClick={() => setIsFollowed(s => !s)}
-              >
-                {isFollowed ? <Check theme="outline" size="14" fill="#d9d9d9" strokeWidth={5}/> :
-                  <Plus theme="outline" size="14" fill="#fff" strokeWidth={5}/>
-                }
-                <span className="ml-1.5">
+            <div className="flex items-center sm:bg-gray-800 px-4 h-16 footer-action">
+              <Avatar boxSize={10} src="https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg" name="Alice" />
+              <div className="flex-1 mx-4">
+                <div className="font-semibold text-gray-50">Louis C.K.</div>
+                <div className="font-medium text-sm text-white text-opacity-60 inline-flex items-center">
+                  <SvgIcon id="group" className="text-base text-white text-opacity-70 mr-1" />
+                  <span>123</span>
+                </div>
+              </div>
+              {
+                <button
+                  className={classnames(isFollowed ? 'livestream__btn-following' : 'livestream__btn-follow')}
+                  onClick={() => setIsFollowed(s => !s)}
+                >
+                  {isFollowed ? <Check theme="outline" size="14" fill="#d9d9d9" strokeWidth={5}/> :
+                    <Plus theme="outline" size="14" fill="#fff" strokeWidth={5}/>
+                  }
+                  <span className="ml-1.5">
                 { isFollowed ? 'Following' : 'Follow' }
               </span>
-              </button>
-            }
+                </button>
+              }
+            </div>
           </div>
-          <div className="relative aspect-w-16 aspect-h-9">
+          <div className="relative h-screen sm:h-auto sm:aspect-w-16 sm:aspect-h-9">
             <div className="absolute inset-0 bg-black">
               <div className="absolute right-3 top-3 inline-flex justify-center items-center w-10 h-10 bg-black bg-opacity-30 rounded-full z-10 transition cursor-pointer hover:bg-opacity-40">
                 <svg width="24px" height="24px" viewBox="0 0 24 24">
@@ -263,7 +279,7 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
               </div>
             </div>
           </div>
-          <div className="bg-gray-800 px-6">
+          <div className="bg-gray-800 px-6 hidden sm:block">
             <Slider {...settings}>
               {
                 giftList.map((item, index) => (
@@ -279,11 +295,11 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
               }
             </Slider>
           </div>
-          <div className="py-5 md:py-7 xl:py-10 px-4 md:px-5 lg:px-6 xl:px-8 hidden md:block xl:hidden">
+          <div className="hidden md:block xl:hidden py-5 md:py-7 xl:py-10 px-4 md:px-5 lg:px-6 xl:px-8">
             <LiveList list={liveList} />
           </div>
         </div>
-        <div className="flex flex-col w-full md:w-80 border-l border-black bg-gray-700">
+        <div className="hidden sm:flex flex-col w-full md:w-80 border-l border-black bg-gray-700">
           <div className="items-center justify-center h-12 text-white border-b border-gray-800 font-semibold hidden md:flex">Live Chat</div>
           <div className="live-stream__chat-room">
             <div className="pt-3 pb-1.5">
@@ -344,9 +360,97 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
           </div>
         </div>
       </div>
-      <div className="mt-5 pb-5 px-4 xl:px-0 xl:mt-10 md:hidden xl:block">
+      <div className="px-0 mt-10 hidden xl:block">
         <LiveList list={liveList} />
       </div>
+      <BottomSheet
+        className="sm:hidden"
+        open={chatShow}
+        initialFocusRef={false}
+        onDismiss={() => setChatShow(false)}
+        snapPoints={({ minHeight }) => minHeight}
+        header={
+          <div className="h-1 w-full" />
+        }
+      >
+        <div>
+          <div className="mt-1 mb-2 px-2">
+            <Slider {...settings}>
+              {
+                giftList.map((item, index) => (
+                  <div key={index} className="flex flex-col justify-center text-center pt-2 pb-1 sm:py-2.5 px-1.5 cursor-pointer overflow-hidden group hover:bg-gray-700 rounded-md sm:rounded-none transition">
+                    <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.img} alt={item.name} />
+                    <div className="truncate text-gray-400 text-sm font-medium mt-2 group-hover:text-gray-50 transition">{item.name}</div>
+                    <div className="flex items-center justify-center mt-1">
+                      <img className="w-3 mr-1" src="/images/icon-coin.svg" alt="" />
+                      <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.cost}</span>
+                    </div>
+                  </div>
+                ))
+              }
+            </Slider>
+          </div>
+          <div className="flex flex-col w-full bg-gray-700">
+            <div className="live-stream__chat-room web-scroll">
+              <div className="pt-3 pb-1.5">
+                <ChatItem data={{
+                  avatar: 'https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg',
+                  username: 'slovely11',
+                  content: 'I built a house out of empty McRib boxes. Me and my 5 kids live there',
+                  color: 'blue'
+                }}/>
+                <ChatItem data={{
+                  avatar: 'https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg',
+                  username: 'Alex Ng',
+                  content: 'Nice!!',
+                  color: 'green'
+                }}/>
+                <ChatItem isGift giftImg="/images/gift-04.png" data={{
+                  avatar: 'https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg',
+                  username: 'vicktorious99',
+                  content: 'Sent a Rocket',
+                  color: 'pink',
+                }}/>
+                <ChatItem data={{
+                  avatar: 'https://assets.website-files.com/5b9041fb091628c1f868ff07/5b90ef21e2a13a121bab54ed_Person%20Pic%207%402x.jpg',
+                  username: 'norrmsn_man_stormin',
+                  content: 'can you sing originals? 😚',
+                  color: 'yellow'
+                }}/>
+              </div>
+            </div>
+            <div className="relative flex items-center bg-black bg-opacity-40 footer-action">
+              {emojiShow && (
+                <Picker
+                  theme="dark"
+                  include={['recent', 'search', 'people']}
+                  color="#fe4365"
+                  showPreview={false}
+                  showSkinTones={false}
+                  style={{ position: 'absolute', bottom: '100%', left: '0', width: '100%' }}
+                  onSelect={(emoji) => senderRef.current?.onSelectEmoji(emoji)}
+                />
+              )}
+              <Sender
+                ref={senderRef}
+                emojiShow={emojiShow}
+                sendMessage={handlerSendMsn}
+                placeholder="Send something..."
+                disabled={false}
+                maxlength={120}
+                onClick={() => {
+                  // setEmojiShow(false)
+                }}
+                onTextInputChange={onTextInputChange}
+                onPressEmoji={() => {
+                  setEmojiShow(s => !s)
+                  senderRef.current.focus()
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </BottomSheet>
     </div>
   );
 };

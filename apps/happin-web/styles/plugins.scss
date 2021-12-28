@@ -233,3 +233,12 @@
 .emoji-mart-anchor-icon svg {
   margin: 0 auto;
 }
+
+
+//react-spring-bottom-sheet
+
+:root {
+  --rsbs-backdrop-bg: rgba(0, 0, 0, 0);
+  --rsbs-bg: theme('colors.gray.800');
+  --rsbs-handle-bg: rgba(255, 255, 255, .4);
+}
