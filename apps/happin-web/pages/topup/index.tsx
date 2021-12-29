@@ -2,7 +2,7 @@ import React, { useEffect, Fragment, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { Checkbox, HStack } from '@chakra-ui/react';
 import { getUserInfo, getPointPackages, searchUser, submitPointPayment } from 'lib/api';
-import { generateToast } from '../../components/page_components/CheckoutPageComponents/util/toast';
+import { generateErrorToast, generateSuccessToast, generateToast } from '../../components/page_components/CheckoutPageComponents/util/toast';
 import { currencyFormatter } from '../../components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { useToast } from '@chakra-ui/react';
 import { useUserState } from 'contexts/user-state';
@@ -17,7 +17,9 @@ import {
 } from "@stripe/react-stripe-js";
 import { Dialog, Transition } from '@headlessui/react';
 import classnames from 'classnames';
-import { getTopUpPackage } from 'lib/api/topup';
+import { getTopUpPackage, postTopUp } from 'lib/api/topup';
+import { useCheckoutState } from 'contexts/checkout-state';
+import { useSSOState } from 'contexts/sso-state';
 
 interface topupPackage {
   amount: number,
@@ -51,12 +53,10 @@ const TopupInner = (props: any) => {
   const [selectedAnotherUser, setSelectedAnotherUser] = useState<UserResponse>();
   const [showSearchUser, setShowSearchUser] = useState<boolean>(false);
   const [searchUserName, setSearchUserName] = useState<string>('');
-  const [selectedPointPackage, setSelectedPointPackage] = useState<any>();
   const [selectedPackage, setSelectedPackage] = useState<any>();
-  const [selectedPointPackageIndex, setSelectedPointPackageIndex] = useState<any>();
   const [showPayment, setShowPayment] = useState<boolean>(false);
   const [stripeInputError, setStripeInputError] = useState<any>(null);
-  const [billingAddress, setBillingAddress] = useState('')
+  // const [billingAddress, setBillingAddress] = useState('')
   const [chooseStripe, setChooseStripe] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(1);
   const [isPorcessing, setIsProcessing] = useState(false);
@@ -65,55 +65,56 @@ const TopupInner = (props: any) => {
   const [coinPackage, setCoinPackage] = useState<topupPackage[]>();
   const [diamondPackage, setDiamondPackage] = useState<topupPackage[]>();
   const [tabCur, setTabCur] = useState(0);
+  const [showCoinPayment, setShowCoinPayment] = useState<boolean>(false)
   const tab = ['Coin', 'Diamond']
 
-  const handleForYourselfClick = () => {
-    setPaymentSucceed(false)
-    if (selectedYourselftUser) {
-      setSelectedYourselftUser(undefined);
-      setShowPayment(false)
-      setShowSearchUser(false)
-    } else {
-      setSelectedAnotherUser(undefined)
-      setSelectedYourselftUser(userInfo);
-      setShowSearchUser(false)
-    }
-  }
+  // const handleForYourselfClick = () => {
+  //   setPaymentSucceed(false)
+  //   if (selectedYourselftUser) {
+  //     setSelectedYourselftUser(undefined);
+  //     setShowPayment(false)
+  //     setShowSearchUser(false)
+  //   } else {
+  //     setSelectedAnotherUser(undefined)
+  //     setSelectedYourselftUser(userInfo);
+  //     setShowSearchUser(false)
+  //   }
+  // }
 
-  const handleForAnotherClick = () => {
-    setPaymentSucceed(false)
-    if (selectedAnotherUser) {
-      setSelectedAnotherUser(undefined)
-      setShowPayment(false);
-    } else {
-      setSelectedYourselftUser(undefined);
-      setShowSearchUser(true);
-      setShowPayment(false);
-    }
-  }
+  // const handleForAnotherClick = () => {
+  //   setPaymentSucceed(false)
+  //   if (selectedAnotherUser) {
+  //     setSelectedAnotherUser(undefined)
+  //     setShowPayment(false);
+  //   } else {
+  //     setSelectedYourselftUser(undefined);
+  //     setShowSearchUser(true);
+  //     setShowPayment(false);
+  //   }
+  // }
 
-  const onSearchUserNameChange = (e: any) => {
-    setSearchUserName(e.target.value);
-  }
+  // const onSearchUserNameChange = (e: any) => {
+  //   setSearchUserName(e.target.value);
+  // }
 
-  const handleSearchUser = async () => {
-    try {
-      const user: SearchUserResponse = await searchUser(searchUserName);
-      if (user?.data && user.data.length === 0) {
-        generateToast('There is no matching user, please search email or phone number', toast);
-      } else if (user?.data && user.data.length > 0) {
-        let searchedUser = user.data[0];
-        setSelectedAnotherUser(searchedUser);
-        setSearchUserName('')
-        setShowSearchUser(false)
-        if (selectedPointPackage) {
-          setShowPayment(true);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  // const handleSearchUser = async () => {
+  //   try {
+  //     const user: SearchUserResponse = await searchUser(searchUserName);
+  //     if (user?.data && user.data.length === 0) {
+  //       generateToast('There is no matching user, please search email or phone number', toast);
+  //     } else if (user?.data && user.data.length > 0) {
+  //       let searchedUser = user.data[0];
+  //       setSelectedAnotherUser(searchedUser);
+  //       setSearchUserName('')
+  //       setShowSearchUser(false)
+  //       if (selectedPointPackage) {
+  //         setShowPayment(true);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   const handleSelectPointPackage = (topupPackage: any, index: any) => {
     setPaymentSucceed(false)
@@ -135,33 +136,63 @@ const TopupInner = (props: any) => {
     // }
   }
 
+  const handleTabChange = (index: number) => {
+    setShowCoinPayment(false);
+    setShowPayment(false);
+    setTabCur(index);
+    setSelectedPackage(undefined);
+  }
+
   const handleContinue = () => {
-    // if (selectedYourselftUser && selectedPointPackage) {
-    //   setShowPayment(true);
-    //   return;
-    // }
-    // if (selectedAnotherUser && selectedPointPackage) {
-    //   setShowPayment(true);
-    //   return;
-    // }
 
     if (selectedPackage) {
+      if (selectedPackage.amountType === "coin") {
+        setShowCoinPayment(true);
+      }
       setShowPayment(true);
       return;
     }
-    generateToast('Please select points package to continue payment', toast)
+    generateErrorToast('Please select package to continue payment', toast)
     setShowPayment(false)
   }
 
   const onPaidPointsSubmit = async (data: any) => {
     if (!agreeToTerms) {
-      generateToast('Terms and condition is not checked', toast);
+      generateErrorToast('Terms and condition is not checked', toast);
       return
     }
-    if (!billingAddress) {
-      setStripeInputError({ message: 'Address is required' });
+    if (showCoinPayment) {
+      setIsProcessing(true);
+      const data = {
+        packageId: selectedPackage._id,
+        // paymentMethodIndex: 0,
+        receiptEmail: userInfo?.email,
+      }
+      const res = await postTopUp(data);
+      if (res) {
+        if (res.code === 100001) {
+          generateErrorToast('Top up failed, Not enough diamonds', toast);
+        }
+        else if (res.code === 100003) {
+          generateErrorToast('Top up failed', toast);
+        }
+        else if (res.success) {
+          await updateUserInfo();
+          generateSuccessToast('Top up successfully', toast);
+          setSelectedPackage(undefined);
+          setShowPayment(false);
+          setShowCoinPayment(false);
+          setPaymentSucceed(true);
+        }
+      }
+      setIsProcessing(false)
       return;
     }
+    // if (!billingAddress) {
+    //   setStripeInputError({ message: 'Address is required' });
+    //   setPaymentProcessing(false);
+    //   return;
+    // }
     if (stripeInputError) {
       return
     }
@@ -172,98 +203,90 @@ const TopupInner = (props: any) => {
       return;
     }
 
+    
+
     try {
       setIsProcessing(true);
       setPaymentSucceed(false)
-      let result: any;
-      let form: any;
-      if (selectedYourselftUser && selectedPointPackage) {
-        form = {
-          platformCountryCode: "US",
-          subTotalAmount: (selectedPointPackage.amount || 0) * 1.03 + 50,
-          currency: "USD",
-          processingFee: (selectedPointPackage.amount || 0) * 0.03 + 50,
-          statementDescriptor: selectedYourselftUser.displayname,
-          description: "happin topup",
-          receiptEmail: selectedYourselftUser.email,
-          metaData: {
-            points: selectedPointPackage.points
-          },
-          point: selectedPointPackage.points
+      if (selectedPackage) {
+        const data = {
+          packageId: selectedPackage._id,
+          // paymentMethodIndex: 0,
+          receiptEmail: userInfo?.email,
         }
-      } else if (selectedAnotherUser && selectedPointPackage) {
-        form = {
-          platformCountryCode: "US",
-          subTotalAmount: (selectedPointPackage.amount || 0) * 1.03 + 50,
-          currency: "USD",
-          processingFee: (selectedPointPackage.amount || 0) * 0.03 + 50,
-          statementDescriptor: selectedAnotherUser.displayname,
-          description: "happin topup",
-          receiptEmail: selectedAnotherUser.email,
-          metaData: {
-            points: selectedPointPackage.points
-          },
-          point: selectedPointPackage.points
+        const res = await postTopUp(data);
+        if (res?.success) {
+          setClientSecret(res?.clientSecret)
+
+          if (stripe && elements) {
+            const payment_method = {
+              card: elements.getElement(CardElement) as StripeCardElement,
+              billing_details: {
+                name: userInfo?.displayname,
+                // address: {
+                //   line1: billingAddress
+                // }
+              }
+            }
+            const receipt_email =  userInfo?.email
+            const response = await stripe.confirmCardPayment((res?.clientSecret || clientSecret), {
+              payment_method: payment_method,
+              setup_future_usage: 'off_session',
+              receipt_email: receipt_email
+            })
+            if (response.error) {
+              throw response.error;
+            }
+            setTimeout(async function () {
+              await updateUserInfo();
+              generateSuccessToast('Top up successfully', toast);
+              setPaymentSucceed(true);
+              setShowPayment(false);
+              setSelectedPackage(undefined)
+              setIsProcessing(false);
+            }, 3000);
+            
+          }
         }
+        
+
       }
 
       // any following pay button click will use state client secret for strip api
-      result = await submitPointPayment(form);
+      // result = await submitPointPayment(form);
 
-      console.log('stripe method => post payment to payment gateway ', result);
       // after post payment, if it's stripe , need extra steps
-      if (!clientSecret) {
-        setClientSecret(result?.client_secret)
-      }
-      if (stripe && elements) {
-        let payment_method: any;
-        let receipt_email: any;
-        if (selectedYourselftUser) {
-          payment_method = {
-            card: elements.getElement(CardElement) as StripeCardElement,
-            billing_details: {
-              name: selectedYourselftUser.displayname,
-              address: {
-                line1: billingAddress
-              }
-            }
-          }
-          receipt_email: selectedYourselftUser.email
-        } else if (selectedAnotherUser) {
-          payment_method = {
-            card: elements.getElement(CardElement) as StripeCardElement,
-            billing_details: {
-              name: selectedAnotherUser.displayname,
-              address: {
-                line1: billingAddress
-              }
-            }
-          }
-          receipt_email: selectedAnotherUser.email
-        }
-        const response = await stripe.confirmCardPayment((result?.client_secret || clientSecret), {
-          payment_method: payment_method,
-          setup_future_usage: 'off_session',
-          receipt_email: receipt_email
-        })
-        if (response.error) {
-          throw response.error;
-        }
-        generateToast('Thank you for your top up', toast);
-        setPaymentSucceed(true);
-        console.log('stripe confirmed payment', response)
-      }
+      // if (!clientSecret) {
+      //   setClientSecret(result?.client_secret)
+      // }
+      
     }
     catch (err: any) {
       if (err.type === 'card_error') {
-        generateToast(err.message, toast)
+        generateErrorToast(err.message, toast)
       } else {
         console.log(err)
-        generateToast('Unknown error, please contact us', toast)
+        generateErrorToast('Unknown error, please contact us', toast)
       }
     } finally {
-      setIsProcessing(false);
+      console.log("set processing")
     }
+  }
+
+  const updateUserInfo = async () => {
+    try {
+      console.log("updateUserInfo")
+      const userInfoFromServer = await getUserInfo()
+      console.log(userInfoFromServer)
+      if (userInfoFromServer && userInfoFromServer.data) {
+        setUserInfo(userInfoFromServer.data);
+      }
+    }
+    catch(error) {
+      console.log(error)
+      generateErrorToast('Update user info error, please contact us', toast)
+    }
+    
   }
 
   useEffect(() => {
@@ -275,34 +298,49 @@ const TopupInner = (props: any) => {
         try {
 
         } catch (err) {
-          generateToast('Unknown error about getting your balance', toast);
+          generateErrorToast('Unknown error about getting your balance', toast);
           console.log(err)
         }
       })();
     } else {
       setSaasDashboard(false);
       (async () => {
-        try {
-          const topupPackagesFromServer = await getTopUpPackage()
-          if (topupPackagesFromServer && topupPackagesFromServer.data) {
-            if (topupPackagesFromServer.data.coins) {
-              setCoinPackage(topupPackagesFromServer.data.coins)
-            }
-            if (topupPackagesFromServer.data.diamonds) {
-              setDiamondPackage(topupPackagesFromServer.data.diamonds)
+          try {
+            const userInfoFromServer = await getUserInfo()
+            if (userInfoFromServer && userInfoFromServer.data) {
+              setUserInfo(userInfoFromServer.data);
             }
           }
-          const userInfoFromServer = await getUserInfo()
-          if (userInfoFromServer && userInfoFromServer.data) {
-            setUserInfo(userInfoFromServer.data);
+          catch(error) {
+            generateToast('Please login to proceed',toast);
+            router.push('/');
+            return;
           }
-        } catch (err) {
-          generateToast('Unknown error about points', toast);
-          console.log(err)
-        }
+        
       })();
     }
   }, [])
+
+  useEffect(() => {
+    if (userInfo) {
+      getTopUpPackage().then((topupPackagesFromServer:any)=> {
+        if (topupPackagesFromServer && topupPackagesFromServer.data) {
+          if (topupPackagesFromServer.data.coins) {
+            const coinPackage = topupPackagesFromServer.data.coins.sort((a:any, b:any) => {
+              return a.amount - b.amount;
+            });
+            setCoinPackage(coinPackage)
+          }
+          if (topupPackagesFromServer.data.diamonds) {
+            const diamondPackage = topupPackagesFromServer.data.diamonds.sort((a:any, b:any) => {
+              return a.amount - b.amount;
+            });
+            setDiamondPackage(diamondPackage)
+          }
+        }
+      })
+    }
+  }, [userInfo])
 
   // useEffect(() => {
   //   const { query: { fromSaas } } = router;
@@ -353,7 +391,6 @@ const TopupInner = (props: any) => {
   //     })()
   //   }
   // }, []);
-  console.log(paymentSucceed, 'paymentSucceed');
   return (
     <>
       {saasDashboard ?
@@ -382,13 +419,13 @@ const TopupInner = (props: any) => {
       </div>
       </div>:
       <div className="common__body">
-        <div className="flex px-4 pb-4">
+        <div className="flex pb-4 px-1" style={{maxWidth:'300px', margin:'auto'}}>
           {
             tab.map((item, index) => (
-              <div key={index} className="flex justify-center flex-1">
+              <div key={index} className={`flex flex-1 ${item==="Coin" ? 'justify-start' : 'justify-end'}`}>
                 <div
                   className={classnames('topup__tab', {active: tabCur === index})}
-                  onClick={() => setTabCur(index)}
+                  onClick={() => handleTabChange(index)}
                 >{item}</div>
               </div>
             ))
@@ -466,35 +503,41 @@ const TopupInner = (props: any) => {
                 }
               </div>
               </div>
-              {!showPayment && <div className="mt-20">
-                <button onClick={handleContinue} className="topup_continue_button">Top up Now</button>
-              </div>}
+              {!showPayment && 
+                <div className="mt-20">
+                  <button onClick={handleContinue} className="topup_continue_button">Top up Now</button>
+                </div>}
               {
                 showPayment &&
                 <>
                   <div className="mt-10 w-1/3">
-                    <div className="flex justify-between py-1">
-                      <div className="text-gray-300">Points Price</div>
-                      <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPointPackage?.amount || 0) / 100)}</div>
-                    </div>
-                    <div className="flex justify-between py-1">
-                      <div className="text-gray-300">Processing Fee</div>
-                      <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPointPackage?.amount || 0) / 100 * 0.03 + 0.5)}</div>
-                    </div>
-                    <div className="flex justify-between py-1">
-                      <div className="text-gray-300">Total</div>
-                      <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPointPackage?.amount || 0) / 100 * 1.03 + 0.5)}</div>
-                    </div>
-                    <CheckoutForm error={stripeInputError} setError={setStripeInputError} address={billingAddress} setAddress={setBillingAddress}></CheckoutForm>
-                    <div className="mt-5 text-center">
-                      <p className="text-sm text-gray-400 mb-3">Processing fee will be applied</p>
-                      <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
-                        <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
-                      </Checkbox>
-                      <button onClick={onPaidPointsSubmit} className="btn btn-white w-full">
-                        Pay With Credit Card
-                      </button>
-                    </div>
+                  {!showCoinPayment &&
+                      <>
+                        <div className="flex justify-between py-1">
+                          <div className="text-gray-300">Price</div>
+                          <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPackage?.discountedCost || selectedPackage?.cost || 0) / 100)}</div>
+                        </div>
+                        <div className="flex justify-between py-1">
+                          <div className="text-gray-300">Processing Fee</div>
+                          <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPackage?.discountedCost || selectedPackage?.cost || 0) / 100 * 0.03 + 0.5)}</div>
+                        </div>
+                        <div className="flex justify-between py-1">
+                          <div className="text-gray-300">Total</div>
+                          <div className="text-gray-300">{currencyFormatter(userInfo?.currency as string).format((selectedPackage?.discountedCost || selectedPackage?.cost || 0) / 100 * 1.03 + 0.5)}</div>
+                        </div>
+                        <CheckoutForm error={stripeInputError} setError={setStripeInputError} address={null} setAddress={null}></CheckoutForm>
+                        </>
+                    }
+                        <div className="mt-5 text-center">
+                          {!showCoinPayment && <p className="text-sm text-gray-400 mb-3">Processing fee will be applied</p>}
+                          <Checkbox defaultIsChecked colorScheme="rose" size="md" value={agreeToTerms} onChange={() => { setAgreeToTerms(s => !s ? s = 1 : s = 0) }}>
+                            <span className="text-sm text-gray-400">I agree to the website <a rel="noreferrer" target='_blank' href="https://happin.app/terms" className="text-gray-300 underline hover:text-white transition">Terms and Conditions</a></span>
+                          </Checkbox>
+                          <button onClick={onPaidPointsSubmit} disabled={isPorcessing} className="btn btn-white w-full">
+                            {showCoinPayment ? 'Top up Now' : 'Pay With Credit Card'}
+                          </button>
+                        </div>
+                      
                   </div>
                 </>
               }
@@ -560,13 +603,15 @@ const TopupInner = (props: any) => {
   )
 }
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY as string);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PRIVATE_KEY as string, {locale:'en'});
 
-const Topup = () => (
-  <Elements stripe={stripePromise}>
-    <TopupInner />
-  </Elements>
-);
+const Topup = () => {
+  return (
+    <Elements stripe={stripePromise}>
+      <TopupInner />
+    </Elements>
+  )
+}
 
 export default Topup
 
