@@ -418,8 +418,4 @@ const Reward = () => {
   )
 }
 
-export default Reward
-function showSSOSignUp(arg0: string) {
-  throw new Error('Function not implemented.');
-}
 
