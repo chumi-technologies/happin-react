@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { useToast } from '@chakra-ui/react';
+import { BreadcrumbLink, useToast } from '@chakra-ui/react';
 import { ArrowRight, Help, Lightning, Like, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import SvgIcon from "@components/SvgIcon";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { getRewards, rewardCheckIn, rewardClaim } from 'lib/api/reward';
 import { Balance, DailyCheckIn, RewardListResponse, TaskDetail } from 'lib/model/reward';
+import { getUserInfo } from 'lib/api';
+import { useUserState } from 'contexts/user-state';
+import { useSSOState } from 'contexts/sso-state';
+import router, { useRouter } from 'next/router';
+import jwt_decode from "jwt-decode";
 
 const Reward = () => {
+  const router = useRouter()
+  const { user, clearUser } = useUserState();
+  const { dimmed, showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [ rewards, setRewards ]: any = useState(undefined);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
   const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0})
   const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
+  const { exchangeForCrowdCoreToken } = useUserState()
+  const [ inProgress, setInProgress ] = useState<boolean>(false);
   // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([]) 
   const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([]) 
   const toast = useToast();
@@ -28,10 +38,9 @@ const Reward = () => {
         setRewards(res.data)
         setBalance(res.data.balance)
         setDailyCheckIn(res.data.dailyCheckIn)
-        if (res.data.tasks["one-time"]) {
-          setOneTimeTask(res.data.tasks["one-time"]);
+        if (res.data.tasks.oneTime) {
+          setOneTimeTask(res.data.tasks.oneTime);
         }
-        setOneTimeTask(res.data.tasks.weekly);
         // if (res.data.tasks.weekly) {
         //   setWeeklyTask(res.data.tasks.weekly);
         // }
@@ -47,8 +56,7 @@ const Reward = () => {
   }
 
   const handleTopUp = () => {
-
-
+    router.push('/topup');
   }
 
   const handleCheckin = async () => {
@@ -60,6 +68,7 @@ const Reward = () => {
         temp.strike  = temp.strike + 1;
         setDailyCheckIn(temp)
       }
+
     }
     catch (err) {
       generateToast('Unknown error about rewards check in', toast);
@@ -67,38 +76,127 @@ const Reward = () => {
     }
   }
 
-  const handleClaim = async (id:string) => {
+  const handleClaim = async (id:string, type: string) => {
     try {
+      setInProgress(true)
       const res = await rewardClaim(id);
       console.log(res)
       if (res && res.data) {
-
+        if (type === "oneTime") {
+          const update = oneTimeTask.map((item:TaskDetail) => {
+            if (item._id === id) {
+              const temp = item;
+              temp.claimed = true;
+              temp.claimable = false;
+              return temp;
+            }
+            return item;
+          })
+          setOneTimeTask(update);
+        }
+        else {
+          const update = semiMonthlyTask.map((item:TaskDetail) => {
+            if (item._id === id) {
+              const temp = item;
+              temp.claimed = true;
+              temp.claimable = false;
+              return temp;
+            }
+            return item;
+          })
+          setSemiMonthlyTask(update);
+        }
       }
+      setInProgress(false)
     }
     catch (err) {
       generateToast('Unknown error about rewards check in', toast);
       console.log(err)
+      setInProgress(false)
+
     }
 
   }
 
-  useEffect(() => {
-    (async () => {
-      await getRewardsInfo();
-      setLoading(false);
-    })()
+  const handleSendToAPP = (type:string) => {
+    let action = "";
+    switch(type) {
+      case "copy":
+        action = 'copy-to-invite-friends';
+        break;
+      case "share":
+        action = 'share-to-invite-friends';
+        break;
+      case "add":
+        action = 'open-add-contacts';
+        break;
+      case "topup":
+        action = 'top-up-needed-diamond';
+        break;
+      default:
+        break;
+    }
+    console.log("direct to app ", action)
+    const passJson = { action: action };
+    if ((window as any).webkit) {
+      (window as any).webkit.messageHandlers.jsHandler.postMessage(JSON.stringify(passJson));
+    }
+    if ((window as any).happinAndroid) {
+      (window as any).happinAndroid.doAction(action, JSON.stringify(passJson));
+    }
+    window.parent.postMessage(passJson, '*');
+  }
 
-  }, []);
+  useEffect(() => {
+    if (user) {
+      console.log(user);
+      (async () => {
+              try {
+                await getRewardsInfo();
+                setLoading(false);
+              }
+              catch(error) {
+                generateToast('Get reward error', toast);
+                console.log('Get reward error: ', error)
+              }
+              
+            })()
+    }
+  },[user])
+
+  useEffect(() => {
+    if (Object.entries(router.query).length !== 0) {
+      if (!router.query.token) {
+        generateToast('To continue, please log in or sign up ', toast);
+        showSSO('Fan')
+        return
+      } else  {
+        let decoded: any = jwt_decode(router.query.token as string);
+          if (new Date().getTime() > (decoded.exp * 1000)) {
+            // token expired
+            generateToast('To continue, please log in or sign up ', toast);
+            showSSO('Fan')
+            return
+          }
+          else {
+            localStorage.setItem("happin_web_jwt", router.query.token as string);
+          }
+      }
+    }
+  }, [router.query]);
+
+  useEffect(() => {
+    // href # jump
+    if (!loading && window.location.hash !=="") {
+      document.querySelector(window.location.hash)?.scrollIntoView();
+    }
+  },[loading])
 
   useEffect(() => {
     console.log("strikeChange")
-
-
-    
   }, [dailyCheckIn.strike])
 
   return (
-    !loading ? 
       <div className="app-reward__page">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4 font-semibold text-gray-50">
@@ -107,7 +205,7 @@ const Reward = () => {
               <Help theme="outline" size="18" fill="currentColor" strokeWidth={4}/>
             </div>
             <div className="flex items-center">
-              <span className="mr-2" onClick={() => handleTopUp()}>Top Up Now</span>
+              <span className="mr-2" onClick={() => handleSendToAPP("topup")}>Top Up Now</span>
               <ArrowRight theme="outline" size="16" fill="currentColor" strokeWidth={5}/>
             </div>
           </div>
@@ -136,7 +234,7 @@ const Reward = () => {
         </div>
         <div className="flex px-4 pb-4">
           {
-            tab.map((item, index) => (
+            tab?.map((item, index) => (
               <div key={index} className="flex justify-center flex-1">
                 <div
                   className={classnames('app-reward__tab', {active: tabCur === index})}
@@ -168,7 +266,7 @@ const Reward = () => {
               }
             </div>
           </div>
-          {oneTimeTask.map((task:TaskDetail) => {
+          {oneTimeTask && oneTimeTask.map((task:TaskDetail) => {
             return (
               <div className="bg-gray-800 rounded-xl px-4 py-6 mb-4" key={task._id}>
                 <div className="flex items-center">
@@ -179,7 +277,7 @@ const Reward = () => {
                     <div className="text-gray-400 font-medium text-sm leading-5">{task.description}</div>
                   </div>
                   { task.claimable ? 
-                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" onClick={() => handleClaim(task._id)}>Claim</button>
+                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" disabled={inProgress} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
                         : task.claimed ? <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
                         : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4">Enter</button>
                       }
@@ -198,28 +296,28 @@ const Reward = () => {
               <div className="my-5">
                 <div className="inline-flex items-center py-2 px-2 border-2 border-solid border-gray-600 rounded-full text-white font-semibold">
                   <div className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-rose-600 mr-2">ID</div>
-                  <div className="mr-1">shakira_1211_wong</div>
+                  <div className="mr-1">{user?.happinID}</div>
                 </div>
               </div>
             </div>
             <div className="flex text-gray-50 font-semibold">
-              <div className="flex-1 text-center">
+              <div className="flex-1 text-center" onClick={() => handleSendToAPP("copy")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="copy" className="text-2xl" />
                 </div>
-                <div className="text-sm mt-2">Copy</div>
+                <div className="text-sm mt-2" >Copy</div>
               </div>
-              <div className="flex-1 text-center">
+              <div className="flex-1 text-center" onClick={() => handleSendToAPP("share")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="share" className="text-2xl" />
                 </div>
-                <div className="text-sm mt-2">Share to Invite</div>
+                <div className="text-sm mt-2" >Share to Invite</div>
               </div>
-              <div className="flex-1 text-center">
+              <div className="flex-1 text-center" onClick={() => handleSendToAPP("add")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="add-user" className="text-2xl" />
                 </div>
-                <div className="text-sm mt-2">Add Friends</div>
+                <div className="text-sm mt-2" >Add Contacts</div>
               </div>
             </div>
           </div>
@@ -250,7 +348,7 @@ const Reward = () => {
             </div>
           </div> */}
           <div className="bg-gray-800 rounded-xl px-4 py-6 mb-4">
-            <div className="text-xl text-white font-semibold mb-2">Semi-month Reward</div>
+            <a className="text-xl text-white font-semibold mb-2" href="semiMonth" id="semiMonth">Semi-month Reward</a>
             <div className="text-gray-400 font-medium text-sm leading-5">Rewards are added to next month if no one wins. Winners will share the monthly prize.</div>
             <div className="space-y-6 mt-5">
               {semiMonthlyTask.map((task:TaskDetail) => {
@@ -263,7 +361,7 @@ const Reward = () => {
                       <img className="inline align-middle w-5 mr-1" src={`/images/icon-${task.rewardType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
                       <span className="text-gray-50 text-sm font-medium">{task.rewardAmount}</span>
                       { task.claimable ? 
-                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" onClick={() => handleClaim(task._id)}>Claim</button>
+                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" onClick={() => handleClaim(task._id, "semiMonth")}>Claim</button>
                         : task.claimed ? <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
                         : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4">Enter</button>
                       }
@@ -316,10 +414,12 @@ const Reward = () => {
           </div>
         </div>
       </div>
-    :
-      <>
-      </>
+
   )
 }
 
 export default Reward
+function showSSOSignUp(arg0: string) {
+  throw new Error('Function not implemented.');
+}
+

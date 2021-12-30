@@ -20,7 +20,7 @@ export interface DailyCheckIn {
 export interface Tasks {
     weekly: TaskDetail[];
     semiMonthly: TaskDetail[];
-    "one-time": TaskDetail[];
+    oneTime: TaskDetail[];
 }
 
 export interface TaskDetail {
