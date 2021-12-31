@@ -67,7 +67,10 @@ const Layout = ({ children }: { children: any }) => {
     if (router.asPath === '/appreward') {
       setAppRewardPage(true)
       setShowHeader(false);
-      setShowFooter(false);
+    }
+
+    if (router.asPath === '/campaign') {
+      setShowHeader(false);
     }
   }, [router.query, router.asPath, setBoxOfficeMode])
 
