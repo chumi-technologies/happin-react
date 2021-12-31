@@ -267,10 +267,9 @@ const Reward = () => {
                     </div>
                     <div className="text-gray-400 font-medium text-sm leading-5">{task.description}</div>
                   </div>
-                  { task.claimable ? 
-                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" disabled={inProgress} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
-                        : task.claimed ? <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
-                        : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4">Enter</button>
+                  { task.claimed ? 
+                        <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
+                        : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4 disabled" disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
                       }
                 </div>
               </div>
@@ -351,10 +350,9 @@ const Reward = () => {
                     <div className="flex items-center ml-4">
                       <img className="inline align-middle w-5 mr-1" src={`/images/icon-${task.rewardType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
                       <span className="text-gray-50 text-sm font-medium">{task.rewardAmount}</span>
-                      { task.claimable ? 
-                        <button className="btn btn-outline-rose btn-sm !rounded-full ml-4" onClick={() => handleClaim(task._id, "semiMonth")}>Claim</button>
-                        : task.claimed ? <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
-                        : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4">Enter</button>
+                      { task.claimed ? 
+                        <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
+                        : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4 disabled" disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Enter</button>
                       }
                     </div>
                   </div>
