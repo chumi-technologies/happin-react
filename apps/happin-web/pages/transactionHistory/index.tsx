@@ -16,13 +16,8 @@ const TransactionHistory = () => {
   const { dimmed, showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [ rewards, setRewards ]: any = useState(undefined);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
-  const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0})
-  const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
-  const [ inProgress, setInProgress ] = useState<boolean>(false);
   // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([]) 
-  const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([]) 
   const toast = useToast();
   const tab = ['Coin', 'Diamond']
 
