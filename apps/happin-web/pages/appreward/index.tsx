@@ -20,7 +20,7 @@ const Reward = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [ rewards, setRewards ]: any = useState(undefined);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
-  const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0})
+  const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0, "hasCheckedIn":false})
   const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
   const { exchangeForCrowdCoreToken } = useUserState()
   const [ inProgress, setInProgress ] = useState<boolean>(false);
@@ -204,7 +204,7 @@ const Reward = () => {
               <span className="mr-1">Current Balance</span>
               <Help theme="outline" size="18" fill="currentColor" strokeWidth={4}/>
             </div>
-            <div className="flex items-center">
+            <div className="flex items-center  cursor-pointer">
               <span className="mr-2" onClick={() => handleSendToAPP("topup")}>Top Up Now</span>
               <ArrowRight theme="outline" size="16" fill="currentColor" strokeWidth={5}/>
             </div>
@@ -248,7 +248,7 @@ const Reward = () => {
           <div className="bg-gray-800 rounded-xl px-4 py-6 mb-4">
             <div className="flex items-center justify-between">
               <div className="text-gray-50 font-semibold text-xl">Daily Checkin</div>
-              <button className="btn btn-sm btn-rose !rounded-full !font-semibold" onClick={() => handleCheckin()}>Checkin Today</button>
+              <button className="btn btn-sm btn-rose !rounded-full !font-semibold" disabled={dailyCheckIn.hasCheckedIn} onClick={() => handleCheckin()}>Checkin Today</button>
             </div>
             <div className="mt-2 text-gray-400 text-sm">
               <span className="align-middle">Checkin 7 days in a row to win extra</span>
@@ -301,19 +301,19 @@ const Reward = () => {
               </div>
             </div>
             <div className="flex text-gray-50 font-semibold">
-              <div className="flex-1 text-center" onClick={() => handleSendToAPP("copy")}>
+              <div className="flex-1 text-center cursor-pointer" onClick={() => handleSendToAPP("copy")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="copy" className="text-2xl" />
                 </div>
                 <div className="text-sm mt-2" >Copy</div>
               </div>
-              <div className="flex-1 text-center" onClick={() => handleSendToAPP("share")}>
+              <div className="flex-1 text-center  cursor-pointer" onClick={() => handleSendToAPP("share")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="share" className="text-2xl" />
                 </div>
                 <div className="text-sm mt-2" >Share to Invite</div>
               </div>
-              <div className="flex-1 text-center" onClick={() => handleSendToAPP("add")}>
+              <div className="flex-1 text-center  cursor-pointer" onClick={() => handleSendToAPP("add")}>
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-900">
                   <SvgIcon id="add-user" className="text-2xl" />
                 </div>
@@ -419,3 +419,4 @@ const Reward = () => {
 }
 
 
+export default Reward;

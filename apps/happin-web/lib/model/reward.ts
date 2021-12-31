@@ -15,6 +15,7 @@ export interface DailyCheckIn {
     strike: number;
     reward: number;
     rewardType: string;
+    hasCheckedIn: boolean;
 }
 
 export interface Tasks {
