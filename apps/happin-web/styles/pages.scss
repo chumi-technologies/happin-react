@@ -140,60 +140,7 @@
     transform: translate(-50%, -50%);
   }
 }
-// Topup
-.topup_continue_button {
-  background-color: #fe4365;
-  border: 1px solid rgb(0,0,0);
-  border-radius: 2rem;
-  box-sizing: border-box;
-  color: #ffffff;
-  font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-  font-size: .875rem;
-  font-weight: 600;
-  line-height: 1.25rem;
-  padding: .75rem 1rem;
-  text-align: center;
-  text-decoration: none #D1D5DB solid;
-  text-decoration-thickness: auto;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  cursor: pointer;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-}
 
-.topup_continue_button:hover {
-  background-color: #db1d40;
-}
-
-.topup_continue_button:focus {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-}
-
-.topup_continue_button:focus-visible {
-  box-shadow: none;
-}
-
-.topup_enter-input {
-  @apply block w-60 pl-10 pr-2 py-2 rounded-full border-2 border-solid border-gray-800 bg-black text-white transition placeholder-gray-400;
-  &:hover {
-    @apply border-gray-600
-  }
-  &:focus {
-    @apply bg-gray-900
-  }
-}
-
-.topup_username-input {
-  @apply block w-80 pl-10 pr-2 py-2 rounded-full border-2 border-solid border-gray-800 bg-black text-white transition placeholder-gray-400;
-  &:hover {
-    @apply border-gray-600
-  }
-  &:focus {
-    @apply bg-gray-900
-  }
-}
 #event_details_iframe {
   position: absolute;
   right: 0%;
@@ -461,6 +408,31 @@
     right: -550px;
   }
 }
+.events-right-circle {
+  width: 360px;
+  height: 360px;
+  right: -260px;
+  @media (min-width: 640px) {
+    width: 360px;
+    height: 360px;
+    right: -240px;
+  }
+  @media (min-width: 768px) {
+    width: 450px;
+    height: 450px;
+    right: -260px;
+  }
+  @media (min-width: 1024px) {
+    width: 600px;
+    height: 600px;
+    right: -380px;
+  }
+  @media (min-width: 1280px) {
+    width: 750px;
+    height: 750px;
+    right: -450px;
+  }
+}
 .home__color-purple {
   background-color: #5956E9;
 }
@@ -668,14 +640,22 @@
     @apply bg-gray-200 text-gray-400 shadow-none justify-center;
   }
 }
+@keyframes progress-bar-stripes {
+  0% {
+    background-position-x: 1rem;
+  }
+}
+.reward__progress {
+  @apply flex overflow-hidden rounded-full bg-white bg-opacity-20 h-3
+}
 
-// Transaction History page
-.avator-icon {
-  background-color:rgba(0, 0, 0, 0.5);
-  border-top-left-radius: 50% 50%;
-  border-top-right-radius: 50% 50%;
-  border-bottom-right-radius: 50% 50%;
-  border-bottom-left-radius: 50% 50%;
+.reward__progress-bar {
+  @apply flex flex-col justify-center overflow-hidden text-white text-center whitespace-nowrap font-semibold text-sm;
+  background-color: #fcbb00;
+  background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent);
+  background-size: 1rem 1rem;
+  transition: width 0.6s ease;
+  animation: 1s linear infinite progress-bar-stripes;
 }
 
 // APP Reward
@@ -726,6 +706,43 @@
   background: linear-gradient(140.91deg, #ff5b33 8.41%, #853389 100%);
 }
 
+// Campaign
+.campaign__tab-item {
+  @apply flex-shrink-0 flex justify-center items-center text-center border border-b-0 border-solid border-yellow-900 rounded-t-3xl px-4 h-12 w-32 bg-yellow-500 leading-4 font-bold;
+  & + .campaign__tab-item {
+    @apply -ml-px
+  }
+  &.active {
+    @apply bg-gray-900 border-gray-900 text-rose-500;
+  }
+}
+.campaign__day-item {
+  @apply flex-1 relative;
+  &:not(:first-child):before {
+    content: '';
+    @apply absolute -left-1/2 w-full border-t-2 border-solid border-rose-500;
+    top: 4px;
+  }
+}
+.campaign__day-last {
+  @apply absolute -right-1.5 w-5 h-5 rounded-full flex items-center justify-center bg-yellow-500;
+}
+.campaign__day {
+  @apply relative flex items-center w-2.5 h-2.5 mx-auto mb-2 bg-gray-100 rounded-full z-10;
+}
+.campaign__day-text {
+  @apply text-gray-400 text-sm font-medium
+}
+.campaign__search-input {
+  @apply block w-full pl-10 pr-3 py-2 rounded-full border-2 border-solid border-gray-700 bg-gray-700 text-gray-50 transition placeholder-gray-500;
+  &:focus {
+    @apply border-gray-500
+  }
+}
+.campaign__top-three {
+  background: url("../public/images/top-three-bg.png") no-repeat center bottom;
+  background-size: 100%;
+}
 // LiveStream
 @mixin darkScroll {
   overflow-y: auto;
@@ -2836,4 +2853,68 @@
         label {margin: 10px}
 
     }
+}
+
+// Transaction History page
+.avator-icon {
+  background-color:rgba(0, 0, 0, 0.5);
+  border-top-left-radius: 50% 50%;
+  border-top-right-radius: 50% 50%;
+  border-bottom-right-radius: 50% 50%;
+  border-bottom-left-radius: 50% 50%;
+}
+
+// Topup
+.topup_continue_button {
+  background-color: #fe4365;
+  border: 1px solid rgb(0,0,0);
+  border-radius: 2rem;
+  box-sizing: border-box;
+  color: #ffffff;
+  font-family: "Inter var",ui-sans-serif,system-ui,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+  font-size: .875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  padding: .75rem 1rem;
+  text-align: center;
+  text-decoration: none #D1D5DB solid;
+  text-decoration-thickness: auto;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.topup_continue_button:hover {
+  background-color: #db1d40;
+}
+
+.topup_continue_button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+.topup_continue_button:focus-visible {
+  box-shadow: none;
+}
+
+.topup_enter-input {
+  @apply block w-60 pl-10 pr-2 py-2 rounded-full border-2 border-solid border-gray-800 bg-black text-white transition placeholder-gray-400;
+  &:hover {
+    @apply border-gray-600
+  }
+  &:focus {
+    @apply bg-gray-900
+  }
+}
+
+.topup_username-input {
+  @apply block w-80 pl-10 pr-2 py-2 rounded-full border-2 border-solid border-gray-800 bg-black text-white transition placeholder-gray-400;
+  &:hover {
+    @apply border-gray-600
+  }
+  &:focus {
+    @apply bg-gray-900
+  }
 }
