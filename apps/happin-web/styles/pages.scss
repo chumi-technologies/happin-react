@@ -743,6 +743,7 @@
   background: url("../public/images/top-three-bg.png") no-repeat center bottom;
   background-size: 100%;
 }
+
 // LiveStream
 @mixin darkScroll {
   overflow-y: auto;
@@ -2918,3 +2919,4 @@
     @apply bg-gray-900
   }
 }
+
