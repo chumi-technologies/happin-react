@@ -1,30 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { BreadcrumbLink, useToast } from '@chakra-ui/react';
-import { ArrowRight, Help, Lightning, Like, Switch } from "@icon-park/react";
+import { useToast } from '@chakra-ui/react';
+import { ArrowRight, Help, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import SvgIcon from "@components/SvgIcon";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { getRewards, rewardCheckIn, rewardClaim } from 'lib/api/reward';
 import { Balance, DailyCheckIn, RewardListResponse, TaskDetail } from 'lib/model/reward';
-import { getUserInfo } from 'lib/api';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
 
 const Reward = () => {
   const router = useRouter()
-  const { user, clearUser } = useUserState();
-  const { dimmed, showSSO } = useSSOState();
+  const { user } = useUserState();
+  const { showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
-  const [ rewards, setRewards ]: any = useState(undefined);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
   const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0, "hasCheckedIn":false})
   const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
-  const { exchangeForCrowdCoreToken } = useUserState()
   const [ inProgress, setInProgress ] = useState<boolean>(false);
-  // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([]) 
   const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([]) 
   const toast = useToast();
   const tab = ['Earn', 'Redeem']
@@ -35,7 +31,6 @@ const Reward = () => {
       const res: RewardListResponse = await getRewards();
       if (res && res.data) {
         console.log(res.data)
-        setRewards(res.data)
         setBalance(res.data.balance)
         setDailyCheckIn(res.data.dailyCheckIn)
         if (res.data.tasks.oneTime) {
@@ -53,10 +48,6 @@ const Reward = () => {
       generateToast('Unknown error about get rewards', toast);
       console.log(err)
     }
-  }
-
-  const handleTopUp = () => {
-    router.push('/topup');
   }
 
   const handleCheckin = async () => {

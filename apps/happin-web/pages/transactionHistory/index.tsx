@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { BreadcrumbLink, useToast } from '@chakra-ui/react';
-import { ArrowRight, Help, Lightning, Like, Switch } from "@icon-park/react";
+import { useToast } from '@chakra-ui/react';
+import { Help, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { getRewards, getTransactionHistory, rewardCheckIn, rewardClaim } from 'lib/api/reward';
-import { Balance, DailyCheckIn, RewardListResponse, TaskDetail } from 'lib/model/reward';
+import { Balance, RewardListResponse } from 'lib/model/reward';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
 
 const TransactionHistory = () => {
   const router = useRouter()
-  const { user, clearUser } = useUserState();
-  const { dimmed, showSSO } = useSSOState();
+  const { user } = useUserState();
+  const {  showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});

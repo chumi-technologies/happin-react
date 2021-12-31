@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ArrowRight, Help, Lightning, Like, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import SvgIcon from "@components/SvgIcon";
 import { SearchIcon } from '@chakra-ui/icons';
@@ -32,7 +31,7 @@ const dayList = [
   },
 ];
 const campaign = () => {
-  const [tabCur, setTabCur] = useState(2);
+  const [tabCur, setTabCur] = useState<number>(2);
   return (
     <div className="overflow-y-auto">
       <div className="bg-yellow-500 pt-8">
