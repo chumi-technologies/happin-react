@@ -30,7 +30,7 @@ const dayList = [
     date: '2.7'
   },
 ];
-const campaign = () => {
+const Campaign = () => {
   const [tabCur, setTabCur] = useState<number>(2);
   return (
     <div className="overflow-y-auto">
@@ -253,4 +253,4 @@ const campaign = () => {
   )
 }
 
-export default campaign
+export default Campaign
