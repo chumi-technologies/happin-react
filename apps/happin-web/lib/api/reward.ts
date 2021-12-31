@@ -3,10 +3,16 @@ import { getFromHappin, postToHappin, postToHappin_noBody } from "./base"
 const GET_REWARDS = '/rewards'
 const POST_CHECKIN = '/rewards/check-in'
 const POST_CLAIM= '/rewards/claim'
+const GET_HISTORY= '/rewards/transactions?currency=@currency'
 
 
 const getRewards = async () => {
     const response = await getFromHappin(GET_REWARDS)
+    return response || {}
+}
+
+const getTransactionHistory = async (currency:string) => {
+    const response = await getFromHappin(GET_HISTORY.replace("@currency", currency))
     return response || {}
 }
 
@@ -23,4 +29,4 @@ const rewardClaim = async (id:string) => {
 
 
 
-export { getRewards, rewardCheckIn, rewardClaim }
+export { getRewards, rewardCheckIn, rewardClaim, getTransactionHistory }

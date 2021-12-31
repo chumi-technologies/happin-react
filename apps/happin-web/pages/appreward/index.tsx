@@ -237,7 +237,7 @@ const Reward = () => {
             tab?.map((item, index) => (
               <div key={index} className="flex justify-center flex-1">
                 <div
-                  className={classnames('app-reward__tab', {active: tabCur === index})}
+                  className={`${classnames('app-reward__tab', {active: tabCur === index})} cursor-pointer`}
                   onClick={() => setTabCur(index)}
                 >{item}</div>
               </div>
