@@ -12,7 +12,7 @@ import jwt_decode from "jwt-decode";
 
 const TransactionHistory = () => {
   const router = useRouter()
-  const { user } = useUserState();
+  const { user, clearUser } = useUserState();
   const {  showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -91,6 +91,7 @@ const TransactionHistory = () => {
   },[user])
 
   useEffect(() => {
+    clearUser();
     if (Object.entries(router.query).length !== 0) {
       if (!router.query.token) {
         generateToast('To continue, please log in or sign up ', toast);
@@ -106,6 +107,17 @@ const TransactionHistory = () => {
           }
           else {
             localStorage.setItem("happin_web_jwt", router.query.token as string);
+            (async () => {
+              try {
+                await getRewardsInfo();
+                setLoading(false);
+              }
+              catch(error) {
+                generateToast('Get reward error', toast);
+                console.log('Get reward error: ', error)
+              }
+              
+            })()
           }
       }
     }
