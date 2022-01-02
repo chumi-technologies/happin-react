@@ -10,10 +10,11 @@ import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
+import { getUserInfo } from 'lib/api';
 
 const Reward = () => {
   const router = useRouter()
-  const { user } = useUserState();
+  const { user, clearUser } = useUserState();
   const { showSSO } = useSSOState();
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -156,6 +157,7 @@ const Reward = () => {
   },[user])
 
   useEffect(() => {
+    clearUser();
     if (Object.entries(router.query).length !== 0) {
       if (!router.query.token) {
         generateToast('To continue, please log in or sign up ', toast);
@@ -171,6 +173,18 @@ const Reward = () => {
           }
           else {
             localStorage.setItem("happin_web_jwt", router.query.token as string);
+            (async () => {
+              try {
+                await getRewardsInfo();
+                setLoading(false);
+              }
+              catch(error) {
+                generateToast('Get reward error', toast);
+                console.log('Get reward error: ', error)
+              }
+              
+            })()
+            console.log(user);
           }
       }
     }
