@@ -11,7 +11,7 @@ const firebaseTokenHost = process.env.NEXT_PUBLIC_FIREBASE_TOKEN_HOST
 
 const HEADER: { [key: string]: string } = {
   'Accept': 'application/json',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
 };
 
 const instanceHappin = axios.create({
