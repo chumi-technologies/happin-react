@@ -19,6 +19,7 @@ const Reward = () => {
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
+  const [ happinID, setHappinID ] = useState<string>('');
   const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0, "hasCheckedIn":false})
   const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
   const [ inProgress, setInProgress ] = useState<boolean>(false);
@@ -176,6 +177,10 @@ const Reward = () => {
             (async () => {
               try {
                 await getRewardsInfo();
+                const res_user = await getUserInfo();
+                if (res_user) {
+                  setHappinID(res_user.data.happinID);
+                }
                 setLoading(false);
               }
               catch(error) {
@@ -300,7 +305,7 @@ const Reward = () => {
               <div className="my-5">
                 <div className="inline-flex items-center py-2 px-2 border-2 border-solid border-gray-600 rounded-full text-white font-semibold">
                   <div className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-rose-600 mr-2">ID</div>
-                  <div className="mr-1">{user?.happinID}</div>
+                  <div className="mr-1">{user ? user.happinID : happinID}</div>
                 </div>
               </div>
             </div>
