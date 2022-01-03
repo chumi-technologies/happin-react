@@ -178,9 +178,9 @@ const TransactionHistory = () => {
           }
         </div>
         <div className={classnames('px-4', {hidden: tabCur !== 0})}>
-          {coinTransaction && coinTransaction?.map((transaction:Transaction) => {
+          {coinTransaction && coinTransaction?.map((transaction:Transaction, index:number) => {
             return (
-              <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
+              <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" key={`transactionCoin-${index}`}>
                 <div className="flex items-center">
                   <div className="relative">
                     {transaction.icon ? 
@@ -212,9 +212,9 @@ const TransactionHistory = () => {
           })}
         </div>
         <div className={classnames('px-4', {hidden: tabCur !== 1})}>
-          {diamondTransaction && diamondTransaction?.map((transaction:Transaction) => {
+          {diamondTransaction && diamondTransaction?.map((transaction:Transaction, index:number) => {
               return (
-                <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
+                <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" key={`transactionDiamond-${index}`}>
                   <div className="flex items-center">
                     <div className="relative">
                       {transaction.icon ? 
