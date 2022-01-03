@@ -36,5 +36,14 @@ export interface TaskDetail {
     buttonText: string;
 }
 
+export interface Transaction {
+  amount: number;
+  content: string;
+  currency: string;
+  timestamp: any;
+  title: string;
+  icon: string;
+}
+
 
 

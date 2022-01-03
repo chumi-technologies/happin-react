@@ -2900,6 +2900,15 @@
   box-shadow: none;
 }
 
+.transaction-avator {
+  height: 48px;
+  width: 48px;
+  border-top-left-radius: 50% 50%;
+  border-top-right-radius: 50% 50%;
+  border-bottom-right-radius: 50% 50%;
+  border-bottom-left-radius: 50% 50%;
+}
+
 .topup_enter-input {
   @apply block w-60 pl-10 pr-2 py-2 rounded-full border-2 border-solid border-gray-800 bg-black text-white transition placeholder-gray-400;
   &:hover {

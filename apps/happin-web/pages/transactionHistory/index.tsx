@@ -4,11 +4,12 @@ import { Help, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { getRewards, getTransactionHistory, rewardCheckIn, rewardClaim } from 'lib/api/reward';
-import { Balance, RewardListResponse } from 'lib/model/reward';
+import { Balance, RewardListResponse, Transaction } from 'lib/model/reward';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
+import moment from 'moment';
 
 const TransactionHistory = () => {
   const router = useRouter()
@@ -17,6 +18,8 @@ const TransactionHistory = () => {
   const [tabCur, setTabCur] = useState(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
+  const [ diamondTransaction, setDiamondTransaction ] = useState<Transaction[]>([])
+  const [ coinTransaction, setCoinTransaction ] = useState<Transaction[]>([])
   // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([]) 
   const toast = useToast();
   const tab = ['Coin', 'Diamond']
@@ -30,8 +33,12 @@ const TransactionHistory = () => {
         setBalance(res.data.balance)
         const coin_history = await getTransactionHistory("coin");
         const diamond_history = await getTransactionHistory("diamond");
-        console.log(coin_history)
-        console.log(diamond_history)
+        if (diamond_history?.data) {
+          setDiamondTransaction(diamond_history.data?.transactions);
+        }
+        if (coin_history?.data) {
+          setCoinTransaction(coin_history.data?.transactions);
+        }
       }
     }
     catch (err) {
@@ -123,6 +130,8 @@ const TransactionHistory = () => {
     }
   }, [router.query]);
 
+  console.log("coin",coinTransaction)
+  console.log(diamondTransaction)
 
   return (
       <div className="app-reward__page">
@@ -169,43 +178,73 @@ const TransactionHistory = () => {
           }
         </div>
         <div className={classnames('px-4', {hidden: tabCur !== 0})}>
-            <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
+          {coinTransaction && coinTransaction?.map((transaction:Transaction) => {
+            return (
+              <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
                 <div className="flex items-center">
                   <div className="relative">
-                        <img src="/images/sample_avatar1.svg" />
-                        <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/>
+                    {transaction.icon ? 
+                        <img className={'transaction-avator'} src={transaction.icon} />
+                      :
+                        <img src="/images/happinIcon.svg" />
+                    }
+                        {/* <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/> */}
                   </div>
-                  <div className="px-4">
-                        <div className="text-medium leading-6 text-white font-semibold">Amanda Alford</div>
-                        <div className="text-gray-400 text-sm leading-5">Sent you a Cheers</div>
-                        <div className="text-gray-400 text-xs leading-5">13:45 Jan 15, 2022</div>
-                  </div>
+                  {transaction.title ? 
+                    <div className="px-4">
+                      <div className="text-medium leading-6 text-white font-semibold">{transaction.title}</div>
+                      <div className="text-gray-400 text-sm leading-5">{transaction.content}</div>
+                      <div className="text-gray-400 text-xs leading-5">{moment(transaction.timestamp).format("HH:mm MMMM DD, yyyy")}</div>
+                    </div>
+                  :
+                    <div className="px-4">
+                          <div className="text-400 text-white text-sm leading-5">{transaction.content}</div>
+                          <div className="text-gray-400 text-xs leading-5">{moment(transaction.timestamp).format("HH:mm MMMM DD, yyyy")}</div>
+                    </div>
+                  }
                   <div className="flex flex-1 justify-end">
-                      <span className="text-lg leading-6 text-white font-semibold ">+100</span>
+                      <span className="text-lg leading-6 text-white font-semibold ">{transaction.amount < 0 ? transaction.amount : '+'+transaction.amount }</span>
                       <img className="w-5 ml-1.5 mr-1 justify-center" src="images/icon-coin.svg" />
                   </div>
                 </div>
               </div>
+            )
+          })}
         </div>
         <div className={classnames('px-4', {hidden: tabCur !== 1})}>
-            <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
-                <div className="flex items-center">
-                  <div className="relative">
-                        <img src="/images/sample_avatar1.svg" />
-                        <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/>
-                  </div>
-                  <div className="px-4">
-                        <div className="text-medium leading-6 text-white font-semibold">Amanda Alford</div>
-                        <div className="text-gray-400 text-sm leading-5">Sent you a Cheers</div>
-                        <div className="text-gray-400 text-xs leading-5">13:45 Jan 15, 2022</div>
-                  </div>
-                  <div className="flex flex-1 justify-end">
-                      <span className="text-lg leading-6 text-white font-semibold ">+10</span>
-                      <img className="w-5 ml-1.5 mr-1 justify-center" src="images/icon-diamond.svg" />
+          {diamondTransaction && diamondTransaction?.map((transaction:Transaction) => {
+              return (
+                <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" >
+                  <div className="flex items-center">
+                    <div className="relative">
+                      {transaction.icon ? 
+                          <img className={'transaction-avator'} src={transaction.icon} />
+                        :
+                          <img src="/images/happinIcon.svg" />
+                      }
+                          {/* <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/> */}
+                    </div>
+                    {transaction.title ? 
+                      <div className="px-4">
+                            <div className="text-medium leading-6 text-white font-semibold">{transaction.title}</div>
+                            <div className="text-gray-400 text-sm leading-5">{transaction.content}</div>
+                            <div className="text-gray-400 text-xs leading-5">{moment(transaction.timestamp).format("HH:mm MMMM DD, yyyy")}</div>
+                      </div>
+                    :
+                      <div className="px-4">
+                            <div className="text-400 text-white text-sm leading-5">{transaction.content}</div>
+                            <div className="text-gray-400 text-xs leading-5">{moment(transaction.timestamp).format("HH:mm MMMM DD, yyyy")}</div>
+                      </div>
+                    }
+                    <div className="flex flex-1 justify-end">
+                        <span className="text-lg leading-6 text-white font-semibold ">{transaction.amount < 0 ? transaction.amount : '+'+transaction.amount }</span>
+                        <img className="w-5 ml-1.5 mr-1 justify-center" src="images/icon-diamond.svg" />
+                    </div>
                   </div>
                 </div>
-              </div>
-        </div>
+              )
+            })}
+            </div>
       </div>
 
   )
