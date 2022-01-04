@@ -10,7 +10,7 @@ import { getWhiteLabelDomain } from "lib/api";
 import { useResize } from '../utils/hooks';
 
 const Layout = ({ children }: { children: any }) => {
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
   const [isHomePage, setHomePage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
@@ -129,7 +129,7 @@ const Layout = ({ children }: { children: any }) => {
         {/* Header Section */}
         {(!openInApp && showHeader) &&
           <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
-            { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
+            {/* { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> } */}
           </Header>
         }
         {children}
