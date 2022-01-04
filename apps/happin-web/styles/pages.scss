@@ -2867,6 +2867,17 @@
     }
 }
 
+//Invite User page
+@media (min-width: 1024px) {
+  .invite-user__event-detail{
+    width: 450px !important;
+    margin: auto;
+  }
+}
+
+.invite-user__event-detail {
+  width: 100%;
+}
 
 // Live-Stream
 .live-stream__container {
