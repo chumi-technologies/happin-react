@@ -12,22 +12,31 @@ import { useEffect } from 'react';
 import { useUserState } from 'contexts/user-state';
 
 const imageList = [
-  '/images/home-feature-02.png',
-  '/images/home-feature-02.png',
-  '/images/home-feature-02.png',
+  {
+    firstImg: '/images/Discover Event1-min.png',
+    secImg: '/images/Discover Event-min.png',
+  },
+  {
+    firstImg: '/images/Match-min.png',
+    secImg: '/images/Group-min.png',
+  },
+  {
+    firstImg: '/images/Host Livestream-min.png',
+    secImg: '/images/AudioRoom-min.png',
+  },
 ];
 const buildEvent = [
   {
-    title: 'Create or share events',
-    desc: 'Copy paste URL, and get a perfect space for the event community immediately! '
+    title: 'Create/Share/Discover Events and Experiences',
+    desc: 'Find all fun and exciting experiences in one place.'
   },
   {
-    title: 'Deep connections in various ways',
-    desc: 'Not just chat, there are audio parties, event based content sharing and more.'
+    title: 'Match and connect with like-minded attendees you like',
+    desc: 'Swipe to match attendees and create or join event based group chats.'
   },
   {
-    title: 'Build an engaging profile',
-    desc: 'Personalize your virtual gifts (emoji), and show up your personal brand!'
+    title: 'Host audio parties and Livestream with friends.',
+    desc: 'Chat with fans in real time, and make new friends.'
   },
 ];
 export default function Home() {
@@ -64,12 +73,12 @@ export default function Home() {
             <div className="absolute left-0 sm:-left-24 md:-left-28 lg:-left-44 xl:-left-56 -bottom-12 sm:bottom-20 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-36 xl:h-36 rounded-full bg-rose-500 z-10" />
             <div className="hidden lg:block absolute -left-32 lg:-left-40 xl:-left-1/4 top-8 sm:top-40 lg:top-56 w-10 h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-20 xl:h-20 rounded-full bg-yellow-500" />
           </div>
-          <div className="relative black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold w-2/3 z-30">
+          <div className="relative black-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold w-2/3 py-8 md:py-10 lg:py-16 xl:py-24 z-30">
             <div className="absolute left-12 md:left-16 lg:left-20 -top-6 md:-top-14 lg:-top-14 xl:-top-32 w-12 md:w-16 h-2 lg:w-20 lg:h-3 xl:w-24 xl:h-4 home__color-purple" />
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
             <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
             <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            Deep <br/>connections with like-minded people via events
+            Meet. Chat. Experience.
           </div>
         </div>
       </div>
@@ -79,22 +88,25 @@ export default function Home() {
         <div className="container">
           <div className="flex items-center flex-col md:flex-row text-center md:text-left">
             <div className="relative sm:w-3/5 md:w-1/2 xl:w-7/12 black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-7 md:mb-0 text-rose-500">
-              A new experience to attend events
+              An experience based social network
             </div>
             <div className="md:pl-12 lg:pl-16 md:w-1/2 xl:w-5/12">
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                {`Don't`} wait! Bring yourself. Join the private event community, attend audio pre-event/after party, send each other emoji gifts, talk over voice, video, text. Find your crew based on your interests!
+                  Happin is the easiest way to find like-minded people based on experience, and talk over voice, Livestream, and text.
+                </p>
+                <p className="mb-4 md:mb-5">
+                  You can share or create all kinds of events and stay close with your friends and communities.
                 </p>
               </div>
-              <div className="flex flex-col items-center justify-center sm:flex-row">
+              <div className="flex justify-center md:justify-start">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
-              {/*   <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
+              <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
                   <img className="h-12 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
-                </div> */}
+              </div>
               </div>
             </div>
           </div>
@@ -139,10 +151,10 @@ export default function Home() {
                     <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />
                     <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />
                     <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">
-                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-01.jpeg" alt="" />
+                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].firstImg} alt={buildEvent[buildCur].title} />
                     </div>
                     <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">
-                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src="/images/screen-02.jpeg" alt="" />
+                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].secImg} alt={buildEvent[buildCur].title} />
                     </div>
                   </div>
                   {/*<img className="w-full" src={imageList[buildCur]} alt="" />*/}
@@ -195,20 +207,20 @@ export default function Home() {
                     as="h3"
                     className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
                   >
-                    xxxx is waiting for android version
+                    Request for android version
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />
-                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. Are you an android user? Leave your email here to push Happin team.</p>
-                <button
-                  type="button"
-                  className="mt-6 btn btn-rose w-full !rounded-full"
-                >
-                  Confirm
-                </button>
+                {/*<input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />*/}
+                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. <br/>Are you an android user? Send an email to "IwantAndroidHappin@happin.app" to push Happin team.</p>
+                {/*<button*/}
+                {/*  type="button"*/}
+                {/*  className="mt-6 btn btn-rose w-full !rounded-full"*/}
+                {/*>*/}
+                {/*  Confirm*/}
+                {/*</button>*/}
               </div>
             </Transition.Child>
           </div>
