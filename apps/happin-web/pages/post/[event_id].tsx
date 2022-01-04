@@ -262,6 +262,7 @@ export default Post;
 // fetch data on server upon every request.. not using static page pre render
 export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
   try {
+    window.location.href="Happin://";
     const titleWithACID = context.params.event_id
     const tokens = titleWithACID.split('-');
     const acid = tokens[tokens.length - 1];
