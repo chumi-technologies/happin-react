@@ -1,7 +1,7 @@
 import React, { useEffect, Fragment, useState, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { Checkbox, HStack } from '@chakra-ui/react';
-import { getUserInfo, getPointPackages, searchUser, submitPointPayment } from 'lib/api';
+import { getUserInfo } from 'lib/api';
 import { generateErrorToast, generateSuccessToast, generateToast } from '../../components/page_components/CheckoutPageComponents/util/toast';
 import { currencyFormatter } from '../../components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { useToast } from '@chakra-ui/react';
@@ -44,6 +44,8 @@ const TopupInner = (props: any) => {
   const router = useRouter();
   const toast = useToast();
   const stripe = useStripe();
+  const { showSSO } = useSSOState();
+  const { user } = useUserState();
   const elements = useElements();
   const focusButtonRef = useRef(null);
   const { exchangeForCrowdCoreToken } = useUserState()
@@ -313,8 +315,7 @@ const TopupInner = (props: any) => {
           }
           catch(error) {
             generateToast('Please login to proceed',toast);
-            router.push('/');
-            return;
+            showSSO();
           }
         
       })();
@@ -341,6 +342,20 @@ const TopupInner = (props: any) => {
       })
     }
   }, [userInfo])
+
+  useEffect( () => {
+    if (user) {
+      console.log(user);
+      (async () => {
+        const userInfoFromServer = await getUserInfo()
+        console.log(userInfoFromServer)
+        if (userInfoFromServer && userInfoFromServer.data) {
+          console.log(userInfoFromServer)
+          setUserInfo(userInfoFromServer.data);
+        }
+      })();
+    }
+  },[user])
 
   // useEffect(() => {
   //   const { query: { fromSaas } } = router;

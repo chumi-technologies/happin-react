@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Avatar } from '@chakra-ui/react';
+import React, { useState, useRef, useEffect } from "react";
+import { Avatar, useToast } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
 import { Check, Left, Plus, Right } from '@icon-park/react';
 import Slider from 'react-slick';
@@ -10,6 +10,12 @@ import LiveList from '@components/page_components/LiveStreamComponents/LiveList'
 import ChatItem from '@components/page_components/LiveStreamComponents/ChatItem';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
+import { useRouter } from "next/router";
+import { getUserInfo } from "lib/api";
+import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
+import { useUserState } from "contexts/user-state";
+import { useSSOState } from "contexts/sso-state";
+
 
 function Arrow(props: any) {
   const { className, onClick, children } = props;
@@ -162,10 +168,15 @@ interface ISenderRef {
   focus: () => void;
 }
 const Livestream = () => {
+  const router = useRouter();
+  const toast = useToast();
+  const { showSSO } = useSSOState();
+  const { user } = useUserState();
   const senderRef = useRef<ISenderRef>(null!);
   const [emojiShow, setEmojiShow] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [chatShow, setChatShow] = useState(false);
+  const [eventId, setEventId] = useState("");
   const settings = {
     dots: false,
     infinite: false,
@@ -215,6 +226,36 @@ const Livestream = () => {
     nextArrow: <Arrow><Right theme="outline" size="16" fill="currentColor" /></Arrow>,
     prevArrow: <Arrow><Left theme="outline" size="16" fill="currentColor" /></Arrow>,
   };
+
+  useEffect( () => {
+    // if (!router.query.event_id || router.query.event_id === "") {
+    //   console.log(user)
+    //     router.push('/my-events');
+    //     return;
+    // }
+    if (router.query.event_id) {
+      setEventId(router.query.event_id as string);
+      if (!user) {
+        (async () => {
+          try {
+            await getUserInfo()
+          }
+          catch(error) {
+            generateToast('Please login to proceed',toast);
+            showSSO();
+          }
+        
+      })();
+      }
+    }
+  },[router.query])
+
+  useEffect( () => {
+    if (user) {
+      console.log(user);
+      // get api
+    }
+  },[user])
 
   const handlerSendMsn = (e: any) => {
     console.log(e);
@@ -295,12 +336,12 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
               }
             </Slider>
           </div>
-          <div className="hidden md:block xl:hidden py-5 md:py-7 xl:py-10 px-4 md:px-5 lg:px-6 xl:px-8">
+          {/* <div className="hidden md:block xl:hidden py-5 md:py-7 xl:py-10 px-4 md:px-5 lg:px-6 xl:px-8">
             <LiveList list={liveList} />
-          </div>
+          </div> */}
         </div>
         <div className="hidden sm:flex flex-col w-full md:w-80 border-l border-black bg-gray-700">
-          <div className="items-center justify-center h-12 text-white border-b border-gray-800 font-semibold hidden md:flex">Live Chat</div>
+          <div className="items-center justify-center h-12 text-white border-b border-gray-800 font-semibold hidden md:flex">liveChat</div>
           <div className="live-stream__chat-room">
             <div className="pt-3 pb-1.5">
               <ChatItem data={{
@@ -360,9 +401,9 @@ M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
           </div>
         </div>
       </div>
-      <div className="px-0 pb-10 mt-10 hidden xl:block">
+      {/* <div className="px-0 pb-10 mt-10 hidden xl:block">
         <LiveList list={liveList} />
-      </div>
+      </div> */}
       <BottomSheet
         className="sm:hidden"
         open={chatShow}
