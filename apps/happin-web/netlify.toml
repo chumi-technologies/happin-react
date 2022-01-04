@@ -4,3 +4,27 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_HAPPIN_SERVER_HOST="https://api.happin.app/prod"
+  NEXT_PUBLIC_CROWD_CORE_HOST="https://api.crowdcore.com/prod"
+  NEXT_PUBLIC_HAPPIN_SSO="https://sso.happin.app"
+  NEXT_PUBLIC_FIREBASE_TOKEN_HOST="https://securetoken.googleapis.com/v1/token?key=AIzaSyA5i8Q5mjsKtpw5ju0OZOaUTL-ilGVMMPA"
+  NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE="https://apps.apple.com/app/id1527348429"
+  NEXT_PUBLIC_PAYPAL_CLIENT_ID="Ac_rMHPwGlp4J_rp3SkuqWkgYwQ6VeQrWcts6EIlrXMudyUHo6G2FNtjgBxJJFM_eVALXtc1V717GIJ3"
+  NEXT_PUBLIC_GOOGLE_PLACE_API_KEY="AIzaSyCaXFzIMrHWJfJO-YQYjd3Jv5KgQAMjVoo"
+  NEXT_PUBLIC_IM_SDKAPPID="1400342624"
+  NEXT_PUBLIC_STRIPE_PRIVATE_KEY="pk_test_xQ4eMeFV55I3XLXC1ewIEyRq"
+  NETLIFY_USE_YARN="true"
+
+[context.production.environment]
+  NEXT_PUBLIC_HAPPIN_SERVER_HOST="https://api.happin.app/prod"
+  NEXT_PUBLIC_CROWD_CORE_HOST="https://api.crowdcore.com/prod"
+  NEXT_PUBLIC_HAPPIN_SSO="https://sso.happin.app"
+  NEXT_PUBLIC_FIREBASE_TOKEN_HOST="https://securetoken.googleapis.com/v1/token?key=AIzaSyA5i8Q5mjsKtpw5ju0OZOaUTL-ilGVMMPA"
+  NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE="https://apps.apple.com/app/id1527348429"
+  NEXT_PUBLIC_PAYPAL_CLIENT_ID="Ac_rMHPwGlp4J_rp3SkuqWkgYwQ6VeQrWcts6EIlrXMudyUHo6G2FNtjgBxJJFM_eVALXtc1V717GIJ3"
+  NEXT_PUBLIC_GOOGLE_PLACE_API_KEY="AIzaSyCaXFzIMrHWJfJO-YQYjd3Jv5KgQAMjVoo"
+  NEXT_PUBLIC_IM_SDKAPPID="1400342624"
+  NEXT_PUBLIC_STRIPE_PRIVATE_KEY="pk_live_mFQ04uQPTIlzKm5mHDC39HWn"
+  NETLIFY_USE_YARN="true"

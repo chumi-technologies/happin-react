@@ -1,5 +1,5 @@
 import { TopupInput } from 'lib/model/topup';
-import { getFromCrowdCore, postToCrowdCore,getFromHappin,getFromPaymentGateway,postToPaymentGateway, postToHappin } from './base';
+import { getFromCrowdCore, postToCrowdCore,getFromHappin, postToHappin } from './base';
 
 const GET_TOPUP_PACKAGES = '/rewards/top-up/packages'
 const POST_TOPUP = '/rewards/top-up'
