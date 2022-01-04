@@ -32,7 +32,7 @@ const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
 const Reward = () => {
   return (
     <div className="reward__page">
-      <div className="flex items-center px-3 pt-6 pb-4 text-white">
+      <div className="flex items-center px-3 pt-6 pb-5 text-white">
         <div className="flex-1 text-center">
           <div className="text-sm font-medium text-white text-opacity-80 uppercase">Your Score</div>
           <div className="black-title font-bold text-2xl mt-0.5">500</div>
@@ -41,14 +41,6 @@ const Reward = () => {
         <div className="flex-1 text-center">
           <div className="text-sm font-medium text-white text-opacity-80 uppercase">Total Score</div>
           <div className="black-title font-bold text-2xl mt-0.5">50366</div>
-        </div>
-      </div>
-      <div className="pl-6 pr-12 mb-5">
-        <div className="relative flex items-center">
-          <div className="reward__progress flex-1">
-            <div className="reward__progress-bar" style={{ width: '70%' }} />
-          </div>
-          <img className="absolute -right-6 w-8 z-10" src="images/gift-box.png" alt="" />
         </div>
       </div>
       <div className="bg-white bg-opacity-25 p-3">

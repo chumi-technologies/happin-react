@@ -31,7 +31,7 @@
 // Layout
 .main-app {
   @apply flex flex-col h-screen;
-  &.production {
+  &.home-page {
     @apply h-auto
   }
   &.reward-page {
@@ -42,7 +42,7 @@
   }
 }
 .header {
-  .production &{
+  .home-page &{
     @apply sticky top-0 z-10;
   }
 }
@@ -76,9 +76,6 @@
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
-}
-.border-3 {
-  border-width: 3px;
 }
 
 .divider-words {

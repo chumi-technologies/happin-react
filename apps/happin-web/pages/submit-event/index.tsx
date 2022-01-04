@@ -98,8 +98,8 @@ export default function SubmitEvent() {
           <>
             {!urlSubmitting ?
               <div className="event-submit__container">
-                <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10 mt-1 sm:mt-4">Submit event/experience</h1>
-                <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">How it works? Find the event landing page.
+                <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10 mt-1 sm:mt-4">Submit event</h1>
+                <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3">How it works? Find your event landing page.
                   copy and paste the URL here, and finish editing. <br /> For example, you can put any Eventbrite event URL here to upload to Happin.
                 </h1>
                 <div className="flex items-center justify-center" style={{ margin: 'auto' }}>
