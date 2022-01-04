@@ -5,23 +5,28 @@ import moment from 'moment';
 import { useRouter } from 'next/router';
 import { getEventDetail } from 'lib/api';
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
+import PopUpModal from '@components/reusable/PopUpModal';
 
 
 const InviteUser = () => {
     const toast = useToast();
     const router = useRouter();
     const [eventDetails, setEventDetails]: any = useState({});
+    const [ showPopup, setShowPopup ] = useState<boolean>(false);
+    const [ inviterImage, setInviterImage ] = useState<string>('');
+    const [ inviterName, setInviterName] = useState<string>('');
 
     useEffect(() => {
         if (router.query.eventId) {
             (async () => {
                 try {
                     const eventId = router.query.eventId as string;
-                    console.log(eventId)
                     const res = await getEventDetail(eventId, 'both')
                     console.log(res);
                     if (res.data) {
                         setEventDetails(res.data);
+                        setShowPopup(true)
+
                     }
                 }
                 catch (error) {
@@ -32,7 +37,18 @@ const InviteUser = () => {
 
             })();
         }
+        if (router.query.af_referrer_image_url) {
+            setInviterImage(router.query.af_referrer_image_url as string);
+        }
+        if (router.query.af_referrer_name) {
+            setInviterName(router.query.af_referrer_name as string);
+        }
     }, [router.query])
+
+    const handlePopupAction = () => {
+        setTimeout(function () { window.location.href="https://apps.apple.com/app/id1527348429"; }, 25);
+        window.location.href= "Happin://" 
+    }
     return (
         <div className="invite-user__page">
             <div className="invite-user__event-detail container pb-10">
@@ -100,6 +116,26 @@ const InviteUser = () => {
                     </div>
                 </div>
             </div>
+            {showPopup &&
+                <PopUpModal
+                    isModalOpen={showPopup}
+                    setIsModalOpen={setShowPopup}
+                    closeableOutside={true}
+                    showCloseIcon={false}
+                    // closeable={false}
+                    mobilePosition={'center'} //default is bottom
+                >
+                    <div style={{ margin: '0 1.25rem 1.25rem' }}>
+                        <div className="popup-content">
+                            <img className="popup-avatar" src={inviterImage} />
+                            <div className="text-white mt-4 text-center">
+                                {inviterName} invite you to attend this event on Happin. You can match and chat with all attendees you like!
+                            </div>
+                            <button onClick={handlePopupAction} className="btn btn-rose w-50 block m-auto btn-sm !rounded-full !font-semibold mt-4">Download Happin</button>
+                        </div>
+                    </div>
+                </PopUpModal>
+            }
         </div>
     )
 }

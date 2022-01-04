@@ -479,6 +479,7 @@ const MyEventDetails = () => {
             modalTitle="Redeem Completed"
             isModalOpen={redemCodeModal}
             setIsModalOpen={handleModalClose}
+            mobilePosition={'center'}
           >
              <div style={{margin: '0 1.25rem 1.25rem'}}>
               {redemModalText}
