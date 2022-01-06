@@ -438,22 +438,22 @@ const LiveStream = (props: LiveStream) => {
                 const streamRoomGroupID = res.data._id;
                 //if event is ended, and has odpstart, then it should be a playback event
                 //tslint:disable-next-line: max-line-length
-                if (eventData.eventID.ODPBEnd && eventData.eventID.ODPBStart || previewPlayBack) {
-                    setIsPlayBack(true);
-                    if (res.data.recordings) {
-                        if (res.data.recordings.length > 0) {
-                            setPlaybackList(res.data.recordings.filter( (x:any) => x.public))
-                        }
-                    }
-                    await setEventData(res.data);
-                    await setStreamRoomID(res.data.streamGroupID);
-                    await setStreamRoomGroupID(res.data._id);
-                    await setStreamStart(res.data.isLive);
-                    await setPlayURL1000(res.data.playURL_1000);
-                    await setPlayURL2000(res.data.playURL_2000);
-                    await setPlayURL6000(res.data.playURL_6000);
-                    return res.data;
-                }
+                // if (eventData.eventID.ODPBEnd && eventData.eventID.ODPBStart || previewPlayBack) {
+                //     setIsPlayBack(true);
+                //     if (res.data.recordings) {
+                //         if (res.data.recordings.length > 0) {
+                //             setPlaybackList(res.data.recordings.filter( (x:any) => x.public))
+                //         }
+                //     }
+                //     await setEventData(res.data);
+                //     await setStreamRoomID(res.data.streamGroupID);
+                //     await setStreamRoomGroupID(res.data._id);
+                //     await setStreamStart(res.data.isLive);
+                //     await setPlayURL1000(res.data.playURL_1000);
+                //     await setPlayURL2000(res.data.playURL_2000);
+                //     await setPlayURL6000(res.data.playURL_6000);
+                //     return res.data;
+                // }
 
                 await setPlayURL1000(res.data.playURL_1000);
                 await setPlayURL2000(res.data.playURL_2000);
@@ -464,19 +464,19 @@ const LiveStream = (props: LiveStream) => {
 
                 //活动结束时间后和isLive是false ，不能进 (重播的话在上面已经验证过)  -- 发生在活动结束后还没上架录播的这段时间
                 // 但是这会导致在这段时间内用户不能通过这个页面进入 fan meeting 只能通过my ticket 进入
-                if (moment(new Date()).isAfter(eventData.eventID.end_datetime) && !eventData.isLive && !emptyPlayAddress) {
-                    generateToast('The livestream has ended. Replay will be available soon', toast);
-                    setTimeout(() => { router.push('/my-events') }, 1000)
-                    return;
-                }
+                // if (moment(new Date()).isAfter(eventData.eventID.end_datetime) && !eventData.isLive && !emptyPlayAddress) {
+                //     generateToast('The livestream has ended. Replay will be available soon', toast);
+                //     setTimeout(() => { router.push('/my-events') }, 1000)
+                //     return;
+                // }
                 
                 // 如果在一小时内进入的话 创建一个video layer, 播放循环片头
-                if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
+                // if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
                     const deadline = new Date(eventData.eventID.start_datetime);
                     initializeClock(deadline);
                     const videoWrap = document.querySelector('#loop_pre_recorded');
                     videoWrap?.setAttribute('style', 'display: block');
-                }
+                // }
                 await setEventData(res.data);
                 await setStreamRoomID(res.data.streamGroupID);
                 await setStreamRoomGroupID(res.data._id);

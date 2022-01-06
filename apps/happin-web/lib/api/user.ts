@@ -5,14 +5,38 @@ const USER_INFO_PATH = '/user';
 const EXCHANGE_CROWDCORE_TOKEN_PATH = '/user/exchange-saas-token';
 const FIREBASE_CUSTOM_TOKEN_PATH ='/user/firebase-custom-token';
 const EXCHANGE_DASHBOARD_EVENT_HOST_PATH = '/user/chumi-server-token'
+const POST_FOLLOW = '/user/follow?userID={id}'
+const GET_FOLLOWED = '/user/follow'
+const REMOVE_FOLLOWED = '/user/unfollow?userID={id}'
+const GET_GIFTLIST = '/stream/proxy-purchase'
 
 const getUserInfo = async () => {
    const response = await getFromHappin<UserResponse>(USER_INFO_PATH)
    return response || {}
 }
 
+const getFollowed = async () => {
+   const response = await getFromHappin(GET_FOLLOWED)
+   return response || {}
+}
+
 const exchangeCrowdcoreToken = async () => {
    const response = await postToHappin(EXCHANGE_CROWDCORE_TOKEN_PATH, {})
+   return response || {}
+}
+
+const getGiftList = async (data:any) => {
+   const response = await postToHappin(GET_GIFTLIST, data)
+   return response || {}
+}
+
+const removeFollowed = async (userId: string) => {
+   const response = await postToHappin(REMOVE_FOLLOWED.replace("{id}", userId), {})
+   return response || {}
+}
+
+const postFollow = async (userId: string) => {
+   const response = await postToHappin(POST_FOLLOW.replace("{id}", userId), {})
    return response || {}
 }
 
@@ -27,4 +51,4 @@ const exchangeDashboardEventHostToken = async () => {
    return response || {}
 }
 
-export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken }
+export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken, postFollow, getFollowed, removeFollowed, getGiftList }

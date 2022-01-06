@@ -2901,6 +2901,62 @@
     @apply w-full mx-auto;
     max-width: 1280px;
   }
+
+  @media (min-width: 640px) {
+    .video-section {
+      height: calc(100% - 167px);
+    }
+  }
+
+  
+
+//   #loop_pre_recorded {
+//     display: none;
+//     z-index: 8000;
+// }
+
+  #clockdiv{
+    top: 88%;
+    left: 50%;
+    transform: translate(-50%, -70%);
+    font-family: sans-serif;
+    color: #000;
+    display: inline-block;
+    font-weight: 100;
+    text-align: center;
+    // font-size: 20px;
+    position: absolute;
+    background-color: rgba(white, 0.7)
+  }
+
+#count_ended {
+    width:100%;
+    display: none;
+    top: 6%;
+    left: 50%;
+    transform: translate(-50%, -6%);
+    font-family: sans-serif;
+    color: #000;
+    text-align: center;
+    font-size: 15px;
+    position: absolute;
+    font-weight: 600;
+}
+
+  #clockdiv > div{
+    padding: 10px;
+    border-radius: 3px;
+    //background: #00BF96;
+    display: inline-block;
+  }
+
+  #clockdiv div > span{
+    // padding: 15px;
+    border-radius: 3px;
+    // background: #00816A;
+    display: inline-block;
+    font-weight: 600;
+  }
 }
 .live-stream__inner {
   @apply relative flex flex-col md:flex-row md:overflow-hidden;

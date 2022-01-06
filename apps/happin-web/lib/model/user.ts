@@ -10,6 +10,9 @@ export interface User {
     phonenumber: string;
     areaCode: string;
     pointOneGifts: number;
+    usersig: string;
+    diamonds: number;
+    coins: number;
 }
 
 

@@ -7,6 +7,7 @@ export type ChatItems = {
   username: string;
   content: string;
   color: 'yellow' | 'rose' | 'blue' | 'green' | 'pink' | 'white';
+  giftName?: string;
 }
 export type ChatIteProp = {
   data: ChatItems | never;
@@ -17,18 +18,18 @@ export type ChatIteProp = {
   isGift?: true;
   giftImg: string;
 }
-const ChatItem = ({ data, isGift = false, giftImg } : ChatIteProp) => {
+const ChatItem = ({ data, isGift = false, giftImg,} : ChatIteProp) => {
   return (
     <div className="live-stream__chat-item">
       <Avatar boxSize={6} mr={2} src={data.avatar} name={data.username} />
       <div className="flex-1 min-w-0">
         <div className={classnames('inline-block cursor-pointer', {'align-middle': !isGift})}>
-          <span className={classnames('font-semibold mr-1.5', data.color === 'white' ? 'text-gray-50' : `text-${data.color}-500`)}>{data.username}</span>
+          <span className={classnames('font-semibold mr-1.5', data.color === 'white' ? 'text-gray-50' : `text-500`)} style={{color:data.color}}>{data.username}</span>
         </div>
         {
           !isGift ? <span className="break-words align-middle">{data.content}</span>: (
             <span className="break-words font-semibold text-rose-500">
-              <span>{data.content}</span>
+              <span>{`Sent a ${data.giftName} `}</span>
               <img className="inline-block w-5 ml-1.5 align-text-bottom" src={giftImg} alt="" />
             </span>
           )
