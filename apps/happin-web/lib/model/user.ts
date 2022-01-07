@@ -13,6 +13,7 @@ export interface User {
     usersig: string;
     diamonds: number;
     coins: number;
+    id: string;
 }
 
 

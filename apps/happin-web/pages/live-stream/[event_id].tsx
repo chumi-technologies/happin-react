@@ -11,7 +11,7 @@ import ChatItem from '@components/page_components/LiveStreamComponents/ChatItem'
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useRouter } from "next/router";
-import { getUserInfo } from "lib/api";
+import { getTicketsList, getUserInfo } from "lib/api";
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
 import { useUserState } from "contexts/user-state";
 import { useSSOState } from "contexts/sso-state";
@@ -181,23 +181,26 @@ const Livestream = () => {
   const { showSSO } = useSSOState();
   const { user } = useUserState();
   const senderRef = useRef<ISenderRef>(null!);
-  const player = useRef(null);
+  const player: any = useRef(null);
+  const reconnectCount = useRef(0);
   const timeinterval: any = useRef(null);
   const timRef: any = useRef(null);
+  const loopVideoStart = useRef(false);
   const streamRoomIdRef = useRef<string>('');
   const chatRoomMessageList: any = useRef([]);
   const streamStart = useRef<boolean>(false);
   const streamEnd = useRef<boolean>(false);
   const viewerCount = useRef(0);
   const timSDKReady = useRef(false);
-  const checkViewerInterval:any = useRef(null)
+  const checkViewerInterval: any = useRef(null)
+  const isLive = useRef(false);
+  const isEnd = useRef(false);
+  const noVideo = useRef(false);
   const [emojiShow, setEmojiShow] = useState(false);
   const [isFollowed, setIsFollowed] = useState(false);
   const [chatShow, setChatShow] = useState(false);
-  const [eventId, setEventId] = useState("");
-  const [startLoopVideo, setStartLoopVideo] = useState(false);
+  const [eventId, setEventId] = useState<string>('');
   const [eventData, setEventData]: any = useState(null);
-  const [streamStatusText, setStreamStatusText] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [followBtnDisable, setFollowBtnDisable] = useState(false);
   const [gifts, setGifts] = useState([]);
@@ -254,23 +257,6 @@ const Livestream = () => {
     prevArrow: <Arrow><Left theme="outline" size="16" fill="currentColor" /></Arrow>,
   };
 
-  // TODO: 添加TCPlayer
-  useEffect(() => {
-
-      // const script = document.createElement("script");
-      // console.log(document.body)
-      // script.type = "text/javascript";
-      // script.src = "/plugin/TcPlayer-2.4.1.js";
-      // document.body.appendChild(script);
-      // const player =  TcPlayer('id_test_video', {
-      //   "m3u8": "http://ivi.bupt.edu.cn/hls/cctv5phd.m3u8", // 要播放的直播流的地址（该地址可用）
-      //   "autoplay" : true, // 是否自动播放
-      //   "width" :  "960",
-      //   "height" : "640",
-      //   "live": true,  // 区别直播和点播
-      // })
-  },[])
-
   useEffect(() => {
     if (router.query.event_id) {
       setEventId(router.query.event_id as string);
@@ -291,10 +277,19 @@ const Livestream = () => {
   useEffect(() => {
     if (user) {
       console.log("userData: ", user);
-      (async () => {
-        console.log("eventID: ", eventId);
-        await getStreamRoomData(eventId as string)
-      })();
+      if (eventId !== null && eventId !== "") {
+        (async () => {
+          console.log("eventID: ", eventId);
+          await getStreamRoomData(eventId as string)
+        })();
+      }
+      else {
+        (async () => {
+          console.log("eventID: ", router.query.event_id);
+          await getStreamRoomData(router.query.event_id as string)
+        })();
+      }
+
     }
   }, [user])
 
@@ -305,7 +300,48 @@ const Livestream = () => {
       (async () => {
         streamRoomIdRef.current = eventData.streamGroupID;
         // Prepare room
-        checkEnterPermission();
+
+        // 验证是否符合入场规则
+        const ticketList_res = await getTicketsList(eventId);
+        console.log("ticketList: ", ticketList_res);
+        if (ticketList_res && ticketList_res.data) {
+          if (ticketList_res.data.event.owner !== user?.id) {
+            if (ticketList_res.data.tickets.length === 0 ) {
+              // this person doesn't have ticket 
+              generateToast('Please buy ticket.', toast);
+              router.push('/my-events')
+              return;
+            }
+            else if (ticketList_res.data.tickets.status === 3) {
+              // ticket is already checked in by others
+              generateToast('Ticket is already transfered to other.', toast);
+              router.push('/my-events')
+              return;
+            }
+            else if (ticketList_res.data.tickets.status === 1) {
+              // ticket haven't check in
+              generateToast('Please check in first.', toast);
+              router.push('/my-events')
+              return;
+            }
+          }
+        }
+        // /ticket api
+        //活动结束时间后和isLive是false ，不能进 
+        if (moment(new Date()).isAfter(eventData.eventID.end_datetime) && !eventData.isLive) {
+          generateToast('The livestream has ended.', toast);
+          router.push('/my-events')
+          return;
+        }
+
+        const oneHourBefore = moment(eventData.eventID.start_datetime).subtract(1, 'hour')
+
+        // 如果在活动开始一个小时前进入直播间 会被direct出去
+        if (moment(new Date()) <= oneHourBefore) {
+          generateToast('The livestream has not started yet, please come back later', toast);
+          router.push('/my-events')
+          return;
+        }
         await checkFollowed();
         await getGifts();
         await connectTIM();
@@ -313,9 +349,13 @@ const Livestream = () => {
 
         window.addEventListener("beforeunload", async () => {
           console.log("disconnect TIM")
-          await disconnectTIM();
+          await disconnect();
         })
         setIsLoading(false)
+
+        setupPlayer();
+
+
       })();
 
 
@@ -324,19 +364,24 @@ const Livestream = () => {
 
   }, [eventData])
 
-  useEffect(() => {
-    if (startLoopVideo) {
-      const deadline = new Date(eventData.eventID.start_datetime);
-      initializeClock(deadline);
-    }
-  }, [startLoopVideo])
+  const startLoopVideo = async () => {
+    const deadline = new Date(eventData.eventID.start_datetime);
+    await initializeClock(deadline);
+  }
 
-  const disconnectTIM = async () => {
+  const disconnect = async () => {
     try {
+
+      // disconnect Tim
       const res = await timRef.current.quitGroup(streamRoomIdRef.current);
       console.log("quit: ", res);
+      // const res_logout = await timRef.current.logout();
+      // console.log("logout tim: ", res_logout);
       const res_destory = await timRef.current.destroy();
       console.log("destory: ", res_destory);
+
+      // destory player
+      player.current.destroy();
 
     }
     catch (error) {
@@ -362,9 +407,6 @@ const Livestream = () => {
       timRef.current = tim;
       postHappinUserStatus({ streamRoomID: eventData.streamGroupID, watchMode: 'watch' }).then(async (res: any) => {
         console.log("post User status: ", res)
-        // TODO: 建立TIM播放器
-        // TODO: 检查如果离开直播间 人数会不会变
-        // await createPlayer(eventData);
         setChatReady(true);
       })
 
@@ -377,49 +419,42 @@ const Livestream = () => {
   }
 
   useEffect(() => {
-    // TODO: 这个不能用
-    if (streamEnd.current) {
-      // TODO: 先停止播放器，然后关闭播放器
-      const oneHourBefore = moment(eventData.eventID.start_datetime).subtract(1, 'hour')
-      // 如果在直播开始前，直播推流结束，继续轮播
-      if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
-        setStartLoopVideo(true);
-      }
-      // 如果在直播开始后，直播推流结束，显示直播结束
-      else if (moment(new Date()) >= eventData.eventID.start_datetime) {
-        setStreamStatusText('Livestream has ended. Replay will be available within 30 minutes');
-      }
-    }
-  }, [streamEnd.current])
-
-  useEffect(() => {
-    // TODO: 这个不能用
-    if (streamStart.current) {
-      const oneHourBefore = moment(eventData.eventID.start_datetime).subtract(1, 'hour')
-      // 如果在直播开始前，直播推流开始，停止轮播
-      if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
-        setStartLoopVideo(false);
-        clearInterval(timeinterval.current);
-      }
-
-      // TODO: 不管在什么情况下，都显示直播画面
-
-    }
-  }, [streamStart.current])
-
-  useEffect(() => {
     // disconnect when navigate to other page
     return (() => {
       (async () => {
         if (streamRoomIdRef.current !== '' && timRef.current) {
           clearInterval(checkViewerInterval.current)
-          await disconnectTIM();
+          await disconnect();
+
         }
       })();
-
     })
-
   }, [])
+
+  const setupPlayer = () => {
+    // 直播已经结束
+    if (eventData.isEnd) {
+      streamEndHandler();
+    }
+    else {
+      // 建立播放器
+      createPlayer();
+    }
+
+
+    // 直播已经开始，直接播放直播
+
+
+    // 直播还没有开始
+    // 如果在一小时内进入的话 创建一个video layer, 播放循环片头
+    // if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
+    //   setStartLoopVideo(true);
+    // }
+    // // 活动已经开始 但直播没有开始，那就只显示文字
+    // else {
+    //   setStreamStatusText('Livestream will start in any minute, be ready!');
+    // }
+  }
 
   // TIM handler
 
@@ -492,16 +527,16 @@ const Livestream = () => {
   const updateViewerInGroup = async () => {
     console.log("updateViewer")
     const res_online = await timRef.current.getGroupOnlineMemberCount(eventData.streamGroupID);
-      console.log("group Online Member: ", res_online)
-      if (res_online && res_online.data) {
-        if (res_online.data.memberCount === 0 ) {
-          viewerCount.current = 1;
-        }
-        else {
-          viewerCount.current = res_online.data.memberCount;
-        }
-        setTriggerRerender(t => !t)
+    console.log("group Online Member: ", res_online)
+    if (res_online && res_online.data) {
+      if (res_online.data.memberCount === 0) {
+        viewerCount.current = 1;
       }
+      else {
+        viewerCount.current = res_online.data.memberCount;
+      }
+      setTriggerRerender(t => !t)
+    }
   }
   const _handleGroupSystemMsg = async (message: any) => {
     if (message.to !== eventData.streamGroupID) {
@@ -534,19 +569,19 @@ const Livestream = () => {
     }
   }
 
-  const _handleGift = (message: any, data:any) => {
+  const _handleGift = (message: any, data: any) => {
     const userInList: any = chatRoomMessageList.current.find((item: any) => item.username === message.nick);
-      const newMessage = {
-        avatar: message.avatar,
-        username: message.nick || 'Unknown User',
-        giftImage: data.data.payload.image[0],
-        giftName: data.data.payload.name,
-        type: 'gift', 
-        color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
-      }
-      console.log("updated message list: ", [...chatRoomMessageList.current, newMessage])
-      chatRoomMessageList.current = [...chatRoomMessageList.current, newMessage];
-      setTriggerRerender(t => !t);
+    const newMessage = {
+      avatar: message.avatar,
+      username: message.nick || 'Unknown User',
+      giftImage: data.data.payload.image[0],
+      giftName: data.data.payload.name,
+      type: 'gift',
+      color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
+    }
+    console.log("updated message list: ", [...chatRoomMessageList.current, newMessage])
+    chatRoomMessageList.current = [...chatRoomMessageList.current, newMessage];
+    setTriggerRerender(t => !t);
   }
 
   const _handleCustomMsg = (message: any) => {
@@ -571,11 +606,27 @@ const Livestream = () => {
       }
     } else if (dataObj.type === 'stream/start') {
       console.log("streamStart")
-      streamStart.current = true;
+      if (loopVideoStart.current) {
+        const loopVideo = document.querySelector('#loop_pre_recorded')
+        if (loopVideo) {
+          (document.querySelector('#loop_video') as HTMLVideoElement).pause();
+          // loopVideo.setAttribute('style', 'display: none');
+        }
+        loopVideoStart.current = false;
+      }
+      const tip = document.querySelector('#video-tip');
+      if (tip) {
+        tip.innerHTML = '';
+      }
+      loopVideoStart.current = false;
+      noVideo.current = false;
+      reconnectCount.current = 0;
+      player.current.load();
+
+      // stop loop video
+      setTriggerRerender(t => !t);
     } else if (dataObj.type === 'stream/end') {
       console.log('stream end');
-      streamStart.current = false;
-      streamEnd.current = true;
       // 在活动正式开始之后结束推流， 当作活动结束
       // setStreamTip('Livestream has ended. Replay will be available within 30 minutes');
       // const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
@@ -660,7 +711,7 @@ const Livestream = () => {
     );
   }
 
-  const createCustomMsg = async (payloadString:any) => {
+  const createCustomMsg = async (payloadString: any) => {
     return await timRef.current.createCustomMessage(
       {
         to: streamRoomIdRef.current,
@@ -677,7 +728,7 @@ const Livestream = () => {
   const errorHandler = (err = null) => {
     console.log(err);
     generateErrorToast("Something went wrong", toast);
-    setTimeout(() => { router.push('/my-events') }, 1000)
+    router.push('/my-events')
   }
 
   const getGifts = async () => {
@@ -726,75 +777,53 @@ const Livestream = () => {
       generateErrorToast("Get followed error", toast);
     }
   }
-  const checkEnterPermission = () => {
-    // 验证是否符合入场规则
-    // TODO: 检查是否有ticket 和是否是主办方， 还有是否在viplist 
-    // /ticket api
-    //活动结束时间后和isLive是false ，不能进 
-    if (moment(new Date()).isAfter(eventData.eventID.end_datetime) && !eventData.isLive) {
-      generateToast('The livestream has ended.', toast);
-      setTimeout(() => { router.push('/my-events') }, 1000)
-      return;
+
+  const checkIsLive = async () => {
+    try {
+      const res = await getHappinStreamRoom(eventId);
+      if (res.code !== 200) {
+        throw new Error('Failed to load stream room');
+      }
+      else {
+        isLive.current = res.data.isLive;
+        isEnd.current = res.data.isEnd;
+      }
+    } catch (err) {
+      console.log("get stream room error");
     }
 
-    const oneHourBefore = moment(eventData.eventID.start_datetime).subtract(1, 'hour')
-
-    // 如果在活动开始一个小时前进入直播间 会被direct出去
-    if (moment(new Date()) <= oneHourBefore) {
-      generateToast('The livestream has not started yet, please come back later', toast);
-      setTimeout(() => { router.push('/my-events') }, 1000)
-      return;
-    }
-
-    // 先建立播放器
-    createPlayer();
-    // 直播已经开始，直接播放直播
-    // if (eventData.isLive) {
-    //   return;
-    // }
-
-    // 直播还没有开始
-    // 如果在一小时内进入的话 创建一个video layer, 播放循环片头
-    if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
-      setStartLoopVideo(true);
-    }
-    // 活动已经开始 但直播没有开始，那就只显示文字
-    else {
-      setStreamStatusText('Livestream will start in any minute, be ready!');
-    }
 
   }
 
   const createPlayer = () => {
     console.log("create Player")
+    // TODO: 测试windows系统可不可以更换清晰度
     const playerConfig = {
-      //h5_flv: true,
-      //flv: this.playURL1000,
-      //flv_hd: this.playURL1000,
       m3u8: eventData.playURL_6000,
       m3u8_hd: eventData.playURL_2000,
       m3u8_sd: eventData.playURL_1000,
       autoplay: true, // dose not work
-      controls: self.innerWidth < 768 ? 'system' : 'default',
+      controls: 'system',
       systemFullscreen: true,
       width: '100%', // can be number 640
       height: '100%',
-      volume: 0, // music volume 0-1
+      volume: 0.6, // music volume 0-1
       live: true, // fixed
       flash: false,
       clarityLabel: { od: '1080p 60fps', hd: '1080p', sd: '720p' },
       clarity: 'sd',
-      listener: async (msg:any) => {
-        console.log("player listener: ", msg)
+      listener: async (msg: any) => {
         if (msg.type === 'progress') {
           // 当活动提前开始的时候 有可能自动播放失败， 导致playing 事件
           // 不触发， 从而片头不消失。 所以同时监视progress 当作 failsafe      
-          const loopVideo = document.querySelector('#loop_pre_recorded')
-          if (loopVideo) {
-            (document.querySelector('#loop_video') as HTMLVideoElement).pause();
-            // loopVideo.setAttribute('style', 'display: none');
-          }
-          setStartLoopVideo(false);
+          // const loopVideo = document.querySelector('#loop_pre_recorded')
+          // if (loopVideo) {
+          //   (document.querySelector('#loop_video') as HTMLVideoElement).pause();
+          //   // loopVideo.setAttribute('style', 'display: none');
+          // }
+
+          // loopVideoStart.current = false;
+          // setTriggerRerender(t => !t);
           return;
         }
         if (msg.type === 'playing') { // prevent deplay, refresh every time.
@@ -807,18 +836,23 @@ const Livestream = () => {
           // }
 
           // 如果重复播放的片头存在， 而直播播放器在播放的话， 可以移除片头开始直播
-          const loopVideo = document.querySelector('#loop_pre_recorded')
-          if (loopVideo) {
-            (document.querySelector('#loop_video') as HTMLVideoElement).pause();
-            // loopVideo.setAttribute('style', 'display: none');
+          if (loopVideoStart.current) {
+            const loopVideo = document.querySelector('#loop_pre_recorded')
+            if (loopVideo) {
+              (document.querySelector('#loop_video') as HTMLVideoElement).pause();
+              // loopVideo.setAttribute('style', 'display: none');
+            }
+            loopVideoStart.current = false;
+            setTriggerRerender(t => !t);
           }
 
-          // const tip = document.querySelector('.tip-container');
-          // if (tip) {
-          //   tip.remove();
-          // }
-          // self.reconnect = 0;
-          return
+
+          const tip = document.querySelector('#video-tip');
+          if (tip) {
+            tip.innerHTML = '';
+          }
+          reconnectCount.current = 0;
+          return;
         }
         if (msg.type === 'pause') {
           // self.pausedAndPlay = 1;
@@ -832,103 +866,105 @@ const Livestream = () => {
           return
         }
         if (msg.type === 'error') {
-        //   // 手动保持转圈 状态， 等出现自定义错误消息时再隐藏转圈
-        //   const spinner: HTMLLIElement = document.querySelector('.vcp-loading');
-        //   spinner.setAttribute('style', 'display: block');
-        //   // msg 的 event code 非常混乱， 只有拿 vcp-error-tips 这个 div 里的 错误码才是正确的
-        //   const err: HTMLElement = document.querySelector('.vcp-error-tips');
-        //   let errorCode: any;
-        //   if (err) {
-        //     errorCode = err.innerHTML.match(/\[(.*?)\]/)[1];
-        //     err.setAttribute('style', 'display:none!important');
-        //   }
-        //   console.log('player error code:', errorCode)
+          // 手动保持转圈 状态， 等出现自定义错误消息时再隐藏转圈
+          const spinner: any = document.querySelector('.vcp-loading');
+          spinner.setAttribute('style', 'display: block');
+          // msg 的 event code 非常混乱， 只有拿 vcp-error-tips 这个 div 里的 错误码才是正确的
+          const err: any = document.querySelector('.vcp-error-tips');
+          let errorCode: any;
+          if (err) {
+            errorCode = err.innerHTML.match(/\[(.*?)\]/)[1];
+            err.setAttribute('style', 'display:none!important');
+          }
+          console.log('player error code:', errorCode)
 
-        //   const player = document.querySelector('.vcp-player');
-        //   const tip = self.renderer.createElement('div');
-        //   tip.className = 'tip-container'
-        //   if (errorCode === '12') {
-        //     //错误码 12，api播放地址没有获取成功，摧毁播放器，再来一次
-        //     self.emptyPlayAddress = true;
-        //     await self.getStreamRoom();
-        //     if (self.player) {
-        //       self.player.destroy()
-        //     }
-        //     self.createPlayer();
-        //   }
-        //   if (errorCode === '2' || errorCode === '1' || errorCode === '4') {
-        //     self.reconnect += 1;
-        //     if (self.reconnect <= 3) {
-        //       setTimeout(() => {
-        //         // 出现1，2 错误时候， 4次重连，超过之后就不再尝试
-        //         self.player.load();
-        //       }, 1000);
-        //     }
-        //     // server 记录 该直播还没开始， 出现 1，2 错误要提示直播未开始或者已结束
-        //     if (self.reconnect >= 4) {
-        //       const spinner: HTMLLIElement = document.querySelector('.vcp-loading');
-        //       spinner.setAttribute('style', 'display: none')
-        //       // 没有网络
-        //       if (!window.navigator.onLine) {
-        //         tip.innerHTML = '<h4 class="player-error">You seem to be offline, please check you network status.</h4>'
-        //         self.renderer.appendChild(player, tip);
-        //         return;
-        //       }
-        //       await self.checkIsLive();
-        //       if (!self.eventData.eventID.isLive) {
-        //         // streamEnded = true 说明收到IM直播结束通知
-        //         if (self.streamEnded) {
-        //           const oneHourBefore = moment(self.eventData.eventID.start_datetime).subtract(1, 'hour')
-        //           // 如果是一小时前开始推流， 但在活动正式开始前直播中断了 那么应该继续显示倒数， 否则就是直播结束
-        //           if (moment(new Date()).isBetween(oneHourBefore, moment(self.eventData.eventID.start_datetime))) {
-        //             const deadline = new Date(self.eventData.eventID.start_datetime);
-        //             self.initializeClock(deadline);
-        //             (document.querySelector('#loop_video') as HTMLVideoElement).play();
-        //             const videoWrap = self._document.querySelector('#loop_pre_recorded');
-        //             videoWrap.setAttribute('style', 'display: block');
-        //             self.streamEnded = false;
-        //           } else {
-        //             // 在活动正式开始之后结束推流， 当作活动结束
-        //             tip.innerHTML = '<h4 class="player-error">Livestream has ended. Replay will be available within 30 minutes</h4>'
-        //           }
-        //         } else {
-        //           if (self.eventData.isEnd) { //(对于没有收到 im 的结束通知， 后面进来的观众  需要用到isEnd)
-        //             // 如果isLive是 false, isEnd是true, streamEnded是false, 那么直播结束
-        //             tip.innerHTML = '<h4 class="player-error">Livestream has ended. Replay will be available within 30 minutes</h4>'
-        //           } else {
-        //             // 如果isLive是 false, isEnd是false, streamEnded 也是false, 那么直播不是结束， 而是没开始
-        //             tip.innerHTML = '<h4 class="player-error">The livestream will start in any minute, be ready!</h4>'
-        //           }
-        //         }
-        //       } else {
-        //         // server 记录的 该直播已经开始 那么出现 1，2 错误就显示需要刷新
-        //         tip.innerHTML = '<h4 class="player-error">Failed to fetch livestream, please try to refresh this page.</h4>'
-        //       }
-        //       self.renderer.appendChild(player, tip);
-        //     }
-        //   } else if (errorCode === '5') {
-        //     const spinner: HTMLLIElement = document.querySelector('.vcp-loading');
-        //     spinner.setAttribute('style', 'display: none')
-        //     tip.innerHTML = '<h4 class="player-error">Browser does not support this stream format,<br> please try to open in desktop Chrome.</h4>'
-        //     self.renderer.appendChild(player, tip);
-        //   } else {
-        //     const spinner: HTMLLIElement = document.querySelector('.vcp-loading');
-        //     spinner.setAttribute('style', 'display: none')
-        //     tip.innerHTML = '<h4 class="player-error">Unknown error, please try to refresh.</h4>'
-        //     self.renderer.appendChild(player, tip);
-        //   }
+          const playerElement: any = document.querySelector('.vcp-player');
+          const tip: any = document.querySelector('#video-tip');
+          if (errorCode === '12') {
+            //错误码 12，api播放地址没有获取成功
+            const spinner: any = document.querySelector('.vcp-loading');
+            spinner.setAttribute('style', 'display: none')
+            tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+          }
+          else if (errorCode === '2' || errorCode === '1' || errorCode === '4') {
+
+
+            reconnectCount.current += 1;
+            if (reconnectCount.current <= 3) {
+              console.log("reconnect ", reconnectCount.current);
+              setTimeout(() => {
+                player.current.load();
+                // 出现1，2 错误时候， 4次重连，超过之后就不再尝试
+              }, 1000);
+            }
+            // server 记录 该直播还没开始， 出现 1，2 错误要提示直播未开始或者已结束
+            if (reconnectCount.current >= 3) {
+              const spinner: any = document.querySelector('.vcp-loading');
+              spinner.setAttribute('style', 'display: none')
+              // 没有网络
+              if (!window.navigator.onLine) {
+                tip.innerHTML = 'You seem to be offline, please check you network status'
+                return;
+              }
+              await checkIsLive();
+              // 推流没有开始
+              if (!isLive.current) {
+                if (!isEnd.current) {
+                  const oneHourBefore = moment(eventData.eventID.start_datetime).subtract(1, 'hour')
+                  // 如果在一小时内进入的话 创建一个video layer, 播放循环片头
+                  if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
+                    if (timeinterval.current) {
+                      // already play
+                      const loopVideo = document.querySelector('#loop_pre_recorded')
+                      if (loopVideo) {
+                        (document.querySelector('#loop_video') as HTMLVideoElement).play();
+                        // loopVideo.setAttribute('style', 'display: none');
+                      }
+                      loopVideoStart.current = true;
+                      setTriggerRerender(t => !t);
+                    }
+                    else {
+                      await startLoopVideo();
+                      loopVideoStart.current = true;
+                      setTriggerRerender(t => !t);
+                    }
+
+                  }
+                  else {
+                    // 直播时间已经到了，但推流还没开始
+                    tip.innerHTML = 'Livestream will start in any minute, be ready!';
+                    noVideo.current = true;
+                    setTriggerRerender(t => !t);
+                  }
+
+                }
+                else {
+                  streamEndHandler();
+                }
+              }
+              else {
+                // server 记录的 该直播已经开始 那么出现 1，2 错误就显示需要刷新
+                tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+              }
+            }
+          }
+          else if (errorCode === '5') {
+            const spinner: any = document.querySelector('.vcp-loading');
+            spinner.setAttribute('style', 'display: none')
+            tip.innerHTML = 'Browser does not support this stream format,<br> please try to open in desktop Chrome.'
+          }
+          else {
+            const spinner: any = document.querySelector('.vcp-loading');
+            spinner.setAttribute('style', 'display: none')
+            tip.innerHTML = 'Unknown error, please try to refresh.'
+          }
         }
-
-        
       }
     };
-    console.log(playerConfig)
 
     if (typeof TcPlayer !== 'undefined') {
-      console.log(scriptLoaded)
       player.current = new TcPlayer('id_test_video', playerConfig);
     } else {
-      console.log("TC not ready")
       setTimeout(() => {
         player.current = new TcPlayer('id_test_video', playerConfig);
       }, 2000);
@@ -941,6 +977,20 @@ const Livestream = () => {
     // }
   }
 
+  const streamEndHandler = () => {
+    console.log("streamEndHandler")
+
+    const tip = document.querySelector('#video-tip');
+    if (tip) {
+      tip.innerHTML = 'Livestream has end';
+    }
+    noVideo.current = true;
+
+
+    setTriggerRerender(t => !t)
+
+  }
+
   const getStreamRoomData = async (event_id: string) => {
     try {
       const res = await getHappinStreamRoom(event_id);
@@ -948,6 +998,8 @@ const Livestream = () => {
         throw new Error('Failed to load stream room');
       }
       else {
+        isLive.current = res.data.isLive;
+        isEnd.current = res.data.isEnd;
         setEventData(res.data)
       }
     } catch (err) {
@@ -957,11 +1009,11 @@ const Livestream = () => {
   }
 
 
-  const initializeClock = (endtime: any) => {
+  const initializeClock = async (endtime: any) => {
     const clock = document.getElementById('clockdiv');
     const minutesSpan = clock?.querySelector('.minutes');
     const secondsSpan = clock?.querySelector('.seconds');
-    function updateClock() {
+    async function updateClock() {
       const t = getTimeRemaining(endtime);
 
       if (minutesSpan && secondsSpan) {
@@ -969,15 +1021,20 @@ const Livestream = () => {
         secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
 
         if (t.total <= 0) {
-          setStartLoopVideo(false)
-          setStreamStatusText('Livestream will start in any minute, be ready!');
+          loopVideoStart.current = false;
+          await checkIsLive();
+          if (!isLive.current) {
+            const tip: any = document.querySelector('#video-tip');
+            tip.innerHTML = 'Livestream will start in any minute, be ready!';
+          }
+
           clearInterval(timeinterval.current);
+          setTriggerRerender(t => !t);
         }
       }
     }
 
     updateClock();
-    //TODO: 检查loop是否好用
     timeinterval.current = setInterval(updateClock, 1000);
   }
 
@@ -1055,13 +1112,13 @@ const Livestream = () => {
       const res_gift = await timRef.current.sendMessage(message);
       console.log("gift message sent: ", res_gift);
 
-      const userInList = chatRoomMessageList.current.find((item:any) => item.username === user?.displayname);
+      const userInList = chatRoomMessageList.current.find((item: any) => item.username === user?.displayname);
       const newMessage = {
         avatar: user?.photourl,
         username: user?.displayname || 'Unknown User',
         giftImage: gift.image[0],
         giftName: gift.name,
-        type: 'gift', 
+        type: 'gift',
         color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
       }
       console.log("updated message list: ", [...chatRoomMessageList.current, newMessage])
@@ -1161,16 +1218,9 @@ const Livestream = () => {
     }
   }
 
-  const handleSendMessage = () => {
-
-  }
-
-
-
-
   return (
     <div className="live-stream__container">
-      <Script src="/plugin/TcPlayer-2.4.1.js" onLoad={() => setScriptLoaded(true)}/>
+      <Script src="/plugin/TcPlayer-2.4.1.js" onLoad={() => setScriptLoaded(true)} />
       {isLoading ?
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <Spinner color="#FE4365" size="xl" />
@@ -1226,31 +1276,29 @@ const Livestream = () => {
                   </svg>
                 </div>
                 <div className="flex items-center justify-center w-full h-full">
-                  <div className="text-white">{streamStatusText}</div>
-                  <div id="id_test_video" className="video-wrap"></div>
-                  {startLoopVideo &&
-                    <div className="video-wrap" id="loop_pre_recorded">
-                      <div>
-                        <div id="clockdiv">
-                          <div>
-                            <span className="minutes"></span>
-                            <div className="smalltext">Minutes</div>
-                          </div>
-                          <div>
-                            <span className="seconds"></span>
-                            <div className="smalltext">Seconds</div>
-                          </div>
+                  <div id="video-tip" className="text-white m-auto " ></div>
+                  <div className="video-wrap" id="loop_pre_recorded" style={{ display: (!loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}>
+                    <div>
+                      <div id="clockdiv">
+                        <div>
+                          <span className="minutes"></span>
+                          <div className="smalltext">Minutes</div>
                         </div>
-                        {/* <div id="count_ended">
+                        <div>
+                          <span className="seconds"></span>
+                          <div className="smalltext">Seconds</div>
+                        </div>
+                      </div>
+                      {/* <div id="count_ended">
                         <span>Livestream will start in any minute, be ready!</span>
                       </div> */}
-                        <video width="100%" height="100%" autoPlay playsInline muted loop onCanPlay={(e) => (e.target as HTMLVideoElement).play()}
-                          id="loop_video" onLoadedMetadata={(e) => (e.target as HTMLVideoElement).muted = true} controls>
-                          <source src={eventData.countDownVideoUrl} type="video/mp4" />
-                        </video>
-                      </div>
+                      <video width="100%" height="100%" autoPlay playsInline muted loop onCanPlay={(e) => (e.target as HTMLVideoElement).play()}
+                        id="loop_video" onLoadedMetadata={(e) => (e.target as HTMLVideoElement).muted = true} controls>
+                        <source src={eventData.countDownVideoUrl} type="video/mp4" />
+                      </video>
                     </div>
-                  }
+                  </div>
+                  <div id="id_test_video" className="video-wrap" style={{ display: (loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}></div>
 
                 </div>
 
