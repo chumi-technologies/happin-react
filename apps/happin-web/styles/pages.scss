@@ -639,6 +639,9 @@
     background-image: none;
     @apply bg-gray-200 text-gray-400 shadow-none justify-center;
   }
+  &.campaign.finished {
+    @apply bg-gray-600;
+  }
 }
 @keyframes progress-bar-stripes {
   0% {
@@ -708,12 +711,51 @@
 
 // Campaign
 .campaign__tab-item {
-  @apply flex-shrink-0 flex justify-center items-center text-center border border-b-0 border-solid border-yellow-900 rounded-t-3xl px-4 h-12 w-32 bg-yellow-500 leading-4 font-bold;
+  @apply flex-shrink-0 flex justify-center items-center text-center border border-b-0 border-solid rounded-t-3xl px-4 h-12 w-32 leading-4 font-bold;
+  transition: height .2s ease;
+  .theme-blue & {
+    @apply bg-blue-500 border-blue-900;
+  }
+  .theme-rose & {
+    @apply bg-rose-500 border-rose-900;
+  }
+  .theme-yellow & {
+    @apply bg-yellow-500 border-yellow-900;
+  }
+  .theme-green & {
+    @apply bg-green-500 border-green-900;
+  }
+  .theme-pink & {
+    @apply bg-pink-500 border-pink-900;
+  }
   & + .campaign__tab-item {
     @apply -ml-px
   }
   &.active {
     @apply bg-gray-900 border-gray-900 text-rose-500;
+    .theme-dark & {
+      @apply text-white h-14;
+    }
+    .theme-dark &:nth-child(2) {
+      @apply text-gray-900;
+    }
+  }
+}
+.theme-dark {
+  .campaign__tab-item:nth-child(1) {
+    @apply bg-rose-500 border-rose-500 text-white;
+  }
+  .campaign__tab-item:nth-child(2) {
+    @apply bg-yellow-500 border-yellow-500 text-gray-900;
+  }
+  .campaign__tab-item:nth-child(3) {
+    @apply bg-blue-500 border-blue-500 text-white;
+  }
+  .campaign__tab-item:nth-child(4) {
+    @apply bg-green-500 border-green-500 text-white;
+  }
+  .campaign__tab-item:nth-child(5) {
+    @apply bg-pink-500 border-pink-500 text-white;
   }
 }
 .campaign__day-item {
@@ -742,4 +784,37 @@
 .campaign__top-three {
   background: url("../public/images/top-three-bg.png") no-repeat center bottom;
   background-size: 100%;
+}
+.campaign__clock {
+  @apply rounded-md bg-rose-500 font-medium text-sm p-1 mx-0.5 text-center;
+  min-width: 1.75rem;
+}
+
+@mixin campaign_theme {
+  .theme-blue & {
+    @apply bg-blue-500;
+  }
+  .theme-rose & {
+    @apply bg-rose-500;
+  }
+  .theme-yellow & {
+    @apply bg-yellow-500;
+  }
+  .theme-green & {
+    @apply bg-green-500;
+  }
+  .theme-pink & {
+    @apply bg-pink-500;
+  }
+  .theme-dark & {
+    @apply bg-gray-900
+  }
+}
+
+.campaign__banner {
+  @include campaign_theme;
+}
+.campaign__tabs {
+  @apply sticky top-0 flex items-end flex-nowrap overflow-x-auto z-10 h-14;
+  @include campaign_theme;
 }
