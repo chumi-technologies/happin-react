@@ -129,48 +129,7 @@ function Arrow(props: any) {
 //     costType: 'diamond'
 //   },
 // ];
-const liveList = [
-  {
-    _id: '01',
-    link: '/',
-    title: 'Merry Christmas guys!',
-    cover: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
-    avatar: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
-    username: 'JeesieJe123'
-  },
-  {
-    _id: '02',
-    link: '/',
-    title: 'exposing my family drama ⛄',
-    cover: 'https://p16-webcast.tiktokcdn.com/webcast-va/6995434510779288326~tplv-resize:400:400.webp',
-    avatar: 'https://p19-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/2716efc7e6cb8fa3b28ea4660009aaaa~c5_100x100.webp?x-expires=1640588400&x-signature=KgeyUInhRAcg2BxeLwAjMi2u6oI%3D',
-    username: 'Shahad'
-  },
-  {
-    _id: '03',
-    link: '/',
-    title: 'Merry Christmas guys!',
-    cover: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
-    avatar: 'https://p6.toutiaoimg.com/origin/tos-cn-i-qvj2lq49k0/54043582bdb04811ae3e4877ab079157?from=pc',
-    username: 'JeesieJe123'
-  },
-  {
-    _id: '04',
-    link: '/',
-    title: 'exposing my family drama ⛄',
-    cover: 'https://p16-webcast.tiktokcdn.com/webcast-va/6995434510779288326~tplv-resize:400:400.webp',
-    avatar: 'https://p19-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/2716efc7e6cb8fa3b28ea4660009aaaa~c5_100x100.webp?x-expires=1640588400&x-signature=KgeyUInhRAcg2BxeLwAjMi2u6oI%3D',
-    username: 'Shahad'
-  },
-  {
-    _id: '05',
-    link: '/',
-    title: 'exposing my family drama ⛄',
-    cover: 'https://p16-webcast.tiktokcdn.com/webcast-va/6995434510779288326~tplv-resize:400:400.webp',
-    avatar: 'https://p19-sign.tiktokcdn-us.com/tos-useast5-avt-0068-tx/2716efc7e6cb8fa3b28ea4660009aaaa~c5_100x100.webp?x-expires=1640588400&x-signature=KgeyUInhRAcg2BxeLwAjMi2u6oI%3D',
-    username: 'Shahad'
-  },
-];
+
 interface ISenderRef {
   onSelectEmoji: (event: any) => void;
   focus: () => void;

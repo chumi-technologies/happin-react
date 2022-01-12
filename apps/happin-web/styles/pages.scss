@@ -2895,6 +2895,25 @@
   width: 100%;
 }
 
+// playback 
+.playback__container {
+  @media (min-width: 768px) {
+    .video-section {
+      height: calc(100% - 64px) !important;
+    }
+  }
+}
+
+.recording-item {
+  border-radius: 4px;
+  &.active {
+    background: #000;
+  }
+  &:hover {
+      background-color: rgba(255, 255, 255, 0.06);
+  }
+}
+
 // Live-Stream
 .live-stream__container {
   @media (min-width: 1280px) {
