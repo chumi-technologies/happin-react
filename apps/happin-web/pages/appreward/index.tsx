@@ -386,22 +386,22 @@ const Reward = () => {
         <div className={classnames('px-4', {hidden: tabCur !== 1})}>
           <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4">
             <div className="text-lg leading-6 text-white font-semibold mb-1.5">
-              <span className="align-middle">Remove Matching colddown</span>
+              <span className="align-middle">Remove matching colddown</span>
               <img className="inline align-middle w-5 ml-2" src="/images/icon-coin.svg" alt="" />
             </div>
-            <div className="text-gray-400 font-medium text-sm leading-5">You can remove 12hr colddown for matching with more like-minded people.</div>
+            <div className="text-gray-400 font-medium text-sm leading-5">Unlimited 30 mins matching with other people.</div>
           </div>
           <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4">
             <div className="text-lg leading-6 text-white font-semibold mb-1.5">
-              <span className="align-middle">Send virtual gift to cheer</span>
+              <span className="align-middle">Send virtual gift</span>
               <img className="inline align-middle w-5 ml-2" src="/images/icon-coin.svg" alt="" />
               <img className="inline align-middle w-5 ml-2" src="/images/icon-diamond.svg" alt="" />
             </div>
-            <div className="text-gray-400 font-medium text-sm leading-5">Send virtual gift from livestream and audio rooms, let other people see you.</div>
+            <div className="text-gray-400 font-medium text-sm leading-5">Send virtual gift to other people you like.</div>
           </div>
           <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4">
             <div className="text-lg leading-6 text-white font-semibold mb-1.5">
-              <span className="align-middle">Coupon for our tickets</span>
+              <span className="align-middle">Coupon for Happin event tickets</span>
               <img className="inline align-middle w-5 ml-2" src="/images/icon-coin.svg" alt="" />
               <img className="inline align-middle w-5 ml-2" src="/images/icon-diamond.svg" alt="" />
             </div>
@@ -415,7 +415,7 @@ const Reward = () => {
                   <img className="inline align-middle w-5 ml-2" src="/images/icon-coin.svg" alt="" />
                   <img className="inline align-middle w-5 ml-2" src="/images/icon-diamond.svg" alt="" />
                 </div>
-                <div className="text-gray-400 font-medium text-sm leading-5">Event creators can cash out diamonds above 100</div>
+                <div className="text-gray-400 font-medium text-sm leading-5">Cash out diamonds above 100 as experience creator.</div>
               </div>
               <img className="w-16 ml-4" src="/images/cash-out.svg" alt="" />
             </div>
