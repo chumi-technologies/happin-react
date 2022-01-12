@@ -15,6 +15,7 @@ const InviteUser = () => {
     const [ showPopup, setShowPopup ] = useState<boolean>(false);
     const [ inviterImage, setInviterImage ] = useState<string>('');
     const [ inviterName, setInviterName] = useState<string>('');
+    const [ universalLink, setUniversalLink] = useState<string>('');
 
     useEffect(() => {
         if (router.query.eventId) {
@@ -43,11 +44,14 @@ const InviteUser = () => {
         if (router.query.af_referrer_name) {
             setInviterName(router.query.af_referrer_name as string);
         }
+        if (router.query.univeral_link) {
+            setUniversalLink(router.query.univeral_link as string);
+        }
     }, [router.query])
 
     const handlePopupAction = () => {
         setTimeout(function () { window.location.href="https://apps.apple.com/app/id1527348429"; }, 25);
-        window.location.href= "Happin://" 
+        window.location.href = universalLink 
     }
     return (
         <div className="invite-user__page">

@@ -115,12 +115,7 @@ const Playback = () => {
 
         await checkFollowed();
 
-
-
         setIsLoading(false)
-
-        setupPlayer();
-
 
       })();
 
