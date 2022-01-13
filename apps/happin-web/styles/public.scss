@@ -152,3 +152,117 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
+
+.markdown-article {
+  @apply text-gray-700 text-base;
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900;
+    line-height: 140%;
+  }
+  p {
+    @apply text-gray-700;
+  }
+  p {
+    @apply mb-4;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol, ul {
+    @apply px-6 my-4 mx-auto;
+    li {
+      @apply my-2;
+    }
+  }
+  h1 {
+    @apply font-semibold text-2xl my-5;
+  }
+  h2 {
+    @apply font-semibold text-xl my-5;
+  }
+  h3 {
+    @apply font-semibold text-lg my-4;
+  }
+  h4 {
+    @apply font-semibold text-base my-4;
+  }
+  h5 {
+    @apply font-medium text-base my-4;
+  }
+  h6 {
+    @apply font-medium text-sm my-4;
+  }
+
+  a {
+    @apply no-underline border-b border-solid border-rose-500 text-gray-700;
+    transition: border .2s;
+    &:hover {
+      @apply border-b-2;
+    }
+  }
+
+  table {
+    @apply mx-auto mb-4 border-collapse border border-solid border-gray-200;
+  }
+
+  table tr {
+    @apply bg-white;
+  }
+
+  table tr:hover>td {
+    @apply bg-gray-100 bg-clip-padding;
+  }
+
+  table td, table th {
+    @apply border-b border-r border-solid border-gray-200 align-middle m-0 py-2 px-4 overflow-ellipsis box-border;
+    transition: background-color .25s ease;
+  }
+
+  table th {
+    @apply bg-gray-50
+  }
+
+  figure {
+    @apply relative text-center my-6 mx-auto max-w-full outline-none;
+    img {
+      @apply max-w-full;
+    }
+  }
+  figcaption {
+    @apply text-gray-600 text-sm text-center mt-4;
+  }
+  blockquote {
+    @apply relative block my-6 mx-auto border-l-2 border-solid border-rose-500 text-gray-500 font-medium px-3;
+  }
+  &.markdown-dark-theme {
+    @apply text-gray-300;
+    h1, h2, h3, h4, h5, h6 {
+      @apply text-gray-50;
+    }
+    p {
+      @apply text-gray-300;
+    }
+    a {
+      @apply text-gray-300;
+    }
+    table {
+      @apply border-gray-700;
+    }
+    table tr,
+    table tr:hover>td {
+      @apply bg-white bg-opacity-5;
+    }
+    table td, table th {
+      @apply border-gray-700;
+    }
+    table th {
+      @apply bg-gray-900;
+    }
+    figcaption {
+      @apply text-gray-300;
+    }
+    blockquote {
+      @apply text-gray-400;
+    }
+  }
+}

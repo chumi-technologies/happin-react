@@ -44,7 +44,7 @@ const EventDescription = ({ description, rawDescription = "", sourceURL, setOpen
       window.open(sourceURL, '_blank')
     }
   }
-  
+
 
   return (
     <>
@@ -120,7 +120,7 @@ const EventDescription = ({ description, rawDescription = "", sourceURL, setOpen
                 <div className="flex-1 h-0 overflow-y-auto pb-6">
                   <div className="px-6">
                     {/*Description content here*/}
-                    <div className="text-sm sm:text-base">
+                    <div className="text-sm sm:text-base markdown-article">
                       <div dangerouslySetInnerHTML={{ __html: description || '' }} />
                       {/*  <div>
                         <Link href="#"><a className="mr-2 link-blue">Website,</a></Link>
