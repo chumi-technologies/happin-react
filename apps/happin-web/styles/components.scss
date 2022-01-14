@@ -94,10 +94,6 @@ button {
   &:active {
     background-color: rgba($rose, .4);
   }
-  &:disabled {
-    --tw-bg-opacity: 1;
-    opacity: 0.3;
-  }
 }
 
 .btn-outline-blue {

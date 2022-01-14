@@ -58,9 +58,8 @@ const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
     );
   }
 };
-
-const Campaign = () => {
-  const [tabCur, setTabCur] = useState<number>(2);
+const campaign = () => {
+  const [tabCur, setTabCur] = useState(0);
   return (
     <div className="overflow-y-auto theme-yellow max-w-md mx-auto">
       <div className="campaign__banner pt-8">
@@ -351,4 +350,4 @@ const Campaign = () => {
   )
 }
 
-export default Campaign
+export default campaign
