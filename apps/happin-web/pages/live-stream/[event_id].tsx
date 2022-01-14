@@ -19,9 +19,8 @@ import { getHappinStreamRoom, postHappinUserStatus } from "lib/api/livestream";
 import randomColor from 'randomcolor';
 import TIM from 'tim-js-sdk';
 import moment from "moment";
-import { exchangeCrowdcoreToken, getFollowed, getGiftList, postFollow, removeFollowed } from "lib/api/user";
+import { exchangeCrowdcoreToken, getFollowed, getGiftList, postFollow, removeFollowed, sendGiftTo } from "lib/api/user";
 import Script from 'next/script'
-// import  TcPlayer from '../../public/plugin/TcPlayer-2.4.1'
 
 declare var TcPlayer: any;
 
@@ -36,99 +35,6 @@ function Arrow(props: any) {
     </div>
   );
 }
-// const giftList = [
-//   {
-//     id: 0,
-//     name: 'Cheers',
-//     img: '/images/gift-01.png',
-//     cost: 50,
-//     costType: 'coins'
-//   },
-//   {
-//     id: 1,
-//     name: 'Hands Up',
-//     img: '/images/gift-02.png',
-//     cost: 50,
-//     costType: 'coins'
-//   },
-//   {
-//     id: 2,
-//     name: 'Kiss',
-//     img: '/images/gift-03.png',
-//     cost: 50,
-//     costType: 'coins'
-//   },
-//   {
-//     id: 3,
-//     name: 'Rocket',
-//     img: '/images/gift-04.png',
-//     cost: 50,
-//     costType: 'coins'
-//   },
-//   {
-//     id: 4,
-//     name: 'BoomShaking',
-//     img: '/images/gift-05.png',
-//     cost: 50,
-//     costType: 'coins'
-//   },
-//   {
-//     id: 5,
-//     name: 'Birthday Cake',
-//     img: '/images/gift-06.png',
-//     cost: 1,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 6,
-//     name: 'Bear',
-//     img: '/images/gift-07.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 7,
-//     name: 'Bear',
-//     img: '/images/gift-08.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 8,
-//     name: 'Bear',
-//     img: '/images/gift-09.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 9,
-//     name: 'Bear',
-//     img: '/images/gift-10.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 10,
-//     name: 'Bear',
-//     img: '/images/gift-11.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 11,
-//     name: 'Bear',
-//     img: '/images/gift-12.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-//   {
-//     id: 12,
-//     name: 'Bear',
-//     img: '/images/gift-13.png',
-//     cost: 2,
-//     costType: 'diamond'
-//   },
-// ];
 
 interface ISenderRef {
   onSelectEmoji: (event: any) => void;
@@ -265,7 +171,7 @@ const Livestream = () => {
         console.log("ticketList: ", ticketList_res);
         if (ticketList_res && ticketList_res.data) {
           if (ticketList_res.data.event.owner !== user?.id) {
-            if (ticketList_res.data.tickets.length === 0 ) {
+            if (ticketList_res.data.tickets.length === 0) {
               // this person doesn't have ticket 
               generateToast('Please buy ticket.', toast);
               router.push('/my-events')
@@ -498,7 +404,7 @@ const Livestream = () => {
     }
   }
   const _handleGroupSystemMsg = async (message: any) => {
-    if (message.to !== eventData.streamGroupID) {
+    if (!eventData.streamGroupID.includes(message.to) && message.to !== eventData.eventID.owner) {
       console.log("not same id")
       return;
     }
@@ -533,7 +439,7 @@ const Livestream = () => {
     const newMessage = {
       avatar: message.avatar,
       username: message.nick || 'Unknown User',
-      giftImage: data.data.payload.image[0],
+      giftImage: data.data.payload.icon,
       giftName: data.data.payload.name,
       type: 'gift',
       color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
@@ -545,19 +451,21 @@ const Livestream = () => {
 
   const _handleCustomMsg = (message: any) => {
     console.log("CUSTOMMESSAGE ", message);
-    if (message.to !== eventData.streamGroupID) {
+    if (!eventData.streamGroupID == message.to && message.to !== eventData.eventID.owner) {
       console.log("not same id")
       return;
     }
     const data = message.payload.data;
     const dataObj = JSON.parse(data);
+    console.log("dataObj, ",dataObj)
     if (dataObj.type === 'livestream') {
       switch (dataObj.action) {
         case 'like':
           // 收到了点赞
           break
-        case 'send_gift':
+        case "send_gift":
           // 收到了礼物
+          console.log("get gift")
           _handleGift(message, dataObj);
           break
         default:
@@ -693,15 +601,10 @@ const Livestream = () => {
   const getGifts = async () => {
     // TODO: 后端做好之后还要进行修改
     try {
-      const data = {
-        method: "get",
-        path: `getAllVirtualProductsForAppLiveStream/${eventId}`,
-        payload: {}
-      }
-      const res = await getGiftList(data);
+      const res = await getGiftList();
       console.log("Gift list:", res);
-      if (res && res.data && res.data.merIds) {
-        const gifts = res.data.merIds.filter((item: any) => item.typeForApp !== 'tipJar')
+      if (res && res.cheers && res.gifts) {
+        const gifts = res.cheers.concat(res.gifts)
         setGifts(gifts);
       }
     }
@@ -1011,6 +914,12 @@ const Livestream = () => {
 
 
   const sendGift = async (gift: any) => {
+    console.log("sendgift: ", gift);
+    // 看看是不是送给自己
+    if (user?.id === eventData.eventID.owner) {
+      generateToast("You can't send gift to yourself.", toast);
+      return ;
+    }
     try {
       if (!timSDKReady.current) {
         return;
@@ -1024,65 +933,70 @@ const Livestream = () => {
       //   return;
       // }
 
-      // TODO: 检查钱是否够， 不够的话转到Top up 页面
-      // TODO: call getUserInfo first, and then check balance
-      // if (user?.diamonds)
-      // await this.gs.setUserStore();
-      // this.userInfo = this.userQuery.getValue();
-      // if (this.userInfo.points < count * gift.price) {
-      //   this.sendNotification('Insufficient coins. Please top up')
-      //   return;
-      // }
-
-      // TODO: api购买礼物
-      // const serverPayload = {
-      //   points: gift.price * count,
-      //   mercID: gift._id,
-      //   mercName: gift.name,
-      //   quantity: count,
-      //   streamRoomID: this.streamRoomGroupID
-      // }
-      // const res = await this.http.postHappinBuyGift(serverPayload).toPromise();
-
-      // // server 更新剩余points
-      // await this.gs.setUserStore();
-      // this.userInfo = this.userQuery.getValue();
-
-      // send gift to IM
-      const giftObject = {
-        ...gift,
-        name: gift.name,
-        senderAvatar: user?.photourl,
-        senderName: user?.displayname,
-        giftImage: gift.image[0],
+      const user_update = await getUserInfo();
+      console.log(user_update)
+      let balance = 0;
+      if (user_update && user_update.data) {
+        switch (gift.valueType) {
+          case "coin":
+            balance = user_update?.data?.coins || 0;
+            break;
+          case "diamond":
+            balance = user_update?.data?.diamonds || 0;
+            break;
+        }
       }
 
-      const payload = {
-        action: 'send_gift',
-        data: { count: 1, payload: giftObject },
-        type: 'livestream',
-        user: {},
-        version: 1,
-      };
-
-      const payloadString = JSON.stringify(payload);
-      const message = await createCustomMsg(payloadString);
-      console.log("gift message will send: ", message)
-      const res_gift = await timRef.current.sendMessage(message);
-      console.log("gift message sent: ", res_gift);
-
-      const userInList = chatRoomMessageList.current.find((item: any) => item.username === user?.displayname);
-      const newMessage = {
-        avatar: user?.photourl,
-        username: user?.displayname || 'Unknown User',
-        giftImage: gift.image[0],
-        giftName: gift.name,
-        type: 'gift',
-        color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
+      if (balance < gift.value) {
+        // not enough, open to topup page
+        generateToast("Not enough " + gift.valueType + ", please topup", toast);
+        window.open(window.location.origin + "/topup", '_blank');
+        return;
       }
-      console.log("updated message list: ", [...chatRoomMessageList.current, newMessage])
-      chatRoomMessageList.current = [...chatRoomMessageList.current, newMessage];
-      setTriggerRerender(t => !t);
+
+      // TODO: api send礼物
+      const res_sendGift = await sendGiftTo(eventData.eventID.owner, gift._id);
+      if (res_sendGift && res_sendGift.code === 200) {
+        // send gift to IM
+        const giftObject = {
+          ...gift,
+          name: gift.name,
+          senderAvatar: user?.photourl,
+          senderName: user?.displayname,
+          giftImage: gift.icon,
+        }
+
+        const payload = {
+          action: 'send_gift',
+          data: { count: 1, payload: giftObject },
+          type: 'livestream',
+          user: {},
+          version: 1,
+        };
+
+        const payloadString = JSON.stringify(payload);
+        const message = await createCustomMsg(payloadString);
+        console.log("gift message will send: ", message)
+        const res_gift = await timRef.current.sendMessage(message);
+        console.log("gift message sent: ", res_gift);
+
+        const userInList = chatRoomMessageList.current.find((item: any) => item.username === user?.displayname);
+        const newMessage = {
+          avatar: user?.photourl,
+          username: user?.displayname || 'Unknown User',
+          giftImage: gift.icon,
+          giftName: gift.name,
+          type: 'gift',
+          color: userInList ? userInList.color : randomColor({ luminosity: 'light' })
+        }
+        console.log("updated message list: ", [...chatRoomMessageList.current, newMessage])
+        chatRoomMessageList.current = [...chatRoomMessageList.current, newMessage];
+        setTriggerRerender(t => !t);
+
+      }
+
+
+
 
     } catch (error) {
       console.log(error)
@@ -1131,6 +1045,11 @@ const Livestream = () => {
 
   const handleFollow = async () => {
     setFollowBtnDisable(true)
+    if (user?.id === eventData.eventID.owner) {
+      generateToast("You can't follow yourself.", toast);
+      setFollowBtnDisable(false);
+      return;
+    }
     if (!isFollowed) {
       // user haven't followed artist
       try {
@@ -1270,11 +1189,11 @@ const Livestream = () => {
                     gifts.map((item: any, index: number) => (
                       <div key={index} onClick={() => sendGift(item)}
                         className="flex flex-col justify-center text-center py-2.5 px-1.5 cursor-pointer overflow-hidden group hover:bg-gray-700 transition">
-                        <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.image[0]} alt={item.name} />
+                        <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.icon} alt={item.name} />
                         <div className="truncate text-gray-400 text-sm font-medium mt-2 group-hover:text-gray-50 transition">{item.name}</div>
                         <div className="flex items-center justify-center mt-1">
-                          <img className="w-3 mr-1" src="/images/icon-coin.svg" alt="" />
-                          <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.price}</span>
+                          <img className="w-3 mr-1" src={`/images/icon-${item.valueType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
+                          <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.value}</span>
                         </div>
                       </div>
                     ))
@@ -1354,12 +1273,12 @@ const Livestream = () => {
                 {
                   gifts.map((item: any, index: number) => (
                     <div key={index} onClick={() => sendGift(item)}
-                      className="flex flex-col justify-center text-center pt-2 pb-1 sm:py-2.5 px-1.5 cursor-pointer overflow-hidden group hover:bg-gray-700 rounded-md sm:rounded-none transition">
-                      <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.image[0]} alt={item.name} />
+                      className="flex flex-col justify-center text-center py-2.5 px-1.5 cursor-pointer overflow-hidden group hover:bg-gray-700 transition">
+                      <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.icon} alt={item.name} />
                       <div className="truncate text-gray-400 text-sm font-medium mt-2 group-hover:text-gray-50 transition">{item.name}</div>
                       <div className="flex items-center justify-center mt-1">
-                        <img className="w-3 mr-1" src="/images/icon-coin.svg" alt="" />
-                        <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.price}</span>
+                        <img className="w-3 mr-1" src={`/images/icon-${item.valueType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
+                        <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.value}</span>
                       </div>
                     </div>
                   ))

@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useRouter } from "next/router";
-import { getTicketsList, getUserInfo } from "lib/api";
+import { getTicketsList, getTicketsPlayBackList, getUserInfo } from "lib/api";
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
 import { useUserState } from "contexts/user-state";
 import { useSSOState } from "contexts/sso-state";
@@ -80,8 +80,7 @@ const Playback = () => {
         // Prepare room
 
         // 验证是否符合入场规则
-        // TODO: replay ticket
-        const ticketList_res = await getTicketsList(eventId);
+        const ticketList_res = await getTicketsPlayBackList(eventId);
         console.log("ticketList: ", ticketList_res);
         if (ticketList_res && ticketList_res.data) {
           if (ticketList_res.data.event.owner !== user?.id) {

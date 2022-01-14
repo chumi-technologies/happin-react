@@ -1,4 +1,4 @@
-import { getFromHappin, postToHappin } from './base';
+import { getFromHappin, getFromHappin_dev, postToHappin, postToHappin_dev } from './base';
 import { UserResponse } from 'lib/model/user';
 
 const USER_INFO_PATH = '/user';
@@ -8,7 +8,8 @@ const EXCHANGE_DASHBOARD_EVENT_HOST_PATH = '/user/chumi-server-token'
 const POST_FOLLOW = '/user/follow?userID={id}'
 const GET_FOLLOWED = '/user/follow'
 const REMOVE_FOLLOWED = '/user/unfollow?userID={id}'
-const GET_GIFTLIST = '/stream/proxy-purchase'
+const GET_GIFTLIST = '/gifts'
+const SEND_GIFT = '/gifts/send'
 
 const getUserInfo = async () => {
    const response = await getFromHappin<UserResponse>(USER_INFO_PATH)
@@ -25,8 +26,13 @@ const exchangeCrowdcoreToken = async () => {
    return response || {}
 }
 
-const getGiftList = async (data:any) => {
-   const response = await postToHappin(GET_GIFTLIST, data)
+const getGiftList = async () => {
+   const response = await getFromHappin(GET_GIFTLIST)
+   return response || {}
+}
+
+const sendGiftTo = async (to: string, giftId: string) => {
+   const response = await postToHappin(SEND_GIFT, {to:to, giftId: giftId});
    return response || {}
 }
 
@@ -51,4 +57,4 @@ const exchangeDashboardEventHostToken = async () => {
    return response || {}
 }
 
-export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken, postFollow, getFollowed, removeFollowed, getGiftList }
+export { getUserInfo, exchangeCrowdcoreToken, getFirebaseCustomToken, exchangeDashboardEventHostToken, postFollow, getFollowed, removeFollowed, getGiftList, sendGiftTo }
