@@ -113,6 +113,10 @@ const Reward = () => {
 
   }
 
+  const handleCashOut = () => {
+    window.location.href = `mailto:WithdrawBalance@happin.app?subject=uid:${user?.uid} username:${user?.happinID}&body=message%20goes%20here`;
+  }
+
   const handleSendToAPP = (type:string) => {
     let action = "";
     switch(type) {
@@ -409,7 +413,7 @@ const Reward = () => {
             </div>
             <div className="text-gray-400 font-medium text-sm leading-5">Use coins like real money. When you purchase tickets with our events, you can get discounts.</div>
           </div>
-          <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4">
+          <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4" onClick={handleCashOut}>
             <div className="flex items-center">
               <div className="flex-1">
                 <div className="text-lg leading-6 text-white font-semibold mb-1.5">
