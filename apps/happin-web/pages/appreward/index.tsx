@@ -32,7 +32,7 @@ const Reward = () => {
     try {
       const res: RewardListResponse = await getRewards();
       if (res && res.data) {
-        console.log(res.data)
+        console.log("reward data: ",res.data)
         setBalance(res.data.balance)
         setDailyCheckIn(res.data.dailyCheckIn)
         if (res.data.tasks.oneTime) {
@@ -59,7 +59,9 @@ const Reward = () => {
         // Update strick
         const temp = Object.assign({}, dailyCheckIn)
         temp.strike  = temp.strike + 1;
+        temp.hasCheckedIn = true;
         setDailyCheckIn(temp)
+        
       }
 
     }
