@@ -120,7 +120,7 @@ const Layout = ({ children }: { children: any }) => {
         {/* Header Section */}
         {(!openInApp && showHeader) &&
           <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
-            { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
+            {/* { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> } */}
           </Header>
         }
         {children}
