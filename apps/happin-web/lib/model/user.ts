@@ -11,10 +11,6 @@ export interface User {
     areaCode: string;
     pointOneGifts: number;
     happinID: string;
-    usersig: string;
-    diamonds: number;
-    coins: number;
-    id: string;
 }
 
 

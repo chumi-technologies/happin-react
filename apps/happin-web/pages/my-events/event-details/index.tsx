@@ -130,8 +130,8 @@ const MyEventDetails = () => {
         const res = await getFirebaseCustomToken();
           if (res && res.data && res.data.customToken) {
             customToken = res.data.customToken;
-            router.push(`/live-stream/${eventDetails.event._id}`)
-            // window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
+            // router.push(`/live/e/${eventDetails.event._id}?customToken=${customToken}`)
+            window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
         }
       } else if (ticket.ticketType === 'PFM') {
         if(router.query.id){
@@ -156,17 +156,13 @@ const MyEventDetails = () => {
       const res = await getFirebaseCustomToken();
       if (res && res.data && res.data.customToken) {
         customToken = res.data.customToken;
-        router.push(`/playback/${eventDetails.event._id}`)
-        // window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
+        // router.push(`/live/e/${eventDetails.event._id}?customToken=${customToken}`)
+        window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
       }
     } catch(err) {
       generateToast('Unknown error about replay-video', toast);
       console.log(err)
     }
-  }
-
-  const handleEnterLiveStream = async () => {
-    router.push(`/live-stream/${eventDetails.event._id}`)
   }
 
   const handleRedemption = async (t:any) => {
@@ -370,7 +366,7 @@ const MyEventDetails = () => {
                                       }
                                       {
                                         t.ticketType ==='live' && t.checked && <div className="flex-1 text-center sm:w-28">
-                                        <button disabled={moment(new Date()).isAfter(moment(eventDetails?.event?.end_datetime))} onClick={handleEnterLiveStream} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Livestream</button>
+                                        <button disabled={moment(new Date()).isAfter(moment(eventDetails?.event?.end_datetime))} onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Livestream</button>
                                         </div>
                                       }
                                     </div>
@@ -483,7 +479,6 @@ const MyEventDetails = () => {
             modalTitle="Redeem Completed"
             isModalOpen={redemCodeModal}
             setIsModalOpen={handleModalClose}
-            mobilePosition={'center'}
           >
              <div style={{margin: '0 1.25rem 1.25rem'}}>
               {redemModalText}

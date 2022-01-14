@@ -31,7 +31,7 @@
 // Layout
 .main-app {
   @apply flex flex-col h-screen;
-  &.home-page {
+  &.production {
     @apply h-auto
   }
   &.reward-page {
@@ -42,7 +42,7 @@
   }
 }
 .header {
-  .home-page &{
+  .production &{
     @apply sticky top-0 z-10;
   }
 }
@@ -76,6 +76,9 @@
 }
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
+}
+.border-3 {
+  border-width: 3px;
 }
 
 .divider-words {
@@ -149,7 +152,6 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 }
-
 
 .markdown-article {
   @apply text-gray-700 text-base;
@@ -263,9 +265,4 @@
       @apply text-gray-400;
     }
   }
-
-.text-15 {
-  font-size: 15px;
-  line-height: 1.3rem;
-
 }

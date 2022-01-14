@@ -135,7 +135,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                         </Link>
                       </Menu.Item>*/}
                         <Menu.Item>
-                          <a className="header__menu-link md:hidden" onClick={()=>{router.push('/submit-event')}}>Submit Event</a>
+                          <a className="header__menu-link md:hidden" onClick={()=>{router.push('/submit-event')}}>Submit an Event/Experience</a>
                         </Menu.Item>
                       </div>
                     </Menu.Items>
@@ -166,7 +166,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit Events</a>}
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit Events/Experiences</a>}
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}

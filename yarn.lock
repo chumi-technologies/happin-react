@@ -148,13 +148,6 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.3.1":
-  version "7.16.5"
-  resolved "https://registry.npmmirror.com/@babel/runtime/download/@babel/runtime-7.16.5.tgz#7f3e34bf8bdbbadf03fbb7b1ea0d929569c9487a"
-  integrity sha512-TXWihFIS3Pyv5hzR7j6ihmeLkZfrXGxAr5UfSl8CHf+6q/wpiYDkUau0czckpYG8QmnCIuPpdLtuA9VmuGGyMA==
-  dependencies:
-    regenerator-runtime "^0.13.4"
-
 "@babel/template@^7.14.5":
   version "7.14.5"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.14.5.tgz#a9bc9d8b33354ff6e55a9c60d1109200a68974f4"
@@ -1195,11 +1188,6 @@
   resolved "https://registry.yarnpkg.com/@icon-park/react/-/react-1.3.5.tgz#d0b94b39021c54f7cb45d0bce7d3f42994ce8dc0"
   integrity sha512-FL3+BcYfFbRRl6DA6V2yA/QEoRRrhaDvMXLbFz0uW9lIsstQB6au/8aQxthB1G+eiqLxcw6yVULbmbBySn4Paw==
 
-"@juggle/resize-observer@^3.2.0":
-  version "3.3.1"
-  resolved "https://registry.npmmirror.com/@juggle/resize-observer/download/@juggle/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
-  integrity sha1-tQp4FwnIHhBwEAQhQ0DyVHWhcaA=
-
 "@kadira/storybook-deployer@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@kadira/storybook-deployer/-/storybook-deployer-1.2.0.tgz#1708f5cb37fa08ab4173b1bd99df6f4717dfae12"
@@ -2218,14 +2206,6 @@
     prop-types "^15.7.2"
     tslib "^2.1.0"
 
-"@reach/portal@^0.13.0":
-  version "0.13.2"
-  resolved "https://registry.npmmirror.com/@reach/portal/download/@reach/portal-0.13.2.tgz#6f2a6f4afc14894bde9c6435667bb9b660887ed9"
-  integrity sha1-bypvSvwUiUvenGQ1Znu5tmCIftk=
-  dependencies:
-    "@reach/utils" "0.13.2"
-    tslib "^2.1.0"
-
 "@reach/utils@0.13.2":
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/@reach/utils/-/utils-0.13.2.tgz#87e8fef8ebfe583fa48250238a1a3ed03189fcc8"
@@ -2334,13 +2314,6 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-1.1.2.tgz#ccb91445360179a04e7fe6aff78c00ffc1eeaf82"
   integrity sha512-RbzJvlNzmRq5c3O09UipeuXno4tA1FE6ikOjxZK0tuxVv3412l64l5t1W5pj4+rJq9vpkm/kwiR07aZXnsKPxw==
-
-"@types/emoji-mart@^3.0.8":
-  version "3.0.8"
-  resolved "https://registry.npmmirror.com/@types/emoji-mart/download/@types/emoji-mart-3.0.8.tgz#b0de7aabf39b5c4b6e378432bb3b99dbf903bc04"
-  integrity sha1-sN56q/ObXEtuN4QyuzuZ2/kDvAQ=
-  dependencies:
-    "@types/react" "*"
 
 "@types/json5@^0.0.29":
   version "0.0.29"
@@ -2535,14 +2508,6 @@
   dependencies:
     "@typescript-eslint/types" "4.28.1"
     eslint-visitor-keys "^2.0.0"
-
-"@xstate/react@^1.2.0":
-  version "1.6.3"
-  resolved "https://registry.npmmirror.com/@xstate/react/download/@xstate/react-1.6.3.tgz#706f3beb7bc5879a78088985c8fd43b9dab7f725"
-  integrity sha512-NCUReRHPGvvCvj2yLZUTfR0qVp6+apc8G83oXSjN4rl89ZjyujiKrTff55bze/HrsvCsP/sUJASf2n0nzMF1KQ==
-  dependencies:
-    use-isomorphic-layout-effect "^1.0.0"
-    use-subscription "^1.3.0"
 
 JSONStream@^1.0.4:
   version "1.3.5"
@@ -2985,11 +2950,6 @@ bn.js@^5.0.0, bn.js@^5.1.1:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.0.tgz#358860674396c6997771a9d051fcc1b57d4ae002"
   integrity sha512-D7iWRBvnZE8ecXiLj/9wbxH7Tk79fAh8IHaTNq1RWRixsS02W+5qS+iE9yq6RYl0asXx5tw0bLhmT5pIfbSquw==
-
-body-scroll-lock@^3.1.5:
-  version "3.1.5"
-  resolved "https://registry.npmmirror.com/body-scroll-lock/download/body-scroll-lock-3.1.5.tgz#c1392d9217ed2c3e237fee1e910f6cdd80b7aaec"
-  integrity sha1-wTktkhftLD4jf+4ekQ9s3YC3quw=
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -3853,11 +3813,6 @@ deepmerge@^2.1.1:
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.2.1.tgz#5d3ff22a01c00f645405a2fbc17d0778a1801170"
   integrity sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==
 
-deepmerge@^4.0.0:
-  version "4.2.2"
-  resolved "https://registry.npmmirror.com/deepmerge/download/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
-  integrity sha1-RNLqNnm49NT/ujPwPYZfwee/SVU=
-
 defaults@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/defaults/-/defaults-1.0.3.tgz#c656051e9817d9ff08ed881477f3fe4019f3ef7d"
@@ -4044,14 +3999,6 @@ elliptic@^6.5.3:
     inherits "^2.0.4"
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
-
-emoji-mart@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.npmmirror.com/emoji-mart/download/emoji-mart-3.0.1.tgz#9ce86706e02aea0506345f98464814a662ca54c6"
-  integrity sha1-nOhnBuAq6gUGNF+YRkgUpmLKVMY=
-  dependencies:
-    "@babel/runtime" "^7.0.0"
-    prop-types "^15.6.0"
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -4595,13 +4542,6 @@ focus-lock@^0.8.1:
   integrity sha512-/LFZOIo82WDsyyv7h7oc0MJF9ACOvDRdx9rWPZ2pgMfNWu/z8hQDBtOchuB/0BVLmuFOZjV02YwUVzNsWx/EzA==
   dependencies:
     tslib "^1.9.3"
-
-focus-trap@^6.2.2:
-  version "6.7.1"
-  resolved "https://registry.npmmirror.com/focus-trap/download/focus-trap-6.7.1.tgz#d474f86dbaf3c7fbf0d53cf0b12295f4f4068d10"
-  integrity sha1-1HT4bbrzx/vw1TzwsSKV9PQGjRA=
-  dependencies:
-    tabbable "^5.2.1"
 
 follow-redirects@^1.10.0:
   version "1.14.1"
@@ -5820,11 +5760,6 @@ load-json-file@^6.2.0:
     strip-bom "^4.0.0"
     type-fest "^0.6.0"
 
-load-script@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmmirror.com/load-script/download/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
-  integrity sha1-BJGTngvuVkPuSUp+PaPSuscMbKQ=
-
 loader-utils@1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/loader-utils/-/loader-utils-1.2.3.tgz#1ff5dc6911c9f0a062531a4c04b609406108c2c7"
@@ -6053,7 +5988,7 @@ md5.js@^1.3.4:
     inherits "^2.0.1"
     safe-buffer "^5.1.2"
 
-memoize-one@^5.0.0, memoize-one@^5.1.1:
+memoize-one@^5.0.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/memoize-one/-/memoize-one-5.2.1.tgz#8337aa3c4335581839ec01c3d594090cebe8f00e"
   integrity sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==
@@ -7556,11 +7491,6 @@ randombytes@^2.0.0, randombytes@^2.0.1, randombytes@^2.0.5:
   dependencies:
     safe-buffer "^5.1.0"
 
-randomcolor@^0.6.2:
-  version "0.6.2"
-  resolved "https://registry.npmmirror.com/randomcolor/download/randomcolor-0.6.2.tgz#7a57362ae1a1278439aeed2c15e5deb8ea33f56d"
-  integrity sha1-elc2KuGhJ4Q5ru0sFeXeuOoz9W0=
-
 randomfill@^1.0.3:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/randomfill/-/randomfill-1.0.4.tgz#c92196fc86ab42be983f1bf31778224931d61458"
@@ -7759,17 +7689,6 @@ react-phone-input-2@^2.14.0:
     lodash.startswith "^4.2.1"
     prop-types "^15.7.2"
 
-react-player@^2.9.0:
-  version "2.9.0"
-  resolved "https://registry.npmmirror.com/react-player/download/react-player-2.9.0.tgz#ef7fe7073434087565f00ff219824e1e02c4b046"
-  integrity sha1-73/nBzQ0CHVl8A/yGYJOHgLEsEY=
-  dependencies:
-    deepmerge "^4.0.0"
-    load-script "^1.0.0"
-    memoize-one "^5.1.1"
-    prop-types "^15.7.2"
-    react-fast-compare "^3.0.1"
-
 react-plx@^1.3.17:
   version "1.3.17"
   resolved "https://registry.yarnpkg.com/react-plx/-/react-plx-1.3.17.tgz#bb156eb6c3145e0582395b05a979f6e6daa8dfeb"
@@ -7864,20 +7783,6 @@ react-slick@^0.28.1:
     lodash.debounce "^4.0.8"
     resize-observer-polyfill "^1.5.0"
 
-react-spring-bottom-sheet@^3.4.0:
-  version "3.4.0"
-  resolved "https://registry.npmmirror.com/react-spring-bottom-sheet/download/react-spring-bottom-sheet-3.4.0.tgz#b65e2b46c372b37eefcc686a8ff4736e7dd22d3c"
-  integrity sha1-tl4rRsNys37vzGhqj/Rzbn3SLTw=
-  dependencies:
-    "@juggle/resize-observer" "^3.2.0"
-    "@reach/portal" "^0.13.0"
-    "@xstate/react" "^1.2.0"
-    body-scroll-lock "^3.1.5"
-    focus-trap "^6.2.2"
-    react-spring "^8.0.27"
-    react-use-gesture "^8.0.1"
-    xstate "^4.15.1"
-
 react-spring-lightbox@^1.6.0:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/react-spring-lightbox/-/react-spring-lightbox-1.6.0.tgz#3ffe336a8b1c5f5740d8f476f5376d88471a5afe"
@@ -7886,14 +7791,6 @@ react-spring-lightbox@^1.6.0:
     "@babel/runtime" "^7.14.0"
     "@react-spring/web" "9.2.1"
     react-use-gesture "9.1.3"
-
-react-spring@^8.0.27:
-  version "8.0.27"
-  resolved "https://registry.npmmirror.com/react-spring/download/react-spring-8.0.27.tgz#97d4dee677f41e0b2adcb696f3839680a3aa356a"
-  integrity sha1-l9Te5nf0Hgsq3LaW84OWgKOqNWo=
-  dependencies:
-    "@babel/runtime" "^7.3.1"
-    prop-types "^15.5.8"
 
 react-style-proptype@^3.0.0:
   version "3.2.2"
@@ -7932,11 +7829,6 @@ react-use-gesture@9.1.3:
   version "9.1.3"
   resolved "https://registry.yarnpkg.com/react-use-gesture/-/react-use-gesture-9.1.3.tgz#92bd143e4f58e69bd424514a5bfccba2a1d62ec0"
   integrity sha512-CdqA2SmS/fj3kkS2W8ZU8wjTbVBAIwDWaRprX7OKaj7HlGwBasGEFggmk5qNklknqk9zK/h8D355bEJFTpqEMg==
-
-react-use-gesture@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.npmmirror.com/react-use-gesture/download/react-use-gesture-8.0.1.tgz#4360c0f7c9e26baf9fbe58f63fc9de7ef699c17f"
-  integrity sha1-Q2DA98nia6+fvlj2P8nefvaZwX8=
 
 react@17.0.2:
   version "17.0.2"
@@ -8939,11 +8831,6 @@ svg.select.js@^3.0.1:
   dependencies:
     svg.js "^2.6.5"
 
-tabbable@^5.2.1:
-  version "5.2.1"
-  resolved "https://registry.npmmirror.com/tabbable/download/tabbable-5.2.1.tgz#e3fda7367ddbb172dcda9f871c0fdb36d1c4cd9c"
-  integrity sha1-4/2nNn3bsXLc2p+HHA/bNtHEzZw=
-
 table@^6.0.9:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/table/-/table-6.7.1.tgz#ee05592b7143831a8c94f3cee6aae4c1ccef33e2"
@@ -9096,11 +8983,6 @@ through@2, "through@>=2.2.7 <3", through@^2.3.4, through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
   integrity sha1-DdTJ/6q8NXlgsbckEV1+Doai4fU=
-
-tim-js-sdk@^2.15.0:
-  version "2.15.0"
-  resolved "https://registry.npmmirror.com/tim-js-sdk/download/tim-js-sdk-2.15.0.tgz?cache=0&sync_timestamp=1635564966403&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Ftim-js-sdk%2Fdownload%2Ftim-js-sdk-2.15.0.tgz#ec620fcf4586fd8c7914c2fbb6a407ba8139578e"
-  integrity sha1-7GIPz0WG/Yx5FML7tqQHuoE5V44=
 
 timers-browserify@2.0.12, timers-browserify@^2.0.4:
   version "2.0.12"
@@ -9409,11 +9291,6 @@ use-callback-ref@^1.2.1, use-callback-ref@^1.2.3:
   resolved "https://registry.yarnpkg.com/use-callback-ref/-/use-callback-ref-1.2.5.tgz#6115ed242cfbaed5915499c0a9842ca2912f38a5"
   integrity sha512-gN3vgMISAgacF7sqsLPByqoePooY3n2emTH59Ur5d/M8eg4WTWu1xp8i8DHjohftIyEx0S08RiYxbffr4j8Peg==
 
-use-isomorphic-layout-effect@^1.0.0:
-  version "1.1.1"
-  resolved "https://registry.npmmirror.com/use-isomorphic-layout-effect/download/use-isomorphic-layout-effect-1.1.1.tgz#7bb6589170cd2987a152042f9084f9effb75c225"
-  integrity sha1-e7ZYkXDNKYehUgQvkIT57/t1wiU=
-
 use-sidecar@^1.0.1:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.5.tgz#ffff2a17c1df42e348624b699ba6e5c220527f2b"
@@ -9422,7 +9299,7 @@ use-sidecar@^1.0.1:
     detect-node-es "^1.1.0"
     tslib "^1.9.3"
 
-use-subscription@1.5.1, use-subscription@^1.3.0:
+use-subscription@1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/use-subscription/-/use-subscription-1.5.1.tgz#73501107f02fad84c6dd57965beb0b75c68c42d1"
   integrity sha512-Xv2a1P/yReAjAbhylMfFplFKj9GssgTwN7RlcTxBujFQcloStWNDQdc4g4NRWH9xS4i/FDk04vQBptAXoF3VcA==
@@ -9722,11 +9599,6 @@ xmlhttprequest@1.8.0:
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/xmlhttprequest/-/xmlhttprequest-1.8.0.tgz#67fe075c5c24fef39f9d65f5f7b7fe75171968fc"
   integrity sha1-Z/4HXFwk/vOfnWX197f+dRcZaPw=
-
-xstate@^4.15.1:
-  version "4.26.1"
-  resolved "https://registry.npmmirror.com/xstate/download/xstate-4.26.1.tgz#4fc1afd153f88cf302a9ee2b758f6629e6a829b6"
-  integrity sha512-JLofAEnN26l/1vbODgsDa+Phqa61PwDlxWu8+2pK+YbXf+y9pQSDLRvcYH2H1kkeUBA5fGp+xFL/zfE8jNMw4g==
 
 xtend@^4.0.0, xtend@^4.0.2, xtend@~4.0.1:
   version "4.0.2"
