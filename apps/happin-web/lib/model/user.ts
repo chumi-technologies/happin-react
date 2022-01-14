@@ -14,6 +14,7 @@ export interface User {
     diamonds: number;
     coins: number;
     id: string;
+    happinID: string;
 }
 
 
