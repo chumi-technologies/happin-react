@@ -10,7 +10,10 @@ export interface User {
     phonenumber: string;
     areaCode: string;
     pointOneGifts: number;
-    happinID: string;
+    usersig: string;
+    diamonds: number;
+    coins: number;
+    id: string;
 }
 
 
