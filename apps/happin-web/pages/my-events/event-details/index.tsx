@@ -14,6 +14,7 @@ import QRCode from "react-qr-code";
 import jwt_decode from "jwt-decode";
 import Link from 'next/link';
 import Head from 'next/head';
+import PopUpModal from '@components/reusable/PopUpModal';
 
 const pageTab = ['Tickets', 'Merch', 'Replay Video']
 const routerList = ['tickets', 'merch', 'replay-video']
@@ -28,6 +29,8 @@ const MyEventDetails = () => {
   const [merchs,setMerchs] = useState<any[]>([]);
   const [playBackList,setPlayBackList] = useState<any[]>([]);
   const [eventId,setEventId] = useState('');
+  const [redemCodeModal, setRedemCodeModal] = useState(false);
+  const [redemModalText, setRedemModalText]:any = useState(null);
 
   const getEventDetailsFromHappinServer = async(id:string)=> {
       try {
@@ -104,6 +107,7 @@ const MyEventDetails = () => {
   }
 
   const handleCheckIn = async (ticket:any)=>{
+    console.log("checkin ")
     try {
       const paylaod = { eventID: ticket.eventID, shortCode: ticket.shortCode }
       const checkinRes = await checkinTicket(paylaod);
@@ -126,6 +130,7 @@ const MyEventDetails = () => {
         const res = await getFirebaseCustomToken();
           if (res && res.data && res.data.customToken) {
             customToken = res.data.customToken;
+            // router.push(`/live/e/${eventDetails.event._id}?customToken=${customToken}`)
             window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
         }
       } else if (ticket.ticketType === 'PFM') {
@@ -151,6 +156,7 @@ const MyEventDetails = () => {
       const res = await getFirebaseCustomToken();
       if (res && res.data && res.data.customToken) {
         customToken = res.data.customToken;
+        // router.push(`/live/e/${eventDetails.event._id}?customToken=${customToken}`)
         window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
       }
     } catch(err) {
@@ -159,11 +165,34 @@ const MyEventDetails = () => {
     }
   }
 
+  const handleRedemption = async (t:any) => {
+    const element = 
+      <p className="black-title mt-6 text-md text-gray-50 text-center">Enter your redemption code  
+        <span className="font-bold lg:text-lg"> {t.shortCode} </span>to join 
+        <span className="font-bold lg:text-lg"> {eventDetails?.event?.title} </span>on Happin with this link:&nbsp;
+        <a className="font-bold lg:text-lg" href={"https://happin.app/post/"+t.eventID}>https://happin.app/post/{t.eventID} </a>
+      </p>
+    setRedemModalText(element);
+  }
+
+  const handleModalClose = () => {
+    setRedemModalText(null);
+  }
+
   useEffect(() => {
     if (router.query.page) {
       setTabCur(Number(router.query.page as string))
     }
   }, [router.query])
+
+  useEffect(() => {
+    if (redemModalText) {
+      setRedemCodeModal(true);
+    }
+    else {
+      setRedemCodeModal(false);
+    }
+  }, [redemModalText])
 
   useEffect(() => {
     if(router.query.id){
@@ -288,8 +317,12 @@ const MyEventDetails = () => {
                                         <div className="font-bold lg:text-lg">{t.ticketType==='offline'?`In person`:`${t.ticketType}`}</div>
                                       </div>
                                       <div>
-                                        <div className="text-sm text-gray-500">Invitation code</div>
-                                        <div className="font-bold lg:text-lg">{t.shortCode}</div>
+                                      {t.shortCode &&
+                                        <>
+                                          <div className="text-sm text-gray-500">Redemption Code</div>
+                                          <div className="text-xs text-gray-500 underline cursor-pointer" onClick={() => handleRedemption(t)}>Transfer tickets to other people</div>
+                                        </>
+                                      }
                                       </div>
                                       <div>
                                         <div className="text-sm text-gray-500">Status</div>
@@ -395,8 +428,12 @@ const MyEventDetails = () => {
                                         <div className="font-bold lg:text-lg">{t.ticketType}</div>
                                       </div>
                                       <div>
-                                        <div className="text-sm text-gray-500">Invitation code</div>
-                                        <div className="font-bold lg:text-lg">{t.shortCode}</div>
+                                        {t.shortCode &&
+                                          <>
+                                            <div className="text-sm text-gray-500">Redemption code</div>
+                                            <div className="text-xs text-gray-500 underline cursor-pointer" onClick={() => handleRedemption(t)}>Transfer tickets to other people</div>
+                                          </>
+                                        }
                                       </div>
                                       <div>
                                         <div className="text-sm text-gray-500">Status</div>
@@ -437,6 +474,17 @@ const MyEventDetails = () => {
           </div>
         </div>
       </div>
+      {redemCodeModal &&
+        <PopUpModal
+            modalTitle="Redeem Completed"
+            isModalOpen={redemCodeModal}
+            setIsModalOpen={handleModalClose}
+          >
+             <div style={{margin: '0 1.25rem 1.25rem'}}>
+              {redemModalText}
+          </div>
+          </PopUpModal>
+      }
     </>
   );
 };

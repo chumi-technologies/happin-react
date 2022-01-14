@@ -214,7 +214,7 @@ export default function Home() {
                   </div>
                 </div>
                 {/*<input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />*/}
-                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. <br/>Are you an android user? Send an email to "IwantAndroidHappin@happin.app" to push Happin team.</p>
+                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. <br/>Are you an android user? Send an email to &quot;IwantAndroidHappin@happin.app&quot; to push Happin team.</p>
                 {/*<button*/}
                 {/*  type="button"*/}
                 {/*  className="mt-6 btn btn-rose w-full !rounded-full"*/}
