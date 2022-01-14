@@ -7,10 +7,11 @@ import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
 import Footer from "./Footer";
 import { getWhiteLabelDomain } from "lib/api";
+import { useResize } from '../utils/hooks';
 
 const Layout = ({ children }: { children: any }) => {
-  const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
-  const [isProduction, setIsProduction] = useState(false);
+  const [isMobileBarOpen, setIsMobileBarOpen] = useState(false);
+  const [isHomePage, setHomePage] = useState(false);
   const [showFooter, setShowFooter] = useState(true);
   const [showHeader, setShowHeader] = useState(true);
 
@@ -27,7 +28,12 @@ const Layout = ({ children }: { children: any }) => {
   // save the userId for the final checkout step
   const router = useRouter()
 
+  const windowWidth = useResize();
+
   useEffect(() => {
+    // 测试
+    if (router.asPath === '/') setHomePage(true); else setHomePage(false)
+    // end 测试
     if (router.query?.token && router.asPath.includes('/checkout/')) {
       setTokenPassedIn(true);
       localStorage.setItem('chumi_jwt', router?.query?.token as string);
@@ -52,27 +58,30 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (router.asPath === '/' || router.asPath === '/events') {
-      setIsProduction(true)
-      setShowFooter(true);
-    } else {
+    if (!(router.asPath === '/')) {
       setShowFooter(false);
-      setIsProduction(false)
+    } else {
+      setShowFooter(true);
     }
     if (router.asPath === '/reward') {
       setRewardPage(true)
       setShowHeader(false);
+      setShowFooter(false);
     }
 
     if (router.asPath === '/appreward') {
       setAppRewardPage(true)
       setShowHeader(false);
+      setShowFooter(false);
     }
 
-    if (router.asPath === '/campaign') {
-      setShowHeader(false);
-    }
   }, [router.query, router.asPath, setBoxOfficeMode])
+
+  useEffect(() => {
+    if (router.asPath.includes('/live-stream/')) {
+      setShowHeader(!(windowWidth < 640))
+    }
+  }, [router.asPath, windowWidth])
 
   useEffect(()=> {
     const hideMobileBar = localStorage.getItem('hide_mobile_bar');
@@ -115,17 +124,17 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
+      <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
         {(!openInApp && showHeader) &&
           <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
-            { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> }
+            {/* { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> } */}
           </Header>
         }
         {children}
-        {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
       </main>
+      {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo} />}
     </>
   );
 };

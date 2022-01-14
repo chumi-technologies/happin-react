@@ -64,6 +64,7 @@ const Post = (props: EventData) => {
   }
 
   useEffect(() => {
+    window.location.href="Happin://";
     if (eventData.event.sourceUrl) {
       setThirdPartyUrl(eventData.event.sourceUrl);
       if (eventData.event.sourceUrlAllowIframe) {
