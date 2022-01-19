@@ -24,6 +24,7 @@ const Reward = () => {
   const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
   const [ inProgress, setInProgress ] = useState<boolean>(false);
   const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([]) 
+  const [ repeatTask, setRepeatTask ] = useState<TaskDetail[]>([]);
   const toast = useToast();
   const tab = ['Earn', 'Redeem']
 
@@ -38,6 +39,10 @@ const Reward = () => {
         if (res.data.tasks.oneTime) {
           setOneTimeTask(res.data.tasks.oneTime);
         }
+        if (res.data.tasks.repeat) {
+          setRepeatTask(res.data.tasks.repeat);
+        }
+        
         // if (res.data.tasks.weekly) {
         //   setWeeklyTask(res.data.tasks.weekly);
         // }
@@ -102,13 +107,26 @@ const Reward = () => {
           setSemiMonthlyTask(update);
         }
       }
+      
+      // update balance:
+      try {
+        const res: RewardListResponse = await getRewards();
+        if (res && res.data) {
+          console.log("reward data: ",res.data)
+          setBalance(res.data.balance)
+        }
+      }
+      catch (err) {
+        generateToast('Unknown error update balance', toast);
+        console.log(err)
+        setInProgress(false)
+      }
       setInProgress(false)
     }
     catch (err) {
       generateToast('Unknown error about rewards check in', toast);
       console.log(err)
       setInProgress(false)
-
     }
 
   }
@@ -294,7 +312,7 @@ const Reward = () => {
                   </div>
                   { task.claimed ? 
                         <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
-                        : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4 disabled" disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
+                        : <button className={`btn btn-outline-rose btn-sm !rounded-full ml-4 ${inProgress || !task.claimable &&'disabled'}`} disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
                       }
                 </div>
               </div>
@@ -302,11 +320,11 @@ const Reward = () => {
           })}
           <div className="bg-gray-800 rounded-xl py-6 mb-4 text-center">
             <div className="px-4">
-              <div className="text-xl text-white font-semibold mb-2">Invite Your Friends</div>
+              <div className="text-xl text-white font-semibold mb-2">{repeatTask[0]?.description}</div>
               <div className="mt-2 text-gray-400 text-sm">
                 <span className="align-middle">Earn</span>
-                <img className="inline align-middle w-4 ml-1.5 mr-1" src="/images/icon-coin.svg" alt="" />
-                <span className="align-middle">300 for each successful invite</span>
+                <img className="inline align-middle w-4 ml-1.5 mr-1" src={`/images/icon-${repeatTask[0]?.rewardType}.svg`} alt="" />
+                <span className="align-middle">{repeatTask[0]?.rewardAmount} for each successful invite</span>
               </div>
               <div className="my-5">
                 <div className="inline-flex items-center py-2 px-2 border-2 border-solid border-gray-600 rounded-full text-white font-semibold">
@@ -413,8 +431,8 @@ const Reward = () => {
             </div>
             <div className="text-gray-400 font-medium text-sm leading-5">Use coins like real money. When you purchase tickets with our events, you can get discounts.</div>
           </div>
-          <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4" onClick={handleCashOut}>
-            <div className="flex items-center">
+          <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4" >
+            <a className="flex items-center" href={`mailto:WithdrawBalance@happin.app?subject=uid:${user?.uid} username:${user?.happinID}&body=message%20goes%20here`} target="_blank">
               <div className="flex-1">
                 <div className="text-lg leading-6 text-white font-semibold mb-1.5">
                   <span className="align-middle">Cash Out Earning</span>
@@ -424,7 +442,7 @@ const Reward = () => {
                 <div className="text-gray-400 font-medium text-sm leading-5">Cash out diamonds above 100 as experience creator.</div>
               </div>
               <img className="w-16 ml-4" src="/images/cash-out.svg" alt="" />
-            </div>
+            </a>
           </div>
         </div>
       </div>

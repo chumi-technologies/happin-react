@@ -22,6 +22,7 @@ export interface Tasks {
     weekly: TaskDetail[];
     semiMonthly: TaskDetail[];
     oneTime: TaskDetail[];
+    repeat: TaskDetail[];
 }
 
 export interface TaskDetail {

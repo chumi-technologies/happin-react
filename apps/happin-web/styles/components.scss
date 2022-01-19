@@ -97,6 +97,7 @@ button {
   &:disabled {
     --tw-bg-opacity: 1;
     opacity: 0.3;
+    pointer-events: none;
   }
 }
 
