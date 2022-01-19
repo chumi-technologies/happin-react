@@ -11,8 +11,8 @@ import { getWhiteLabelDomain } from "lib/api";
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
   const [isProduction, setIsProduction] = useState(false);
-  const [showFooter, setShowFooter] = useState(true);
-  const [showHeader, setShowHeader] = useState(true);
+  const [showFooter, setShowFooter] = useState(false);
+  const [showHeader, setShowHeader] = useState(false);
 
   const [isRewardPage, setRewardPage] = useState(false);
   const [isAppRewardPage, setAppRewardPage] = useState(false);
@@ -55,23 +55,27 @@ const Layout = ({ children }: { children: any }) => {
     if (router.asPath === '/' || router.asPath === '/events') {
       setIsProduction(true)
       setShowFooter(true);
-    } else {
-      setShowFooter(false);
-      setIsProduction(false)
-    }
-    if (router.asPath === '/reward') {
+      setShowHeader(true);
+    } else if (router.asPath === '/reward'){
       setRewardPage(true)
       setShowHeader(false);
+    } else if (router.asPath === '/campaign')  {
+      setShowHeader(false);
     }
-
-    if (router.asPath === '/appreward') {
+    else if (router.asPath === '/appreward') {
       setAppRewardPage(true)
       setShowHeader(false);
+      setShowFooter(false);
+    } else if (router.asPath === '/transactionHistory') {
+      setShowHeader(false);
+      setShowFooter(false);
+    }
+    else {
+      setShowFooter(false);
+      setIsProduction(false);
+      setShowHeader(true);
     }
 
-    if (router.asPath === '/campaign') {
-      setShowHeader(false);
-    }
   }, [router.query, router.asPath, setBoxOfficeMode])
 
   useEffect(()=> {
