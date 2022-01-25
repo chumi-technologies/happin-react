@@ -18,7 +18,7 @@ const getTransactionHistory = async (currency:string) => {
 
 
 const rewardCheckIn = async () => {
-    const response = await postToHappin_noBody(POST_CHECKIN);
+    const response = await postToHappin(POST_CHECKIN,{});
     return response || {}
 }
 
