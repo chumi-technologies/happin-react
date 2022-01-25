@@ -124,7 +124,7 @@ const Reward = () => {
       setInProgress(false)
     }
     catch (err) {
-      generateToast('Unknown error about rewards check in', toast);
+      generateToast('Unknown error about Claim reward', toast);
       console.log(err)
       setInProgress(false)
     }
@@ -432,7 +432,7 @@ const Reward = () => {
             <div className="text-gray-400 font-medium text-sm leading-5">Use coins like real money. When you purchase tickets with our events, you can get discounts.</div>
           </div>
           <div className="bg-gray-800 rounded-xl px-4 pt-3 pb-4 mb-4" >
-            <a className="flex items-center" href={`mailto:WithdrawBalance@happin.app?subject=uid:${user?.uid} username:${user?.happinID}&body=message%20goes%20here`} target="_blank">
+            <a className="flex items-center" href={`mailto:WithdrawBalance@happin.app?subject=uid:${user?.uid} username:${user?.happinID}&body=message%20goes%20here`} target="_blank" rel="noreferrer">
               <div className="flex-1">
                 <div className="text-lg leading-6 text-white font-semibold mb-1.5">
                   <span className="align-middle">Cash Out Earning</span>
