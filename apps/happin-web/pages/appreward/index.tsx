@@ -124,7 +124,7 @@ const Reward = () => {
       setInProgress(false)
     }
     catch (err) {
-      generateToast('Unknown error about rewards check in', toast);
+      generateToast('Unknown error about Claim reward', toast);
       console.log(err)
       setInProgress(false)
     }
