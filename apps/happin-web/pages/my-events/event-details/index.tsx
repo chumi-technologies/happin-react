@@ -127,7 +127,7 @@ const MyEventDetails = () => {
       }
       if (ticket.ticketType === 'live') {
         if(router.query.id){
-          getTicketsList((router.query.id)?.toString())
+          getTicketsListFromHappinServer((router.query.id).toString())
         }
         return;
         // let customToken ='';

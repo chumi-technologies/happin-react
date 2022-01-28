@@ -35,6 +35,7 @@ const Playback = () => {
   const [followBtnDisable, setFollowBtnDisable] = useState(false);
   const [recordingVideoUrl, setRecordingVideoUrl] = useState('');
   const [showMerch, setShowMerch] = useState(false);
+  const [recordings, setRecording] = useState([]);
 
 
   useEffect(() => {
@@ -108,11 +109,15 @@ const Playback = () => {
         }
 
         // check whether it has recording
-        if (eventData.recordings.length === 0) {
+        const public_recording = eventData?.recordings?.filter((item:any) => {
+          return item.public === true
+        })
+        if (public_recording.length === 0) {
           generateToast('No recording for this event, please check agian later.', toast);
           router.push('/my-events')
           return;
         }
+        setRecording(public_recording);
         await checkFollowed();
         await checkMerchs();
         setIsLoading(false)
@@ -346,7 +351,7 @@ const Playback = () => {
             <div className="items-center justify-center h-12 text-white border-b border-gray-800 font-semibold hidden md:flex">Playback List</div>
             <div className="live-stream__chat-room">
               <div className="pt-3 pb-1.5">
-                {eventData?.recordings?.map((item: any, index: number) => {
+                {recordings?.map((item: any, index: number) => {
                   return (
                     <div className={`recording-item flex p-4 cursor-pointer ${recordingVideoUrl === item.videoURL && 'active'}`} key={index} onClick={() => handleChangeRecording(item)}>
                       <svg width="16px" viewBox="0 0 24 24">
