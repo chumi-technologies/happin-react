@@ -10,7 +10,7 @@ import ChatItem from '@components/page_components/LiveStreamComponents/ChatItem'
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useRouter } from "next/router";
-import { getTicketsList, getUserInfo } from "lib/api";
+import { getEventMerchs, getTicketsList, getUserInfo } from "lib/api";
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
 import { useUserState } from "contexts/user-state";
 import { useSSOState } from "contexts/sso-state";
@@ -20,7 +20,6 @@ import TIM from 'tim-js-sdk';
 import moment from "moment";
 import { exchangeCrowdcoreToken, getFollowed, getGiftList, postFollow, removeFollowed, sendGiftTo } from "lib/api/user";
 import Script from 'next/script'
-
 declare var TcPlayer: any;
 
 function Arrow(props: any) {
@@ -71,6 +70,8 @@ const Livestream = () => {
   const [chatReady, setChatReady] = useState(false);
   const [triggerRerender, setTriggerRerender] = useState(true);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [showMerch, setShowMerch] = useState(false);
+
   const settings = {
     dots: false,
     infinite: false,
@@ -206,6 +207,7 @@ const Livestream = () => {
           router.push('/my-events')
           return;
         }
+        await checkMerchs();
         await checkFollowed();
         await getGifts();
         await connectTIM();
@@ -227,6 +229,14 @@ const Livestream = () => {
 
 
   }, [eventData])
+
+  const checkMerchs = async () => {
+    const res = await getEventMerchs(eventData.eventID.eid)
+    console.log("Merch: ", res)
+    if(res && res.length > 0) {
+      setShowMerch(true);
+    }
+  }
 
   const startLoopVideo = async () => {
     const deadline = new Date(eventData.eventID.start_datetime);
@@ -1142,6 +1152,7 @@ const Livestream = () => {
             </div>
             <div className="video-section relative h-screen sm:h-auto sm:aspect-w-16 sm:aspect-h-9">
               <div className="absolute inset-0 bg-black">
+              { showMerch &&
                 <div onClick={handleMerchandise} className="merchandise-btn absolute right-3 top-3 inline-flex justify-center items-center w-10 h-10 bg-black bg-opacity-30 rounded-full z-10 transition cursor-pointer hover:bg-opacity-40">
                   <svg width="24px" height="24px" viewBox="0 0 24 24">
                     <path fill="#ffc646" stroke="#ffc646" strokeWidth="2" strokeLinejoin="round" strokeMiterlimit="2" d="M3,6.3v14.2
@@ -1152,6 +1163,7 @@ const Livestream = () => {
   M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
                   </svg>
                 </div>
+              }
                 <div className="flex items-center justify-center w-full h-full">
                   <div id="video-tip" className="text-white m-auto " ></div>
                   <div className="video-wrap" id="loop_pre_recorded" style={{ display: (!loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}>

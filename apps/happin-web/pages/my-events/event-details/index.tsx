@@ -126,13 +126,17 @@ const MyEventDetails = () => {
         return;
       }
       if (ticket.ticketType === 'live') {
-        let customToken ='';
-        const res = await getFirebaseCustomToken();
-          if (res && res.data && res.data.customToken) {
-            customToken = res.data.customToken;
-            router.push(`/live-stream/${eventDetails.event._id}`)
-            // window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
+        if(router.query.id){
+          getTicketsList((router.query.id)?.toString())
         }
+        return;
+        // let customToken ='';
+        // const res = await getFirebaseCustomToken();
+        //   if (res && res.data && res.data.customToken) {
+        //     customToken = res.data.customToken;
+        //     router.push(`/live-stream/${eventDetails.event._id}`)
+        //     // window.open(`https://livestream.happin.app/live/e/${eventDetails.event._id}?customToken=${customToken}`, "_blank")
+        // }
       } else if (ticket.ticketType === 'PFM') {
         if(router.query.id){
           getTicketsListFromHappinServer((router.query.id).toString())

@@ -91,23 +91,25 @@ const CheckoutForm = ({ address, setAddress, error, setError }) => {
           }}
         />
       </fieldset>
-      <fieldset className={styles.FormGroup}>
-        <Field
-          label="Address"
-          id="address"
-          type="text"
-          required={true}
-          value={address}
-          onChange={(val)=>{
-            setAddress(val.target.value);
-            if(error){
-              if(error.message === 'Address is required') {
-                setError(null)
-              }
-            }}}
-          autoComplete="street-address"
-        />
-      </fieldset>
+      {setAddress &&
+        <fieldset className={styles.FormGroup}>
+          <Field
+            label="Address"
+            id="address"
+            type="text"
+            required={true}
+            value={address}
+            onChange={(val)=>{
+              setAddress(val.target.value);
+              if(error){
+                if(error.message === 'Address is required') {
+                  setError(null)
+                }
+              }}}
+            autoComplete="street-address"
+          />
+        </fieldset>
+      }
       {error && <ErrorMessage>{error.message}</ErrorMessage>}
     </form>
   );

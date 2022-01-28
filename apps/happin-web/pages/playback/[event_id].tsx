@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css'
 import { useRouter } from "next/router";
-import { getTicketsList, getTicketsPlayBackList, getUserInfo } from "lib/api";
+import { getEventMerchs, getTicketsList, getTicketsPlayBackList, getUserInfo } from "lib/api";
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
 import { useUserState } from "contexts/user-state";
 import { useSSOState } from "contexts/sso-state";
@@ -34,6 +34,8 @@ const Playback = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [followBtnDisable, setFollowBtnDisable] = useState(false);
   const [recordingVideoUrl, setRecordingVideoUrl] = useState('');
+  const [showMerch, setShowMerch] = useState(false);
+
 
   useEffect(() => {
     if (router.query.event_id) {
@@ -111,17 +113,11 @@ const Playback = () => {
           router.push('/my-events')
           return;
         }
-
         await checkFollowed();
-
+        await checkMerchs();
         setIsLoading(false)
-
       })();
-
-
     }
-
-
   }, [eventData])
 
 
@@ -129,6 +125,14 @@ const Playback = () => {
     console.log(err);
     generateErrorToast("Something went wrong", toast);
     router.push('/my-events')
+  }
+
+  const checkMerchs = async () => {
+    const res = await getEventMerchs(eventData.eventID.eid)
+    console.log("Merch: ", res)
+    if(res && res.length > 0) {
+      setShowMerch(true);
+    }
   }
 
   const checkFollowed = async () => {
@@ -202,9 +206,13 @@ const Playback = () => {
       errorHandler(err)
     }
   }
-
   const handleFollow = async () => {
     setFollowBtnDisable(true)
+    if (user?.id === eventData.eventID.owner) {
+      generateToast("You can't follow yourself.", toast);
+      setFollowBtnDisable(false);
+      return;
+    }
     if (!isFollowed) {
       // user haven't followed artist
       try {
@@ -307,6 +315,7 @@ const Playback = () => {
             </div>
             <div className="video-section relative h-screen sm:h-auto sm:aspect-w-16 sm:aspect-h-9">
               <div className="absolute inset-0 bg-black">
+              { showMerch &&
                 <div onClick={handleMerchandise} className="merchandise-btn absolute right-3 top-3 inline-flex justify-center items-center w-10 h-10 bg-black bg-opacity-30 rounded-full z-10 transition cursor-pointer hover:bg-opacity-40">
                   <svg width="24px" height="24px" viewBox="0 0 24 24">
                     <path fill="#ffc646" stroke="#ffc646" strokeWidth="2" strokeLinejoin="round" strokeMiterlimit="2" d="M3,6.3v14.2
@@ -317,6 +326,7 @@ const Playback = () => {
   M15.778,9.6c0,2.099-1.691,3.8-3.778,3.8s-3.778-1.701-3.778-3.8"/>
                   </svg>
                 </div>
+              }
                 <div className="flex items-center justify-center w-full h-full">
                   <div id="video-tip" className="text-white m-auto " ></div>
                   <div className="video-wrap" id="loop_pre_recorded" >
