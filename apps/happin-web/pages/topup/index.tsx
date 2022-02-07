@@ -237,7 +237,10 @@ const TopupInner = (props: any) => {
               receipt_email: receipt_email
             })
             if (response.error) {
-              throw response.error;
+              throw response.error  ;
+            }
+            else {
+              
             }
             setTimeout(async function () {
               await updateUserInfo();
@@ -268,10 +271,11 @@ const TopupInner = (props: any) => {
         generateErrorToast(err.message, toast)
       } else {
         console.log(err)
-        generateErrorToast('Unknown error, please contact us', toast)
+        generateErrorToast(err.message, toast)
       }
     } finally {
       console.log("set processing")
+      setIsProcessing(false);
     }
   }
 

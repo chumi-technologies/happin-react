@@ -16,6 +16,7 @@ const InviteUser = () => {
     const [ inviterImage, setInviterImage ] = useState<string>('');
     const [ inviterName, setInviterName] = useState<string>('');
     const [ universalLink, setUniversalLink] = useState<string>('');
+    const [ isLoading, setIsLoading ] = useState(true);
 
     useEffect(() => {
         if (router.query.eventId) {
@@ -25,9 +26,12 @@ const InviteUser = () => {
                     const res = await getEventDetail(eventId, 'both')
                     console.log(res);
                     if (res.data) {
+                        setIsLoading(false);
                         setEventDetails(res.data);
                         setShowPopup(true)
-
+                    }
+                    else {
+                        throw res.message
                     }
                 }
                 catch (error) {
@@ -54,6 +58,7 @@ const InviteUser = () => {
         window.location.href = universalLink 
     }
     return (
+        isLoading ? <></> :
         <div className="invite-user__page">
             <div className="invite-user__event-detail container pb-10">
                 <div className="sticky top-8">
