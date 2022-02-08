@@ -103,7 +103,7 @@ const Campaign = () => {
           <div className="flex items-center py-1 px-4">
             <Stopwatch theme="outline" size="18" fill="#fff"/>
             <span className="text-white uppercase ml-2 flex-1 font-semibold text-tiny">Days Left</span>
-            <Countdown date={new Date(2022, 1, 1)} renderer={renderer} />
+            {/* <Countdown date={new Date(2022, 1, 1)} renderer={renderer} /> */}
           </div>
           <div className="px-4">
             <img className="my-4 rounded-sm" src="https://freephotos.cc/storage/preview/path/birthday-party-2210x1473.jpg" alt="" />

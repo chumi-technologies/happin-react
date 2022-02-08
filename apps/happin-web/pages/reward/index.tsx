@@ -3,7 +3,7 @@ import { Lightning, Like, Stopwatch } from '@icon-park/react';
 import Countdown, { zeroPad } from 'react-countdown';
 
 const Reward = () => {
-  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+  const count = ({ days, hours, minutes, seconds, completed }: any) => {
     if (completed) {
       console.log('finish');
     } else {
@@ -54,7 +54,7 @@ const Reward = () => {
         <div className="flex items-center">
           <Stopwatch theme="outline" size="20" fill="#fff"/>
           <span className="text-white uppercase ml-2 flex-1 font-semibold text-sm">Days Left</span>
-          <Countdown date={new Date(2022, 1, 1)} renderer={renderer} />
+          {/* <Countdown date={new Date(2022, 9, 1)} renderer={count} /> */}
         </div>
       </div>
       <div className="reward__title mb-3">Win Your Gifts</div>
