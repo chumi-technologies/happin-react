@@ -5,62 +5,65 @@ import SvgIcon from "@components/SvgIcon";
 import { SearchIcon } from '@chakra-ui/icons';
 import { Avatar } from '@chakra-ui/react';
 import Countdown, { zeroPad } from 'react-countdown';
-const dayList = [
-  {
-    id: 1,
-    text: 'Sign Up',
-    date: '1.1'
-  },
-  {
-    id: 2,
-    text: 'Top 100',
-    date: '1.8'
-  },
-  {
-    id: 3,
-    text: 'Top 50',
-    date: '1.24'
-  },
-  {
-    id: 4,
-    text: 'Top 10',
-    date: '1.31'
-  },
-  {
-    id: 5,
-    text: 'Finale',
-    date: '2.7'
-  },
-];
-const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
-  if (completed) {
-    console.log('finish');
-  } else {
-    return (
-      <div className="ml-2 flex items-center text-white">
-        <div className="campaign__clock">
-          <div>{days}</div>
-        </div>
-        <div className="text-xs font-medium mx-0.5">Days</div>
-        <div className="campaign__clock">
-          {zeroPad(hours)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">Hr</div>
-        <div className="campaign__clock">
-          {zeroPad(minutes)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">M</div>
-        <div className="campaign__clock">
-          {zeroPad(seconds)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">S</div>
-      </div>
-    );
-  }
-};
+
 
 const Campaign = () => {
   const [tabCur, setTabCur] = useState<number>(2);
+  const dayList = [
+    {
+      id: 1,
+      text: 'Sign Up',
+      date: '1.1'
+    },
+    {
+      id: 2,
+      text: 'Top 100',
+      date: '1.8'
+    },
+    {
+      id: 3,
+      text: 'Top 50',
+      date: '1.24'
+    },
+    {
+      id: 4,
+      text: 'Top 10',
+      date: '1.31'
+    },
+    {
+      id: 5,
+      text: 'Finale',
+      date: '2.7'
+    },
+  ];
+  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+    if (completed) {
+      console.log('finish');
+    } else {
+      return (
+        <div className="ml-2 flex items-center text-white">
+          <div className="campaign__clock">
+            <div>{days}</div>
+          </div>
+          <div className="text-xs font-medium mx-0.5">Days</div>
+          <div className="campaign__clock">
+            {zeroPad(hours)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">Hr</div>
+          <div className="campaign__clock">
+            {zeroPad(minutes)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">M</div>
+          <div className="campaign__clock">
+            {zeroPad(seconds)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">S</div>
+        </div>
+      );
+    }
+  };
+
+  
   return (
     <div className="overflow-y-auto theme-yellow max-w-md mx-auto">
       <div className="campaign__banner pt-8">

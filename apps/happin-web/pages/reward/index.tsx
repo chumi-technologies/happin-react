@@ -2,34 +2,33 @@ import React from 'react';
 import { Lightning, Like, Stopwatch } from '@icon-park/react';
 import Countdown, { zeroPad } from 'react-countdown';
 
-const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
-  if (completed) {
-    console.log('finish');
-  } else {
-    return (
-      <div className="ml-2 flex items-center text-white">
-        <div className="reward__clock">
-          <div>{days}</div>
-        </div>
-        <div className="text-xs font-medium mx-0.5">Days</div>
-        <div className="reward__clock">
-          {zeroPad(hours)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">Hr</div>
-        <div className="reward__clock">
-          {zeroPad(minutes)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">M</div>
-        <div className="reward__clock">
-          {zeroPad(seconds)}
-        </div>
-        <div className="text-xs font-medium mx-0.5">S</div>
-      </div>
-    );
-  }
-};
-
 const Reward = () => {
+  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+    if (completed) {
+      console.log('finish');
+    } else {
+      return (
+        <div className="ml-2 flex items-center text-white">
+          <div className="reward__clock">
+            <div>{days}</div>
+          </div>
+          <div className="text-xs font-medium mx-0.5">Days</div>
+          <div className="reward__clock">
+            {zeroPad(hours)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">Hr</div>
+          <div className="reward__clock">
+            {zeroPad(minutes)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">M</div>
+          <div className="reward__clock">
+            {zeroPad(seconds)}
+          </div>
+          <div className="text-xs font-medium mx-0.5">S</div>
+        </div>
+      );
+    }
+  };
   return (
     <div className="reward__page">
       <div className="flex items-center px-3 pt-6 pb-4 text-white">
