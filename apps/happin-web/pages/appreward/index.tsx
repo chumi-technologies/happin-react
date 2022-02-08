@@ -381,7 +381,7 @@ const Reward = () => {
             </div>
           </div> */}
           <div className="bg-gray-800 rounded-xl px-4 py-6 mb-4">
-            <a className="text-xl text-white font-semibold mb-2" href="semiMonth" id="semiMonth">Semi-month Reward</a>
+            <a className="text-xl text-white font-semibold mb-2" href="semiMonth" id="semiMonth">Creator program</a>
             <div className="text-gray-400 font-medium text-sm leading-5">Rewards are added to next month if no one wins. Winners will share the monthly prize.</div>
             <div className="space-y-6 mt-5">
               {semiMonthlyTask.map((task:TaskDetail) => {
