@@ -61,6 +61,8 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
     } else if (router.asPath === '/campaign')  {
       setShowHeader(false);
+    } else if (router.asPath === '/event-invitation')  {
+      setShowHeader(false);
     }
     else if (router.asPath === '/appreward') {
       setAppRewardPage(true)

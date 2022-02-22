@@ -63,9 +63,9 @@ const Campaign = () => {
     }
   };
 
-  
+
   return (
-    <div className="overflow-y-auto theme-yellow max-w-md mx-auto">
+    <div className="w-full overflow-y-auto theme-yellow max-w-md mx-auto">
       <div className="campaign__banner pt-8">
         <img className="w-2/3 mx-auto mb-5" src="/images/happy-birthday.png" alt="" />
         <div className="text-center pb-4">
