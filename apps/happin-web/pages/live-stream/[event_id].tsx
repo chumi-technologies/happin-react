@@ -307,7 +307,7 @@ const Livestream = () => {
 
   const setupPlayer = () => {
     // 直播已经结束
-    if (eventData.isEnd) {
+    if (eventData.isEnd && moment() > moment(eventData.eventID.end_datetime)) {
       streamEndHandler();
     }
     else {
