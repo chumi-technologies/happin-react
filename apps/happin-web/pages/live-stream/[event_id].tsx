@@ -766,7 +766,7 @@ const Livestream = () => {
               setTimeout(() => {
                 player.current.load();
                 // 出现1，2 错误时候， 4次重连，超过之后就不再尝试
-              }, 500);
+              }, 400);
             }
             // server 记录 该直播还没开始， 出现 1，2 错误要提示直播未开始或者已结束
             if (reconnectCount.current >= 3) {

@@ -3091,6 +3091,7 @@
 
 // Live-Stream
 .live-stream__container {
+
   @media (min-width: 1280px) {
     @apply w-full mx-auto;
     max-width: 1280px;
@@ -3104,6 +3105,14 @@
     #id_test_video {
       height: 80% !important;
     }
+    
+  }
+
+  @media (max-width: 640px) {
+    #id_test_video {
+      width: 100%;
+      height: calc(100% - 165px) !important;
+    }
   }
 
   #id_test_video {
@@ -3115,7 +3124,9 @@
     position:absolute;
     z-index:2;
   }
+
   
+
 
 //   #loop_pre_recorded {
 //     display: none;
@@ -3165,6 +3176,9 @@
     font-weight: 600;
   }
 }
+
+
+
 .live-stream__inner {
   @apply relative flex flex-col md:flex-row md:overflow-hidden;
   @media (min-width: 768px) {
