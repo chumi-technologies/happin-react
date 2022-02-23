@@ -182,7 +182,7 @@
   border-top: 1px solid;
   border-color: inherit;
   width:50px;
-  
+
   -webkit-transform:rotate(-10deg);
   -moz-transform:rotate(-10deg);
   -ms-transform:rotate(-10deg);
@@ -3070,7 +3070,7 @@
   width: 100%;
 }
 
-// playback 
+// playback
 .playback__container {
   @media (min-width: 768px) {
     .video-section {
@@ -3105,7 +3105,7 @@
     #id_test_video {
       height: 80% !important;
     }
-    
+
   }
 
   @media (max-width: 640px) {
@@ -3125,7 +3125,8 @@
     z-index:2;
   }
 
-  
+
+
 
 
 //   #loop_pre_recorded {
@@ -3281,4 +3282,16 @@
 .live-stream__chat-item {
   @apply flex text-gray-100 py-1 px-3 text-sm;
   line-height: 18px;
+}
+
+
+// Event Invitation
+.event-invitation__banner {
+  background: url("../public/images/event-invitation-top-bg.svg") center top no-repeat;
+  background-size: 100%;
+}
+.event-invitation__avatar-bg {
+  @apply p-2;
+  background: url("../public/images/event-invitation-top-pattern.png") center top no-repeat;
+  background-size: 83%;
 }
