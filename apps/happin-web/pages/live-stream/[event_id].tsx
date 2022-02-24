@@ -695,6 +695,11 @@ const Livestream = () => {
 
           // loopVideoStart.current = false;
           // setTriggerRerender(t => !t);
+          // if (!player.current.playing()) {
+          //   player.current.play();
+          // }
+          
+          console.log(player.current.playing())
           return;
         }
         if (msg.type === 'playing') { // prevent deplay, refresh every time.
@@ -702,9 +707,10 @@ const Livestream = () => {
           //   self.player.load();
           //   self.pausedAndPlay = 0;
           // }
-          // if (!self.player.playing()) {
-          //   self.player.play();
+          // if (!player.current.playing()) {
+          //   player.current.play();
           // }
+          
 
           // 如果重复播放的片头存在， 而直播播放器在播放的话， 可以移除片头开始直播
           if (loopVideoStart.current) {
@@ -747,6 +753,7 @@ const Livestream = () => {
             errorCode = err.innerHTML.match(/\[(.*?)\]/)[1];
             err.setAttribute('style', 'display:none!important');
           }
+          
           console.log('player error code:', errorCode)
 
           const playerElement: any = document.querySelector('.vcp-player');
@@ -778,6 +785,7 @@ const Livestream = () => {
                 return;
               }
               await checkIsLive();
+              console.log("live status: ",isLive.current)
               // 推流没有开始
               if (!isLive.current) {
                 if (!isEnd.current) {
@@ -815,6 +823,7 @@ const Livestream = () => {
               }
               else {
                 // server 记录的 该直播已经开始 那么出现 1，2 错误就显示需要刷新
+                console.log("Failed to fetch livestream, please try to refresh this page.")
                 tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
               }
             }
