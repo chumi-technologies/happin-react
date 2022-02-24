@@ -83,7 +83,7 @@ const Playback = () => {
         // Prepare room
 
         // 验证是否符合入场规则
-        const ticketList_res = await getTicketsPlayBackList(eventId);
+        const ticketList_res = await getTicketsList(eventId);
         console.log("ticketList: ", ticketList_res);
         if (ticketList_res && ticketList_res.data) {
           if (ticketList_res.data.event.owner !== user?.id) {
