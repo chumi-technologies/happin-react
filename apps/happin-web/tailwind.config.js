@@ -1,9 +1,7 @@
 // const colors = require('tailwindcss/colors');
 const colors = require('./theme/colors');
 module.exports = {
-  mode: process.env.NODE_ENV ? 'jit' : undefined, // fixed css & class completion doesn't work width tailwind.
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     colors,
     fontSize: {
@@ -53,9 +51,6 @@ module.exports = {
       xl: '1280px'
       // @media (min-width: 1280px) {}
     },
-    extend: {},
-  },
-  variants: {
     extend: {},
   },
   corePlugins: {
