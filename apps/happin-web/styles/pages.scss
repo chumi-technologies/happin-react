@@ -1790,7 +1790,6 @@
 }
 
 .btn-checkin {
-    background: transparent;
     color: #2d2d34;
     font-weight: 600;
     font-size: 15px;
@@ -1852,7 +1851,6 @@
     -webkit-filter: grayscale(1);
     filter: grayscale(100%);
     // filter: url('../../../../assets/images/gray.svg#grayscale');
-    filter: gray;
 }
 
 .like-it {
@@ -2611,8 +2609,6 @@
     left: 0;
 }
 
-
-
 .empty-setList {
     display: flex;
     justify-content: center;
@@ -2620,7 +2616,6 @@
     height: 100%;
     flex-direction: column;
 }
-
 
 .song-modal, .qa-modal {
     border-radius: 8px;
@@ -3124,10 +3119,6 @@
     position:absolute;
     z-index:2;
   }
-
-
-
-
 
 //   #loop_pre_recorded {
 //     display: none;
