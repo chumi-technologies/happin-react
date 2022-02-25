@@ -684,6 +684,7 @@ const Livestream = () => {
       clarityLabel: { od: '1080p 60fps', hd: '1080p', sd: '720p' },
       clarity: 'sd',
       listener: async (msg: any) => {
+        console.log(msg)
         if (msg.type === 'progress') {
           // 当活动提前开始的时候 有可能自动播放失败， 导致playing 事件
           // 不触发， 从而片头不消失。 所以同时监视progress 当作 failsafe      
@@ -698,8 +699,24 @@ const Livestream = () => {
           // if (!player.current.playing()) {
           //   player.current.play();
           // }
-          
-          console.log(player.current.playing())
+          // const tip: any = document.querySelector('#video-tip');
+          // setTimeout(async() => {
+          //   console.log(player.current)
+          //   if (!player.current.ready) {
+          //     const spinner: any = document.querySelector('.vcp-loading');
+          //     spinner.setAttribute('style', 'display: none')
+          //     // 没有网络
+          //     if (!window.navigator.onLine) {
+          //       tip.innerHTML = 'You seem to be offline, please check you network status'
+          //       return;
+          //     }
+          //     else {
+          //       console.log("Failed to fetch livestream, please try to refresh this page.")
+          //       tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+          //     }
+
+          //   }
+          // }, 500);
           return;
         }
         if (msg.type === 'playing') { // prevent deplay, refresh every time.
@@ -736,10 +753,28 @@ const Livestream = () => {
           return
         }
         if (msg.type === 'load') {
+          
           // const tip = document.querySelector('.tip-container');
           // if (tip) {
           //   tip.remove();
           // }
+          const tip: any = document.querySelector('#video-tip');
+          setTimeout(async() => {
+            if (!player.current.ready) {
+              const spinner: any = document.querySelector('.vcp-loading');
+              spinner.setAttribute('style', 'display: none')
+              // 没有网络
+              if (!window.navigator.onLine) {
+                tip.innerHTML = 'You seem to be offline, please check you network status'
+                return;
+              }
+              else {
+                console.log("Failed to fetch livestream, please try to refresh this page.")
+                tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+              }
+
+            }
+          }, 60000);
           return
         }
         if (msg.type === 'error') {
@@ -776,7 +811,7 @@ const Livestream = () => {
               }, 400);
             }
             // server 记录 该直播还没开始， 出现 1，2 错误要提示直播未开始或者已结束
-            if (reconnectCount.current >= 3) {
+            if (reconnectCount.current > 3) {
               const spinner: any = document.querySelector('.vcp-loading');
               spinner.setAttribute('style', 'display: none')
               // 没有网络
