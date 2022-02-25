@@ -3168,6 +3168,24 @@
     font-weight: 600;
   }
 }
+@media (max-width: 1172px) {
+  .video-container {
+    height: 100% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .video-container {
+    height: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .video-container {
+    height: 100% !important;
+  }
+}
+
 
 
 

@@ -72,6 +72,7 @@ const Livestream = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [showMerch, setShowMerch] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const playerReady = useRef(false);
 
   const settings = {
     dots: false,
@@ -503,6 +504,7 @@ const Livestream = () => {
       loopVideoStart.current = false;
       noVideo.current = false;
       reconnectCount.current = 0;
+      playerReady.current = false;
       player.current.load();
 
       // stop loop video
@@ -692,6 +694,9 @@ const Livestream = () => {
       listener: async (msg: any) => {
         console.log(msg)
         if (msg.type === 'progress') {
+          if (playerReady.current == false) {
+            playerReady.current = true;
+          }
           // 当活动提前开始的时候 有可能自动播放失败， 导致playing 事件
           // 不触发， 从而片头不消失。 所以同时监视progress 当作 failsafe      
           // const loopVideo = document.querySelector('#loop_pre_recorded')
@@ -726,6 +731,7 @@ const Livestream = () => {
           return;
         }
         if (msg.type === 'playing') { // prevent deplay, refresh every time.
+          
           // if (self.pausedAndPlay === 1) {
           //   self.player.load();
           //   self.pausedAndPlay = 0;
@@ -765,22 +771,22 @@ const Livestream = () => {
           //   tip.remove();
           // }
           const tip: any = document.querySelector('#video-tip');
-          setTimeout(async() => {
-            if (!player.current.ready) {
-              const spinner: any = document.querySelector('.vcp-loading');
-              spinner.setAttribute('style', 'display: none')
-              // 没有网络
-              if (!window.navigator.onLine) {
-                tip.innerHTML = 'You seem to be offline, please check you network status'
-                return;
-              }
-              else {
-                console.log("Failed to fetch livestream, please try to refresh this page.")
-                tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
-              }
+          // setTimeout(async() => {
+          //   if (!playerReady.current) {
+          //     const spinner: any = document.querySelector('.vcp-loading');
+          //     spinner.setAttribute('style', 'display: none')
+          //     // 没有网络
+          //     if (!window.navigator.onLine) {
+          //       tip.innerHTML = 'You seem to be offline, please check you network status'
+          //       return;
+          //     }
+          //     else {
+          //       console.log("Failed to fetch livestream, please try to refresh this page.")
+          //       tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+          //     }
 
-            }
-          }, 60000);
+          //   }
+          // }, 500);
           return
         }
         if (msg.type === 'error') {
@@ -812,6 +818,7 @@ const Livestream = () => {
             if (reconnectCount.current <= 3) {
               console.log("reconnect ", reconnectCount.current);
               setTimeout(() => {
+                playerReady.current = false
                 player.current.load();
                 // 出现1，2 错误时候， 4次重连，超过之后就不再尝试
               }, 400);
@@ -1218,7 +1225,7 @@ const Livestream = () => {
                   </svg>
                 </div>
               }
-                <div className="flex items-center justify-center w-full h-full">
+                <div className="flex items-center justify-center w-full video-container ">
                   <div id="video-tip" className="text-white m-auto " ></div>
                   <div className="video-wrap" id="loop_pre_recorded" style={{ display: (!loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}>
                     <div>
