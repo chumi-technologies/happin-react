@@ -105,7 +105,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
             <Tooltip label="Ticket" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               {/*https://nextjs.org/docs/tag/v9.5.2/api-reference/next/link#dynamic-routes*/}
               <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-                    as={`/my-events/event-details/${data._id}/tickets`}>
+                    >
                 <div className="my-events__cover-action">
                   <SvgIcon id="ticket-bold" />
                 </div>
@@ -114,7 +114,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
             {merchs && merchs.length>0 &&
               <Tooltip label="Merch" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               <Link href={`/my-events/event-details?id=${data._id}&page=1`}
-                    as={`/my-events/event-details/${data._id}/merch`}>
+                    >
                 <div className="my-events__cover-action">
                   <SvgIcon id="bag-bold" />
                 </div>
@@ -123,7 +123,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
             { playBackList && playBackList.length>0 &&
             <Tooltip label="Replay Video" placement="left" bg="gray.900" borderRadius="md" hasArrow arrowSize={8} shouldWrapChildren>
               <Link href={`/my-events/event-details?id=${data._id}&page=2`}
-                    as={`/my-events/event-details/${data._id}/replay-video`}>
+                   >
                 <div className="my-events__cover-action">
                   <SvgIcon id="video-bold" />
                 </div>
@@ -132,7 +132,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
           </VStack>
         </div>
         <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-            as={`/my-events/event-details/${data._id}/tickets`}>
+           >
             <div className="aspect-w-16 aspect-h-9">
               <div className="bg-black bg-opacity-0 group-hover:bg-opacity-20 transition z-10" />
               <img src={data.cover}
@@ -143,7 +143,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
       </div>
       <div className="flex md:hidden mt-3 bg-gray-700 rounded-full justify-between">
         <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-              as={`/my-events/event-details/${data._id}/tickets`}>
+              >
           <div className="flex items-center text-sm px-3 py-2 active:text-rose-500">
             <div className="text-lg mr-2">
               <SvgIcon id="ticket-bold" />
@@ -152,7 +152,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
           </div>
         </Link>
        <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-              as={`/my-events/event-details/${data._id}/tickets`}>
+              >
           <div className="flex items-center text-sm px-3 py-2 active:text-rose-500">
             <div className="text-lg mr-2">
               <SvgIcon id="bag-bold" />
@@ -161,7 +161,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
           </div>
         </Link>
         <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-              as={`/my-events/event-details/${data._id}/tickets`}>
+              >
           <div className="flex items-center text-sm px-3 py-2 active:text-rose-500">
             <div className="text-lg mr-2">
               <SvgIcon id="video-bold" />
@@ -171,7 +171,7 @@ const MyEventItem = ({ data }: MyEventItemProps) => {
         </Link>
       </div>
       <Link href={`/my-events/event-details?id=${data._id}&page=0`}
-              as={`/my-events/event-details/${data._id}/tickets`}>
+              >
       <div className="mt-3">
         <div className="text-sm mb-1 text-gray-200">{moment(data.start_datetime).format('MMMM Do, h:mma')}</div>
         <div className="truncate font-semibold mb-2 group-hover:text-rose-500 transition">{data.title}

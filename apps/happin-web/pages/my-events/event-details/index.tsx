@@ -206,13 +206,13 @@ const MyEventDetails = () => {
     if (router.query.id) {
       getEventDetailsFromHappinServer((router.query.id).toString())
     }
-  }, [])
+  }, [router.query])
 
   useEffect(() => {
     if (router.query.id) {
       getTicketsListFromHappinServer((router.query.id).toString())
     }
-  }, [])
+  }, [router.query])
 
   useEffect(() => {
     if (eventId) {
@@ -224,7 +224,7 @@ const MyEventDetails = () => {
     if (router.query.id) {
       getPlayBackListFromServer((router.query.id).toString())
     }
-  }, []);
+  }, [router.query]);
 
   return (
     <>
