@@ -245,6 +245,7 @@ const MyEventDetails = () => {
     }
   }, [user]);
 
+  console.log(router.asPath)
   return (
     <>
       <Head>
@@ -307,14 +308,15 @@ const MyEventDetails = () => {
                             className={classnames('event-details__tab', { active: tabCur === index })}
                             onClick={() => {
                               setTabCur(index)
+                              console.log("print")
                               {/*https://nextjs.org/docs/tag/v9.5.2/api-reference/next/link#dynamic-routes*/ }
-                              Router.push({
-                                pathname: router.pathname,
-                                query: {
-                                  id: router.query.id,
-                                  page: index
-                                }
-                              }, `${router.pathname}/${router.query.id}/${routerList[index]}`)
+                              // Router.push({
+                              //   pathname: router.pathname,
+                              //   query: {
+                              //     id: router.query.id,
+                              //     page: index
+                              //   }
+                              // }, `${router.pathname}/${router.query.id}}`)
                             }}
                           >
                             {item}
