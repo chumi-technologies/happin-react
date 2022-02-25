@@ -71,6 +71,7 @@ const Livestream = () => {
   const [triggerRerender, setTriggerRerender] = useState(true);
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [showMerch, setShowMerch] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const settings = {
     dots: false,
@@ -126,6 +127,7 @@ const Livestream = () => {
     if (router.query.event_id) {
       setEventId(router.query.event_id as string);
       if (!user) {
+        
         (async () => {
           try {
             await getUserInfo()
@@ -203,9 +205,13 @@ const Livestream = () => {
 
         // 如果在活动开始一个小时前进入直播间 会被direct出去
         if (moment(new Date()) <= oneHourBefore) {
-          generateToast('The livestream has not started yet, please come back later', toast);
-          router.push('/my-events')
-          return;
+          console.log(isAdmin)
+          if (!isAdmin) {
+            generateToast('The livestream has not started yet, please come back later', toast);
+            router.push('/my-events')
+            return;
+          }
+          
         }
         await checkMerchs();
         await checkFollowed();
@@ -913,6 +919,9 @@ const Livestream = () => {
         throw new Error('Failed to load stream room');
       }
       else {
+        if (router.query.admin && user && user.id === res.data.eventID.owner ) {
+          setIsAdmin(true)
+        }
         isLive.current = res.data.isLive;
         isEnd.current = res.data.isEnd;
         setEventData(res.data)
@@ -1149,6 +1158,7 @@ const Livestream = () => {
     }
   }
 
+  console.log(router.query.admin)
   return (
     <div className="live-stream__container">
       <Script src="/plugin/TcPlayer-2.4.1.js" onLoad={() => setScriptLoaded(true)} />

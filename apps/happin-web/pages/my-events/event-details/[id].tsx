@@ -33,6 +33,7 @@ const MyEventDetails = () => {
   const [eventId, setEventId] = useState('');
   const [redemCodeModal, setRedemCodeModal] = useState(false);
   const [redemModalText, setRedemModalText]: any = useState(null);
+  const [isOwner, setIsOwner] = useState(false)
   const { showSSO } = useSSOState();
 
   const getEventDetailsFromHappinServer = async (id: string) => {
@@ -42,6 +43,10 @@ const MyEventDetails = () => {
         const eventDetailsFromServer = res.data;
         setEventDetails(eventDetailsFromServer);
         setEventId(eventDetailsFromServer.event.eid);
+
+        if (eventDetailsFromServer.event.owner == user?.id) {
+          setIsOwner(true)
+        }
       }
     } catch (err) {
       generateToast('Unknown error about event tickets', toast);
@@ -176,6 +181,10 @@ const MyEventDetails = () => {
     router.push(`/live-stream/${eventDetails.event._id}`)
   }
 
+  const handleTestLiveStreamLink = async () => {
+    Router.push({ pathname: `/live-stream/${eventDetails.event._id}`, query: {admin: true} })
+  }
+
   const handleRedemption = async (t: any) => {
     const element =
       <p className="black-title mt-6 text-md text-gray-50 text-center">Enter your redemption code
@@ -245,7 +254,7 @@ const MyEventDetails = () => {
     }
   }, [user]);
 
-  console.log(router.asPath)
+  console.log(eventDetails)
   return (
     <>
       <Head>
@@ -329,6 +338,13 @@ const MyEventDetails = () => {
                     {
                       tabCur === 0 && (
                         <VStack spacing={{ base: 5, sm: 8 }}>
+                          {isOwner && 
+                            <div className="flex sm:flex-col items-center w-full sm:text-center">
+                              <div className="flex-1 text-center sm:w-28">
+                                <button onClick={handleTestLiveStreamLink} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Test Link</button>
+                              </div>
+                            </div>
+                          }
                           {tickets && tickets.length > 0 && tickets.map(t =>
                           (
                             <div key={t._id} className="ticket-wrapper">
