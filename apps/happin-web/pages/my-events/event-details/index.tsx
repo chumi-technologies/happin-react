@@ -4,7 +4,7 @@ import MyEventDetailsHead from '@components/page_components/MyEventDetailsPageCo
 import SvgIcon from '@components/SvgIcon';
 import { VStack, HStack } from '@chakra-ui/react';
 import classnames from 'classnames';
-import { getEventDetail, getGroupEvents, getTicketsList, getMerchOrdersSummary, getTicketsPlayBackList, getFirebaseCustomToken, checkinTicket } from "../../../lib/api";
+import { getEventDetail, getGroupEvents, getTicketsList, getMerchOrdersSummary, getTicketsPlayBackList, getFirebaseCustomToken, checkinTicket, getUserInfo } from "../../../lib/api";
 import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { useToast } from '@chakra-ui/react';
 import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
@@ -15,6 +15,7 @@ import jwt_decode from "jwt-decode";
 import Link from 'next/link';
 import Head from 'next/head';
 import PopUpModal from '@components/reusable/PopUpModal';
+import { useSSOState } from 'contexts/sso-state';
 
 const pageTab = ['Tickets', 'Merch', 'Replay Video']
 const routerList = ['tickets', 'merch', 'replay-video']
@@ -22,6 +23,7 @@ const routerList = ['tickets', 'merch', 'replay-video']
 const MyEventDetails = () => {
   const router = useRouter();
   const toast = useToast();
+  const { user } = useUserState();
   const { exchangeForCrowdCoreToken } = useUserState()
   const [tabCur, setTabCur] = useState(0)
   const [eventDetails, setEventDetails] = useState<any>({})
@@ -31,6 +33,7 @@ const MyEventDetails = () => {
   const [eventId, setEventId] = useState('');
   const [redemCodeModal, setRedemCodeModal] = useState(false);
   const [redemModalText, setRedemModalText]: any = useState(null);
+  const { showSSO } = useSSOState();
 
   const getEventDetailsFromHappinServer = async (id: string) => {
     try {
@@ -191,6 +194,22 @@ const MyEventDetails = () => {
     if (router.query.page) {
       setTabCur(Number(router.query.page as string))
     }
+  }, [user])
+
+  useEffect(() => {
+    if (router.query.id) {
+      if (!user) {
+        (async () => {
+          try {
+            await getUserInfo()
+          }
+          catch (error) {
+            generateToast('Please login to proceed', toast);
+            showSSO();
+          }
+        })();
+      }
+    }
   }, [router.query])
 
   useEffect(() => {
@@ -206,13 +225,13 @@ const MyEventDetails = () => {
     if (router.query.id) {
       getEventDetailsFromHappinServer((router.query.id).toString())
     }
-  }, [router.query])
+  }, [user])
 
   useEffect(() => {
     if (router.query.id) {
       getTicketsListFromHappinServer((router.query.id).toString())
     }
-  }, [router.query])
+  }, [user])
 
   useEffect(() => {
     if (eventId) {
@@ -224,7 +243,7 @@ const MyEventDetails = () => {
     if (router.query.id) {
       getPlayBackListFromServer((router.query.id).toString())
     }
-  }, [router.query]);
+  }, [user]);
 
   return (
     <>
