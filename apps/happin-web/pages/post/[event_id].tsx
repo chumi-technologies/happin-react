@@ -44,6 +44,7 @@ const Post = (props: EventData) => {
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
   const eventData = props;
+  console.log(eventData);
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
   let eventLocation = 'Stream Via Happin'
@@ -219,10 +220,10 @@ const Post = (props: EventData) => {
           </PopUpModal>
         )}
         <div id="scroll-body" className={`relative lg:flex h-full lg:flex-row web-scroll ${preventScrolling ? 'overflow-y-hidden' : 'overflow-y-auto'}`}>
-          <ActionSideBar
+          {/*<ActionSideBar
             playbackStart={!!eventData?.event?.ODPBStart}
             eventData={eventData}
-          />
+          />*/}
 
           {/* Event Image */}
           <div className="lg:sticky lg:top-0 w-full lg:w-5/12 xl:w-1/2 lg:h-full overflow-hidden">

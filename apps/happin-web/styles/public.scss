@@ -59,6 +59,9 @@
 .link-white {
   @apply text-white underline hover:text-rose-500 transition;
 }
+.link-gray {
+  @apply text-gray-400 hover:text-rose-500 transition;
+}
 .link-normal {
   @apply hover:underline hover:text-rose-500 transition;
 }

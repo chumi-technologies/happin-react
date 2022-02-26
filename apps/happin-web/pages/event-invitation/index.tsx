@@ -10,7 +10,7 @@ import moment from 'moment';
 const EventInvitation = () => {
   const router = useRouter();
   const toast = useToast();
-  const [eventDetails, setEventDetails]: any = useState({});
+  const [eventDetails, setEventDetails] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
   const [inviterImage, setInviterImage] = useState<string>('');
   const [inviterName, setInviterName] = useState<string>('');
@@ -53,7 +53,7 @@ const EventInvitation = () => {
 
   const handleJoin = () => {
     setTimeout(function () { window.location.href="https://apps.apple.com/app/id1527348429"; }, 25);
-    window.location.href = universalLink 
+    window.location.href = universalLink
 }
 
 const handleEventDetail = () => {
@@ -119,7 +119,7 @@ const handleEventDetail = () => {
           </div>
           <div className="text-gray-400 text-[15px] font-medium">
             <span className="mr-2">🎉</span>
-            {eventDetails?.match?.numOfGroupChat ? 
+            {eventDetails?.match?.numOfGroupChat ?
               <span className="text-gray-100">{eventDetails?.match?.numOfGroupChat} event group chats </span> :
               <span className="text-gray-100">Event group chats </span>
             }

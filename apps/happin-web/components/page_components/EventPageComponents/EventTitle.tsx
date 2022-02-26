@@ -57,22 +57,22 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
     <>
       {/* Badges */}
       <HStack spacing={3}>
+        {(category && categoryType) && <>
+          <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
+            {categoryType + `${sourceURL ? '': ' - ' + category }`}
+          </div>
+        </>}
+
         {(isLiveStream && (isLiveNow || playbackStart)) && (
           <div className="inline-flex items-center py-1 px-2 leading-none text-gray-50 bg-rose-500 border-2 border-rose-500 border-solid rounded text-xs sm:text-sm font-semibold">
             <span className="w-2 h-2 rounded-full bg-white mr-2" />
             <span>{isLiveNow ? 'LIVE' : (playbackStart ? 'Replay' : '')}</span>
           </div>
         )}
-
-        {(category && categoryType) && <>
-          <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
-            {categoryType + `${sourceURL ? '': ' - ' + category }`}
-          </div>
-        </>}
       </HStack>
 
       {/* Event Title */}
-      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10', {
+      <h1 className={classnames('black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold', {
         'mt-1 sm:mt-4': category || categoryType || isLiveNow || playbackStart
       })}>
         {eventTitle}
@@ -85,10 +85,17 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
         </h1>
       }
 
+      {/* Event Location */}
+      <h1 className="black-title text-base sm:text-xl text-yellow-500 font-bold">
+        {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.venueName)}
+      </h1>
+
+      {/* Price */}
+      <div className="text-gray-50 font-bold mt-2">{(price !== null && price !== undefined) && `From ${(currencyFormatter(currency as string).format(price / 100))}`}</div>
 
       {/* Block with Icons */}
 
-      <VStack
+      {/*<VStack
         spacing={4}
         align="start"
         mt={{ base: 5, sm: 8 }}
@@ -132,12 +139,12 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
             <SvgIcon id="ticket" className="text-lg text-gray-50" />
             <div className="flex items-start sm:items-center flex-col sm:flex-row w-full ml-3">
               <div className="flex-1 text-gray-50 mb-3 sm:mb-0 leading-none">{(price !== null && price !== undefined) && `Price from ${(currencyFormatter(currency as string).format(price / 100))}`}</div>
-              {/* not showing redeem when it's offline event  */}
+               not showing redeem when it's offline event
               {isLiveStream && <button className="btn btn-xs btn-outline-blue" onClick={openRedeemModal} >Redeem Ticket</button>}
             </div>
           </div>}
 
-      </VStack>
+      </VStack>*/}
 
       {/* About and Agenda links */}
       {/* <div className="sticky top-0 bg-black z-10">
