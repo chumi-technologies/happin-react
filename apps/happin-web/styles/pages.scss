@@ -3118,6 +3118,7 @@
   #video-tip {
     position:absolute;
     z-index:2;
+    top: 50%;
   }
 
 //   #loop_pre_recorded {
@@ -3168,21 +3169,35 @@
     font-weight: 600;
   }
 }
+
+
 @media (max-width: 1172px) {
   .video-container {
     height: 100% !important;
+    #video-tip {
+      top : auto !important;
+    }
   }
 }
 
 @media (max-width: 767px) {
   .video-container {
     height: auto !important;
+
+    #video-tip {
+      top : 50% !important;
+
+    }
   }
 }
 
 @media (max-width: 640px) {
   .video-container {
     height: 100% !important;
+
+    #video-tip {
+      top : auto !important;
+    }
   }
 }
 
