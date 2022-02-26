@@ -25,7 +25,7 @@ const EventInvitation = (props:any) => {
   const seoProps = {
     description: eventData?.event?.title + eventDescription,
     keywords: `${eventData?.event?.tags.toString()}, Happin livestream`,
-    title: eventData?.event?.title + ' @ ' + eventLocation,
+    title: "Invitation: " + props.af_referrer_name + "invited you to " + eventData?.event?.title + " @ " + eventLocation  ,
     ogImage: eventData?.event?.socialImg || eventData?.event?.cover,
     ogUrl: `${PRODUCTION_URL}${router.asPath}`,
     twitterImage: eventData?.event?.socialImg || eventData?.event?.cover
@@ -180,7 +180,8 @@ export async function getServerSideProps(context:any): Promise<GetServerSideProp
   try {
     const res = await getEventDetail(context.query.eventId, 'both')
     // console.log(context.query.params.eventId)
-    const props = res.data
+    let props:any = res.data
+    props.af_referrer_name = context.query.af_referrer_name
     if (!res.data) {
       throw new Error('Event not found');
     }
