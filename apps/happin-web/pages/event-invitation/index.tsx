@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Avatar, useToast } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
 import { useRouter } from 'next/router';
-import { getEventDetail } from 'lib/api';
+import { getEventDetail, getGroupEvents } from 'lib/api';
 import { generateToast, generateErrorToast, generateSuccessToast } from "@components/page_components/CheckoutPageComponents/util/toast";
 import moment from 'moment';
+import { GetServerSidePropsResult } from 'next';
+import { PRODUCTION_URL } from "utils/constants";
+import Head from 'next/head';
 
-
-const EventInvitation = () => {
+const EventInvitation = (props:any) => {
   const router = useRouter();
   const toast = useToast();
   const [eventDetails, setEventDetails]: any = useState({});
@@ -15,6 +17,19 @@ const EventInvitation = () => {
   const [inviterImage, setInviterImage] = useState<string>('');
   const [inviterName, setInviterName] = useState<string>('');
   const [universalLink, setUniversalLink] = useState<string>('');
+  const eventData = props;
+
+  let eventLocation = 'Stream Via Happin'
+  let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App'
+
+  const seoProps = {
+    description: eventData?.event?.title + eventDescription,
+    keywords: `${eventData?.event?.tags.toString()}, Happin livestream`,
+    title: eventData?.event?.title + ' @ ' + eventLocation,
+    ogImage: eventData?.event?.socialImg || eventData?.event?.cover,
+    ogUrl: `${PRODUCTION_URL}${router.asPath}`,
+    twitterImage: eventData?.event?.socialImg || eventData?.event?.cover
+  }
 
   useEffect(() => {
     if (router.query.eventId) {
@@ -59,8 +74,25 @@ const EventInvitation = () => {
 const handleEventDetail = () => {
   router.push("/post/"+eventDetails?.acid)
 }
+
   return (
-    isLoading ? <></> :
+    <>
+     <Head>
+        <meta name="description" key="description" content={seoProps.description} />
+        <meta name="keywords" key="keywords" content={seoProps.keywords} />
+        <title>{seoProps.title}</title>
+        <meta property="og:title" key="og:title" content={seoProps.title} />
+        <meta property="og:description" key="og:description" content={seoProps.description} />
+        <meta property="og:image" key="og:image" content={seoProps.ogImage} />
+        <meta property="og:site_name" key="og:site_name" content={seoProps.title} />
+        <meta property="og:url" key="og:url" content={seoProps.ogUrl} />
+        <meta property="og:type" key="og:type" content={'website'} />
+        <meta name="twitter:title" key="twitter:title" content={seoProps.title} />
+        <meta name="twitter:description" key="twitter:description" content={seoProps.description} />
+        <meta name="twitter:image" key="twitter:image" content={seoProps.twitterImage} />
+        <meta name="twitter:card" key="twitter:card" content="summary_large_image" />
+      </Head>
+    {isLoading ? <></> :
       <div className="w-full overflow-y-auto max-w-md mx-auto">
         <div className="event-invitation__banner">
           <div className="pt-8 px-4 mb-5 text-center">
@@ -136,7 +168,35 @@ const handleEventDetail = () => {
           </div>
         </div>
       </div>
+}
+      </>
   )
 }
 
 export default EventInvitation
+
+// fetch data on server upon every request.. not using static page pre render
+export async function getServerSideProps(context:any): Promise<GetServerSidePropsResult<any>> {
+  try {
+    const res = await getEventDetail(context.query.eventId, 'both')
+    // console.log(context.query.params.eventId)
+    const props = res.data
+    if (!res.data) {
+      throw new Error('Event not found');
+    }
+    console.log(props)
+    return {
+      props,
+    }
+  } catch (err) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/404",
+      },
+      props: {},
+    };
+  }
+
+  
+}
