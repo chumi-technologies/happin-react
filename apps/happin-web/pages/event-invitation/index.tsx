@@ -140,19 +140,22 @@ const EventInvitation = (props: any) => {
             <h1 className="mt-6 mb-4 text-2xl black-title font-extrabold text-rose-500">Meet
               interesting attendees in event match and group chat</h1>
           </div>
-          <div className="relative w-full flex gap-3 snap-x overflow-x-auto hide-scrollbar">
+          <div className="flex snap-x space-x-3 overflow-x-auto hide-scrollbar">
             {eventDetails?.match?.topProfiles.map((item: any, index: number) => {
               if (index < 6) {
                 return (
-                  <div className="snap-center w-[28%] shrink-0 first:ml-4 last:mr-4" key={item._id}>
-                    <img className="shrink-0 w-full aspect-[9/16] object-cover rounded-lg"
-                         src={item.photourl} />
+                  <div className="snap-center w-[28%] shrink-0 first:ml-4" key={item._id}>
+                    <div className="relative shrink-0 w-full aspect-w-10 aspect-h-16">
+                      <img className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                           src={item.photourl} />
+                    </div>
                     <div
                       className="mt-1 text-sm font-semibold text-gray-100">{item.displayname}</div>
                   </div>
                 );
               }
             })}
+            <div className="flex shrink-0 h-1 w-4 !ml-0" />
           </div>
           <div className="px-4 mt-4">
             <div className="text-gray-400 text-[15px] font-medium">
