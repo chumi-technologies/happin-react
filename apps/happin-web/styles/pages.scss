@@ -90,6 +90,9 @@
   @media (min-width: 640px) {
     max-width: 720px;
   }
+  @media (min-width: 1280px) {
+    max-width: 840px;
+  }
 }
 .event-details__tab {
   @apply flex items-center justify-center flex-1 rounded-full h-8 sm:h-10 cursor-pointer font-medium text-gray-400 transition text-sm md:text-base;
@@ -178,6 +181,11 @@
       background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0) 100%);
     }
   }
+}
+.event-details__download-modal {
+  @apply bg-no-repeat bg-top sm:bg-bottom;
+  background-image: url("../public/images/event-details-modal-bg.png");
+  background-size: 100%;
 }
 // Topup
 

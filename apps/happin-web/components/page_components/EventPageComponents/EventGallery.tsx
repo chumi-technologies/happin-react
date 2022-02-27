@@ -18,11 +18,18 @@ const settings = {
   className: 'event-details__slick',
   dots: false,
   infinite: false,
-  slidesToShow: 3,
-  slidesToScroll: 3,
+  slidesToShow: 4,
+  slidesToScroll: 4,
   draggable: true,
   variableWidth: true,
   responsive: [
+    {
+      breakpoint: 1350,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 3,
+      }
+    },
     {
       breakpoint: 1200,
       settings: {
@@ -90,8 +97,8 @@ const EventGallery = ({ gallery, limit = 4 }: { gallery: galleryItemProp[], limi
           {
             gallery.length >= limit ?
               galleryList.map((item, index) => (
-                <div key={index} className="aspect-[11/16]" style={{ width: 150 }}>
-                  <div className="flex flex-col gap-3 w-full h-full">
+                <div key={index} className="aspect-w-11 aspect-h-16" style={{ width: 150 }}>
+                  <div className="flex flex-col space-y-3 w-full h-full">
                     {
                       item.map(img => (
                         <img key={img.id} className="flex-1 w-full h-full object-cover rounded-lg"
@@ -103,8 +110,10 @@ const EventGallery = ({ gallery, limit = 4 }: { gallery: galleryItemProp[], limi
               )) :
               gallery.map((item, index) => (
                 <div key={item.id} style={{ width: 150 }}>
-                  <img key={item.id} className="w-full aspect-[11/16] object-cover rounded-lg"
-                       src={item.src} alt=""/>
+                  <div className="relative w-full aspect-w-11 aspect-h-16">
+                    <img key={item.id} className="w-full h-full object-cover rounded-lg"
+                         src={item.src} alt=""/>
+                  </div>
                 </div>
               ))
           }

@@ -19,11 +19,18 @@ const settings = {
   className: 'event-details__slick',
   dots: false,
   infinite: false,
-  slidesToShow: 4,
-  slidesToScroll: 4,
+  slidesToShow: 5,
+  slidesToScroll: 5,
   draggable: true,
   variableWidth: true,
   responsive: [
+    {
+      breakpoint: 1350,
+      settings: {
+        slidesToShow: 4,
+        slidesToScroll: 4,
+      }
+    },
     {
       breakpoint: 1200,
       settings: {
@@ -65,8 +72,10 @@ const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
           {
             topProfiles.map(item => (
               <div key={item._id} style={{ width: 120 }}>
-                <img className="w-full aspect-[11/16] object-cover rounded-lg"
-                     src={item.photourl} alt={item.displayname}/>
+                <div className="relative w-full aspect-w-11 aspect-h-16">
+                  <img className="w-full h-full object-cover rounded-lg"
+                       src={item.photourl} alt={item.displayname}/>
+                </div>
                 <div className="mt-1.5 text-sm font-semibold text-gray-100">{item.displayname}</div>
               </div>
             ))

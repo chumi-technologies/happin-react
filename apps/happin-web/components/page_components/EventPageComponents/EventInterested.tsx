@@ -16,7 +16,7 @@ const EventInterested = ({ list }: { list: EventInterestedItem[]} ) => {
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">You may also interested in</div>
-      <div className="grid grid-cols-2 gap-4 lg:gap-5 sm:grid-cols-2 mt-3 sm:mt-5">
+      <div className="grid grid-cols-2 gap-4 lg:gap-5 sm:grid-cols-2 xl:grid-cols-3 mt-3 sm:mt-5">
         {
           list.map(item => (
             <div className="mb-1" key={item._id}>

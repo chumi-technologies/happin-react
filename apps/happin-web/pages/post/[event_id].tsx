@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { Box } from '@chakra-ui/react';
 import SignInBar from '../../components/SignInBar'
 import PopUpModal from "../../components/reusable/PopUpModal";
@@ -18,6 +18,7 @@ import { useUserState } from "contexts/user-state";
 import { Button } from "@chakra-ui/react";
 import { ArrowDownIcon } from '@chakra-ui/icons';
 import ReactDom from 'react-dom';
+import Modal from '@components/reusable/Modal';
 
 // third party event website that set x-frame-option to origin, can't open in iframe
 const forbidDomain = [
@@ -43,6 +44,7 @@ const Post = (props: EventData) => {
   const [preventScrolling, setPreventScrolling] = useState<boolean>(false);
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
+  const [isOpen, setIsOpen] = useState(true);
   const eventData = props;
   console.log(eventData);
   const groupEvents = props.groupEvents;
@@ -134,7 +136,6 @@ const Post = (props: EventData) => {
       setTokenExist(true)
     }
   }, [user])
-
 
   return (
     <>
@@ -253,6 +254,30 @@ const Post = (props: EventData) => {
           </div>
         </div>
       </div>
+      <Modal isOpen={isOpen} setIsOpen={setIsOpen} containerClass="event-details__download-modal max-w-[580px]">
+        <h1 className="font-bold black-title text-3xl sm:text-5xl !leading-[1.15] text-gray-50 text-left">
+          Meet, <br/>Chat, <br/>
+          <span className="text-yellow-500">Experience</span>
+        </h1>
+        <div className="flex space-x-3 sm:space-x-8 mt-3 sm:mt-4">
+          <div className="sm:w-1/4">
+            <div className="hidden sm:block bg-gray-600 rounded-md sm:rounded-lg p-1 sm:p-2.5">
+              <img className="w-full" src="/images/qrcode.jpg" alt="" />
+            </div>
+            <a className="block w-24 sm:w-full mt-3" target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
+              <img className="w-full border border-solid border-gray-500 rounded-md sm:rounded-lg" src="/images/app-store.svg" alt="App Store" />
+            </a>
+          </div>
+          <div className="sm:w-1/4">
+            <div className="hidden sm:block bg-gray-600 rounded-md sm:rounded-lg p-1 sm:p-2.5">
+              <img className="w-full" src="/images/qrcode.jpg" alt="" />
+            </div>
+            <div className="w-24 sm:w-full mt-3">
+              <img className="w-full border border-solid border-gray-500 rounded-md sm:rounded-lg" src="/images/google-play.svg" alt="Google Play" />
+            </div>
+          </div>
+        </div>
+      </Modal>
     </>
   );
 };
