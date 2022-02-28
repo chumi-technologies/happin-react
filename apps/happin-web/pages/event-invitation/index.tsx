@@ -12,7 +12,7 @@ import Head from 'next/head';
 const EventInvitation = (props: any) => {
   const router = useRouter();
   const toast = useToast();
-  const [eventDetails, setEventDetails]: any = useState({});
+  const [eventDetails, setEventDetails] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
   const [inviterImage, setInviterImage] = useState<string>('');
   const [inviterName, setInviterName] = useState<string>('');
@@ -74,6 +74,7 @@ const EventInvitation = (props: any) => {
   const handleEventDetail = () => {
     router.push('/post/' + eventDetails?.acid);
   };
+
 
   return (
     <>
@@ -140,6 +141,7 @@ const EventInvitation = (props: any) => {
             <h1 className="mt-6 mb-4 text-2xl black-title font-extrabold text-rose-500">Meet
               interesting attendees in event match and group chat</h1>
           </div>
+          
           <div className="flex snap-x space-x-3 overflow-x-auto hide-scrollbar">
             {eventDetails?.match?.topProfiles.map((item: any, index: number) => {
               if (index < 6) {
@@ -156,6 +158,7 @@ const EventInvitation = (props: any) => {
               }
             })}
             <div className="flex shrink-0 h-1 w-4 !ml-0" />
+
           </div>
           <div className="px-4 mt-4">
             <div className="text-gray-400 text-[15px] font-medium">

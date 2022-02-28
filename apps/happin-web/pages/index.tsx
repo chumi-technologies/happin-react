@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import Link from 'next/link';
 import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import classNames from "classnames";
@@ -57,6 +57,8 @@ export default function Home() {
       router.push('/');
     }
   },[router])
+
+  const focusRef = useRef<HTMLDivElement>(null);
 
   return (
     <div className="relative bg-gray-900 text-gray-50 z-0">
@@ -169,6 +171,7 @@ export default function Home() {
         <Dialog
           as="div"
           className="fixed inset-0 z-50 overflow-y-auto"
+          initialFocus={focusRef}
           onClose={() => {
           }}
         >
@@ -209,7 +212,7 @@ export default function Home() {
                   >
                     Request for android version
                   </Dialog.Title>
-                  <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
+                  <div ref={focusRef} className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>

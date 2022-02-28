@@ -1,8 +1,7 @@
-import { HStack, Avatar, Stack } from '@chakra-ui/react';
+import { Avatar, Stack } from '@chakra-ui/react';
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { CloseSmall } from '@icon-park/react';
-import Link from "next/link";
 
 type EventHostProps = {
   hostName?: string;
@@ -15,16 +14,18 @@ const EventHost = (props: EventHostProps) => {
 
   return (
     <>
-      <div className="black-title text-xl sm:text-2xl font-semibold">Meet Your Host</div>
-      <HStack justify="space-between" mt={5}>
-        <HStack spacing={{ base: 3, sm: 5 }}>
-          <Avatar boxSize={10} src={props.hostProfileImageUrl} name={props.hostName} />
-          <div className="font-medium">{props.hostName}</div>
-        </HStack>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <Avatar boxSize={14} src={props.hostProfileImageUrl} name={props.hostName} />
+          <div className="flex-1 ml-3 sm:ml-5">
+            <div className="font-semibold sm:text-lg">{props.hostName}</div>
+            <div className="text-sm sm:text-base text-gray-400">Event Creator</div>
+          </div>
+        </div>
         <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full"
           onClick={() => setIsOpen(true)}
-        >Contact</button>
-      </HStack>
+        >Follow</button>
+      </div>
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>
         <Dialog

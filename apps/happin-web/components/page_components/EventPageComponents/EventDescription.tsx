@@ -54,8 +54,8 @@ const EventDescription = ({ description, rawDescription = "", sourceURL, setOpen
           {rawDescription}
         </div>
         {(rawDescription?.length > 80) && (
-          <> {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>More ...</div>
-          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
+          <> {sourceURL ? <div className="pt-4 link-gray inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>Read More ...</div>
+          : <div className="pt-4 link-gray inline-block cursor-pointer font-medium" onClick={openModal}>Read More ...</div>}
           </>
         )}
       </> :
@@ -63,8 +63,8 @@ const EventDescription = ({ description, rawDescription = "", sourceURL, setOpen
           <div className={`mt-3 sm:mt-5 text-sm sm:text-base relative`} style={{ maxHeight: '75px' }}>
               Click more to see event description for this event
           </div>
-          {sourceURL ? <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>More ...</div>
-          : <div className="pt-4 link-rose inline-block cursor-pointer font-medium" onClick={openModal}>More ...</div>}
+          {sourceURL ? <div className="pt-4 link-gray inline-block cursor-pointer font-medium" onClick={()=>{openThirdPartyEventSite()}}>Read More ...</div>
+          : <div className="pt-4 link-gray inline-block cursor-pointer font-medium" onClick={openModal}>Read More ...</div>}
         </>}
 
       {/*Dialog*/}
