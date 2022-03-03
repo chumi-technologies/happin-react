@@ -84,7 +84,6 @@ const EventGallery = ({ gallery, limit = 4 }: { gallery: galleryItemProp[], limi
         }
         return prev
       }, [] as galleryItemProp[][])
-      console.log(data);
       setGalleryList(data)
     }
   }, [gallery]);

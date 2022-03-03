@@ -40,6 +40,11 @@
   &.app-reward-page {
     @apply bg-gray-900
   }
+  &.mobile-fixed {
+    @media (max-width: 639px) {
+      @apply h-auto;
+    }
+  }
 }
 .header {
   .production &{

@@ -21,6 +21,8 @@ const Layout = ({ children }: { children: any }) => {
   const [whiteLabelHome, setWhiteLabelHome] = useState('');
   const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
+  const [mobileFixed, setMobileFixed] = useState(false);
+
   const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
@@ -52,33 +54,34 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (router.asPath === '/' || router.asPath === '/events') {
+    if (router.route === '/' || router.route === '/events') {
       setIsProduction(true)
       setShowFooter(true);
       setShowHeader(true);
-    } else if (router.asPath === '/reward'){
+    } else if (router.route === '/post/[event_id]'){
+      setMobileFixed(true);
+    } else if (router.route === '/reward'){
       setRewardPage(true)
       setShowHeader(false);
-    } else if (router.asPath === '/campaign')  {
+    } else if (router.route === '/campaign')  {
       setShowHeader(false);
-    } else if (router.asPath === '/event-invitation')  {
+    } else if (router.route === '/event-invitation')  {
       setShowHeader(false);
-    }
-    else if (router.asPath === '/appreward') {
+      setMobileFixed(true);
+    } else if (router.route === '/appreward') {
       setAppRewardPage(true)
       setShowHeader(false);
       setShowFooter(false);
-    } else if (router.asPath === '/transactionHistory') {
+    } else if (router.route === '/transactionHistory') {
       setShowHeader(false);
       setShowFooter(false);
-    }
-    else {
+    } else {
       setShowFooter(false);
       setIsProduction(false);
       setShowHeader(true);
+      setMobileFixed(false);
     }
-
-  }, [router.query, router.asPath, setBoxOfficeMode])
+  }, [router.query, router.route, router.asPath, setBoxOfficeMode])
 
   useEffect(()=> {
     const hideMobileBar = localStorage.getItem('hide_mobile_bar');
@@ -121,7 +124,7 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
-      <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
+      <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage, 'mobile-fixed': mobileFixed})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
         {(!openInApp && showHeader) &&

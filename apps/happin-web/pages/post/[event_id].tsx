@@ -19,6 +19,7 @@ import { Button } from "@chakra-ui/react";
 import { ArrowDownIcon } from '@chakra-ui/icons';
 import ReactDom from 'react-dom';
 import Modal from '@components/reusable/Modal';
+import classnames from 'classnames';
 
 // third party event website that set x-frame-option to origin, can't open in iframe
 const forbidDomain = [
@@ -46,7 +47,6 @@ const Post = (props: EventData) => {
   const [tokenExist, setTokenExist] = useState(true)
   const [isOpen, setIsOpen] = useState(true);
   const eventData = props;
-  console.log(eventData);
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
   let eventLocation = 'Stream Via Happin'
@@ -76,8 +76,6 @@ const Post = (props: EventData) => {
       }
     }
   }, [])
-
-  ////////////////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     if (router.query.affiliate) {
@@ -220,7 +218,7 @@ const Post = (props: EventData) => {
             </div>
           </PopUpModal>
         )}
-        <div id="scroll-body" className={`relative lg:flex h-full lg:flex-row web-scroll ${preventScrolling ? 'overflow-y-hidden' : 'overflow-y-auto'}`}>
+        <div className={classnames('relative lg:flex h-full lg:flex-row web-scroll', preventScrolling ? 'sm:overflow-y-hidden' : 'sm:overflow-y-auto')}>
           {/*<ActionSideBar
             playbackStart={!!eventData?.event?.ODPBStart}
             eventData={eventData}

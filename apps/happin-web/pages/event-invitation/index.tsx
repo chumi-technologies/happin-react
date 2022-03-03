@@ -75,7 +75,6 @@ const EventInvitation = (props: any) => {
     router.push('/post/' + eventDetails?.acid);
   };
 
-
   return (
     <>
       <Head>
@@ -94,7 +93,7 @@ const EventInvitation = (props: any) => {
         <meta name="twitter:card" key="twitter:card" content="summary_large_image" />
       </Head>
       {isLoading ? null :
-        <div className="w-full overflow-y-auto max-w-md mx-auto">
+        <div className="w-full max-w-md mx-auto">
           <div className="event-invitation__banner">
             <div className="pt-8 px-4 mb-5 text-center">
               <h1 className="text-gray-900 text-3xl black-title font-extrabold">Event
@@ -141,14 +140,13 @@ const EventInvitation = (props: any) => {
             <h1 className="mt-6 mb-4 text-2xl black-title font-extrabold text-rose-500">Meet
               interesting attendees in event match and group chat</h1>
           </div>
-          
           <div className="flex snap-x space-x-3 overflow-x-auto hide-scrollbar">
             {eventDetails?.match?.topProfiles.map((item: any, index: number) => {
               if (index < 6) {
                 return (
                   <div className="snap-center w-[28%] shrink-0 first:ml-4" key={item._id}>
                     <div className="relative shrink-0 w-full aspect-w-10 aspect-h-16">
-                      <img className="absolute inset-0 w-full h-full object-cover rounded-lg"
+                      <img className="w-full h-full object-cover rounded-lg"
                            src={item.photourl} />
                     </div>
                     <div
@@ -175,22 +173,22 @@ const EventInvitation = (props: any) => {
               created
             </div>
           </div>
-          <div className="h-32" />
-          <div className="fixed bottom-0 inset-x-0 footer-action z-20 bg-gray-900">
-            <div className="px-10 py-2.5">
-              <button onClick={handleJoin}
-                      className="btn btn-rose !rounded-full !font-bold w-full flex items-center justify-center">
-                <span>Join Event and Earn 10</span>
-                <img className="inline align-middle w-5 ml-2" src="/images/icon-diamond.svg"
-                     alt="" />
-              </button>
-              <div className="text-center mt-1.5">
-                <button onClick={handleEventDetail}
-                        className="btn !py-1 !text-sm text-gray-300 active:text-rose-500">View Event
-                  Details
-                </button>
-              </div>
-            </div>
+          <div className="text-center mt-2">
+            <button
+              onClick={handleEventDetail}
+              className="btn text-rose-500 active:text-rose-600"
+            >
+              <span className="underline">View Event Details</span>
+            </button>
+          </div>
+          <div className="h-16" />
+          <div className="fixed bottom-0 w-full max-w-md footer-action z-20">
+            <button onClick={handleJoin}
+                    className="btn btn-rose !rounded-none !font-bold w-full flex items-center justify-center">
+              <span>Join Event and Earn 10</span>
+              <img className="inline align-middle w-5 ml-2" src="/images/icon-diamond.svg"
+                   alt="" />
+            </button>
           </div>
         </div>
       }
@@ -210,7 +208,6 @@ export async function getServerSideProps(context: any): Promise<GetServerSidePro
     if (!res.data) {
       throw new Error('Event not found');
     }
-    console.log(props);
     return {
       props
     };
