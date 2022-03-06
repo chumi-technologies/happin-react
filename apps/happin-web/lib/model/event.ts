@@ -86,6 +86,7 @@ export interface EventDetail {
   categoryType: string;
   sourceUrl?: string;
   sourceUrlAllowIframe?: boolean;
+  isThirdParty?: boolean;
 }
 export interface TopProfilesItem {
   _id: string;

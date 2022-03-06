@@ -1,3 +1,4 @@
+import { propNames } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
 import { EventData } from 'lib/model/event';
 import { useRouter } from 'next/router';
@@ -9,11 +10,12 @@ interface eventDataProp {
   setOpenIframe: (arg:any) => void,
   queryParams: any,
   canUseIframe: boolean,
+  setIsOpen:(arg: any) => void,
 }
 
 
 
-const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpenIframe, queryParams, canUseIframe }: eventDataProp) => {
+const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpenIframe, queryParams, canUseIframe, setIsOpen }: eventDataProp) => {
   const router = useRouter();
   const isSoldOut = eventData.isTicketSoldOut;
 
@@ -33,17 +35,31 @@ const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpe
   }
 
   const buyTicketClickHandler = () => {
-    if (eventData.event.sourceUrl) {
-      if (canUseIframe) {
-        (document.querySelector('#scroll-body') as Element).scrollTo(0, 0);
-        setPreventScrolling(true);
-        setOpenIframe(true);
-      } else {
-        window.open(eventData.event.sourceUrl, '_blank');
-      }
-    } else {
-      router.push({ pathname: `/checkout/${eventData.event.eid}`, query: queryParams })
+    if (eventData.event?.isThirdParty) {
+      setIsOpen(true)
     }
+    else {
+      if (eventData.ticketNonPBCount === 0 && eventData.ticketPBCount === 0) {
+        //this event have no ticket
+        setIsOpen(true)
+      }
+      else {
+        if (eventData.event.sourceUrl) {
+          if (canUseIframe) {
+            (document.querySelector('#scroll-body') as Element).scrollTo(0, 0);
+            setPreventScrolling(true);
+            setOpenIframe(true);
+          } else {
+            window.open(eventData.event.sourceUrl, '_blank');
+          }
+        } else {
+          router.push({ pathname: `/checkout/${eventData.event.eid}`, query: queryParams })
+        }
+      }
+    }
+    
+
+    
   }
 
 
@@ -57,7 +73,7 @@ const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpe
           </button>
           {!offSaleTimeHasPast(eventData) && <button disabled={isSoldOut || checkOffLineEventStarted(eventData)} onClick={buyTicketClickHandler} style={{ padding: '0.55rem' }} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">
             <SvgIcon id="ticket" className="text-lg text-gray-50 mr-1 sm:mr-2" />
-            <span className="text-sm sm:text-base">{isSoldOut ? "Sold Out" : checkOffLineEventStarted(eventData) ? "Event Started" : "Get Tickets"}</span>
+            <span className="text-sm sm:text-base">{isSoldOut ? "Sold Out" : checkOffLineEventStarted(eventData) ? "Event Started" : "Join Now"}</span>
           </button>}
 
           {offSaleTimeHasPast(eventData) && <button disabled={true} style={{ padding: '0.55rem' }} className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3">

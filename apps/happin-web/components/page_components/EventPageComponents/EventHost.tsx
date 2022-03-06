@@ -24,7 +24,7 @@ const EventHost = (props: EventHostProps) => {
         </div>
         <button className="btn btn-blue !font-semibold w-24 btn-sm !rounded-full"
           onClick={() => setIsOpen(true)}
-        >Follow</button>
+        >Contact</button>
       </div>
       {/*Dialog*/}
       <Transition appear show={isOpen} as={Fragment}>

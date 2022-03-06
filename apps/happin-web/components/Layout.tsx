@@ -59,6 +59,7 @@ const Layout = ({ children }: { children: any }) => {
       setShowFooter(true);
       setShowHeader(true);
     } else if (router.route === '/post/[event_id]'){
+      setShowHeader(true);
       setMobileFixed(true);
     } else if (router.route === '/reward'){
       setRewardPage(true)

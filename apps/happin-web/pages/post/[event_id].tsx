@@ -45,7 +45,7 @@ const Post = (props: EventData) => {
   const [preventScrolling, setPreventScrolling] = useState<boolean>(false);
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const eventData = props;
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
@@ -248,7 +248,7 @@ const Post = (props: EventData) => {
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
               <EventSection setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling} setIsRedeemModalOpen={setIsRedeemModalOpen} setIsModalOpen={setIsModalOpen} eventData={eventData} groupEvents={groupEvents} />
             </div>
-            <BottomBar setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling} queryParams={queryParams} eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen} />
+            <BottomBar setOpenIframe={setOpenIframe} canUseIframe={canUseIframe} setPreventScrolling={setPreventScrolling} queryParams={queryParams} eventData={eventData} setIsChatButtonOpen={setIsChatModalOpen} setIsOpen={setIsOpen}/>
           </div>
         </div>
       </div>

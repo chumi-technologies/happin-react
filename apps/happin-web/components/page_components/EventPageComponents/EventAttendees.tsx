@@ -82,9 +82,11 @@ const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
           }
         </Slider>
       </div>
-      <div className="mt-3 text-gray-400">
-        <span className="mr-2">🔥</span><span className="text-gray-50">AmiliaW.</span> and other 132 people has joined
-      </div>
+      {topProfiles.length > 0 &&
+        <div className="mt-3 text-gray-400">
+          <span className="mr-2">🔥</span><span className="text-gray-50">{topProfiles[0].displayname}</span> and other {topProfiles.length - 1} people has joined
+        </div>
+      }
     </>
   );
 };

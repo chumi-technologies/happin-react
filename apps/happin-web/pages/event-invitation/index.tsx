@@ -65,9 +65,9 @@ const EventInvitation = (props: any) => {
 
 
   const handleJoin = () => {
-    setTimeout(function() {
-      window.location.href = 'https://apps.apple.com/app/id1527348429';
-    }, 25);
+    // setTimeout(function() {
+    //   window.location.href = 'https://apps.apple.com/app/id1527348429';
+    // }, 25);
     window.location.href = universalLink;
   };
 

@@ -136,9 +136,9 @@ const EventSection = ({
         <EventAttendees topProfiles={eventData.match.topProfiles} />
       </div>
       <div className="h-px bg-gray-600" />
-      <div className="py-5 sm:py-8">
+      {/* <div className="py-5 sm:py-8">
         <EventGallery gallery={galleryOriginalData} />
-      </div>
+      </div> */}
       <div className="h-px bg-gray-600" />
       {/* About and Agenda links */}
       {/*<div className="sticky top-0 bg-gray-900 z-10">
@@ -190,10 +190,10 @@ const EventSection = ({
           sourceURL={eventData.event.sourceUrl}
         />
       </div>
-      <div className="h-px bg-gray-600" />
-      <div className="pt-5 sm:pt-8">
+      {/* <div className="h-px bg-gray-600" /> */}
+      {/* <div className="pt-5 sm:pt-8">
         <EventInterested list={interestedList} />
-      </div>
+      </div> */}
       {/*</Element>*/}
       {/*}*/}
 
