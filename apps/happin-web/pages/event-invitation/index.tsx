@@ -72,7 +72,7 @@ const EventInvitation = (props: any) => {
   };
 
   const handleEventDetail = () => {
-    router.push('/post/' + eventDetails?.acid);
+    router.push('/post/' + router.query.eventId);
   };
 
   return (
