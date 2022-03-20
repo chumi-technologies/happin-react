@@ -15,6 +15,7 @@ interface setData {
   cover: string,
   description: string,
   category: string,
+  descriptionPlainText: string,
 }
 
 const customStyles = {
@@ -116,7 +117,7 @@ export default function CreateEventSet() {
   const onFormSubmit = async (data: setData) => {
     console.log(data)
     if (editorRef.current) {
-      console.log(editorRef.current.getContent());
+      console.log(editorRef.current.getContent(({ format: 'text' })));
       if (editorRef.current.getContent() === "") {
         setDescriptionError(true)
       }
@@ -136,7 +137,8 @@ export default function CreateEventSet() {
           description: editorRef.current.getContent(),
           title: data.title,
           events: selectedEvent.map(e => e._id),
-          categories: [data.category]
+          categories: [data.category],
+          descriptionPlainText: editorRef.current.getContent(({ format: 'text' })),
         }
         await editEventCollection(form, router.query.id as string);
         generateToast('Collection saved and will be reviewed within three days');
@@ -149,6 +151,7 @@ export default function CreateEventSet() {
           ...rest
         }
         form.description = editorRef.current.getContent();
+        form.descriptionPlainText = editorRef.current.getContent(({ format: 'text' }))
         console.log(form)
         const response = await postEventCollectionToHappin(form);
         console.log(response._id)
@@ -307,7 +310,7 @@ export default function CreateEventSet() {
                                     height: 500,
                                     branding: false,
                                     plugins: [
-                                      'link', 'lists', 'autolink', 'paste', 'indent2em',
+                                      'link', 'lists', 'autolink', 'paste', 'indent2em','image'
                                     ],
                                     toolbar: [
                                       'link bold underline strikethrough | indent2em | bullist numlist',
