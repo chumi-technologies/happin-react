@@ -75,15 +75,15 @@ const EventHost = (props: EventHostProps) => {
                     <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
                   </div>
                 </div>
-                <div className="mt-6 mb-2 text-gray-50 font-semibold">Common questions:</div>
+                {/* <div className="mt-6 mb-2 text-gray-50 font-semibold">Common questions:</div>
                 <Stack align="center" className="text-sm text-gray-300">
                   <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613558-can-i-get-a-refund"  className="link-normal">Can I get a refund?</a>
                   <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613572-can-i-confirm-my-order" className="link-normal">How to confirm my order and tickets?</a>
                   <a rel="noreferrer" target="_blank" href="https://help.happin.app/en/articles/5613572-can-i-confirm-my-order" className="link-normal">Where are my tickets?</a>
-                </Stack>
+                </Stack> */}
                 {props.hostEmail ?
                   <>
-                    <div className="h-px bg-gray-600 my-6" />
+                    {/* <div className="h-px bg-gray-600 my-6" /> */}
                     <div className="mb-2 text-gray-50 font-semibold">Have a question for the organizer?</div>
                     <div className="text-sm text-gray-300">See the event page for more information or</div>
                     <a href={`mailto: ${props.hostEmail}`}

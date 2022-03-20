@@ -8,6 +8,7 @@ import Upload from "rc-upload"
 import moment from 'moment-timezone';
 import PopUpModal from "../../components/reusable/PopUpModal";
 import { useUserState } from "contexts/user-state";
+import { Editor } from "@tinymce/tinymce-react";
 
 interface setData {
   title: string,
@@ -66,8 +67,11 @@ export default function CreateEventSet() {
   const [selectedEvent, setSelectedEvent] = useState<any[]>([]);
 
   const [currentSelect, setCurrentSelect] = useState<any>();
+  const [descriptionError, setDescriptionError] = useState<boolean>(false);
   const [createCompleteModal, setCreateCompleteModal] = useState<boolean>(false);
+  const [description, setDescription] = useState<string>('');
   const toast = useToast();
+  const editorRef:any = useRef('');
 
   const [newCollectionId, setNewCollectionId] = useState<string>();
   const [isApproved, setIsApproved] = useState<boolean>();
@@ -110,6 +114,16 @@ export default function CreateEventSet() {
   }
 
   const onFormSubmit = async (data: setData) => {
+    console.log(data)
+    if (editorRef.current) {
+      console.log(editorRef.current.getContent());
+      if (editorRef.current.getContent() === "") {
+        setDescriptionError(true)
+      }
+    }
+    else {
+      setDescriptionError(true)
+    }
     //console.log(data);
     if (!selectedEvent.length) {
       generateToast('A collection should have at least one event');
@@ -119,7 +133,7 @@ export default function CreateEventSet() {
       if (editMode) {
         const form = {
           cover: data.cover,
-          description: data.description,
+          description: editorRef.current.getContent(),
           title: data.title,
           events: selectedEvent.map(e => e._id),
           categories: [data.category]
@@ -134,6 +148,8 @@ export default function CreateEventSet() {
           events,
           ...rest
         }
+        form.description = editorRef.current.getContent();
+        console.log(form)
         const response = await postEventCollectionToHappin(form);
         console.log(response._id)
         setCreateCompleteModal(true);
@@ -161,7 +177,7 @@ export default function CreateEventSet() {
       }
       setValue('title', response.title);
       setValue('category', response.categories[0]);
-      setValue('description', response.description);
+      setDescription(response.description)
       setValue('cover', response.cover);
       setIsApproved(response.isApproved)
       setSelectedEvent(response.events);
@@ -190,6 +206,7 @@ export default function CreateEventSet() {
       console.log(err);
     }
   }
+
 
   return (
     <>
@@ -279,27 +296,33 @@ export default function CreateEventSet() {
                           </div>
                           <div className="lg:col-span-6">
                             <label htmlFor="description" className="form-label required">Write down collection description or why you recommend events</label>
-                            <Controller
-                              name="description"
-                              control={control}
-                              defaultValue={''}
-                              render={({ field: { onChange, onBlur, value } }) => (
-                                <textarea
+ 
+                                <Editor
+                                  apiKey={process.env.NEXT_PUBLIC_RICHTEXT_API_KEY}
+                                  onInit={(evt, editor) => editorRef.current = editor}
+                                  initialValue={description}
                                   id="description"
-                                  rows={3}
-                                  onChange={onChange}
-                                  onBlur={onBlur}
-                                  value={value}
-                                  className="form-field"
-                                  placeholder="Collection Description"
+                                  init={{
+                                    suffix: '.min',
+                                    height: 500,
+                                    branding: false,
+                                    plugins: [
+                                      'link', 'lists', 'autolink', 'paste', 'indent2em',
+                                    ],
+                                    toolbar: [
+                                      'link bold underline strikethrough | indent2em | bullist numlist',
+                                    ],
+                                    images_upload_url: 'https://api.crowdcore.com/prod/activity/uploadImage',
+                                    image_class_list: [
+                                      {title: 'default size', value: 'max-width-100'},
+                                    ],
+                                    content_style: 'body { background-color: #121212;  color:white; }'
+                                  }}
                                 />
-                              )}
-                              rules={{
-                                required: true
-                              }}
-                            />
 
-                            {errors.description && (
+                            
+
+                            {descriptionError && (
                               <div className="text-rose-500 text-sm mt-1">Description is required.</div>
                             )}
                           </div>
