@@ -508,8 +508,7 @@
 
 // My Event Details
 .my-event-details__intro {
-  @apply mr-5 md:mr-6 lg:mr-10;
-  width: 100%;
+  @apply lg:mr-10 w-full;
   @media (min-width: 1024px) {
     width: 450px;
   }

@@ -336,17 +336,30 @@ textarea.form-field {
     content: '';
     width: 27px;
     height: 27px;
-    right: -15px;
     z-index: 1;
   }
-  &:before {
-    top: -15px;
-  }
-  &:after {
-    bottom: -15px;
+  @media (max-width: 639px) {
+    &:before, &:after {
+      bottom: -15px;
+    }
+    &:before {
+      left: -15px;
+    }
+    &:after {
+      right: -15px;
+    }
   }
   @media (min-width: 640px) {
     border-bottom: none;
+    &:before, &:after {
+      right: -15px;
+    }
+    &:before {
+      top: -15px;
+    }
+    &:after {
+      bottom: -15px;
+    }
   }
 }
 .tickets-cover__qrcode {

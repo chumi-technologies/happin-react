@@ -110,11 +110,11 @@ const Playback = () => {
         const public_recording = eventData?.recordings?.filter((item: any) => {
           return item.public === true;
         });
-        // if (public_recording.length === 0) {
-        //   generateToast('No recording for this event, please check agian later.', toast);
-        //   router.push('/my-events')
-        //   return;
-        // }
+        if (public_recording.length === 0) {
+          generateToast('No recording for this event, please check agian later.', toast);
+          router.push('/my-events')
+          return;
+        }
         setRecording(public_recording);
         await checkFollowed();
         await checkMerchs();
