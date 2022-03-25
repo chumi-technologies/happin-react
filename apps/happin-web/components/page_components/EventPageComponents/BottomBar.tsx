@@ -39,27 +39,16 @@ const BottomBar = ({ eventData, setIsChatButtonOpen, setPreventScrolling, setOpe
       setIsOpen(true)
     }
     else {
-      if (eventData.ticketNonPBCount === 0 && eventData.ticketPBCount === 0) {
+      if (eventData.event?.eventHostingType === 'audio') {
         //this event have no ticket
         setIsOpen(true)
       }
-      else {
-        if (eventData.event.sourceUrl) {
-          if (canUseIframe) {
-            (document.querySelector('#scroll-body') as Element).scrollTo(0, 0);
-            setPreventScrolling(true);
-            setOpenIframe(true);
-          } else {
-            window.open(eventData.event.sourceUrl, '_blank');
-          }
-        } else {
-          router.push({ pathname: `/checkout/${eventData.event.eid}`, query: queryParams })
-        }
+      else if (eventData.event?.eventHostingType?.includes('livestream') && eventData.event?.eventHostingType !== 'livestream-saas') {
+        setIsOpen(true)
+      } else {
+        router.push({ pathname: `/checkout/${eventData.event.eid}`, query: queryParams })
       }
     }
-    
-
-    
   }
 
 

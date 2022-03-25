@@ -87,6 +87,7 @@ export interface EventDetail {
   sourceUrl?: string;
   sourceUrlAllowIframe?: boolean;
   isThirdParty?: boolean;
+  eventHostingType?: string;
 }
 export interface TopProfilesItem {
   _id: string;
