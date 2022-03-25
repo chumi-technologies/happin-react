@@ -5,9 +5,9 @@ import SvgIcon from '@components/SvgIcon';
 import { VStack, HStack } from '@chakra-ui/react';
 import classnames from 'classnames';
 import { getEventDetail, getGroupEvents, getTicketsList, getMerchOrdersSummary, getTicketsPlayBackList, getFirebaseCustomToken, checkinTicket, getUserInfo } from "../../../lib/api";
-import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
+import { currencyFormatter } from '@components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { useToast } from '@chakra-ui/react';
-import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
+import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { useUserState } from 'contexts/user-state';
 import moment from 'moment';
 import QRCode from "react-qr-code";
@@ -272,10 +272,7 @@ const MyEventDetails = () => {
                       alt={eventDetails?.event?.title}
                       className="w-full rounded-md" />
                     <div className="font-bold text-lg md:text-xl my-5 md:my-6">{eventDetails?.event?.title}</div>
-                    <VStack
-                      spacing={4}
-                      align="start"
-                    >
+                    <VStack spacing={4} align="start">
                       <div className="flex items-start w-full">
                         <SvgIcon id="clock" className="text-lg text-gray-50" />
                         <div className="ml-3 flex-1">
@@ -338,10 +335,10 @@ const MyEventDetails = () => {
                     {
                       tabCur === 0 && (
                         <VStack spacing={{ base: 5, sm: 8 }}>
-                          {isOwner && 
+                          {isOwner &&
                             <div className="flex sm:flex-col items-center w-full sm:text-center">
                               <div className="flex-1 text-center sm:w-28">
-                                <button onClick={handleTestLiveStreamLink} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Test Link</button>
+                                <button onClick={handleTestLiveStreamLink} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold">Test Link</button>
                               </div>
                             </div>
                           }
@@ -379,14 +376,14 @@ const MyEventDetails = () => {
                                       <div className="flex sm:flex-col items-center w-full sm:text-center">
                                         {
                                           t.ticketType === 'offline' && <div className="mr-4 sm:m-0 flex-shrink-0">
-                                            <div className="sm:font-semibold text-gray-500 sm:text-gray-700 mb-3 text-sm">Your QR Code</div>
+                                            <div className="sm:font-semibold text-gray-500 sm:text-gray-700 mb-4 text-sm">Your QR Code</div>
                                             {/*<img className="w-24 mx-auto" src="/images/qrcode.jpg" alt="" />*/}
                                             <QRCode value={t.ticketCode} size={128} />
                                           </div>
                                         }
                                         {
                                           t.ticketType === 'PFM' && !t.checked && <div className="flex-1 text-center sm:w-28">
-                                            <button onClick={() => { handleCheckIn(t) }} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Check In</button>
+                                            <button onClick={() => { handleCheckIn(t) }} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold">Check In</button>
                                           </div>
                                         }
                                         {
@@ -406,12 +403,12 @@ const MyEventDetails = () => {
                                         }
                                         {
                                           t.ticketType === 'live' && !t.checked && <div className="flex-1 text-center sm:w-28">
-                                            <button onClick={() => { handleCheckIn(t) }} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Check In</button>
+                                            <button onClick={() => { handleCheckIn(t) }} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold">Check In</button>
                                           </div>
                                         }
                                         {
                                           t.ticketType === 'live' && t.checked && <div className="flex-1 text-center sm:w-28">
-                                            <button disabled={moment(new Date()).isAfter(moment(eventDetails?.event?.end_datetime))} onClick={handleEnterLiveStream} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Livestream</button>
+                                            <button disabled={moment(new Date()).isAfter(moment(eventDetails?.event?.end_datetime))} onClick={handleEnterLiveStream} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold">Livestream</button>
                                           </div>
                                         }
                                       </div>
@@ -460,7 +457,7 @@ const MyEventDetails = () => {
                           {tickets && tickets.length > 0 &&
                             <div className="flex sm:flex-col items-center w-full sm:text-center">
                               <div className="flex-1 text-center sm:w-28">
-                                <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold mt-4">Replay</button>
+                                <button onClick={handleReplayVideo} className="btn btn-rose w-32 sm:w-full btn-sm !rounded-full !font-semibold">Replay</button>
                               </div>
                             </div>
                           }

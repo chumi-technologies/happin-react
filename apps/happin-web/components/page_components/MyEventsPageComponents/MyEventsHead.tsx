@@ -12,7 +12,7 @@ const MyEventsHead = ({ upcomingTickets, pastTickets, savedTickets, loading }: M
   return (
     <div className="relative bg-gray-800 border-b border-solid border-gray-700">
       <div className="container">
-        <div className="font-bold text-xl sm:text-2xl mt-3 mb-1">My Events</div>
+        <div className="font-bold text-xl sm:text-2xl my-3">My Events</div>
         {!loading &&
           <>
             <div className="flex">

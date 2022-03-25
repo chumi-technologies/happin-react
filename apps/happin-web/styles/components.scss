@@ -336,14 +336,14 @@ textarea.form-field {
     content: '';
     width: 27px;
     height: 27px;
-    bottom: -15px;
+    right: -15px;
     z-index: 1;
   }
   &:before {
-    left: -15px;
+    top: -15px;
   }
   &:after {
-    right: -15px;
+    bottom: -15px;
   }
   @media (min-width: 640px) {
     border-bottom: none;

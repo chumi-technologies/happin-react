@@ -73,6 +73,7 @@ const Livestream = () => {
   const [showMerch, setShowMerch] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const playerReady = useRef(false);
+  const [videoTips, setVideoTips] = useState('');
 
   const settings = {
     dots: false,
@@ -128,7 +129,7 @@ const Livestream = () => {
     if (router.query.event_id) {
       setEventId(router.query.event_id as string);
       if (!user) {
-        
+
         (async () => {
           try {
             await getUserInfo()
@@ -175,7 +176,7 @@ const Livestream = () => {
         if (ticketList_res && ticketList_res.data) {
           if (ticketList_res.data.event.owner !== user?.id) {
             if (ticketList_res.data.tickets.length === 0) {
-              // this person doesn't have ticket 
+              // this person doesn't have ticket
               generateToast('Please buy ticket.', toast);
               router.push('/my-events')
               return;
@@ -195,7 +196,7 @@ const Livestream = () => {
           }
         }
         // /ticket api
-        //活动结束时间后和isLive是false ，不能进 
+        //活动结束时间后和isLive是false ，不能进
         if (moment(new Date()).isAfter(eventData.eventID.end_datetime) && !eventData.isLive) {
           generateToast('The livestream has ended.', toast);
           router.push('/my-events')
@@ -212,7 +213,7 @@ const Livestream = () => {
             router.push('/my-events')
             return;
           }
-          
+
         }
         await checkMerchs();
         await checkFollowed();
@@ -379,7 +380,7 @@ const Livestream = () => {
       message = event.data[i]
       switch (message.type) {
         case TIM.TYPES.MSG_GRP_TIP:
-          // 收到 Group 系统提示消息 
+          // 收到 Group 系统提示消息
           // 比如有人加入 或退出
           _handleGroupSystemMsg(message);
           break;
@@ -497,10 +498,7 @@ const Livestream = () => {
         }
         loopVideoStart.current = false;
       }
-      const tip = document.querySelector('#video-tip');
-      if (tip) {
-        tip.innerHTML = '';
-      }
+      setVideoTips('');
       loopVideoStart.current = false;
       noVideo.current = false;
       reconnectCount.current = 0;
@@ -698,7 +696,7 @@ const Livestream = () => {
             playerReady.current = true;
           }
           // 当活动提前开始的时候 有可能自动播放失败， 导致playing 事件
-          // 不触发， 从而片头不消失。 所以同时监视progress 当作 failsafe      
+          // 不触发， 从而片头不消失。 所以同时监视progress 当作 failsafe
           // const loopVideo = document.querySelector('#loop_pre_recorded')
           // if (loopVideo) {
           //   (document.querySelector('#loop_video') as HTMLVideoElement).pause();
@@ -731,7 +729,7 @@ const Livestream = () => {
           return;
         }
         if (msg.type === 'playing') { // prevent deplay, refresh every time.
-          
+
           // if (self.pausedAndPlay === 1) {
           //   self.player.load();
           //   self.pausedAndPlay = 0;
@@ -739,7 +737,7 @@ const Livestream = () => {
           // if (!player.current.playing()) {
           //   player.current.play();
           // }
-          
+
 
           // 如果重复播放的片头存在， 而直播播放器在播放的话， 可以移除片头开始直播
           if (loopVideoStart.current) {
@@ -753,10 +751,7 @@ const Livestream = () => {
           }
 
 
-          const tip = document.querySelector('#video-tip');
-          if (tip) {
-            tip.innerHTML = '';
-          }
+          setVideoTips('');
           reconnectCount.current = 0;
           return;
         }
@@ -765,12 +760,12 @@ const Livestream = () => {
           return
         }
         if (msg.type === 'load') {
-          
+
           // const tip = document.querySelector('.tip-container');
           // if (tip) {
           //   tip.remove();
           // }
-          const tip: any = document.querySelector('#video-tip');
+          // const tip: any = document.querySelector('#video-tip');
           // setTimeout(async() => {
           //   if (!playerReady.current) {
           //     const spinner: any = document.querySelector('.vcp-loading');
@@ -800,16 +795,15 @@ const Livestream = () => {
             errorCode = err.innerHTML.match(/\[(.*?)\]/)[1];
             err.setAttribute('style', 'display:none!important');
           }
-          
+
           console.log('player error code:', errorCode)
 
-          const playerElement: any = document.querySelector('.vcp-player');
-          const tip: any = document.querySelector('#video-tip');
           if (errorCode === '12') {
             //错误码 12，api播放地址没有获取成功
             const spinner: any = document.querySelector('.vcp-loading');
             spinner.setAttribute('style', 'display: none')
-            tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+            // tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+            setVideoTips('Failed to fetch livestream, please try to refresh this page.')
           }
           else if (errorCode === '2' || errorCode === '1' || errorCode === '4') {
 
@@ -829,7 +823,7 @@ const Livestream = () => {
               spinner.setAttribute('style', 'display: none')
               // 没有网络
               if (!window.navigator.onLine) {
-                tip.innerHTML = 'You seem to be offline, please check you network status'
+                setVideoTips('You seem to be offline, please check you network status');
                 return;
               }
               await checkIsLive();
@@ -859,7 +853,7 @@ const Livestream = () => {
                   }
                   else {
                     // 直播时间已经到了，但推流还没开始
-                    tip.innerHTML = 'Livestream will start in any minute, be ready!';
+                    setVideoTips('Livestream will start in any minute, be ready!')
                     noVideo.current = true;
                     setTriggerRerender(t => !t);
                   }
@@ -871,20 +865,19 @@ const Livestream = () => {
               }
               else {
                 // server 记录的 该直播已经开始 那么出现 1，2 错误就显示需要刷新
-                console.log("Failed to fetch livestream, please try to refresh this page.")
-                tip.innerHTML = 'Failed to fetch livestream, please try to refresh this page.'
+                setVideoTips('Failed to fetch livestream, please try to refresh this page.')
               }
             }
           }
           else if (errorCode === '5') {
             const spinner: any = document.querySelector('.vcp-loading');
             spinner.setAttribute('style', 'display: none')
-            tip.innerHTML = 'Browser does not support this stream format,<br> please try to open in desktop Chrome.'
+            setVideoTips('Browser does not support this stream format,<br> please try to open in desktop Chrome.')
           }
           else {
             const spinner: any = document.querySelector('.vcp-loading');
             spinner.setAttribute('style', 'display: none')
-            tip.innerHTML = 'Unknown error, please try to refresh.'
+            setVideoTips('Unknown error, please try to refresh.')
           }
         }
       }
@@ -907,16 +900,9 @@ const Livestream = () => {
 
   const streamEndHandler = () => {
     console.log("streamEndHandler")
-
-    const tip = document.querySelector('#video-tip');
-    if (tip) {
-      tip.innerHTML = 'Livestream has end';
-    }
+    setVideoTips('Livestream has end');
     noVideo.current = true;
-
-
     setTriggerRerender(t => !t)
-
   }
 
   const getStreamRoomData = async (event_id: string) => {
@@ -941,7 +927,7 @@ const Livestream = () => {
 
 
   const initializeClock = async (endtime: any) => {
-    const clock = document.getElementById('clockdiv');
+    const clock = document.getElementById('clock');
     const minutesSpan = clock?.querySelector('.minutes');
     const secondsSpan = clock?.querySelector('.seconds');
     async function updateClock() {
@@ -955,8 +941,7 @@ const Livestream = () => {
           loopVideoStart.current = false;
           await checkIsLive();
           if (!isLive.current) {
-            const tip: any = document.querySelector('#video-tip');
-            tip.innerHTML = 'Livestream will start in any minute, be ready!';
+            setVideoTips('Livestream will start in any minute, be ready!');
           }
 
           clearInterval(timeinterval.current);
@@ -1170,12 +1155,17 @@ const Livestream = () => {
     <div className="live-stream__container">
       <Script src="/plugin/TcPlayer-2.4.1.js" onLoad={() => setScriptLoaded(true)} />
       {isLoading ?
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-          <Spinner color="#FE4365" size="xl" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Spinner
+            thickness='4px'
+            speed='0.65s'
+            color='rose.500'
+            size='xl'
+          />
         </div>
         :
-        <div className="live-stream__inner xl:rounded-lg xl:mt-2">
-          <div className="relative flex-1 min-w-0 md:overflow-x-hidden hide-scrollbar">
+        <div className="live-stream__inner xl:rounded-lg">
+          <div className="relative flex-1 flex flex-col min-w-0 md:overflow-x-hidden hide-scrollbar">
             <div className="live-stream__video-bar">
               <div className="flex items-center justify-end px-2 sm:hidden">
                 <div
@@ -1211,10 +1201,10 @@ const Livestream = () => {
                 }
               </div>
             </div>
-            <div className="video-section relative h-screen sm:h-auto sm:aspect-w-16 sm:aspect-h-9">
+            <div className="relative flex-1 xl:aspect-w-16 xl:aspect-h-9">
               <div className="absolute inset-0 bg-black">
               { showMerch &&
-                <div onClick={handleMerchandise} className="merchandise-btn absolute right-3 top-3 inline-flex justify-center items-center w-10 h-10 bg-black bg-opacity-30 rounded-full z-10 transition cursor-pointer hover:bg-opacity-40">
+                <div onClick={handleMerchandise} className="absolute right-3 top-3 inline-flex justify-center items-center w-10 h-10 bg-black bg-opacity-30 rounded-full z-50 transition cursor-pointer hover:bg-opacity-40">
                   <svg width="24px" height="24px" viewBox="0 0 24 24">
                     <path fill="#ffc646" stroke="#ffc646" strokeWidth="2" strokeLinejoin="round" strokeMiterlimit="2" d="M3,6.3v14.2
   c0,0.552,0.448,1,1,1h16c0.552,0,1-0.448,1-1V6.3H3z"/>
@@ -1225,33 +1215,29 @@ const Livestream = () => {
                   </svg>
                 </div>
               }
-                <div className="flex items-center justify-center w-full video-container ">
-                  <div id="video-tip" className="text-white m-auto " ></div>
-                  <div className="video-wrap" id="loop_pre_recorded" style={{ display: (!loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}>
-                    <div>
-                      <div id="clockdiv">
-                        <div>
-                          <span className="minutes"></span>
-                          <div className="smalltext">Minutes</div>
-                        </div>
-                        <div>
-                          <span className="seconds"></span>
-                          <div className="smalltext">Seconds</div>
-                        </div>
+                <div className="relative flex items-center justify-center w-full h-full">
+                  <div className="absolute text-white text-center px-4">{videoTips}</div>
+                  <div className="relative flex items-center justify-center w-full h-full z-10" id="loop_pre_recorded" style={{ display: (!loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}>
+                    <div className="absolute bottom-[15%] sm:bottom-[7%] flex px-1 text-center bg-white/60 rounded-lg z-10" id="clock">
+                      <div className="p-3">
+                        <span className="minutes font-bold text-2xl sm:text-3xl" />
+                        <div className="mt-2 text-sm font-medium text-gray-700">Minutes</div>
                       </div>
-                      {/* <div id="count_ended">
-                        <span>Livestream will start in any minute, be ready!</span>
-                      </div> */}
-                      <video width="100%" height="100%" autoPlay playsInline muted loop onCanPlay={(e) => (e.target as HTMLVideoElement).play()}
-                        id="loop_video" onLoadedMetadata={(e) => (e.target as HTMLVideoElement).muted = true} controls>
-                        <source src={eventData.countDownVideoUrl} type="video/mp4" />
-                      </video>
+                      <div className="p-3">
+                        <span className="seconds font-bold text-2xl sm:text-3xl" />
+                        <div className="mt-2 text-sm font-medium text-gray-700">Seconds</div>
+                      </div>
                     </div>
+                    {/* <div id="count_ended">
+                      <span>Livestream will start in any minute, be ready!</span>
+                    </div> */}
+                    <video className="w-full h-full" width="100%" height="100%" autoPlay playsInline muted loop onCanPlay={(e) => (e.target as HTMLVideoElement).play()}
+                      id="loop_video" onLoadedMetadata={(e) => (e.target as HTMLVideoElement).muted = true}>
+                      <source src={eventData.countDownVideoUrl} type="video/mp4" />
+                    </video>
                   </div>
-                  <div id="id_test_video" className="video-wrap" style={{ display: (loopVideoStart.current || noVideo.current) ? 'none' : 'block' }}></div>
-
+                  <div id="id_test_video" className="w-full h-full pb-24 sm:pb-0" style={{ display: (loopVideoStart.current || noVideo.current) ? 'none' : 'block' }} />
                 </div>
-
               </div>
             </div>
             <div className="bg-gray-800 px-6 hidden sm:block">
@@ -1334,72 +1320,67 @@ const Livestream = () => {
         initialFocusRef={false}
         onDismiss={() => setChatShow(false)}
         snapPoints={({ minHeight }) => minHeight}
-        header={
-          <div className="h-1 w-full" />
-        }
       >
-        <div>
-          <div className="mt-1 mb-2 px-2">
-            {timSDKReady.current &&
-              <Slider {...settings}>
-                {
-                  gifts.map((item: any, index: number) => (
-                    <div key={index} onClick={() => sendGift(item)}
-                      className="flex flex-col justify-center text-center py-2.5 px-1.5 cursor-pointer overflow-hidden group hover:bg-gray-700 transition">
-                      <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.icon} alt={item.name} />
-                      <div className="truncate text-gray-400 text-sm font-medium mt-2 group-hover:text-gray-50 transition">{item.name}</div>
-                      <div className="flex items-center justify-center mt-1">
-                        <img className="w-3 mr-1" src={`/images/icon-${item.valueType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
-                        <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.value}</span>
-                      </div>
+        <div className="px-2 mb-1.5">
+          {timSDKReady.current &&
+            <Slider {...settings}>
+              {
+                gifts.map((item: any, index: number) => (
+                  <div key={index} onClick={() => sendGift(item)}
+                    className="flex flex-col justify-center text-center p-1.5 rounded-md cursor-pointer overflow-hidden group hover:bg-gray-700 transition">
+                    <img className="w-7 h-7 md:w-8 md:h-8 mx-auto" src={item.icon} alt={item.name} />
+                    <div className="truncate text-gray-400 text-sm font-medium mt-2 group-hover:text-gray-50 transition">{item.name}</div>
+                    <div className="flex items-center justify-center mt-1">
+                      <img className="w-3 mr-1" src={`/images/icon-${item.valueType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
+                      <span className="text-tiny text-gray-300 font-semibold group-hover:text-gray-100 transition">{item.value}</span>
                     </div>
-                  ))
-                }
-              </Slider>
-            }
-          </div>
-          <div className="flex flex-col w-full bg-gray-700">
-            <div className="live-stream__chat-room web-scroll">
-              <div className="pt-3 pb-1.5">
-                {chatRoomMessageList.current.map((item: any, index: number) => {
-                  if (item.type === "message") {
-                    return <ChatItem key={index} data={item} />
-                  }
-                  else {
-                    return <ChatItem isGift giftImg={item.giftImage} key={index} data={item} />
-                  }
-                })}
-              </div>
-            </div>
-            <div className="relative flex items-center bg-black bg-opacity-40 footer-action">
-              {emojiShow && (
-                <Picker
-                  theme="dark"
-                  include={['recent', 'search', 'people']}
-                  color="#fe4365"
-                  showPreview={false}
-                  showSkinTones={false}
-                  style={{ position: 'absolute', bottom: '100%', left: '0', width: '100%' }}
-                  onSelect={(emoji) => senderRef.current?.onSelectEmoji(emoji)}
-                />
-              )}
-              {timSDKReady.current &&
-                <Sender
-                  ref={senderRef}
-                  emojiShow={emojiShow}
-                  sendMessage={handlerSendMsn}
-                  placeholder="Send something..."
-                  disabled={false}
-                  maxlength={120}
-                  // onClick={handleSendMessage}
-                  onTextInputChange={onTextInputChange}
-                  onPressEmoji={() => {
-                    setEmojiShow(s => !s)
-                    senderRef.current.focus()
-                  }}
-                />
+                  </div>
+                ))
               }
+            </Slider>
+          }
+        </div>
+        <div className="flex flex-col w-full bg-gray-700">
+          <div className="live-stream__chat-room web-scroll">
+            <div className="pt-3 pb-1.5">
+              {chatRoomMessageList.current.map((item: any, index: number) => {
+                if (item.type === "message") {
+                  return <ChatItem key={index} data={item} />
+                }
+                else {
+                  return <ChatItem isGift giftImg={item.giftImage} key={index} data={item} />
+                }
+              })}
             </div>
+          </div>
+          <div className="relative flex items-center bg-black bg-opacity-40 footer-action">
+            {emojiShow && (
+              <Picker
+                theme="dark"
+                include={['recent', 'search', 'people']}
+                color="#fe4365"
+                showPreview={false}
+                showSkinTones={false}
+                style={{ position: 'absolute', bottom: '100%', left: '0', width: '100%' }}
+                onSelect={(emoji) => senderRef.current?.onSelectEmoji(emoji)}
+              />
+            )}
+            {timSDKReady.current &&
+              <Sender
+                ref={senderRef}
+                emojiShow={emojiShow}
+                sendMessage={handlerSendMsn}
+                placeholder="Send something..."
+                disabled={false}
+                maxlength={120}
+                // onClick={handleSendMessage}
+                onTextInputChange={onTextInputChange}
+                onPressEmoji={() => {
+                  setEmojiShow(s => !s)
+                  senderRef.current.focus()
+                }}
+              />
+            }
           </div>
         </div>
       </BottomSheet>

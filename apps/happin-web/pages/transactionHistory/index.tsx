@@ -20,7 +20,7 @@ const TransactionHistory = () => {
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
   const [ diamondTransaction, setDiamondTransaction ] = useState<Transaction[]>([])
   const [ coinTransaction, setCoinTransaction ] = useState<Transaction[]>([])
-  // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([]) 
+  // const [ weeklyTask, setWeeklyTask ] = useState<TaskDetail[]>([])
   const toast = useToast();
   const tab = ['Coin', 'Diamond']
 
@@ -48,7 +48,7 @@ const TransactionHistory = () => {
   }
 
 
-  
+
 
 
   const handleSendToAPP = (type:string) => {
@@ -92,7 +92,7 @@ const TransactionHistory = () => {
                 generateToast('Get reward error', toast);
                 console.log('Get reward error: ', error)
               }
-              
+
             })()
     }
   },[user])
@@ -123,7 +123,7 @@ const TransactionHistory = () => {
                 generateToast('Get reward error', toast);
                 console.log('Get reward error: ', error)
               }
-              
+
             })()
           }
       }
@@ -183,14 +183,14 @@ const TransactionHistory = () => {
               <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" key={`transactionCoin-${index}`}>
                 <div className="flex items-center">
                   <div className="relative">
-                    {transaction.icon ? 
-                        <img className={'transaction-avator'} src={transaction.icon} />
+                    {transaction.icon ?
+                        <img className="w-12 h-12 rounded-full" src={transaction.icon} />
                       :
                         <img src="/images/happinIcon.svg" />
                     }
                         {/* <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/> */}
                   </div>
-                  {transaction.title ? 
+                  {transaction.title ?
                     <div className="px-4">
                       <div className="text-medium leading-6 text-white font-semibold">{transaction.title}</div>
                       <div className="text-gray-400 text-sm leading-5">{transaction.content}</div>
@@ -217,14 +217,14 @@ const TransactionHistory = () => {
                 <div className="bg-gray-800 rounded-xl px-4 py-4 mb-4" key={`transactionDiamond-${index}`}>
                   <div className="flex items-center">
                     <div className="relative">
-                      {transaction.icon ? 
-                          <img className={'transaction-avator'} src={transaction.icon} />
+                      {transaction.icon ?
+                          <img className="w-12 h-12 rounded-full" src={transaction.icon} />
                         :
                           <img src="/images/happinIcon.svg" />
                       }
                           {/* <img className="absolute bottom-0 right-0 avator-icon" src="/images/icon_cheers.svg"/> */}
                     </div>
-                    {transaction.title ? 
+                    {transaction.title ?
                       <div className="px-4">
                             <div className="text-medium leading-6 text-white font-semibold">{transaction.title}</div>
                             <div className="text-gray-400 text-sm leading-5">{transaction.content}</div>
