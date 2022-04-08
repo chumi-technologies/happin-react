@@ -89,17 +89,17 @@ instanceHappin.interceptors.response.use(
     return res;
   },
   async (err) => {
-    const oringinalConfig = err.config;
+    const originalConfig = err.config;
     if (err.response) {
-      if (err.response.data.message.includes('expired') && !oringinalConfig._retry) {
-        oringinalConfig._retry = true;
+      if (err.response.data.message.includes('expired') && !originalConfig._retry) {
+        originalConfig._retry = true;
         try {
           const response = await refreshToken();
           const {id_token, refresh_token} = response;
           window.localStorage.setItem('happin_web_jwt', id_token);
           window.localStorage.setItem('happin_refresh_token', refresh_token);
           instanceHappin.defaults.headers.common['authorization'] = `Bearer ${id_token}`;
-          return instanceHappin(oringinalConfig)
+          return instanceHappin(originalConfig)
         } catch (_error) {
           if(_error.response && _error.response.data) {
             return Promise.reject(_error.response.data)

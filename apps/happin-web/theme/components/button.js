@@ -60,7 +60,7 @@ const Button = {
   baseStyle: {
     lineHeight: "1",
     fontWeight: "medium",
-    borderRadius: "full",
+    // borderRadius: "full",
     overflow: "hidden",
   },
   variants: {

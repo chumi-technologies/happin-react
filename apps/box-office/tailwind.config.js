@@ -1,9 +1,7 @@
 // const colors = require('tailwindcss/colors');
 const colors = require('./theme/colors');
 module.exports = {
-  mode: 'jit',
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   theme: {
     colors,
     fontSize: {
@@ -22,21 +20,6 @@ module.exports = {
       '8xl': ['6rem', { lineHeight: '1' }],
       '9xl': ['8rem', { lineHeight: '1' }],
     },
-    fontFamily: {
-      sans: [
-        'Helvetica Neue',
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"PingFang SC"',
-        'Helvetica',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"',
-        '"Noto Color Emoji"'
-      ]
-    },
     transitionDuration: {
       DEFAULT: '200ms',
       75: '75ms',
@@ -50,12 +33,12 @@ module.exports = {
     },
     zIndex: {
       '0': 0,
-     '10': 10,
-     '20': 20,
-     '30': 30,
-     '40': 40,
-     '50': 50,
-     '100': 100,
+      '10': 10,
+      '20': 20,
+      '30': 30,
+      '40': 40,
+      '50': 50,
+      '100': 100,
       'auto': 'auto',
     },
     screens: {
@@ -68,9 +51,6 @@ module.exports = {
       xl: '1280px'
       // @media (min-width: 1280px) {}
     },
-    extend: {},
-  },
-  variants: {
     extend: {},
   },
   corePlugins: {

@@ -49,7 +49,7 @@ const SSO = () => {
   // parent received a message from iframe
   const onReceiveMessage = async (e: MessageEvent) => {
     if (e.origin !== process.env.NEXT_PUBLIC_HAPPIN_SSO) return;
-    console.log("onReceiveMessage", e.data);
+    // console.log("onReceiveMessage", e.data);
     const { action, payload } = e.data || {};
     if (action === 'close') hideSSO();
     if (action === 'get_token') {

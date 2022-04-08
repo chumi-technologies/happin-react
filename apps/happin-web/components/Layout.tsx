@@ -7,6 +7,7 @@ import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
 import Footer from "./Footer";
 import { getWhiteLabelDomain } from "lib/api";
+import Script from 'next/script';
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
@@ -134,7 +135,7 @@ const Layout = ({ children }: { children: any }) => {
           </Header>
         }
         {children}
-        {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo}></Footer>}
+        {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo} />}
       </main>
     </>
   );

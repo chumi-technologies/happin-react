@@ -673,13 +673,6 @@
   }
 }
 
-.event-submit__form {
-  margin-bottom: 50px;
-  @media (max-width: 768px) {
-    margin-bottom: 80px;
-  }
-}
-
 // Footer
 .foot-menu {
   @apply space-y-3 list-none text-gray-300 text-sm mt-4;

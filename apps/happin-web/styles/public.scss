@@ -47,6 +47,7 @@
   }
 }
 .header {
+  @apply relative z-10;
   .production &{
     @apply sticky top-0 z-10;
   }

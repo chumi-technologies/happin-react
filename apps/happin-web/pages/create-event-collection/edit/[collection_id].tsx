@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Controller, useForm } from 'react-hook-form';
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { Transition } from '@headlessui/react';
@@ -7,19 +8,22 @@ import AsyncSelect from 'react-select/async';
 import AsyncCreatableSelect from 'react-select/async-creatable';
 import Upload from 'rc-upload';
 import moment from 'moment-timezone';
+import { useUserState } from 'contexts/user-state';
 import { Editor } from '@tinymce/tinymce-react';
 import { components, ControlProps, StylesConfig, ThemeConfig } from 'react-select';
-import Modal from '@components/reusable/Modal';
 import { debounce } from 'lodash';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import classnames from 'classnames';
 import { SearchIcon } from '@chakra-ui/icons';
 import {
+  editEventCollection,
+  getEventCollection,
   postEventCollectionAppend,
-  postEventCollectionToHappin,
+  postEventCollectionRemove,
   searchEvent,
   getAppTags,
+  getCollectionEvents
 } from 'lib/api';
-import Link from 'next/link';
-import Scroll from 'react-scroll';
 
 type selectOption = {
   label: string;
@@ -104,12 +108,19 @@ const Control = ({ children, ...rest }: ControlProps<asyncEvents, false>) => {
 };
 
 export default function CreateEventSet() {
+  const [step, setStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isEventsLoading, setIsEventsLoading] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [currentSelect, setCurrentSelect] = useState<any>();
-  const [createCompleteModal, setCreateCompleteModal] = useState(false);
-  const [newCollectionId, setNewCollectionId] = useState<string>('');
+  const [eventList, setEventList] = useState<asyncEvents[]>([]);
+  const [events, setEvents] = useState({
+    page: 1,
+    pageSize: 10,
+    hasMore: true
+  });
 
+  const { user } = useUserState();
   const router = useRouter();
   const toast = useToast();
   const editorRef = useRef<any>(null);
@@ -126,14 +137,9 @@ export default function CreateEventSet() {
   const {
     handleSubmit,
     reset,
-    setValue,
-    watch,
-    trigger,
     formState: { errors, isSubmitting, isDirty, isValid },
     control,
   } = useForm<formData>({ mode: 'all' });
-
-  const selectedEvent = watch('events');
 
   useEffect(() => {
     (async () => {
@@ -143,32 +149,98 @@ export default function CreateEventSet() {
     })();
   }, [])
 
-  const removeItemAtIndex = (arr: any[], index: number) => {
-    return [...arr.slice(0, index), ...arr.slice(index + 1)];
-  };
+  useEffect(() => {
+    let isMounted = true;
+    (async () => {
+      if (router.query.collection_id && user) {
+        isMounted && setIsLoading(true);
+        await fetchCollection();
+        await fetchCollectionEvents(isMounted, true);
+        isMounted && setIsLoading(false);
+      }
+    })();
+    return () => { isMounted = false };
+  }, [router, user])
 
-  const onFormSubmit = async (data: formData) => {
-    setIsLoading(true);
+  const fetchCollection = async () => {
     try {
-      const form = {
-        title: data.title,
-        tags: data.tags.map(i => i.value),
-        description: data.description,
-        cover: data.cover,
+      const res = await getEventCollection(String(router.query.collection_id));
+      if (res.creator._id !== user?._id) {
+        generateToast('You are not allowed to edit this collection')
+        await router.push('/')
+        return
       }
-      const res = await postEventCollectionToHappin(form);
-      setNewCollectionId(res.data._id);
-      const append = {
-        collection: res.data._id,
-        eventIds: data.events.map(i => i.value)
-      }
-      await postEventCollectionAppend(append);
-      setCreateCompleteModal(true);
+      reset({
+        title: res.title,
+        tags: res.tags.map((i: string) => ({value: i, label: i})),
+        cover: res.cover,
+        description: res.description,
+      })
     } catch (err) {
       console.log(err)
-    } finally {
-      setIsLoading(false);
     }
+  }
+
+  const fetchCollectionEvents = async (newFetch = false, isMounted = true) => {
+    try {
+      const res = await getCollectionEvents(
+        String(router.query.collection_id), (newFetch ? 1 : events.page), events.pageSize
+      );
+      console.log(res);
+      if (res.data.events.length < events.pageSize && isMounted) {
+        setEvents({...events, hasMore: false})
+      }
+      if (res.code === 200) {
+        const events = res.data.events.map((item: any) => ({
+          value: item._id,
+          label: item.title,
+          cover: item.cover,
+          location: `${item.street}, ${item.city}, ${item.state}, ${item.country}`,
+          date: moment.utc(item.start_datetime).tz(timeZone.current).format('ddd MMM D ・ H:mm A')
+        }))
+        if (newFetch) {
+          isMounted && setEventList(events)
+        } else {
+          isMounted && setEventList([...eventList, ...events])
+        }
+        isMounted && setEvents(s => ({...s, page: s.page + 1}))
+      } else {
+        generateToast(res.message)
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const fetchMoreEvents = async () => {
+    try {
+      if (!events.hasMore) {
+        return;
+      }
+      await fetchCollectionEvents();
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  const onFormSubmit = (data: formData) => {
+    const form = {
+      title: data.title,
+      tags: data.tags.map(i => i.value),
+      description: data.description,
+      cover: data.cover,
+      // descriptionPlainText: editorRef.current.getContent(({ format: 'text' })),
+    }
+    editEventCollection(form, String(router.query.collection_id)).then(res => {
+      if (res.code === 200) {
+        reset({...form, tags: data.tags});
+        generateToast('Collection saved and will be reviewed within three days');
+      } else {
+        generateToast(res.message);
+      }
+    }).catch(err => {
+      console.log(err)
+    });
   }
 
   const getAsyncOptions = (inputValue: string) => {
@@ -213,6 +285,57 @@ export default function CreateEventSet() {
     )
   };
 
+  const handleAppend = (value: any) => {
+    setCurrentSelect(null);
+    asyncRef?.current.blur();
+    if (!eventList.map((e: any) => e.value).includes(value?.value)) {
+      setIsEventsLoading(true);
+      const append = {
+        collection: router.query.collection_id,
+        eventIds: [value?.value]
+      }
+      postEventCollectionAppend(append).then(async res => {
+        if (res.code === 200) {
+          await setEvents(s => ({
+            ...s,
+            page: 1,
+            hasMore: true
+          }))
+          await fetchCollectionEvents(true);
+          generateToast('Successfully append!')
+        } else {
+          generateToast(res.msg)
+        }
+      }).catch(err => {
+        console.log(err);
+      }).finally(() => setIsEventsLoading(false));
+    } else {
+      generateToast('Duplicate record');
+    }
+  };
+  const handleRemove= (id: any) => {
+    setIsEventsLoading(true);
+    const remove = {
+      collection: router.query.collection_id,
+      eventIds: [id]
+    }
+    postEventCollectionRemove(remove).then(async res => {
+      if (res.code === 200) {
+        await setEvents(s => ({
+          ...s,
+          page: 1,
+          hasMore: true
+        }))
+        await fetchCollectionEvents(true);
+        generateToast('Successfully deleted!');
+      } else {
+        generateToast(res.msg)
+      }
+    }).catch(err => {
+      console.log(err);
+    }).finally(() => setIsEventsLoading(false));
+  };
+
   return (
     <>
       <Transition
@@ -234,15 +357,36 @@ export default function CreateEventSet() {
       </Transition>
       <div className="container">
         <div className="max-w-4xl mx-auto">
-          <div className="pb-4 md:pb-8 mb-4 md:mb-8 mt-2 md:mt-4 border-b border-gray-800">
-            <h1 className="black-title text-2xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10">
-              Create event collection
+          <div className="sm:pb-4 md:pb-6 mb-4 sm:mb-6 md:mb-8 mt-2 md:mt-4 border-b border-gray-600 sm:border-gray-800">
+            <h1 className="black-title text-xl sm:text-3xl md:text-4xl text-gray-50 font-bold lg:pr-10">
+              Edit event collection
             </h1>
-            <h2 className="text-base sm:text-xl text-gray-300 mt-1 sm:mt-3 leading-5">
-              Collection page is your unique channel to show all of your recommended events. You can share it with your community, so members can consistently follow you and attend events.
-            </h2>
+            <div className="mt-1 sm:mt-3">
+              <h2 className="black-title text-base sm:text-lg text-gray-50">
+                <span className="mr-2 text-gray-300">Preview link:</span>
+                <Link href={`/event-collection/${router.query.collection_id}`}>
+                  <a className="text-rose-500 hover:text-rose-600 underline transition break-all">
+                    {`https://happin.app/event-collection/${router.query.collection_id}`}
+                  </a>
+                </Link>
+              </h2>
+            </div>
+            <div className="flex sm:space-x-5 mt-3 md:mt-4">
+              {
+                ['Collection Details', 'Collection Events'].map((item, index) => (
+                  <div
+                    key={index}
+                    className={classnames('flex-1 text-center rounded-t-md sm:rounded-lg px-3 py-1.5 sm:px-4 sm:py-2.5 cursor-pointer transition',
+                      step === index ? 'bg-rose-500' : 'sm:bg-gray-800 hover:bg-gray-700')}
+                    onClick={() => setStep(index)}
+                  >
+                    <div className={classnames('font-medium', step === index ? 'text-gray-50' : 'text-gray-400 sm:text-gray-200')}>{item}</div>
+                  </div>
+                ))
+              }
+            </div>
           </div>
-          <form className="pb-6 md:pb-10">
+          <form className="pb-6 md:pb-10" hidden={step === 1}>
             <div className="space-y-4 md：space-y-5">
               <div>
                 <label htmlFor="title" className="form-label required">Title</label>
@@ -359,7 +503,7 @@ export default function CreateEventSet() {
                     >
                       {
                         !value && !uploadingCover &&
-                        <div className="text-center px-5">
+                        <div className="text-center">
                           <h1 className="text-base sm:text-xl mb-2 text-gray-500 font-medium">
                             Drag & drop or click to add image (JPEG, PNG)
                           </h1>
@@ -388,100 +532,6 @@ export default function CreateEventSet() {
                   <div className="text-rose-500 text-sm ml-1 mt-1">Collection cover is required.</div>
                 )}
               </div>
-              <div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="events" className="form-label required">Collection Events (type to search)</label>
-                  {
-                    selectedEvent?.length > 0 && (
-                      <div className="text-sm text-gray-400 mb-1.5">
-                        <span className="font-medium text-gray-50">{selectedEvent?.length}</span> Selected
-                      </div>
-                    )
-                  }
-                </div>
-                <Controller
-                  name="events"
-                  control={control}
-                  defaultValue={[]}
-                  render={({ field: { onBlur, onChange } }) => (
-                    <AsyncSelect<asyncEvents, false>
-                      ref={asyncRef}
-                      instanceId="events"
-                      loadOptions={loadOptions}
-                      value={currentSelect}
-                      onBlur={onBlur}
-                      placeholder="Type event title..."
-                      menuPlacement={selectedEvent?.length > 3 ? 'bottom' : 'top'}
-                      onChange={value => {
-                        setCurrentSelect(null);
-                        asyncRef?.current.blur();
-                        if (!selectedEvent.map((e: any) => e.value).includes(value?.value)) {
-                          onChange([...selectedEvent, value])
-                        } else {
-                          generateToast('Duplicate record');
-                        }
-                      }}
-                      theme={selectTheme}
-                      styles={selectStyles}
-                      components={{Control}}
-                      formatOptionLabel={formatOptionLabel}
-                    />
-                  )}
-                  rules={{required: true}}
-                />
-                {errors.events && (
-                  <div className="text-rose-500 text-sm ml-1 mt-1">Collection events is required.</div>
-                )}
-                {
-                  selectedEvent?.length > 0 && (
-                    <div
-                      className="mt-3 rounded-lg border border-dashed border-gray-600 overflow-y-auto"
-                      style={{maxHeight: 300}}
-                    >
-                      <div className="px-3 sm:px-5 sm:py-2 divide-y divide-gray-700">
-                        {
-                          selectedEvent.map((item, index) => (
-                            <div key={item.value} className="flex items-center py-3 w-full">
-                              <span className="hidden sm:block w-6 sm:w-8 sm:text-lg font-medium mr-4 text-gray-100">
-                                #{index + 1}
-                              </span>
-                              <a href={`https://happin.app/post/${item.value}`}
-                                 target="_blank"
-                                 rel="noopener noreferrer"
-                                 className="block"
-                              >
-                                <img className="w-12 h-12 object-cover rounded bg-gray-700" src={item.cover} alt="" />
-                              </a>
-                              <div className="flex flex-col flex-1 min-w-0 mx-3 sm:mx-4">
-                                <a href={`https://happin.app/post/${item.value}`}
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   className="text-sm sm:text-base truncate sm:text-clip text-gray-50 font-medium leading-5 mb-1"
-                                >
-                                  {item.label}
-                                </a>
-                                <div className="text-xs sm:text-sm truncate sm:text-clip text-gray-400">
-                                  {item.date}
-                                </div>
-                              </div>
-                              <button
-                                className="btn btn-xs btn-rose sm:!h-8 sm:!py-0 sm:!px-3 sm:!text-sm !rounded-full"
-                                type="button"
-                                onClick={async () => {
-                                  setValue('events', removeItemAtIndex(selectedEvent, index))
-                                  await trigger('events')
-                                }}
-                              >
-                                Remove
-                              </button>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    </div>
-                  )
-                }
-              </div>
             </div>
 
             <div className="mt-6 md:mt-10">
@@ -497,70 +547,123 @@ export default function CreateEventSet() {
                 disabled={!isDirty || !isValid}
                 onClick={handleSubmit(onFormSubmit)}
               >
-                Submit
+                Update
               </Button>
             </div>
           </form>
+          <div className="pb-6 md:pb-10" hidden={step === 0}>
+            <div className="flex items-center justify-between">
+              <label htmlFor="events" className="form-label">Collection Events (type to search)</label>
+              {
+                eventList?.length > 0 && (
+                  <div className="text-sm text-gray-400 mb-1.5">
+                    <span className="font-medium text-gray-50">{eventList?.length}</span> Selected
+                  </div>
+                )
+              }
+            </div>
+            <AsyncSelect<asyncEvents, false>
+              ref={asyncRef}
+              instanceId="events"
+              loadOptions={loadOptions}
+              value={currentSelect}
+              placeholder="Type event title..."
+              onChange={handleAppend}
+              theme={selectTheme}
+              styles={selectStyles}
+              components={{Control}}
+              formatOptionLabel={formatOptionLabel}
+            />
+            <div className="relative">
+              <Transition
+                show={isEventsLoading}
+                enter="transition-opacity duration-75"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="transition-opacity duration-150"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+                className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 z-10"
+              >
+                <Spinner
+                  thickness="3px"
+                  speed="0.65s"
+                  color="yellow.500"
+                  size="md"
+                />
+              </Transition>
+              {
+                eventList?.length > 0 && (
+                  <div
+                    id="scrollable"
+                    className="mt-3 rounded-lg border border-dashed border-gray-600 overflow-y-auto"
+                    style={{maxHeight: 400}}
+                  >
+                    <InfiniteScroll
+                      className="px-3 sm:px-5 sm:py-2 divide-y divide-gray-700"
+                      dataLength={eventList.length}
+                      next={fetchMoreEvents}
+                      hasMore={events.hasMore}
+                      scrollableTarget="scrollable"
+                      loader={
+                        <div className="flex items-center justify-center w-full pt-2">
+                          <Spinner
+                            thickness="2px"
+                            speed="0.65s"
+                            color="yellow.500"
+                            size="sm"
+                          />
+                          <span className="text-gray-200 ml-2">Loading...</span>
+                        </div>
+                      }
+                    >
+                      {
+                        eventList.map((item, index) => (
+                          <div key={item.value} className="flex items-center py-3 w-full">
+                          <span className="hidden sm:block w-6 sm:w-8 sm:text-lg font-medium mr-4 text-gray-100">
+                            #{index + 1}
+                          </span>
+                            <a href={`https://happin.app/post/${item.value}`}
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               className="block"
+                            >
+                              <img
+                                className="w-12 h-12 object-cover rounded bg-gray-700"
+                                src={item.cover}
+                                alt=""
+                              />
+                            </a>
+                            <div className="flex flex-col flex-1 min-w-0 mx-3 sm:mx-4">
+                              <a href={`https://happin.app/post/${item.value}`}
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="text-sm sm:text-base truncate sm:text-clip text-gray-50 font-medium leading-5 mb-1"
+                              >
+                                {item.label}
+                              </a>
+                              <div className="text-xs sm:text-sm truncate sm:text-clip text-gray-400">
+                                {item.date}
+                              </div>
+                            </div>
+                            <button
+                              className="btn btn-xs btn-rose sm:!h-8 sm:!py-0 sm:!px-3 sm:!text-sm !rounded-full"
+                              type="button"
+                              onClick={() => handleRemove(item.value)}
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ))
+                      }
+                    </InfiniteScroll>
+                  </div>
+                )
+              }
+            </div>
+          </div>
         </div>
       </div>
-      {/* create success modal */}
-      <Modal
-        isOpen={createCompleteModal}
-        setIsOpen={setCreateCompleteModal}
-        maskClosable={false}
-        onClose={async () => {
-          await router.push('/my-event-collections')
-        }}
-        title={
-          <div className="flex items-center">
-            <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
-              <path d="M24 44C29.5228 44 34.5228 41.7614 38.1421 38.1421C41.7614 34.5228 44 29.5228 44 24C44 18.4772 41.7614 13.4772 38.1421 9.85786C34.5228 6.23858 29.5228 4 24 4C18.4772 4 13.4772 6.23858 9.85786 9.85786C6.23858 13.4772 4 18.4772 4 24C4 29.5228 6.23858 34.5228 9.85786 38.1421C13.4772 41.7614 18.4772 44 24 44Z" fill="#60EBA0" stroke="#60EBA0" strokeWidth="4" strokeLinejoin="round" />
-              <path d="M16 24L22 30L34 18" stroke="#222222" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <h3 className="ml-3 text-lg sm:text-xl font-bold leading-6 text-gray-50">Redeem Completed</h3>
-          </div>
-        }
-      >
-        <div className="text-left">
-          <p className="sm:px-4 text-lg text-gray-50 font-medium">Collection saved and will be reviewed within three days</p>
-          <p className="sm:px-4 mt-2 text-gray-100 font-medium">
-            <span className="mr-1.5">To edit or preview,</span>
-            <Link href={`/create-event-collection/edit/${newCollectionId}`}>
-              <a className="text-rose-500 hover:text-rose-600 underline transition">Click Here</a>
-            </Link>
-          </p>
-          <div className="flex justify-end mt-7">
-            <button
-              className="btn btn-dark-light"
-              onClick={() => {
-                reset({
-                  title: '',
-                  tags: [],
-                  cover: '',
-                  description: '',
-                  events: []
-                });
-                setNewCollectionId('');
-                setCreateCompleteModal(false);
-                Scroll.animateScroll.scrollToTop({
-                  duration: 400,
-                  smooth: true,
-                })
-              }}
-            >
-              Continue to add
-            </button>
-            <button
-              className="btn btn-rose ml-3"
-              onClick={async () => {
-                await router.push('/my-event-collections')
-              }}
-            >
-              Go back to list
-            </button>
-          </div>
-        </div>
-      </Modal>
     </>
   )
 }
