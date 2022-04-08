@@ -11,7 +11,7 @@ import moment from 'moment-timezone';
 import { useUserState } from 'contexts/user-state';
 import { Editor } from '@tinymce/tinymce-react';
 import { components, ControlProps, StylesConfig, ThemeConfig } from 'react-select';
-import { debounce } from 'lodash';
+import { debounce, omit } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import classnames from 'classnames';
 import { SearchIcon } from '@chakra-ui/icons';
@@ -186,7 +186,6 @@ export default function CreateEventSet() {
       const res = await getCollectionEvents(
         String(router.query.collection_id), (newFetch ? 1 : events.page), events.pageSize
       );
-      console.log(res);
       if (res.data.events.length < events.pageSize && isMounted) {
         setEvents({...events, hasMore: false})
       }
@@ -228,12 +227,12 @@ export default function CreateEventSet() {
       title: data.title,
       tags: data.tags.map(i => i.value),
       description: data.description,
+      descriptionPlainText: editorRef.current.getContent(({ format: 'text' })),
       cover: data.cover,
-      // descriptionPlainText: editorRef.current.getContent(({ format: 'text' })),
     }
     editEventCollection(form, String(router.query.collection_id)).then(res => {
       if (res.code === 200) {
-        reset({...form, tags: data.tags});
+        reset({...omit(form, 'descriptionPlainText'), tags: data.tags});
         generateToast('Collection saved and will be reviewed within three days');
       } else {
         generateToast(res.message);
@@ -397,6 +396,7 @@ export default function CreateEventSet() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <input
                       type="text"
+                      readOnly
                       className="form-field"
                       placeholder="Event Title"
                       onBlur={onBlur}
@@ -404,13 +404,9 @@ export default function CreateEventSet() {
                       value={value}
                     />
                   )}
-                  rules={{
-                    required: true
-                  }}
                 />
-                {errors.title && (
-                  <div className="text-rose-500 text-sm ml-1 mt-1">Title is required.</div>
-                )}
+                <div className="text-gray-400 text-sm ml-1 mt-1">You cannot change title after creation.
+                </div>
               </div>
               <div>
                 <label htmlFor="tags" className="form-label required">Tags</label>

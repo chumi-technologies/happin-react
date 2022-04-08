@@ -154,6 +154,7 @@ export default function CreateEventSet() {
         title: data.title,
         tags: data.tags.map(i => i.value),
         description: data.description,
+        descriptionPlainText: editorRef.current.getContent(({ format: 'text' })),
         cover: data.cover,
       }
       const res = await postEventCollectionToHappin(form);

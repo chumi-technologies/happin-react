@@ -1,10 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState, useRef } from 'react';
 import { CloseSmall } from '@icon-park/react';
-import classnames from 'classnames';
-import { noConflict } from 'lodash';
 import { useEffect } from 'react';
-import router from 'next/router';
 
 type EventDescriptionProps = {
   description?: string;
@@ -15,7 +12,14 @@ type EventDescriptionProps = {
   canUseIframe?: boolean,
 }
 
-const EventDescription = ({ description, rawDescription = "", sourceURL, setOpenIframe, canUseIframe, setPreventScrolling }: EventDescriptionProps) => {
+const EventDescription = ({
+  description,
+  rawDescription = "",
+  sourceURL,
+  setOpenIframe,
+  canUseIframe,
+  setPreventScrolling
+}: EventDescriptionProps) => {
   let focuButtonRef = useRef(null)
 
   const [noTextContent, setNoTextContent] = useState<boolean>(false);

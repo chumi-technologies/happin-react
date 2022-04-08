@@ -13,6 +13,7 @@ export interface ICollectionData {
   _id: string;
   cover: string;
   description: string;
+  descriptionPlainText: string;
   tags: string[];
   title: string;
   isApproved: boolean;
@@ -150,7 +151,9 @@ const EventSet = () => {
             <div className="h-px bg-gray-600" />
             <div className="py-6 sm:py-10">
               {collectionData?.description &&
-                <EventDescription rawDescription={collectionData?.description} description={collectionData?.description}
+                <EventDescription
+                  rawDescription={collectionData?.descriptionPlainText}
+                  description={collectionData?.description}
                 />
               }
             </div>
