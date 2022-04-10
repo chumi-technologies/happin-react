@@ -126,6 +126,7 @@ const Layout = ({ children }: { children: any }) => {
         <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </Head>
+      {/*<Script src="https://maps.googleapis.com/maps/api/js?libraries=places" strategy="beforeInteractive" />*/}
       <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage, 'mobile-fixed': mobileFixed})}>
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}

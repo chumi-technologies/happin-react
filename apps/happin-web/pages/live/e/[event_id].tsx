@@ -10,7 +10,6 @@ import TIM from 'tim-js-sdk';
 import { getUserInfo } from "lib/api";
 import randomColor from 'randomcolor';
 import ReactPlayer from 'react-player'
-import EventSet from "pages/event-collection/[set_id]";
 
 interface LiveStream {
     // user: any;
@@ -66,13 +65,13 @@ const LiveStream = (props: LiveStream) => {
     const [ timSDKReady, setTimSDKReady ] = useState(false);
     const [ tim, setTIM ]:any = useState(null);
 
-    
+
     const stream_customizeSetting = eventData?.customizeSetting ? eventData.customizeSetting : {};
     const stream_eventID = eventData?.eventID ? eventData.eventID : {};
 
-    // get user session 
+    // get user session
     useEffect( () => {
-        
+
         console.log("initial")
         // #TODO isPlateformBrowser ? 为什么要检查这个？
         window.onblur = () => { setIsTabActive(false) };
@@ -84,7 +83,7 @@ const LiveStream = (props: LiveStream) => {
             setAdminChecking(true);
         }
         if (preview) {
-            setPreviewBackground(true); 
+            setPreviewBackground(true);
         }
         setInnerWidth(window.innerWidth);
 
@@ -94,7 +93,7 @@ const LiveStream = (props: LiveStream) => {
             showSSOSignUp('Fan')
         })
 
-        
+
     },[])
 
     // TIM setup
@@ -122,7 +121,7 @@ const LiveStream = (props: LiveStream) => {
                 //     }
                 //     this.checkTickets();
                 // }
-                
+
             })
         }
     }, [user])
@@ -133,7 +132,7 @@ const LiveStream = (props: LiveStream) => {
             let options = {
                 SDKAppID: process.env.NEXT_PUBLIC_IM_SDKAPPID ? parseInt(process.env.NEXT_PUBLIC_IM_SDKAPPID) : 0,
             };
-            let tim = TIM.create(options); 
+            let tim = TIM.create(options);
 
             // only showing error log
             tim.setLogLevel(3)
@@ -141,7 +140,7 @@ const LiveStream = (props: LiveStream) => {
             tim.on(TIM.EVENT.SDK_NOT_READY, onTimSDKNotReady);
             tim.on(TIM.EVENT.KICKED_OUT, onTimSDKKicked);
             tim.on(TIM.EVENT.MESSAGE_RECEIVED, _handleAllIncomeMessage);
-            
+
             loginToTIM(eventData.streamGroupID,tim);
 
             setTIM(tim);
@@ -204,8 +203,8 @@ const LiveStream = (props: LiveStream) => {
                 //     console.log(res)
                 // })
                 // // get All history message
-                
-                
+
+
             }
             else {
                 console.log('Failed login to tim.');
@@ -292,7 +291,7 @@ const LiveStream = (props: LiveStream) => {
             //     break
             // }
         } else if (dataObj.type === 'stream/trivia-question/start') {
-            
+
         } else if (dataObj.type === 'stream/start') {
             console.log("streamStart")
             setStreamStart(true);
@@ -303,7 +302,7 @@ const LiveStream = (props: LiveStream) => {
             // 在活动正式开始之后结束推流， 当作活动结束
             setStreamTip('Livestream has ended. Replay will be available within 30 minutes');
             // const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
-      
+
             // if (isSafari) {
             //   // safari 断流情况  播放器并不会 报错。。。
             //   const player = document.querySelector('.vcp-player');
@@ -327,7 +326,7 @@ const LiveStream = (props: LiveStream) => {
             //     this.renderer.appendChild(player, tip);
             //   }
         }
-    
+
 
     }
     const _handleAllIncomeMessage = (event:any) => {
@@ -382,7 +381,7 @@ const LiveStream = (props: LiveStream) => {
         );
       }
 
-    
+
 
     // const _handleTextMsg = (message:any) => {
     //     this.textMsgEvent.next(message)
@@ -394,11 +393,11 @@ const LiveStream = (props: LiveStream) => {
         const secondsSpan = clock?.querySelector('.seconds');
         function updateClock() {
           const t = getTimeRemaining(endtime);
-    
+
           if (minutesSpan && secondsSpan) {
             minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
             secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
-        
+
             if (t.total <= 0) {
                 const countEnd = document.getElementById('count_ended');
                 countEnd?.setAttribute('style', 'display: inline-block');
@@ -406,7 +405,7 @@ const LiveStream = (props: LiveStream) => {
             }
           }
         }
-    
+
         updateClock();
         const timeinterval = setInterval(updateClock, 1000);
     }
@@ -415,7 +414,7 @@ const LiveStream = (props: LiveStream) => {
         const total = Date.parse(endtime.toString()) - Date.parse(new Date().toString());
         const seconds = Math.floor((total / 1000) % 60);
         const minutes = Math.floor((total / 1000 / 60) % 60);
-    
+
         return {
           total,
           minutes,
@@ -432,7 +431,7 @@ const LiveStream = (props: LiveStream) => {
             }
             else {
                 console.log('streamRoom', res.data);
-                
+
                 const eventData = res.data;
                 const streamRoomID = res.data.streamGroupID;
                 const streamRoomGroupID = res.data._id;
@@ -469,7 +468,7 @@ const LiveStream = (props: LiveStream) => {
                     setTimeout(() => { router.push('/my-events') }, 1000)
                     return;
                 }
-                
+
                 // 如果在一小时内进入的话 创建一个video layer, 播放循环片头
                 if (moment(new Date()).isBetween(oneHourBefore, moment(eventData.eventID.start_datetime))) {
                     const deadline = new Date(eventData.eventID.start_datetime);
@@ -493,7 +492,7 @@ const LiveStream = (props: LiveStream) => {
 
     const handleInputChange = (event: any) => {
         setMessageToBeSent(event.target.value)
-        
+
     }
 
     const sendText = async () => {
@@ -507,7 +506,7 @@ const LiveStream = (props: LiveStream) => {
         // this.sendNotification('Please buy ticket')
         // return;
         // }
-    
+
         if (user.displayname === '' || (user.displayname.includes('Happin user') && user.displayname.length === 17) || !user.photourl) {
             // this.completeProfileModal.open();
             return;
@@ -535,7 +534,7 @@ const LiveStream = (props: LiveStream) => {
             }
 
             setMessageToBeSent('');
-    
+
         } catch (err:any) {
             if (err.message.includes('禁言')) {
                 generateToast('Your acconunt is banned',toast);
@@ -693,10 +692,10 @@ const LiveStream = (props: LiveStream) => {
                                                     </div>
                                                 </div>
                                                 <div className="chat-send">
-                                                    { !user?._id && 
+                                                    { !user?._id &&
                                                         <button className="btn btn-primary btn-sm" disabled>Send</button>
                                                     }
-                                                    { user?._id && 
+                                                    { user?._id &&
                                                         <button className="btn btn-primary btn-sm" disabled={!timSDKReady}
                                                         onClick={() => sendText()} >{timSDKReady ? 'Send' : 'Joining chat room...'}</button>
                                                     }
@@ -712,7 +711,7 @@ const LiveStream = (props: LiveStream) => {
                     </div>
                 </div>
             }
-                    
+
         </div>
     );
 };
@@ -721,7 +720,7 @@ export default LiveStream;
 
 export async function getServerSideProps(context: { params: { event_id: string, customToken: string, preview: string, t: string } }) {
 
-    
+
     return {
         props: {
             "params": context.params,

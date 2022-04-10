@@ -13,15 +13,15 @@ import { Delete } from '@icon-park/react';
 import { Checkbox, HStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
-import { currencyFormatter } from '../../../components/page_components/CheckoutPageComponents/util/currencyFormat';
+import { currencyFormatter } from '@components/page_components/CheckoutPageComponents/util/currencyFormat';
 import { CartTicketItem, TicketItemDataProps, MerchItemDataProps, CartBundleItem, CartMerchItem, OrderItem, MappingQuestionsResponse } from '../../../lib/model/checkout';
 import { useRouter } from 'next/router';
 import { useToast } from '@chakra-ui/react';
 import Select from "react-select";
 import countryList from 'react-select-country-list';
-import { deleteTicketFromCart, deleteMerchFromCart } from '../../../components/page_components/CheckoutPageComponents/util/deleteInput';
-import { decreaseBundleTicketAmount } from '../../../components/page_components/CheckoutPageComponents/util/decreseInput';
-import { generateToast } from '../../../components/page_components/CheckoutPageComponents/util/toast';
+import { deleteTicketFromCart, deleteMerchFromCart } from '@components/page_components/CheckoutPageComponents/util/deleteInput';
+import { decreaseBundleTicketAmount } from '@components/page_components/CheckoutPageComponents/util/decreseInput';
+import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { validateCode, lockCheckoutTickets, releaseLockCheckoutTickets, submitPayment, getOrderStatus, updateOrderFromCart, getCheckoutFormQuestions } from '../../../lib/api';
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButton } from "react-paypal-button-v2";
@@ -772,9 +772,9 @@ const PaymentInner = (props: any) => {
               <Select
                 styles={customStyles}
                 options={shippingOptions}
-                onChange={(val) => { onChange(val.value); onSelectCountryChange(val) }}
+                onChange={(val: any) => { onChange(val?.value); onSelectCountryChange(val) }}
                 onBlur={onBlur}
-                selected={value}
+                value={value}
               />
             )}
             rules={{
@@ -931,7 +931,7 @@ const PaymentInner = (props: any) => {
                                           options={q.definedAnswers}
                                           onChange={(val) => { onChange(val) }}
                                           onBlur={onBlur}
-                                          selected={value}
+                                          value={value}
                                         />
                                       )}
                                       rules={
@@ -960,7 +960,7 @@ const PaymentInner = (props: any) => {
                                           options={q.definedAnswers}
                                           onChange={(val) => { onChange(val) }}
                                           onBlur={onBlur}
-                                          selected={value}
+                                          value={value}
                                         />
                                       )}
                                       rules={
@@ -1078,7 +1078,7 @@ const PaymentInner = (props: any) => {
                                           options={q.definedAnswers}
                                           onChange={(val) => { onChange(val) }}
                                           onBlur={onBlur}
-                                          selected={value}
+                                          value={value}
                                         />
                                       )}
                                       rules={
@@ -1107,7 +1107,7 @@ const PaymentInner = (props: any) => {
                                           options={q.definedAnswers}
                                           onChange={(val) => { onChange(val) }}
                                           onBlur={onBlur}
-                                          selected={value}
+                                          value={value}
                                         />
                                       )}
                                       rules={

@@ -371,7 +371,7 @@ export default function CreateEventSet() {
                       }
                       {
                         (value && !uploadingCover) &&
-                        <img className="h-full" style={{ padding: '10px' }} src={value.startsWith('https://') ? value : 'https://images.chumi.co/' + value} alt="" />
+                        <img className="h-full p-3" src={value.startsWith('https://') ? value : 'https://images.chumi.co/' + value} alt="" />
                       }
                       {
                         uploadingCover &&

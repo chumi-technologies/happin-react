@@ -44,7 +44,7 @@ export default function Home() {
             if (!signin) {
               try {
                 await signUpHappin(firebaseToken, { version: 2 });
-              } catch (err) {
+              } catch (err: any) {
                 if (err.message.includes('already associated')) {
                   toggleMode()
                   toast.error('User exists, please log in');
@@ -58,7 +58,7 @@ export default function Home() {
             // check user exist or not
             try {
               await getHappinUser(firebaseToken);
-            } catch (err) {
+            } catch (err: any) {
               if(err.response) {
                 if (err.response.data.code === 401) {
                   await signUpHappin(firebaseToken, { version: 2 });

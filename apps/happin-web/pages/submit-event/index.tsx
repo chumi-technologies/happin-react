@@ -3,7 +3,7 @@ import { useSSOState } from "contexts/sso-state";
 import { useUserState } from "contexts/user-state";
 import { crawlThirdPartyEvent, exchangeDashboardEventHostToken } from "lib/api";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import React, { useState } from "react";
 import ThirdPartyEvent from "../../components/page_components/SubmitEventPageComponents/ThirdPartyEvent";
 
 export interface IThirdPartyEvent {
@@ -123,8 +123,13 @@ export default function SubmitEvent() {
               </div> :
               <div className="event-submit__container h-full flex items-center justify-center">
                 <div className="flex items-center justify-center " style={{ margin: 'auto', flexDirection: 'column' }}>
-                  <Spinner size="xl" color="yellow"></Spinner>
-                  <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3 font-bold">We are processing the event</h1>
+                  <Spinner
+                    thickness="4px"
+                    speed="0.65s"
+                    color="yellow.500"
+                    size="xl"
+                  />
+                  <h1 className="text-base sm:text-xl text-gray-50 mt-1 sm:mt-3 font-semibold">We are processing the event</h1>
                 </div>
               </div>
             }

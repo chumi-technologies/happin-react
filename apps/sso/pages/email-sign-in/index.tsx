@@ -66,7 +66,7 @@ export default function EmailSignIn() {
         setProcessing(false)
       }, 2000)
       // getHappinWebURL
-    } catch (err) {
+    } catch (err: any) {
       if (err.code === 'auth/wrong-password') {
         toast.error('The password is invalid')
       } else if (err.code === 'auth/user-not-found') {

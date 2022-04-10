@@ -307,6 +307,9 @@ button {
   &.is-placeholder {
     @apply text-gray-400
   }
+  &[disabled] {
+    @apply bg-gray-800 hover:border-gray-600 text-gray-300 opacity-75 cursor-not-allowed;
+  }
   &[readonly] {
     @apply bg-gray-800 hover:border-gray-600 text-gray-300;
   }

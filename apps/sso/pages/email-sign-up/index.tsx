@@ -91,7 +91,7 @@ export default function EmailSignUp() {
       setTimeout(()=> {
         setProcessing(false)
       }, 2000)
-    } catch (error) {
+    } catch (error: any) {
       if (error.code.includes('auth/email-already-in-use')) {
         toast.error('Email exists, please try another email to sign up.')
       } else if (error.code === 'auth/invalid-email') {

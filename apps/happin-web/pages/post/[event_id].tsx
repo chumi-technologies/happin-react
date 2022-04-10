@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import SignInBar from '../../components/SignInBar'
 import PopUpModal from "../../components/reusable/PopUpModal";
-import ActionSideBar from "../../components/page_components/EventPageComponents/ActionSideBar";
 import EventSection from "../../components/page_components/EventPageComponents/EventSection";
 import BottomBar from "../../components/page_components/EventPageComponents/BottomBar";
 import EventDates from "../../components/page_components/EventPageComponents/EventDates";

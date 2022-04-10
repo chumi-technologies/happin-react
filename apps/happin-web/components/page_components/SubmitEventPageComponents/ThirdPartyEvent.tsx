@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 import { Left } from '@icon-park/react';
 import { Controller, useForm } from "react-hook-form";
-import { Select, Spinner, useToast } from "@chakra-ui/react";
+import { Spinner, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
+import Select, { StylesConfig, ThemeConfig } from 'react-select';
 import { getEventCategories, postEventToHappin } from "lib/api";
-// @ts-ignore
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import AutoComplete from "react-google-autocomplete";
 import Upload from "rc-upload"
 import { IThirdPartyEvent } from "pages/submit-event";
 import { useRouter } from "next/router";
+import GooglePlacesAutocomplete, { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
+type selectOption = {
+  label: string;
+  value: any;
+}
 type FormData = {
   title: string;
-  type: string;
+  type: selectOption | null;
   description: string;
   startTime: Date;
   endTime: Date;
@@ -22,8 +27,64 @@ type FormData = {
   cover: string;
 };
 
-export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEventSubmit, setThirdPartyEventData, thirdPartyReadOnlyProps, setThirdPartyReadOnlyProps }:
-  {
+const selectStyles: StylesConfig<any, boolean> = {
+  control: (provided, state) => ({
+    ...provided,
+    background: 'transparent',
+    boxShadow: 'none',
+    borderWidth: '2px',
+    borderColor: state.isFocused ? '#808080' : '#454545',
+    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+  }),
+  valueContainer: (provided, state) => ({
+    ...provided,
+    padding: '2px 12px'
+  }),
+  menu: (provided) => ({
+    ...provided,
+    background: '#222222'
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    color: state.isSelected ? '#fafafa' : '#e8e8e8',
+    backgroundColor: state.isSelected ? '#454545' : (state.isFocused ? '#333' : 'transparent')
+  }),
+  multiValue: (provided) => ({
+    ...provided,
+    color: '#fafafa',
+    backgroundColor: '#454545'
+  }),
+  multiValueRemove: (styles) => ({
+    ...styles,
+    color: '#808080',
+    ':hover': {
+      color: '#e8e8e8',
+    },
+  }),
+};
+const selectTheme: ThemeConfig = theme => ({
+  ...theme,
+  borderRadius: 8,
+  spacing: {
+    ...theme.spacing,
+    controlHeight: 44,
+  },
+  colors: {
+    ...theme.colors,
+    primary: '#808080',
+    primary50: '#3d3d3d',
+    neutral30: '#808080',
+    neutral80: '#fafafa',
+  }
+});
+
+export default function ThirdPartyEvent({
+  thirdPartyEventData,
+  setThirdPartyEventSubmit,
+  setThirdPartyEventData,
+  thirdPartyReadOnlyProps,
+  setThirdPartyReadOnlyProps
+}: {
     thirdPartyEventData: IThirdPartyEvent,
     setThirdPartyEventSubmit: (arg: boolean) => void,
     setThirdPartyEventData: (arg: IThirdPartyEvent | undefined) => void,
@@ -31,16 +92,15 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
     setThirdPartyReadOnlyProps: (arg: any) => void
   }) {
   const {
-    register,
     handleSubmit,
-    //formState,
+    reset,
+    watch,
     formState: { errors, isSubmitting },
     control,
-    //getValues
   } = useForm<FormData>({ mode: 'all' });
   const router = useRouter();
   const [uploadingCover, setUploadingCover] = useState<boolean>(false);
-  const [eventTags, setEventTags] = useState<string[]>();
+  const [eventTags, setEventTags] = useState<selectOption[]>();
   const [eventSubmitted, setEventSubmitted] = useState<boolean>(false);
   const [eventId, setEventId] = useState<string>();
 
@@ -52,47 +112,85 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
       isClosable: true,
     })
   }
+  const lo = watch('location');
 
   useEffect(() => {
-    getEventTags()
+    console.log(lo);
+  }, [lo]);
+
+
+  useEffect(() => {
+    console.log(thirdPartyEventData);
+    reset({
+      title: thirdPartyEventData.title,
+      type: {
+        value: thirdPartyEventData.type,
+        label: thirdPartyEventData.type
+      },
+      description: thirdPartyEventData.content,
+      startTime: thirdPartyEventData.startDate ? new Date(thirdPartyEventData.startDate * 1000) : undefined,
+      endTime: thirdPartyEventData.endDate ? new Date(thirdPartyEventData.endDate * 1000) : undefined,
+      location: thirdPartyEventData.location,
+      cover: thirdPartyEventData.cover,
+    });
+    (async () => {
+      try {
+        const res = await getEventCategories();
+        const list = Object.keys(res).map(item => ({value: item, label: item}))
+        console.log(list);
+        setEventTags(list)
+      } catch (err) {
+        console.log(err)
+      }
+    })();
   }, [])
 
-  const getEventTags = async () => {
-    try {
-      const response: any = await getEventCategories();
-      console.log(response);
-      setEventTags(Object.keys(response))
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
   const onFormSubmit = async (data: FormData) => {
-    //console.log(data);
-    const formToSubmit = thirdPartyEventData;
-    formToSubmit.cover = data.cover;
-    formToSubmit.startDate = Math.round(data.startTime.getTime() / 1000);
-    formToSubmit.endDate = Math.round(data.endTime.getTime() / 1000);
-    formToSubmit.title = data.title;
-    formToSubmit.content = data.description;
-    formToSubmit.type = data.type;
-    formToSubmit.subType = '';
-    formToSubmit.images = [data.cover];
-    delete formToSubmit.geo;
-    if (typeof data.location === 'object') {
-      const province = data.location.address_components.find((a: any) => a.types[0] === 'administrative_area_level_1');
-      const adminAreaLevel2 = data.location.address_components.find((a: any) => a.types[0] === 'administrative_area_level_2');
-      const locality = data.location.address_components.find((a: any) => a.types.includes('locality'));
-      const country = data.location.address_components.find((a: any) => a.types.includes('country'));
-      const city = locality || adminAreaLevel2;
-      formToSubmit.state = province.short_name;
-      formToSubmit.city = city.short_name;
-      formToSubmit.country = country.short_name;
-      formToSubmit.location = data.location.formatted_address
+    const terms = data.location.value.terms;
+    const location = await geocodeByPlaceId(data.location.value.place_id);
+    const form = {
+      ...thirdPartyEventData,
+      title: data.title,
+      content: data.description,
+      cover: data.cover,
+      type: data.type!.value,
+      subType: '',
+      startDate: Math.round(data.startTime.getTime() / 1000),
+      endDate: Math.round(data.endTime.getTime() / 1000),
+      images: [data.cover],
+      country: terms[3].value,
+      state: terms[2].value,
+      city: terms[1].value,
+      street: terms[0].value,
+      location: data.location.label,
+      geo: [location[0].geometry.location.lat(), location[0].geometry.location.lng()]
     }
-    console.log(formToSubmit);
+    console.log(form);
+    //console.log(data);
+    // const formToSubmit = thirdPartyEventData;
+    // formToSubmit.cover = data.cover;
+    // formToSubmit.startDate = Math.round(data.startTime.getTime() / 1000);
+    // formToSubmit.endDate = Math.round(data.endTime.getTime() / 1000);
+    // formToSubmit.title = data.title;
+    // formToSubmit.content = data.description;
+    // formToSubmit.type = data.type?.value;
+    // formToSubmit.subType = '';
+    // formToSubmit.images = [data.cover];
+    // delete formToSubmit.geo;
+    // if (typeof data.location === 'object') {
+    //   const province = data.location.address_components.find((a: any) => a.types[0] === 'administrative_area_level_1');
+    //   const adminAreaLevel2 = data.location.address_components.find((a: any) => a.types[0] === 'administrative_area_level_2');
+    //   const locality = data.location.address_components.find((a: any) => a.types.includes('locality'));
+    //   const country = data.location.address_components.find((a: any) => a.types.includes('country'));
+    //   const city = locality || adminAreaLevel2;
+    //   formToSubmit.state = province.short_name;
+    //   formToSubmit.city = city.short_name;
+    //   formToSubmit.country = country.short_name;
+    //   formToSubmit.location = data.location.formatted_address
+    // }
+    // console.log(formToSubmit);
     try {
-      const response = await postEventToHappin(formToSubmit);
+      const response = await postEventToHappin(form);
       console.log(response);
       if(response.code === 9111000) {
         generateToast('Duplicate event');
@@ -112,19 +210,24 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
           <div className="container">
             <div className="flex items-center py-3 sm:py-0 sm:h-20 ">
               <div className="flex items-center sm:flex-1 min-w-0">
-                <button onClick={() => { setThirdPartyEventSubmit(false); setThirdPartyEventData(undefined), setThirdPartyReadOnlyProps(undefined) }} className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
+                <button
+                  onClick={() => {
+                    setThirdPartyEventSubmit(false);
+                    setThirdPartyEventData(undefined);
+                    setThirdPartyReadOnlyProps(undefined);
+                  }}
+                  className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
                   <Left theme="outline" size="24" fill="currentColor" />
                 </button>
                 <div className="flex-1 font-semibold min-w-0 sm:block">
                   <div className="text-gray-50 text-center">Share third party event</div>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
         {eventSubmitted ? <>
-          <div className="flex items-center justify-center" style={{ margin: 'auto' }}>
+          <div className="flex items-center justify-center mx-auto">
             <div className="mt-10 flex items-center justify-center" style={{ width: '80%', padding: '20px', flexDirection: 'column' }}>
               <h1 className="black-title text-base sm:text-xl text-gray-50 mt-1 sm:mt-3 text-center">Congrats! you just successfully submitted an event, the event group chat is automatically created under your
                 moderation, please find it on your happin mobile app. {`Don't`} forget to share with your friends!
@@ -148,7 +251,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             <Controller
                               name="title"
                               control={control}
-                              defaultValue={thirdPartyEventData?.title || ''}
+                              defaultValue=""
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <input
                                   type="text"
@@ -174,7 +277,7 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             <Controller
                               name="description"
                               control={control}
-                              defaultValue={thirdPartyEventData?.content || ''}
+                              defaultValue=""
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <textarea
                                   disabled={thirdPartyReadOnlyProps?.includes('content')}
@@ -197,12 +300,12 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
 
                           </div>
 
-                          <div className="lg:col-span-3">
+                          {/*<div className="lg:col-span-3">
                             <label htmlFor="location" className="form-label">Event Address</label>
                             <Controller
                               name="location"
                               control={control}
-                              defaultValue={thirdPartyEventData?.location || ''}
+                              defaultValue=""
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <>
                                   {thirdPartyReadOnlyProps?.includes('location') ?
@@ -215,15 +318,45 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                                     <AutoComplete
                                       defaultValue={thirdPartyEventData?.location || ''}
                                       className="form-field"
+                                      language="en"
                                       apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY}
                                       onBlur={onBlur}
                                       placeholder="Location not required if it's an online event"
                                       inputAutocompleteValue={value?.formatted_address || value}
                                       options={{ types: ['address'] }}
-                                      onPlaceSelected={(place: any) => { onChange(place) }}
+                                      onPlaceSelected={place => {
+                                        console.log(place);
+                                        onChange(place)
+                                      }}
                                     />
                                   }
                                 </>
+                              )}
+                            />
+                          </div>*/}
+
+                          <div className="lg:col-span-3">
+                            <label htmlFor="location" className="form-label">Event Address</label>
+                            <Controller
+                              name="location"
+                              control={control}
+                              render={({ field: { onChange, onBlur, value } }) => (
+                                <GooglePlacesAutocomplete
+                                  apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY}
+                                  apiOptions={{ language: 'en' }}
+                                  autocompletionRequest={{types: ['address']}}
+                                  selectProps={{
+                                    instanceId: 'address',
+                                    value,
+                                    onChange,
+                                    onBlur,
+                                    isDisabled: thirdPartyReadOnlyProps.includes('location'),
+                                    placeholder: 'City of the event',
+                                    isClearable: true,
+                                    theme: selectTheme,
+                                    styles: selectStyles
+                                  }}
+                                />
                               )}
                             />
                           </div>
@@ -233,27 +366,20 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             <Controller
                               name="type"
                               control={control}
-                              defaultValue={thirdPartyEventData?.type || ''}
+                              defaultValue={null}
                               render={({ field: { onChange, onBlur, value } }) => (
-                                <>
-                                  {thirdPartyReadOnlyProps?.includes('type') ?
-                                    <input
-                                      disabled
-                                      value={thirdPartyEventData?.type || ''}
-                                      className="form-field"
-                                    />
-                                    :
-                                    <Select
-                                      iconColor={'#fff'}
-                                      className="form-field"
-                                      style={{ paddingTop: '0', marginTop: '6px', border: '2px solid #454545' }}
-                                      selected={value} onBlur={onBlur}
-                                      onChange={(val) => { onChange(val.target.value); }}
-                                      placeholder="Select a type">
-                                      {eventTags?.map(category => <option value={category} key={category}>{category}</option>)}
-                                    </Select>
-                                  }
-                                </>
+                                <Select
+                                  instanceId="type"
+                                  value={value}
+                                  onBlur={onBlur}
+                                  options={eventTags}
+                                  onChange={onChange}
+                                  theme={selectTheme}
+                                  styles={selectStyles}
+                                  isClearable
+                                  isDisabled={thirdPartyReadOnlyProps.includes('type')}
+                                  placeholder="Select a type"
+                                />
                               )}
                               rules={{
                                 required: true
@@ -267,20 +393,48 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                           <div className="lg:col-span-6">
                             <label htmlFor="cover" className="form-label required">Event Cover</label>
                             <Controller
-                              defaultValue={thirdPartyEventData?.cover || ''}
+                              defaultValue=""
                               name="cover"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <Upload
-                                  disabled={thirdPartyReadOnlyProps?.includes('cover')}
-                                  className='mt-2'
+                                  className="relative flex justify-center items-center w-full h-52 rounded-lg border-2 border-dashed border-gray-600"
                                   onBlur={onBlur}
                                   action='https://api.crowdcore.com/prod/activity/uploadImage'
-                                  type="drag" accept='image/*' style={{ display: 'block', borderRadius: '0.5rem', border: '2px #454545 dashed', height: 200 }}
-                                  onSuccess={(file: any) => { setUploadingCover(false); onChange(file.location) }} onProgress={(_step: any, _file: any) => { setUploadingCover(true) }}>
-                                  {!value && <div className="flex items-center h-full justify-center "><h1 className="black-title text-base sm:text-xl text-center p-5" style={{ color: '#454545' }}>Drag & drop or click to add image (JPEG, PNG)</h1></div>}
-                                  {(value && !uploadingCover) && <div className="flex items-center h-full justify-center "><img className="h-full" style={{ padding: '10px' }} src={value.startsWith('https://') ? value : 'https://images.chumi.co/' + value} alt="" /></div>}
-                                  {uploadingCover && <div className="flex items-center h-full justify-center "><Spinner size="xl" color="yellow"></Spinner></div>}
+                                  type="drag"
+                                  accept='image/*'
+                                  onSuccess={file => {
+                                    setUploadingCover(false);
+                                    onChange(file.location)
+                                  }}
+                                  onProgress={(step, file) => {
+                                    setUploadingCover(true)
+                                  }}
+                                >
+                                  {
+                                    !value && !uploadingCover &&
+                                    <div className="text-center">
+                                      <h1 className="text-base sm:text-xl mb-2 text-gray-500 font-medium">
+                                        Drag & drop or click to add image (JPEG, PNG)
+                                      </h1>
+                                      <h1 className="text-sm sm:text-base text-gray-500/80">
+                                        Best resolution is width 660 x height 800
+                                      </h1>
+                                    </div>
+                                  }
+                                  {
+                                    (value && !uploadingCover) &&
+                                    <img className="h-full p-3" src={value.startsWith('https://') ? value : 'https://images.chumi.co/' + value} alt="" />
+                                  }
+                                  {
+                                    uploadingCover &&
+                                    <Spinner
+                                      thickness="4px"
+                                      speed="0.65s"
+                                      color="yellow.500"
+                                      size="xl"
+                                    />
+                                  }
                                 </Upload>
                               )}
                               rules={{
@@ -292,16 +446,26 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                             )}
                           </div>
 
-
-
                           <div className="lg:col-span-3">
                             <label htmlFor="startTime" className="form-label required">Event Start Time</label>
                             <Controller
-                              defaultValue={thirdPartyEventData?.startDate ? new Date(thirdPartyEventData?.startDate * 1000) : undefined}
+                              defaultValue={undefined}
                               name="startTime"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
-                                <DatePicker disabled={thirdPartyReadOnlyProps?.includes('startDate')} dateFormat="Pp" onBlur={onBlur} className="form-field" showTimeSelect selected={value} onChange={(date: any) => { onChange(date); console.log(date) }} />
+                                <DatePicker
+                                  disabled={thirdPartyReadOnlyProps?.includes('startDate')}
+                                  dateFormat="Pp"
+                                  onBlur={onBlur}
+                                  className="form-field"
+                                  placeholderText="Event Start Time"
+                                  showTimeSelect
+                                  selected={value}
+                                  onChange={date => {
+                                    onChange(date);
+                                    console.log(date)
+                                  }}
+                                />
                               )}
                               rules={{
                                 required: true
@@ -315,11 +479,23 @@ export default function ThirdPartyEvent({ thirdPartyEventData, setThirdPartyEven
                           <div className="lg:col-span-3">
                             <label htmlFor="endTime" className="form-label required">Event End Time</label>
                             <Controller
-                              defaultValue={thirdPartyEventData?.endDate ? new Date(thirdPartyEventData?.endDate * 1000) : undefined}
+                              defaultValue={undefined}
                               name="endTime"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
-                                <DatePicker disabled={thirdPartyReadOnlyProps?.includes('endDate')} dateFormat="Pp" onBlur={onBlur} className="form-field" showTimeSelect selected={value} onChange={(date: any) => { onChange(date); console.log(date) }} />
+                                <DatePicker
+                                  disabled={thirdPartyReadOnlyProps?.includes('endDate')}
+                                  dateFormat="Pp"
+                                  onBlur={onBlur}
+                                  className="form-field"
+                                  placeholderText="Event End Time"
+                                  showTimeSelect
+                                  selected={value}
+                                  onChange={date => {
+                                    onChange(date);
+                                    console.log(date)
+                                  }}
+                                />
                               )}
                               rules={{
                                 required: true

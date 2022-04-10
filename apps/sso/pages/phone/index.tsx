@@ -49,7 +49,7 @@ export default function Phone() {
         setSigninResult(res)
         setVerificationSent(true)
         setResendTimer(60)
-      }, err => {
+      }, (err: any) => {
         if(err.code === 'auth/too-many-requests') {
           toast.error('Too many attempts, please try again later')
         }
@@ -78,7 +78,7 @@ export default function Phone() {
       setTimeout(()=> {
         setProcessing(false)
       }, 2000)
-    } catch (err) {
+    } catch (err: any) {
       if (err.message.includes('already')) {
         toggleMode()
         toast.error('User exists, please log in');
@@ -160,7 +160,7 @@ export default function Phone() {
         {verificationSent &&  <Input placeholder="Enter 6 digital" size="md" className="mt-4"
           value={verificationCode}
           onChange={e => setVerificationCode(e.target.value)}/>}
-       
+
         <button className="btn btn-dark w-full mt-12" hidden={verificationSent} onClick={sendVerificationCode}>Send Code</button>
         <div className="flex mt-4">
           <button className="btn btn-teal w-full flex-grow" hidden={!verificationSent} disabled={resendTimer > 0} onClick={resend}>
