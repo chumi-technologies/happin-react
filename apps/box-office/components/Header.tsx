@@ -1,15 +1,12 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { Avatar, HStack, useToast } from '@chakra-ui/react';
-import { SearchIcon } from "@chakra-ui/icons";
 import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
 import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
 import { exchangeDashboardEventHostToken, getWhiteLabelDomain,getConnectedTeam, swtichTeam, getSaasUserInfo } from 'lib/api';
-import classnames from 'classnames';
 import jwt_decode from "jwt-decode";
 
 export default function Header({ children}: { children?: any }) {
@@ -133,10 +130,10 @@ export default function Header({ children}: { children?: any }) {
                   <a>
                     <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" onClick={() => { router.push('/') }} alt="Happin" />
                     <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
-                  </a> 
+                  </a>
                 {/* Mobile Left Menu */}
-          {/* Team Menu */} 
-          {user && sasaUserInfo && 
+          {/* Team Menu */}
+          {user && sasaUserInfo &&
             <div className="py-1">
                   <span className="text-gray-200 mx-1 text-sm sm:text-xl ">{sasaUserInfo.username || sasaUserInfo.email}</span>
             </div>
@@ -146,7 +143,7 @@ export default function Header({ children}: { children?: any }) {
                 {({ open }) => (
                   <>
                     <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
-                      <HamburgerButton theme="outline" size="22" fill="currentColor" />        
+                      <HamburgerButton theme="outline" size="22" fill="currentColor" />
                        <span  className="text-gray-200 mx-0.5">Team</span>
                     </Menu.Button>
                     <Transition
@@ -174,7 +171,7 @@ export default function Header({ children}: { children?: any }) {
               </Menu>
           )}
           {
-            (teamUser && sasaUserInfo) && ( 
+            (teamUser && sasaUserInfo) && (
               <>
                 <a className=" header__menu_back_button mx-0.5" onClick={()=>{switchBackMyAccount()}}>Back to Me</a>
               </>
