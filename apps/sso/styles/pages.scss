@@ -40,7 +40,7 @@
 .login-container {
   @apply relative flex flex-col bg-white rounded-2xl;
   width: calc(100% - 30px);
-  min-height: 600px;
+  min-height: 540px;
   max-width: 500px;
   padding: 40px 30px 30px;
   @media (max-width: 640px) {

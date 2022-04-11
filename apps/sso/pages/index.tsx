@@ -103,15 +103,17 @@ export default function Home() {
           role === ERole.fan ?
             <Link href="/phone">
               <button className="btn btn-outline-light w-full mb-4">Continue with phone</button>
-            </Link> : null
+            </Link> :
+            <>
+              <Link href={signin ? '/email-sign-in' : '/email-sign-up'}>
+                <button className="btn btn-outline-light w-full mb-4">Continue with email</button>
+              </Link>
+              <button className="btn btn-outline-light w-full mb-4 flex items-center justify-center" onClick={googleAuth}>
+                <img src="/images/google-logo.svg" alt="" width="18" />
+                <span className="ml-3">Continue with Google</span>
+              </button>
+            </>
         }
-        <Link href={signin ? '/email-sign-in' : '/email-sign-up'}>
-          <button className="btn btn-outline-light w-full mb-4">Continue with email</button>
-        </Link>
-        <button className="btn btn-outline-light w-full mb-4 flex items-center justify-center" onClick={googleAuth}>
-          <img src="/images/google-logo.svg" alt="" width="18" />
-          <span className="ml-3">Continue with Google</span>
-        </button>
       </div>
       <div className="flex-grow" />
       {

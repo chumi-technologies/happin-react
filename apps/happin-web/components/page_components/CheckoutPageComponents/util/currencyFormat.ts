@@ -1,7 +1,11 @@
 export function currencyFormatter(currency: string) {
-	return new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: currency || 'USD',
-		minimumFractionDigits: 2
-	})
+  if (currency === 'N/A') {
+    return ''
+  } else {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'USD',
+      minimumFractionDigits: 2
+    })
+  }
 }
