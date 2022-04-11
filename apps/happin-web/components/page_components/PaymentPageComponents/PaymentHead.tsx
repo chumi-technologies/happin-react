@@ -6,11 +6,7 @@ import { Left } from '@icon-park/react';
 import { useRouter } from 'next/router';
 
 
-const PaymentHead = ({
-  countdownCompleted,
- }:{
-  countdownCompleted: (arg:any)=>void
-  }
+const PaymentHead = ({ countdownCompleted }:{ countdownCompleted: (arg:any) => void }
   ) => {
   const { eventDataForCheckout } = useCheckoutState();
   const [ timer,setTimer ] = useState<number>(420000);
