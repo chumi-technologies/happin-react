@@ -29,7 +29,7 @@ export default function Forgot() {
       }
       await firebaseClient.auth().sendPasswordResetEmail(email, actionCodeSetting)
       window.parent.postMessage({ action: 'reset_requested', payload: { reset: true } }, origin);
-      actions.setSubmitting(false)
+      actions.setSubmitting(false);
     } catch (error: any) {
       if (error.code  === 'auth/user-not-found') {
         toast.error(`No account exists for ${email}`);
