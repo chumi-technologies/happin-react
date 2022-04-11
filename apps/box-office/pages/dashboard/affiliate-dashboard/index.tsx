@@ -1,7 +1,7 @@
 import { getDashboardStatAffiliation,getEventById } from "lib/api"
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { generateToast } from '../../../components/util/toast';
+import { generateToast } from '@components/util/toast';
 import { useToast } from '@chakra-ui/react';
 import AffiliateDashboardHead from '@components/page_components/DashboardPageComponents/AffiliateDashboardHead';
 

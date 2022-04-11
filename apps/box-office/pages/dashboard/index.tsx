@@ -5,7 +5,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 //import ApexCharts from 'apexcharts'
 import { useRouter } from 'next/router';
 import { getDashboardStat,getEventById,generateAffiliateReport,getAffiliateReport } from 'lib/api';
-import { generateToast } from '../../components/util/toast';
+import { generateToast } from '@components/util/toast';
 import { useToast } from '@chakra-ui/react';
 import DashboardHead from '@components/page_components/DashboardPageComponents/DashboardHead';
 
