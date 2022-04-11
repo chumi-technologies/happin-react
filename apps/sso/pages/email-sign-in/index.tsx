@@ -84,7 +84,8 @@ export default function EmailSignIn() {
     <>
       <div className="text-center">
         <h2 className="black-title text-3xl font-semibold mt-6">Log In with your email</h2>
-        <RoleToggle className="toggle-tab average w-52 mt-10" />
+        {/*<RoleToggle className="toggle-tab average w-52 mt-10" />*/}
+        <div className="toggle-tab-item mt-8 w-28 mx-auto !cursor-default active">Organizer</div>
       </div>
       <div className="w-full max-w-sm mx-auto mt-8">
         <Formik

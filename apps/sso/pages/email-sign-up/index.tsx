@@ -1,17 +1,15 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { firebaseClient } from '../../api/firebaseClient';
-import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox, Tooltip } from '@chakra-ui/react';
-import classNames from 'classnames';
-import { Formik, Form, Field, FieldProps, useFormikContext, useFormik, FormikConfig } from 'formik';
+import { FormControl, FormErrorMessage, Input, InputGroup, InputRightElement, Checkbox } from '@chakra-ui/react';
+import { Formik, Form, Field, FieldProps, FormikConfig } from 'formik';
 import { PreviewCloseOne, PreviewOpen } from '@icon-park/react';
 import { SubmitButton } from '@components/SubmitButton';
 import { ERole, useAppState } from 'contexts/state';
-import { RoleToggle } from '@components/RoleToggle';
 import { getHappinWebURL, getSaaSDashboardURL } from 'utils/redirect-url';
 import { signUpHappin } from 'api/happin-server';
 import { toast } from 'react-toastify';
-
+import { useRouter } from 'next/router';
 
 interface IFormValues {
   firstName: string,
@@ -27,6 +25,7 @@ export default function EmailSignUp() {
   const [ageState, setAgeState] = useState(false);
   const [termsState, setTermsState] = useState(false);
   const { origin, role, processing, setProcessing, toggleMode } = useAppState();
+  const router = useRouter();
 
   useEffect(() => {
     age && setAgeState(false)
@@ -113,7 +112,8 @@ export default function EmailSignUp() {
       <div className="text-center">
         <h2 className="black-title text-3xl font-semibold">Sign up</h2>
         <div className="text-gray-500 text-sm mt-3">Let’s Sign up first for enter into Happin Website</div>
-        <RoleToggle className="toggle-tab average w-52 mt-10" />
+        {/*<RoleToggle className="toggle-tab average w-52 mt-10" />*/}
+        <div className="toggle-tab-item mt-8 w-28 mx-auto !cursor-default active">Organizer</div>
       </div>
       <div className="w-full max-w-sm mx-auto mt-8">
         <Formik
@@ -207,7 +207,10 @@ export default function EmailSignUp() {
       <div className="w-full max-w-sm mx-auto mt-6 text-center border-t border-gray-200 border-solid pt-3 text-sm text-gray-500">
         <div className="flex justify-between">
           <Link href="/"><a className="underline transition font-semibold text-teal-500 hover:text-teal-600">More login options</a></Link>
-          <div>Already onboard? <Link href="/"><a className="underline transition font-semibold text-rose-500 hover:text-rose-600" >Log in</a></Link></div>
+          <div>Already onboard? <a onClick={async () => {
+            toggleMode();
+            await router.push('/');
+          }} className="underline transition font-semibold text-rose-500 hover:text-rose-600" >Log in</a></div>
         </div>
       </div>
     </>
