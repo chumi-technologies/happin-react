@@ -15,7 +15,7 @@ import { SearchIcon } from '@chakra-ui/icons';
 import {
   postEventCollectionAppend,
   postEventCollectionToHappin,
-  searchEvent,
+  getSearchEvent,
   getAppTags,
 } from 'lib/api';
 import Link from 'next/link';
@@ -173,13 +173,13 @@ export default function CreateEventSet() {
   }
 
   const getAsyncOptions = (inputValue: string) => {
-    return searchEvent(inputValue).then(res => {
+    return getSearchEvent(inputValue).then(res => {
       return res.data.events.map((item: any) => ({
         value: item._id,
         label: item.title,
         cover: item.cover,
-        location: `${item.street}, ${item.city}, ${item.state}, ${item.country}`,
-        date: moment.utc(item.start_datetime).tz(timeZone.current).format('ddd MMM D ・ H:mm A')
+        location: `${item.city}, ${item.state}`,
+        date: moment.utc(item.start_datetime).tz(timeZone.current).format('ddd MMM D・H:mm A')
       }));
     }).catch(error => {
       console.log(error);
@@ -205,11 +205,15 @@ export default function CreateEventSet() {
     getAsyncTags(inputText).then((options) => callback(options));
   }, 300);
 
-  const formatOptionLabel = ({ label, date }: {label: string; date: string}) => {
+  const formatOptionLabel = ({ label, date, location }: {label: string; date: string; location: string}) => {
     return (
       <>
         <div className="font-medium text-sm sm:text-base">{label}</div>
-        <div className="text-xs sm:text-sm text-gray-400">{date}</div>
+        <div className="flex items-center text-xs sm:text-sm text-gray-400">
+          <span>{date}</span>
+          <span className="inline-block h-2 w-px bg-gray-600 mx-2 sm:mx-3"></span>
+          <span>{location}</span>
+        </div>
       </>
     )
   };
@@ -462,7 +466,9 @@ export default function CreateEventSet() {
                                   {item.label}
                                 </a>
                                 <div className="text-xs sm:text-sm truncate sm:text-clip text-gray-400">
-                                  {item.date}
+                                  <span>{item.date}</span>
+                                  <span className="inline-block h-2 w-px bg-gray-600 mx-2 sm:mx-3"></span>
+                                  <span>{item.location}</span>
                                 </div>
                               </div>
                               <button
