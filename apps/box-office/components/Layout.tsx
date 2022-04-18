@@ -48,8 +48,31 @@ const Layout = ({ children }: { children: any }) => {
   return (
     <>
       <Head>
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.png" />
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-touch-icon.png"
+          key="apple"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+          key="icon32"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+          key="icon16"
+        />
+        <link
+          rel="icon"
+          href="/favicon.ico"
+          key="favicon"
+        />
       </Head>
       <main className={classnames('main-app', {'home-page': isHomePage, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage})}>
         {/* Mobile App Bar for mobile screens */}

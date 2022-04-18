@@ -74,7 +74,7 @@ const Campaign = () => {
           </div>
           <div className="flex items-center justify-center mt-1 font-semibold text-sm">
             <span>ONLY ON</span>
-            <img className="h-7 ml-2" src="/images/logo-full-dark.svg" alt="" />
+            <img className="h-7 ml-2" src="/images/happin-logo-dark.svg" alt="" />
           </div>
         </div>
       </div>

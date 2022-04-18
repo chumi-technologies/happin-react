@@ -51,4 +51,4 @@ export {
   getCollectionEvents
 } from './events';
 
-export { getAppTags } from './app'
+export { getAppTags, getSearchEvent } from './app'
