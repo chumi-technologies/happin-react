@@ -128,7 +128,7 @@ export default function Header({ children}: { children?: any }) {
               <div className="flex items-center">
                 {/* Logo */}
                   <a>
-                    <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-login.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                    <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-logo.svg" onClick={() => { router.push('/') }} alt="Happin" />
                     <img className="h-9 mr-6 sm:hidden" src="/images/happin-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
                   </a>
                 {/* Mobile Left Menu */}
