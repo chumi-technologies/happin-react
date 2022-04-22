@@ -106,22 +106,24 @@ const EventSet = () => {
 
       <div id="scrollable" className="relative lg:flex h-full lg:flex-row web-scroll overflow-y-auto">
         {/* Event Image */}
-        <div className="lg:sticky lg:top-0 w-full lg:w-5/12 xl:w-1/2 lg:h-full overflow-hidden">
-          <Box
-            className="hidden lg:block"
-            w="100%"
-            h="100%"
-            position="absolute"
-            style={{ filter: "blur(40px)", transform: "scale(1.5)" }}
-            backgroundImage={`url(${collectionData?.cover})`}
-            backgroundPosition="center"
-            backgroundRepeat="no-repeat"
-            backgroundSize="cover"
-          />
-          <img
-            src={collectionData?.cover}
-            className="event-details__img"
-          />
+        <div className="relative lg:sticky lg:top-0 overflow-hidden lg:w-5/12 xl:w-1/2">
+          <div className="w-full max-w-[640px] lg:max-w-none mx-auto lg:h-full">
+            <Box
+              className="hidden sm:block"
+              w="100%"
+              h="100%"
+              position="absolute"
+              style={{ filter: "blur(40px)", transform: "scale(1.5)" }}
+              backgroundImage={`url(${collectionData?.cover})`}
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+            />
+            <img
+              src={collectionData?.cover}
+              className="event-details__img"
+            />
+          </div>
         </div>
         {/* Event Texts */}
         <div className="w-full lg:w-7/12 xl:w-1/2 sm:pb-20">

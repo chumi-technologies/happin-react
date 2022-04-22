@@ -1,24 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { Box } from '@chakra-ui/react';
-import SignInBar from '../../components/SignInBar'
-import PopUpModal from "../../components/reusable/PopUpModal";
-import EventSection from "../../components/page_components/EventPageComponents/EventSection";
-import BottomBar from "../../components/page_components/EventPageComponents/BottomBar";
-import EventDates from "../../components/page_components/EventPageComponents/EventDates";
-import { getEventDetail, getGroupEvents } from "lib/api";
-import { EventData } from "lib/model/event";
-import Head from 'next/head';
-import { GetServerSidePropsResult } from "next";
-import { PRODUCTION_URL } from "utils/constants";
-import { useRouter } from "next/router";
-import RedeemEventCode from "../../components/page_components/EventPageComponents/RedeemEventCode"
-import ChatWithFans from "../../components/page_components/EventPageComponents/ChatWithFans"
-import { useUserState } from "contexts/user-state";
-import { Button } from "@chakra-ui/react";
-import { ArrowDownIcon } from '@chakra-ui/icons';
+import React, { useEffect, useState } from 'react';
 import ReactDom from 'react-dom';
-import Modal from '@components/reusable/Modal';
+import { GetServerSidePropsResult } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { Box, Button } from '@chakra-ui/react';
 import classnames from 'classnames';
+import { ArrowDownIcon } from '@chakra-ui/icons';
+import { PRODUCTION_URL } from 'utils/constants';
+import { useUserState } from 'contexts/user-state';
+import SignInBar from '@components/SignInBar';
+import PopUpModal from '@components/reusable/PopUpModal';
+import EventSection from '@components/page_components/EventPageComponents/EventSection';
+import BottomBar from '@components/page_components/EventPageComponents/BottomBar';
+import EventDates from '@components/page_components/EventPageComponents/EventDates';
+import RedeemEventCode from '@components/page_components/EventPageComponents/RedeemEventCode';
+import ChatWithFans from '@components/page_components/EventPageComponents/ChatWithFans';
+import Modal from '@components/reusable/Modal';
+import { getEventDetail, getGroupEvents } from 'lib/api';
+import { EventData } from 'lib/model/event';
+
 
 // third party event website that set x-frame-option to origin, can't open in iframe
 const forbidDomain = [
@@ -45,6 +45,7 @@ const Post = (props: EventData) => {
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
   const [isOpen, setIsOpen] = useState(false);
+  console.log(props);
   const eventData = props;
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
@@ -224,22 +225,24 @@ const Post = (props: EventData) => {
           />*/}
 
           {/* Event Image */}
-          <div className="lg:sticky lg:top-0 w-full lg:w-5/12 xl:w-1/2 lg:h-full overflow-hidden">
-            <Box
-              className="hidden lg:block"
-              w="100%"
-              h="100%"
-              position="absolute"
-              style={{ filter: "blur(40px)", transform: "scale(1.5)" }}
-              backgroundImage={`url('${eventData?.event?.cover}')`}
-              backgroundPosition="center"
-              backgroundRepeat="no-repeat"
-              backgroundSize="cover"
-            />
-            <img
-              src={`${eventData?.event?.cover}`}
-              className="event-details__img"
-            />
+          <div className="relative lg:sticky lg:top-0 overflow-hidden lg:w-5/12 xl:w-1/2">
+            <div className="w-full max-w-[640px] lg:max-w-none mx-auto lg:h-full">
+              <Box
+                className="hidden sm:block"
+                w="100%"
+                h="100%"
+                position="absolute"
+                style={{ filter: "blur(40px)", transform: "scale(1.5)" }}
+                backgroundImage={`url('${eventData?.event?.cover}')`}
+                backgroundPosition="center"
+                backgroundRepeat="no-repeat"
+                backgroundSize="cover"
+              />
+              <img
+                src={`${eventData?.event?.cover}`}
+                className="event-details__img"
+              />
+            </div>
           </div>
 
           {/* Event Texts */}
@@ -278,11 +281,9 @@ const Post = (props: EventData) => {
     </>
   );
 };
-
 export default Post;
 
-
-// fetch data on server upon every request.. not using static page pre render
+// fetch data on server upon every request. not using static page pre render
 export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
   try {
     const titleWithACID = context.params.event_id
@@ -291,8 +292,7 @@ export async function getServerSideProps(context: { params: { event_id: string }
     const res = await getEventDetail(acid, 'both')
     const props = res.data
     if (res.data?.event?.groupAcid) {
-      const groupEvents = await getGroupEvents(res.data.event.groupAcid || "")
-      props.groupEvents = groupEvents;
+      props.groupEvents = await getGroupEvents(res.data.event.groupAcid || "");
     }
     if (!res.data) {
       throw new Error('Event not found');

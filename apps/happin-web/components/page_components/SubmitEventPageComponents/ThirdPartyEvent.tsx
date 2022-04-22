@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Left } from '@icon-park/react';
 import { Controller, useForm } from "react-hook-form";
-import { Spinner, useToast } from "@chakra-ui/react";
+import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useEffect } from "react";
 import Select, { StylesConfig, ThemeConfig } from 'react-select';
 import { getEventCategories, postEventToHappin } from "lib/api";
@@ -93,11 +93,23 @@ export default function ThirdPartyEvent({
   }) {
   const {
     handleSubmit,
-    reset,
-    watch,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty, isValid },
     control,
-  } = useForm<FormData>({ mode: 'all' });
+  } = useForm<FormData>({
+    defaultValues: {
+      title: thirdPartyEventData.title || '',
+      description: thirdPartyEventData.content || '',
+      type: thirdPartyEventData.type === 'N/A' ? null : {
+        value: thirdPartyEventData.type,
+        label: thirdPartyEventData.type
+      },
+      startTime: thirdPartyEventData.startDate ? new Date(thirdPartyEventData.startDate * 1000) : undefined,
+      endTime: thirdPartyEventData.endDate ? new Date(thirdPartyEventData.endDate * 1000) : undefined,
+      location: thirdPartyEventData.location || '',
+      cover: thirdPartyEventData.cover || '',
+    },
+    mode: 'all'
+  });
   const router = useRouter();
   const [uploadingCover, setUploadingCover] = useState<boolean>(false);
   const [eventTags, setEventTags] = useState<selectOption[]>();
@@ -112,32 +124,12 @@ export default function ThirdPartyEvent({
       isClosable: true,
     })
   }
-  const lo = watch('location');
 
   useEffect(() => {
-    console.log(lo);
-  }, [lo]);
-
-
-  useEffect(() => {
-    console.log(thirdPartyEventData);
-    reset({
-      title: thirdPartyEventData.title,
-      type: {
-        value: thirdPartyEventData.type,
-        label: thirdPartyEventData.type
-      },
-      description: thirdPartyEventData.content,
-      startTime: thirdPartyEventData.startDate ? new Date(thirdPartyEventData.startDate * 1000) : undefined,
-      endTime: thirdPartyEventData.endDate ? new Date(thirdPartyEventData.endDate * 1000) : undefined,
-      location: thirdPartyEventData.location,
-      cover: thirdPartyEventData.cover,
-    });
     (async () => {
       try {
         const res = await getEventCategories();
         const list = Object.keys(res).map(item => ({value: item, label: item}))
-        console.log(list);
         setEventTags(list)
       } catch (err) {
         console.log(err)
@@ -165,8 +157,6 @@ export default function ThirdPartyEvent({
       location: data.location.label,
       geo: [location[0].geometry.location.lat(), location[0].geometry.location.lng()]
     }
-    console.log(form);
-    //console.log(data);
     // const formToSubmit = thirdPartyEventData;
     // formToSubmit.cover = data.cover;
     // formToSubmit.startDate = Math.round(data.startTime.getTime() / 1000);
@@ -188,10 +178,8 @@ export default function ThirdPartyEvent({
     //   formToSubmit.country = country.short_name;
     //   formToSubmit.location = data.location.formatted_address
     // }
-    // console.log(formToSubmit);
     try {
       const response = await postEventToHappin(form);
-      console.log(response);
       if(response.code === 9111000) {
         generateToast('Duplicate event');
         return
@@ -245,13 +233,12 @@ export default function ThirdPartyEvent({
                   <div className="lg:sticky lg:top-8 rounded-lg md:rounded-none bg-gray-900 md:bg-transparent p-4 sm:p-5 md:p-0">
                     <form>
                       <div className="max-w-4xl mx-auto">
-                        <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-6">
-                          <div className="lg:col-span-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-5">
+                          <div className="lg:col-span-2">
                             <label htmlFor="title" className="form-label required">Title</label>
                             <Controller
                               name="title"
                               control={control}
-                              defaultValue=""
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <input
                                   type="text"
@@ -272,12 +259,11 @@ export default function ThirdPartyEvent({
                               <div className="text-rose-500 text-sm mt-1">Title is required.</div>
                             )}
                           </div>
-                          <div className="lg:col-span-6">
+                          <div className="lg:col-span-2">
                             <label htmlFor="description" className="form-label required">Description</label>
                             <Controller
                               name="description"
                               control={control}
-                              defaultValue=""
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <textarea
                                   disabled={thirdPartyReadOnlyProps?.includes('content')}
@@ -299,44 +285,8 @@ export default function ThirdPartyEvent({
                             )}
 
                           </div>
-
-                          {/*<div className="lg:col-span-3">
-                            <label htmlFor="location" className="form-label">Event Address</label>
-                            <Controller
-                              name="location"
-                              control={control}
-                              defaultValue=""
-                              render={({ field: { onChange, onBlur, value } }) => (
-                                <>
-                                  {thirdPartyReadOnlyProps?.includes('location') ?
-                                    <input
-                                      disabled
-                                      value={thirdPartyEventData?.location || ''}
-                                      className="form-field"
-                                    />
-                                    :
-                                    <AutoComplete
-                                      defaultValue={thirdPartyEventData?.location || ''}
-                                      className="form-field"
-                                      language="en"
-                                      apiKey={process.env.NEXT_PUBLIC_GOOGLE_PLACE_API_KEY}
-                                      onBlur={onBlur}
-                                      placeholder="Location not required if it's an online event"
-                                      inputAutocompleteValue={value?.formatted_address || value}
-                                      options={{ types: ['address'] }}
-                                      onPlaceSelected={place => {
-                                        console.log(place);
-                                        onChange(place)
-                                      }}
-                                    />
-                                  }
-                                </>
-                              )}
-                            />
-                          </div>*/}
-
-                          <div className="lg:col-span-3">
-                            <label htmlFor="location" className="form-label">Event Address</label>
+                          <div>
+                            <label htmlFor="location" className="form-label required">Event Location</label>
                             <Controller
                               name="location"
                               control={control}
@@ -351,22 +301,26 @@ export default function ThirdPartyEvent({
                                     onChange,
                                     onBlur,
                                     isDisabled: thirdPartyReadOnlyProps.includes('location'),
-                                    placeholder: 'City of the event',
+                                    placeholder: 'Location of event',
                                     isClearable: true,
                                     theme: selectTheme,
                                     styles: selectStyles
                                   }}
                                 />
                               )}
+                              rules={{
+                                required: true
+                              }}
                             />
+                            {errors.location && (
+                              <div className="text-rose-500 text-sm ml-1 mt-1">Event location is required.</div>
+                            )}
                           </div>
-
-                          <div className="lg:col-span-3">
+                          <div>
                             <label htmlFor="type" className="form-label required">Event Type</label>
                             <Controller
                               name="type"
                               control={control}
-                              defaultValue={null}
                               render={({ field: { onChange, onBlur, value } }) => (
                                 <Select
                                   instanceId="type"
@@ -389,11 +343,9 @@ export default function ThirdPartyEvent({
                               <div className="text-rose-500 text-sm mt-1">Event type is required.</div>
                             )}
                           </div>
-
-                          <div className="lg:col-span-6">
+                          <div className="lg:col-span-2">
                             <label htmlFor="cover" className="form-label required">Event Cover</label>
                             <Controller
-                              defaultValue=""
                               name="cover"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
@@ -445,11 +397,9 @@ export default function ThirdPartyEvent({
                               <div className="text-rose-500 text-sm mt-1">Event cover is required.</div>
                             )}
                           </div>
-
-                          <div className="lg:col-span-3">
+                          <div>
                             <label htmlFor="startTime" className="form-label required">Event Start Time</label>
                             <Controller
-                              defaultValue={undefined}
                               name="startTime"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
@@ -463,7 +413,6 @@ export default function ThirdPartyEvent({
                                   selected={value}
                                   onChange={date => {
                                     onChange(date);
-                                    console.log(date)
                                   }}
                                 />
                               )}
@@ -475,11 +424,9 @@ export default function ThirdPartyEvent({
                               <div className="text-rose-500 text-sm mt-1">Start time is required.</div>
                             )}
                           </div>
-
-                          <div className="lg:col-span-3">
+                          <div>
                             <label htmlFor="endTime" className="form-label required">Event End Time</label>
                             <Controller
-                              defaultValue={undefined}
                               name="endTime"
                               control={control}
                               render={({ field: { onChange, onBlur, value } }) => (
@@ -493,7 +440,6 @@ export default function ThirdPartyEvent({
                                   selected={value}
                                   onChange={date => {
                                     onChange(date);
-                                    console.log(date)
                                   }}
                                 />
                               )}
@@ -505,15 +451,25 @@ export default function ThirdPartyEvent({
                               <div className="text-rose-500 text-sm mt-1">End time is required.</div>
                             )}
                           </div>
-                          <div className="lg:col-span-6 event-submit__form">
-                            <button disabled={isSubmitting} onClick={handleSubmit(onFormSubmit)} style={{ width: '100%' }} className="btn btn-yellow !px-0 !font-semibold !rounded-full flex-1 mt-10" >
-                              <span className="text-sm sm:text-base">{isSubmitting ? 'Porcessing...' : 'Share event to Happin'}</span>
-                            </button>
-                          </div>
+                        </div>
+                        <div className="mt-6 md:mt-10">
+                          <Button
+                            width="100%"
+                            isLoading={isSubmitting}
+                            loadingText='Saving...'
+                            fontSize="md"
+                            fontWeight={600}
+                            colorScheme="yellow"
+                            rounded="full"
+                            size="lg"
+                            disabled={!isDirty || !isValid}
+                            onClick={handleSubmit(onFormSubmit)}
+                          >
+                            Share event to Happin
+                          </Button>
                         </div>
                       </div>
                     </form>
-
                   </div>
                 </div>
               </div>
