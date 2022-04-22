@@ -19,7 +19,7 @@ type EventTitleProps = {
   isLiveStream?: boolean;
   eventStartDate?: Date;
   eventEndDate?: Date;
-  price?: number;
+  price: number;
   currency?: string;
   groupEvents?: GroupEvent[];
   location?: LocationInfo;
@@ -87,11 +87,13 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
 
       {/* Event Location */}
       <h1 className="black-title text-base sm:text-xl text-yellow-500 font-bold">
-        {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.venueName)}
+        {isLiveStream ? (`Happin Livestream${(location?.eventType === "hybrid" && location?.venueName) ? ` / ${location?.venueName}` : ""}`) : (location?.location)}
       </h1>
 
       {/* Price */}
-      <div className="text-gray-50 font-bold mt-2">{(price !== null && price !== undefined) && `From ${(currencyFormatter(currency as string).format(price / 100))}`}</div>
+      <div className="text-gray-50 font-bold mt-2">
+        {price < 0 ? 'Free' : `From ${(currencyFormatter(currency as string).format(price / 100))}`}
+      </div>
 
       {/* Block with Icons */}
 

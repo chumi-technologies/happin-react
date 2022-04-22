@@ -101,8 +101,8 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                   }} alt="Happin" />
                 </a> :
                 <a>
-                  <img className="h-10 mr-6 md:mr-8 hidden sm:block" src="/images/happin-solid-logo.svg" onClick={() => { router.push('/') }} alt="Happin" />
-                  <img className="h-9 mr-6 sm:hidden" src="/images/happin-solid-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                  <img className="h-9 mr-6 md:mr-8 hidden sm:block" src="/images/happin-solid-logo.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                  <img className="h-8 mr-6 sm:hidden" src="/images/happin-solid-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
                 </a> : <></>
             }
             {/* Mobile Left Menu */}
