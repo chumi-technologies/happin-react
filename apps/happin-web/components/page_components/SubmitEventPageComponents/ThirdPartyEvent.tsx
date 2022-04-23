@@ -155,7 +155,7 @@ export default function ThirdPartyEvent({
       city: terms[1].value,
       street: terms[0].value,
       location: data.location.label,
-      geo: [location[0].geometry.location.lat(), location[0].geometry.location.lng()]
+      geo: [location[0].geometry.location.lng(), location[0].geometry.location.lat()]
     }
     // const formToSubmit = thirdPartyEventData;
     // formToSubmit.cover = data.cover;

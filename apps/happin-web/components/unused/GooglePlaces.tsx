@@ -58,7 +58,7 @@ export default function CreateEventSet() {
     try {
       const location = await geocodeByPlaceId(data.location.value.place_id);
       const form = {
-        coordinates: [location[0].geometry.location.lat(), location[0].geometry.location.lng()],
+        coordinates: [location[0].geometry.location.lng(), location[0].geometry.location.lat()],
         city: data.location.value.terms.length < 3 ? data.location.value.terms[0].value : data.location.value.terms.slice(-3)[0],
         country: data.location.value.terms.slice(-1)[0]
       }
