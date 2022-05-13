@@ -55,8 +55,8 @@ const Layout = ({ children }: { children: any }) => {
     if (router.query?.role === 'boxoffice') {
       setBoxOfficeMode(true);
     }
-    if (router.route === '/' || router.route === '/events') {
-      setIsProduction(true)
+    if (router.route === '/' || router.route === '/events' ||  router.route === '/ambassador') {
+      setIsProduction(true);
       setShowFooter(true);
       setShowHeader(true);
     } else if (router.route === '/post/[event_id]'){
