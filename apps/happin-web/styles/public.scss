@@ -280,3 +280,12 @@
   font-size: 15px;
   line-height: 1.3rem;
 }
+
+.article-wrapper {
+  h3 {
+    @apply text-xl md:text-3xl font-semibold text-gray-50 mb-5 md:mb-6 mt-10 md:mt-14 scroll-mt-20 md:scroll-mt-24;
+  }
+  p {
+    @apply mb-1.5 md:mb-2 text-base md:text-lg text-gray-300;
+  }
+}
