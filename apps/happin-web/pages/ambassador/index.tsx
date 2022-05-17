@@ -51,7 +51,7 @@ export default function Events() {
             <h3 id="requirements-to-be-a-long-term-ambassador">Requirements to be a long-term ambassador:</h3>
             <p>You need to have at least 1k followers on Instagram or Tiktok.</p>
             <p>You are an outgoing person who enjoys connecting with others and loves attending different kinds of events</p>
-            <p>You agreed with our vision, and want to build a community together over making money</p>
+            <p>You agreed with our vision, and building a community that promotes a fun for all, deep connections, confidence and diversity in interests</p>
             <p>You better tried with one time ambassador once</p>
             <p>Please fillout this form: <a className="link-blue" href="https://forms.gle/4WcnUfggyfehsmYA8" target="_blank" rel="noreferrer">https://forms.gle/4WcnUfggyfehsmYA8</a> to finish apply.</p>
             <h3 id="benefits">Benefits:</h3>
