@@ -65,7 +65,7 @@ export default function Events() {
                 <p>1.What event you are attending(share Happin event URL with us); and if the event is not on the app yet, please share/submit it using our app or website</p>
                 <p>2. Get approval from us, please give us 48 hours to reply back.</p>
                 <p>3. After approval, you can create event chat to gather your friends, and other people who is also going from social medias.</p>
-                <p>Happin main feature is to let you easily "share & gather" all goers in one chat. People who click on your link and download Happin, system will bring them to your group itself.</p>
+                <p>Happin main feature is to let you easily “share & gather” all goers in one chat. People who click on your link and download Happin, system will bring them to your group itself.</p>
               </div>
               <div className="w-60 md:ml-10 shrink-0 mx-auto">
                 <img src="/images/before-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />
@@ -87,7 +87,7 @@ export default function Events() {
               <div className="min-w-0">
                 <h3 id="what-to-do-during-you-attend-an-event">After you attend an event:</h3>
                 <p>Tell your group members, they can try the match system to have some fun, or invite them to your main community group.</p>
-                <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like "Better way to attend events, so easy to gather friends and meet new friends".</p>
+                <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like “Better way to attend events, so easy to gather friends and meet new friends”.</p>
                 <p>Send an email to ambassador@happin.app and provide:</p>
                 <p>1. Your ticket receipt 2. The link to your social media post 3. Screenshot of your group (new users have a special sign) 4. Your PayPal address</p>
               </div>
