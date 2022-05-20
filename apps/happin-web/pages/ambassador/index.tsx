@@ -56,8 +56,7 @@ export default function Events() {
             <p>Please fillout this form: <a className="link-blue" href="https://forms.gle/4WcnUfggyfehsmYA8" target="_blank" rel="noreferrer">https://forms.gle/4WcnUfggyfehsmYA8</a> to finish apply.</p>
             <h3 id="benefits">Benefits:</h3>
             <p>You will get reimbursed for 50% of ticket price(up to $50).</p>
-            <p>You can create your commuity group chat on Happin, so they will make you more popular.</p>
-            <p>Happin will feature your community in onboard process or your profile on Happinin page.</p>
+            <p>Happin will feature your profile</p>
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="min-w-0">
                 <h3 id="what-to-do-before-you-attend-an-event">Before you attend an event:</h3>
@@ -75,7 +74,7 @@ export default function Events() {
               <div className="min-w-0">
                 <h3 id="what-to-do-during-you-attend-an-event">During you attend an event:</h3>
                 <p>Network, talk to other people about Happin, and show QRcode of your event chat to invite them.</p>
-                <p>(e.g. You can say Happin is Eventbrite meets Tidner, it allows you to match with other fans before attending certain events. Or check what your friends are up to, and join them.</p>
+                <p>(e.g. You can say Happin is social to-do app, it allows you find fun things to do via friends or check what other cool people are up to.</p>
                 <p>Many ambasssadors told us, it is easier to talk to people in groups, so they can all scan your QRcode in once.</p>
                 <p>You need to have at least 10 new users in your group chat to get the 50% reimburse.  If you get less than that, we still reward you a free VIP membership.</p>
               </div>
@@ -86,7 +85,7 @@ export default function Events() {
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="min-w-0">
                 <h3 id="what-to-do-during-you-attend-an-event">After you attend an event:</h3>
-                <p>Tell your group members, they can try the match system to have some fun, or invite them to your main community group.</p>
+                <p>Tell your group members, they can try the match system to have some fun, or let them follow you to discover more fun things to do.</p>
                 <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like “Better way to attend events, so easy to gather friends and meet new friends”.</p>
                 <p>Send an email to ambassador@happin.app and provide:</p>
                 <p>1. Your ticket receipt 2. The link to your social media post 3. Screenshot of your group (new users have a special sign) 4. Your PayPal address</p>
