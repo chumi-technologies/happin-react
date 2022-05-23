@@ -23,18 +23,19 @@ const EventInvitation = (props: any) => {
   let eventDescription = ' - You can watch livestream on https://livestream.happin.app or download Happin App';
 
   const seoProps = {
-    description: props.event.title + eventDescription,
-    keywords: `${props.event.tags.toString()}, Happin livestream`,
-    title: 'Invitation: ' + props.af_referrer_name + 'invited you to ' + props?.event?.title + ' @ ' + eventLocation,
-    ogImage: props.event.socialImg || props.event.cover,
+    description: props.event?.title + eventDescription,
+    keywords: `${props.event?.tags.toString()}, Happin livestream`,
+    title: 'Invitation: ' + props.af_referrer_name + 'invited you to ' + props.event?.title + ' @ ' + eventLocation,
+    ogImage: props.event?.socialImg || props.event?.cover,
     ogUrl: `${PRODUCTION_URL}${router.asPath}`,
-    twitterImage: props.event.socialImg || props.event.cover
+    twitterImage: props.event?.socialImg || props.event?.cover
   };
 
   useEffect(() => {
     if (router.query.eventId) {
       (async () => {
         try {
+          console.log(router.query);
           const eventId = router.query.eventId as string;
           const res = await getEventDetail(eventId, 'both');
           if (res.data) {
