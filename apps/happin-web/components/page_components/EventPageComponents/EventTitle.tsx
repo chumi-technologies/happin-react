@@ -81,7 +81,7 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
       {/* Event Date and Time */}
       {!playbackStart &&
         <h1 className="black-title text-base sm:text-xl text-yellow-500 mt-1 sm:mt-3 font-bold">
-          {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ H:mm A z')}
+          {moment.utc(eventStartDate).tz(moment.tz.guess()).format('ddd MMM D ・ hh:mm A z')}
         </h1>
       }
 
