@@ -13,20 +13,20 @@ import { useUserState } from 'contexts/user-state';
 
 const imageList = [
   {
-    firstImg: '/images/Happinin - Initial.png',
-    secImg: '/images/Happinin -friend create idea - with event.png',
+    firstImg: '/images/HappininInitial.png',
+    secImg: '/images/Happininfriendcreateideawithevent.png',
   },
   {
-    firstImg: '/images/Create hangout ideas - filled.png',
-    secImg: '/images/Event with Tickets.png',
+    firstImg: '/images/Createhangoutideasfilled.png',
+    secImg: '/images/EventwithTickets.png',
   },
   {
-    firstImg: '/images/Before Match.png',
+    firstImg: '/images/BeforeMatch.png',
     secImg: '/images/Match.png',
   },
   {
-    firstImg: '/images/Profile - Past hangout.png',
-    secImg: '/images/Private Group Chat.png',
+    firstImg: '/images/ProfilePasthangout.png',
+    secImg: '/images/PrivateGroupChat.png',
   },
 ];
 const buildEvent = [
