@@ -19,9 +19,11 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
               <li>
                 <a href="mailto:partnership@happin.app">Partnership</a>
               </li>
+              <Link href="/ambassador">
               <li>
-                <a href="/ambassador">Ambassador</a>
+                <a>Ambassador</a>
               </li>
+              </Link>
             </ul>
           </div>
           <div className="w-52 mb-8 sm:mb-10">
