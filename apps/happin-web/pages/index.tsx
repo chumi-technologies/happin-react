@@ -13,30 +13,38 @@ import { useUserState } from 'contexts/user-state';
 
 const imageList = [
   {
-    firstImg: '/images/Discover Event1-min.png',
-    secImg: '/images/Discover Event-min.png',
+    firstImg: '/images/Happinin - Initial.png',
+    secImg: '/images/Happinin -friend create idea - with event.png',
   },
   {
-    firstImg: '/images/Match-min.png',
-    secImg: '/images/Group-min.png',
+    firstImg: '/images/Create hangout ideas - filled.png',
+    secImg: '/images/Event with Tickets.png',
   },
   {
-    firstImg: '/images/Host Livestream-min.png',
-    secImg: '/images/AudioRoom-min.png',
+    firstImg: '/images/Before Match.png',
+    secImg: '/images/Match.png',
+  },
+  {
+    firstImg: '/images/Profile - Past hangout.png',
+    secImg: '/images/Private Group Chat.png',
   },
 ];
 const buildEvent = [
   {
-    title: 'Create/Share/Discover Events and Experiences',
-    desc: 'Find all fun and exciting experiences in one place.'
+    title: 'Discover what is happinin via your friends or cool people nearby',
+    desc: 'Never miss any fun things to do.'
   },
   {
-    title: 'Match and connect with like-minded attendees you like',
-    desc: 'Swipe to match attendees and create or join event based group chats.'
+    title: 'Create hangout ideas for your friends or in public',
+    desc: 'Gather people for events or fun activities.'
   },
   {
-    title: 'Host audio parties and Livestream with friends.',
-    desc: 'Chat with fans in real time, and make new friends.'
+    title: 'Make new friends by matching based on event you attend',
+    desc: 'Never go to a party or event alone.'
+  },
+  {
+    title: 'Safety-first community and event group automation',
+    desc: 'Quickly figure out where or when you will meet up without sending individual DMs.'
   },
 ];
 export default function Home() {
@@ -80,7 +88,7 @@ export default function Home() {
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
             <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
             <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            Meet. Chat. Experience.
+            What’s Happinin and who’s going?
           </div>
         </div>
       </div>
@@ -90,17 +98,18 @@ export default function Home() {
         <div className="container">
           <div className="flex items-center flex-col md:flex-row text-center md:text-left">
             <div className="relative sm:w-3/5 md:w-1/2 xl:w-7/12 black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-7 md:mb-0 text-rose-500">
-              An experience based social network
+              Social gathering platform
             </div>
             <div className="md:pl-12 lg:pl-16 md:w-1/2 xl:w-5/12">
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                  Happin is the easiest way to find like-minded people based on experience, and talk over voice, Livestream, and text.
+                  Find things to do with new or old friends! Happin is a social gathering platform connecting people through
+                  everyday activities, events, and experiences.
                 </p>
                 <p className="mb-4 md:mb-5">
-                  You can share or create all kinds of events and stay close with your friends and communities.
-                </p>
+                  Check your Happin feed to see what your friends are
+                  up to or what your favorite influencers are doing.                </p>
               </div>
               <div className="flex justify-center md:justify-start">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">

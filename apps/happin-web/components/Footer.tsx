@@ -19,6 +19,9 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
               <li>
                 <a href="mailto:partnership@happin.app">Partnership</a>
               </li>
+              <li>
+                <a href="/ambassador">Ambassador</a>
+              </li>
             </ul>
           </div>
           <div className="w-52 mb-8 sm:mb-10">
@@ -63,6 +66,11 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
             <div className="mt-4">
               <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                 <img className="h-10 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
+              </a>
+            </div>
+            <div className="mt-4">
+              <a target="_blank" rel="noreferrer">
+                <img className="h-10 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
               </a>
             </div>
           </div>

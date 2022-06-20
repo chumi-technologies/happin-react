@@ -29,7 +29,7 @@ export default function Events() {
           </div>
           <div className="relative inline-block text-lg sm:text-xl lg:text-2xl font-semibold pb-0 sm:pb-10 lg:pb-14">
             <img className="absolute top-0 -right-10 w-6 lg:-top-1 lg:-right-12 lg:w-8" src="/images/light.svg" alt="" />
-            Attend festivals, parties, events and get paid.
+            Be part of something fun.
           </div>
         </div>
       </div>
@@ -38,59 +38,133 @@ export default function Events() {
         <div className="container">
           <div className="black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-rose-500">
             Happin <br/>
-            Ambassador
+            College Team
           </div>
           <div className="article-wrapper">
-            <h3 id="requirements-to-be-a-long-term-ambassador">Mission:</h3>
-            <p>Attend events and bring like-minded people together.</p>
+            <h3 id="requirements-to-be-a-long-term-ambassador">Join our team to spread the Happin mission and support our growth. If you’re entrepreneurial, motivated, and well-connected, we would love for you to apply to our college program!
+            </h3>
+            <p>We’re creating a college presence that embodies our brand and serves as an extension of our full-time team. Happin college ambassadors host parties, manage a marketing budget, identify key moments on campus for us to get involved, represent Happin’s mission and execute creative activations. Our ambassadors get to be part of the next unicorn start-up,
+              receive mentorship from our global team of experienced entrepreneurs!
+            </p>
 
-            <h3 id="requirements-to-be-a-long-term-ambassador">If you voluntarily become an event moderator, or receive a new squad reward:</h3>
-            <p>You are qualified to be one time ambassador and get benefits by following the procedure.</p>
+            <h3 id="requirements-to-be-a-long-term-ambassador">What it entails:</h3>
+            <p>Must attend at least 2 hangouts or events through the app a month</p>
+            <p>Must organize create at least 1 hangouts or events on the app a month on city</p>
+            <p>Post at least 1 IG story and 1 in feed IG post based on monthly challenges (Can be switched to SnapChat or TikTok)</p>
+            <p>Must tag Happin on all posts, and can not have any other accounts tagged</p>
+            <p>Participate in monthly meetings</p>
+            <p>Respond on a timely manner to ambassador groupchat if a discussion or question arises</p>
 
-
-            <h3 id="requirements-to-be-a-long-term-ambassador">Requirements to be a long-term ambassador:</h3>
-            <p>You need to have at least 1k followers on Instagram or Tiktok.</p>
-            <p>You are an outgoing person who enjoys connecting with others and loves attending different kinds of events</p>
-            <p>You agreed with our vision, and building a community that promotes a fun for all, deep connections, confidence and diversity in interests</p>
-            <p>You better tried with one time ambassador once</p>
             <p>Please fillout this form: <a className="link-blue" href="https://forms.gle/4WcnUfggyfehsmYA8" target="_blank" rel="noreferrer">https://forms.gle/4WcnUfggyfehsmYA8</a> to finish apply.</p>
             <h3 id="benefits">Benefits:</h3>
-            <p>You will get reimbursed for 50% of ticket price(up to $50).</p>
-            <p>Happin will feature your profile</p>
+            <p>Be part of a positive community looking to uplift each other, and spread passion for content creation and social media marketing
+            </p>
+            <p>Meet other ambassadors in their university or community college, and create content together
+            </p>
+            <p>Opportunities to attend Private Happin Parties
+            </p>
+            <p>Make new friends through the app hangouts
+            </p>
+            <p>Learn techniques and strategies of marketing
+            </p>
+            <p>Opportunities to earn commission
+            </p>
+            <p>Participate into new feature building.
+            </p>
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="min-w-0">
-                <h3 id="what-to-do-before-you-attend-an-event">Before you attend an event:</h3>
-                <p>Send an email to ambassador@happin.app to tell us </p>
-                <p>1.What event you are attending(share Happin event URL with us); and if the event is not on the app yet, please share/submit it using our app or website</p>
-                <p>2. Get approval from us, please give us 48 hours to reply back.</p>
-                <p>3. After approval, you can create event chat to gather your friends, and other people who is also going from social medias.</p>
-                <p>Happin main feature is to let you easily “share & gather” all goers in one chat. People who click on your link and download Happin, system will bring them to your group itself.</p>
+                <h3 id="what-to-do-before-you-attend-an-event">Monthly competitions amongst ambassadors:</h3>
+                <p>Top ambassadors of the month(based on challenges and competitions) gain the chances of being featured on Happin social media pages and newsletters, getting featured on the app as a popular profile on the homepage, sweepstakes, chances to win merch, and more</p>
+                <p>Multiple winners a month</p>
               </div>
-              <div className="w-60 md:ml-10 shrink-0 mx-auto">
-                <img src="/images/before-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />
-              </div>
+              {/*<div className="w-60 md:ml-10 shrink-0 mx-auto">*/}
+              {/*  <img src="/images/before-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />*/}
+              {/*</div>*/}
             </div>
+            {/*<div className="flex flex-col md:flex-row md:items-center">*/}
+            {/*  <div className="min-w-0">*/}
+            {/*    <h3 id="what-to-do-during-you-attend-an-event">During you attend an event:</h3>*/}
+            {/*    <p>Network, talk to other people about Happin, and show QRcode of your event chat to invite them.</p>*/}
+            {/*    <p>(e.g. You can say Happin is social to-do app, it allows you find fun things to do via friends or check what other cool people are up to.</p>*/}
+            {/*    <p>Many ambasssadors told us, it is easier to talk to people in groups, so they can all scan your QRcode in once.</p>*/}
+            {/*    <p>You need to have at least 10 new users in your group chat to get the 50% reimburse.  If you get less than that, we still reward you a free VIP membership.</p>*/}
+            {/*  </div>*/}
+            {/*  <div className="w-60 md:ml-10 shrink-0 mx-auto">*/}
+            {/*    <img src="/images/during-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+            {/*<div className="flex flex-col md:flex-row md:items-center">*/}
+            {/*  <div className="min-w-0">*/}
+            {/*    <h3 id="what-to-do-during-you-attend-an-event">After you attend an event:</h3>*/}
+            {/*    <p>Tell your group members, they can try the match system to have some fun, or let them follow you to discover more fun things to do.</p>*/}
+            {/*    <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like “Better way to attend events, so easy to gather friends and meet new friends”.</p>*/}
+            {/*    <p>Send an email to ambassador@happin.app and provide:</p>*/}
+            {/*    <p>1. Your ticket receipt 2. The link to your social media post 3. Screenshot of your group (new users have a special sign) 4. Your PayPal address</p>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+          </div>
+          <br/>
+          <br/>
+          <div className="black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-rose-500">
+            Happin <br/>
+            High School Rep Program
+          </div>
+          <div className="article-wrapper">
+            <h3 id="requirements-to-be-a-long-term-ambassador">We’re looking for hard-working and ambitious high school students to join our team! </h3>
+            <p>You’re confident, you know what’s trending and you know everyone at school
+            </p>
+
+            <h3 id="requirements-to-be-a-long-term-ambassador">What it entails:</h3>
+            <p>Must attend at least 2 hangouts or events through the app a month</p>
+            <p>Must organize create at least 1 hangouts or events on the app a month on city</p>
+            <p>Post at least 1 IG story and 1 in feed IG post based on monthly challenges (Can be switched to SnapChat or TikTok)</p>
+            <p>Build the BeReal community at your high school! </p>
+
+            <p>Please fillout this form: <a className="link-blue" href="https://forms.gle/4WcnUfggyfehsmYA8" target="_blank" rel="noreferrer">https://forms.gle/4WcnUfggyfehsmYA8</a> to finish apply.</p>
+            <h3 id="benefits">Benefits:</h3>
+            <p>Amazing prizes like iPhones, Airpods, Amazon vouchers, and more!
+            </p>
+            <p>Meet other ambassadors in their university or community college, and create content together
+            </p>
+            <p>An incredible resume addition for college
+            </p>
+            <p>Make new friends through the app hangouts
+            </p>
+            <p>Learn techniques and strategies of marketing
+            </p>
+            <p>Free Merchandise
+            </p>
             <div className="flex flex-col md:flex-row md:items-center">
               <div className="min-w-0">
-                <h3 id="what-to-do-during-you-attend-an-event">During you attend an event:</h3>
-                <p>Network, talk to other people about Happin, and show QRcode of your event chat to invite them.</p>
-                <p>(e.g. You can say Happin is social to-do app, it allows you find fun things to do via friends or check what other cool people are up to.</p>
-                <p>Many ambasssadors told us, it is easier to talk to people in groups, so they can all scan your QRcode in once.</p>
-                <p>You need to have at least 10 new users in your group chat to get the 50% reimburse.  If you get less than that, we still reward you a free VIP membership.</p>
+                <h3 id="what-to-do-before-you-attend-an-event">Monthly competitions amongst ambassadors:</h3>
+                <p>Top ambassadors of the month(based on challenges and competitions) gain the chances of being featured on Happin social media pages and newsletters, getting featured on the app as a popular profile on the homepage, sweepstakes, chances to win merch, and more</p>
+                <p>Multiple winners a month</p>
               </div>
-              <div className="w-60 md:ml-10 shrink-0 mx-auto">
-                <img src="/images/during-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />
-              </div>
+              {/*<div className="w-60 md:ml-10 shrink-0 mx-auto">*/}
+              {/*  <img src="/images/before-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />*/}
+              {/*</div>*/}
             </div>
-            <div className="flex flex-col md:flex-row md:items-center">
-              <div className="min-w-0">
-                <h3 id="what-to-do-during-you-attend-an-event">After you attend an event:</h3>
-                <p>Tell your group members, they can try the match system to have some fun, or let them follow you to discover more fun things to do.</p>
-                <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like “Better way to attend events, so easy to gather friends and meet new friends”.</p>
-                <p>Send an email to ambassador@happin.app and provide:</p>
-                <p>1. Your ticket receipt 2. The link to your social media post 3. Screenshot of your group (new users have a special sign) 4. Your PayPal address</p>
-              </div>
-            </div>
+            {/*<div className="flex flex-col md:flex-row md:items-center">*/}
+            {/*  <div className="min-w-0">*/}
+            {/*    <h3 id="what-to-do-during-you-attend-an-event">During you attend an event:</h3>*/}
+            {/*    <p>Network, talk to other people about Happin, and show QRcode of your event chat to invite them.</p>*/}
+            {/*    <p>(e.g. You can say Happin is social to-do app, it allows you find fun things to do via friends or check what other cool people are up to.</p>*/}
+            {/*    <p>Many ambasssadors told us, it is easier to talk to people in groups, so they can all scan your QRcode in once.</p>*/}
+            {/*    <p>You need to have at least 10 new users in your group chat to get the 50% reimburse.  If you get less than that, we still reward you a free VIP membership.</p>*/}
+            {/*  </div>*/}
+            {/*  <div className="w-60 md:ml-10 shrink-0 mx-auto">*/}
+            {/*    <img src="/images/during-attend.png" className="w-full mt-10 md:mt-14 rounded-xl border border-solid  border-gray-700" alt="" />*/}
+            {/*  </div>*/}
+            {/*</div>*/}
+            {/*<div className="flex flex-col md:flex-row md:items-center">*/}
+            {/*  <div className="min-w-0">*/}
+            {/*    <h3 id="what-to-do-during-you-attend-an-event">After you attend an event:</h3>*/}
+            {/*    <p>Tell your group members, they can try the match system to have some fun, or let them follow you to discover more fun things to do.</p>*/}
+            {/*    <p>Post event content to your social media to keep best memory! Remember to tag our accounts, and comment us like “Better way to attend events, so easy to gather friends and meet new friends”.</p>*/}
+            {/*    <p>Send an email to ambassador@happin.app and provide:</p>*/}
+            {/*    <p>1. Your ticket receipt 2. The link to your social media post 3. Screenshot of your group (new users have a special sign) 4. Your PayPal address</p>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>
