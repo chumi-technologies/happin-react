@@ -13,7 +13,7 @@ import { useUserState } from 'contexts/user-state';
 
 const imageList = [
   {
-    firstImg: '/images/HappininInitial.png',
+    firstImg: '/images/HappininInitial1.png',
     secImg: '/images/Happininfriendcreateideawithevent.png',
   },
   {
@@ -31,7 +31,7 @@ const imageList = [
 ];
 const buildEvent = [
   {
-    title: 'Discover what is happinin via your friends or cool people nearby',
+    title: 'Find out who are free and see their hangout ideas',
     desc: 'Never miss any fun things to do.'
   },
   {
@@ -88,7 +88,7 @@ export default function Home() {
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
             <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
             <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            What’s Happinin and who’s going?
+            See what are your friends are up to
           </div>
         </div>
       </div>
@@ -109,14 +109,16 @@ export default function Home() {
                 </p>
                 <p className="mb-4 md:mb-5">
                   Check your Happin feed to see what your friends are
-                  up to or what your favorite influencers are doing.                </p>
+                  up to or when they are free to hangout</p>
               </div>
               <div className="flex justify-center md:justify-start">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
                 </a>
-              <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4" onClick={() => openModal()}>
+              <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4">
+                <a target="_blank" href="https://play.google.com/store/apps/details?id=app.happin.prod" rel="noreferrer">
                   <img className="h-12 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
+                </a>
               </div>
               </div>
             </div>

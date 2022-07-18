@@ -166,7 +166,9 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
 
           {/* Right Block */}
           <div className="flex items-center">
-            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit a professional event</a>}
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{ window.location.href = 'https://ticketing.happin.app'}}>Host events with Happin</a>}
+
+            {/*{!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit a professional event</a>}*/}
            {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
               <SearchIcon w={4} h={4} color="currentColor" />
             </button>} */}

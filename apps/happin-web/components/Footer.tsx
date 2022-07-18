@@ -72,7 +72,9 @@ export default function Footer({ whiteLabelLogo }: { whiteLabelLogo?: any }) {
             </div>
             <div className="mt-4">
               <a target="_blank" rel="noreferrer">
+                <a target="_blank" href="https://play.google.com/store/apps/details?id=app.happin.prod" rel="noreferrer">
                 <img className="h-10 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
+                </a>
               </a>
             </div>
           </div>
