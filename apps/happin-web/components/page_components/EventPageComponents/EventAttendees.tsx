@@ -66,7 +66,7 @@ const settings = {
 const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
   return (
     <>
-      <div className="black-title text-xl sm:text-2xl font-semibold">Attendees</div>
+      <div className="black-title text-xl sm:text-2xl font-semibold">Who joined the event community</div>
       <div className="mt-3 sm:mt-5">
         <Slider {...settings}>
           {
@@ -84,7 +84,7 @@ const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
       </div>
       {topProfiles.length > 0 &&
         <div className="mt-3 text-gray-400">
-          <span className="mr-2">🔥</span><span className="text-gray-50">{topProfiles[0].displayname}</span> and other {topProfiles.length - 1} people has joined
+          <span className="mr-2">🔥</span>Download app and match with other like-minded people from the same event.
         </div>
       }
     </>

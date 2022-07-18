@@ -209,7 +209,7 @@ const Post = (props: EventData) => {
         {/* chat with fans button modal */}
         {isChatModalOpen && (
           <PopUpModal
-            modalTitle="Find other fans here!"
+            modalTitle="Meet new friends here"
             isModalOpen={isChatModalOpen}
             setIsModalOpen={setIsChatModalOpen}
           >
