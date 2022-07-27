@@ -77,7 +77,7 @@ const Modal = (props: ModalProps) => {
                       title && (
                         <Dialog.Title
                           as="h3"
-                          className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
+                          className="text-lg sm:text-xl font-bold leading-6 text-gray-50 text-left pr-8"
                         >
                           {title}
                         </Dialog.Title>

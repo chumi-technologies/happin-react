@@ -92,7 +92,7 @@ export const searchEvent = async (searchWord: string) => {
 };
 export const getCollectionEvents = async (collection: string, page: number, pageSize: number) => {
   const response = await getFromHappin(
-    `/event-collections/${collection}/events?page=${page}&pageSize=${pageSize}`
+    `/event-collections/${collection}/events?onlyUpcoming=false&page=${page}&pageSize=${pageSize}`
   );
   return response || {};
 };
