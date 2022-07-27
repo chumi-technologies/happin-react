@@ -8,6 +8,7 @@ import { User } from "lib/model/user";
 import { currencyFormatter } from "@components/page_components/CheckoutPageComponents/util/currencyFormat";
 import moment from 'moment-timezone';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useIsMounted } from '../../utils/hooks';
 
 export interface ICollectionData {
   _id: string;
@@ -31,7 +32,8 @@ const EventSet = () => {
     hasMore: true
   });
   const { user } = useUserState();
-  const toast = useToast()
+  const toast = useToast();
+  const isMounted = useIsMounted();
 
   const generateToast = (message: string) => {
     toast({
@@ -42,22 +44,20 @@ const EventSet = () => {
   }
 
   useEffect(() => {
-    let isMounted = true;
     (async () => {
       if (router.query.collection_id && user) {
-        isMounted && setIsLoading(true);
-        await fetchCollection(isMounted);
-        await fetchCollectionEvents(isMounted, true);
-        isMounted && setIsLoading(false);
+        isMounted() && setIsLoading(true);
+        await fetchCollection();
+        await fetchCollectionEvents(true);
+        isMounted() && setIsLoading(false);
       }
     })();
-    return () => { isMounted = false };
   }, [user])
 
-  const fetchCollection = async (isMounted: boolean) => {
+  const fetchCollection = async () => {
     try {
       const res = await getEventCollection(String(router.query.collection_id));
-      isMounted && setCollectionData(res);
+      isMounted() && setCollectionData(res);
       if (res.creator._id !== user?._id) {
         generateToast('You are not allowed to view this event collection')
         await router.push('/')
@@ -68,21 +68,21 @@ const EventSet = () => {
     }
   }
 
-  const fetchCollectionEvents = async (newFetch = false, isMounted = true) => {
+  const fetchCollectionEvents = async (newFetch = false) => {
     try {
       const res = await getCollectionEvents(
         String(router.query.collection_id), (newFetch ? 1 : events.page), events.pageSize
       );
-      if (res.data.events.length < events.pageSize && isMounted) {
+      if (res.data.events.length < events.pageSize && isMounted()) {
         setEvents({...events, hasMore: false})
       }
-      if (res.code === 200) {
+      if (res.code === 200 && isMounted()) {
         if (newFetch) {
-          isMounted && setEventList(res.data.events)
+          setEventList(res.data.events)
         } else {
-          isMounted && setEventList([...eventList, ...res.data.events])
+          setEventList([...eventList, ...res.data.events])
         }
-        isMounted && setEvents(s => ({...s, page: s.page + 1}))
+        setEvents(s => ({...s, page: s.page + 1}))
       } else {
         generateToast(res.message)
       }

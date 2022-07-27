@@ -24,6 +24,7 @@ import {
   getCollectionEvents,
   getSearchEvent
 } from 'lib/api';
+import { useIsMounted } from 'utils/hooks';
 
 type selectOption = {
   label: string;
@@ -123,6 +124,7 @@ export default function CreateEventSet() {
   const { user } = useUserState();
   const router = useRouter();
   const toast = useToast();
+  const isMounted = useIsMounted();
   const editorRef = useRef<any>(null);
   const timeZone = useRef<any>(moment.tz.guess());
   const asyncRef = useRef<any>(null);
@@ -150,16 +152,14 @@ export default function CreateEventSet() {
   }, [])
 
   useEffect(() => {
-    let isMounted = true;
     (async () => {
       if (router.query.collection_id && user) {
-        isMounted && setIsLoading(true);
+        isMounted() && setIsLoading(true);
         await fetchCollection();
-        await fetchCollectionEvents(isMounted, true);
-        isMounted && setIsLoading(false);
+        await fetchCollectionEvents(true);
+        isMounted() && setIsLoading(false);
       }
     })();
-    return () => { isMounted = false };
   }, [router, user])
 
   const fetchCollection = async () => {
@@ -181,28 +181,28 @@ export default function CreateEventSet() {
     }
   }
 
-  const fetchCollectionEvents = async (newFetch = false, isMounted = true) => {
+  const fetchCollectionEvents = async (newFetch = false) => {
     try {
       const res = await getCollectionEvents(
         String(router.query.collection_id), (newFetch ? 1 : events.page), events.pageSize
       );
-      if (res.data.events.length < events.pageSize && isMounted) {
+      if (res.data.events.length < events.pageSize && isMounted()) {
         setEvents({...events, hasMore: false})
       }
-      if (res.code === 200) {
+      if (res.code === 200 && isMounted()) {
         const events = res.data.events.map((item: any) => ({
           value: item._id,
           label: item.title,
           cover: item.cover,
-          location: `${item.street}, ${item.city}, ${item.state}, ${item.country}`,
+          location: item.city,
           date: moment.utc(item.start_datetime).tz(timeZone.current).format('ddd MMM D ・ H:mm A')
         }))
         if (newFetch) {
-          isMounted && setEventList(events)
+          setEventList(events)
         } else {
-          isMounted && setEventList([...eventList, ...events])
+          setEventList([...eventList, ...events])
         }
-        isMounted && setEvents(s => ({...s, page: s.page + 1}))
+        setEvents(s => ({...s, page: s.page + 1}))
       } else {
         generateToast(res.message)
       }
@@ -645,8 +645,12 @@ export default function CreateEventSet() {
                               </a>
                               <div className="text-xs sm:text-sm truncate sm:text-clip text-gray-400">
                                 <span>{item.date}</span>
-                                <span className="inline-block h-2 w-px bg-gray-600 mx-2 sm:mx-3"></span>
-                                <span>{item.location}</span>
+                                {item.location ? (
+                                  <>
+                                    <span className="inline-block h-2 w-px bg-gray-600 mx-2 sm:mx-3"></span>
+                                    <span>{item.location}</span>
+                                  </>
+                                ) : null}
                               </div>
                             </div>
                             <button

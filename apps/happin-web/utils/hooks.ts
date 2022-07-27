@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 
 export function useResize() {
   const [width, setWidth] = useState<number>(0);
@@ -15,4 +15,18 @@ export function useResize() {
     };
   }, [onResize, width]);
   return width;
+}
+
+export function useIsMounted() {
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    isMounted.current = true;
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
+  return useCallback(() => isMounted.current, []);
 }
