@@ -665,7 +665,7 @@ const PaymentInner = (props: any) => {
             throw response.error;
           }
           console.log('stripe confirmed payment, wait for crowdcore server confirm', response)
-          await checkStripePaymentSuccess(crowdcoreOrderId)
+          await checkStripePaymentSuccess(crowdcoreOrderId, (result?.clientSecret || clientSecret))
         }
       } else {
         generateToast('Thank you, your order is placed', toast);
@@ -701,11 +701,15 @@ const PaymentInner = (props: any) => {
   }
 
 
-  const checkStripePaymentSuccess = async (crowdcoreOrderId: string) => {
+  const checkStripePaymentSuccess = async (crowdcoreOrderId: string, uniqueActionKey: string) => {
     let retryTimes = 0
     try {
-      while (retryTimes < 10) {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+      while (retryTimes < 50 && (uniqueActionKey === (clientSecret) || !clientSecret)) {
+        if (retryTimes < 10) {
+          await new Promise(resolve => setTimeout(resolve, 3000));
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 5000));
+        }
         const orderStatus = await getOrderStatus(crowdcoreOrderId)
         if (orderStatus.status === EOrderStatus.PAID) {
           setIsProcessing(false)
@@ -740,8 +744,8 @@ const PaymentInner = (props: any) => {
         }
         retryTimes += 1;
       }
-      if (retryTimes === 10) {
-        generateToast('Server time out, please try again later', toast);
+      if (retryTimes > 49) {
+        generateToast('Cannot process your order, please try again later', toast);
         router.back()
       }
     } catch (err) {
