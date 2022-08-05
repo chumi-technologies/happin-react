@@ -56,7 +56,7 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
   return (
     <>
       {/* Badges */}
-      <HStack spacing={3}>
+      <HStack spacing={2}>
         {(category && categoryType) && <>
           <div className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
             {categoryType + `${sourceURL ? '': ' - ' + category }`}

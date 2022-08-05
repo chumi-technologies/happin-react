@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { Avatar, Box, HStack, Spinner, useToast } from '@chakra-ui/react';
 import EventDescription from '@components/page_components/EventPageComponents/EventDescription';
 import { getCollectionEvents, getEventCollection } from 'lib/api';
-import { useUserState } from "contexts/user-state";
 import { User } from "lib/model/user";
 import { currencyFormatter } from "@components/page_components/CheckoutPageComponents/util/currencyFormat";
 import moment from 'moment-timezone';
@@ -31,7 +30,6 @@ const EventSet = () => {
     pageSize: 5,
     hasMore: true
   });
-  const { user } = useUserState();
   const toast = useToast();
   const isMounted = useIsMounted();
 
@@ -45,24 +43,19 @@ const EventSet = () => {
 
   useEffect(() => {
     (async () => {
-      if (router.query.collection_id && user) {
+      if (router.query.collection_id) {
         isMounted() && setIsLoading(true);
         await fetchCollection();
         await fetchCollectionEvents(true);
         isMounted() && setIsLoading(false);
       }
     })();
-  }, [user])
+  }, [router])
 
   const fetchCollection = async () => {
     try {
       const res = await getEventCollection(String(router.query.collection_id));
       isMounted() && setCollectionData(res);
-      if (res.creator._id !== user?._id) {
-        generateToast('You are not allowed to view this event collection')
-        await router.push('/')
-        return
-      }
     } catch (err) {
       console.log(err)
     }
@@ -128,7 +121,7 @@ const EventSet = () => {
         {/* Event Texts */}
         <div className="w-full lg:w-7/12 xl:w-1/2 sm:pb-20">
           <div className="event-details__container relative py-6 sm:py-8 md:py-14">
-            <HStack spacing={3}>
+            <HStack spacing={2}>
               {collectionData?.tags.map((item, index) => (
                 <div key={index} className="py-1 px-2 leading-none border-2 border-yellow-500 border-solid text-yellow-500 rounded text-xs sm:text-sm font-semibold">
                   {item}
