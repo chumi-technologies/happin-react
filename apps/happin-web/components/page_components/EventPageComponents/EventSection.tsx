@@ -109,6 +109,7 @@ const EventSection = ({
   return (
     <>
       <EventTitle
+        event={eventData.event}
         setIsModalOpen={setIsModalOpen}
         eventTitle={eventData.event.title}
         isLiveStream={eventData.event.streamEnabled}

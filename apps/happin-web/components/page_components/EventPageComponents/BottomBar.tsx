@@ -25,7 +25,7 @@ const BottomBar = ({
 }: eventDataProp) => {
   const [modalVisible, setModalVisible] = useState(false);
   const router = useRouter();
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const hrefRef = useRef<HTMLAnchorElement>(null);
   const isSoldOut = eventData.isTicketSoldOut;
 
   const offSaleTimeHasPast = (eventData: EventData): boolean => {
@@ -53,9 +53,8 @@ const BottomBar = ({
   };
 
   const buyTicketClickHandler = () => {
-    setModalVisible(false);
     if (eventData.event?.isThirdParty) {
-      setIsOpen(true);
+      setModalVisible(true);
     } else {
       if (eventData.event?.eventHostingType === "audio") {
         //this event have no ticket
@@ -82,7 +81,7 @@ const BottomBar = ({
             onClick={() => {
               setIsChatButtonOpen((x: boolean) => (x = !x));
             }}
-            className="btn btn-yellow !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1"
+            className="btn btn-yellow !px-0 !font-semibold !rounded-full flex items-center justify-center sm:flex-1 w-48 sm:w-auto"
             style={{ padding: "0.55rem" }}
           >
             <SvgIcon id="chat" className="text-lg text-gray-900 mr-1 sm:mr-2" />
@@ -91,7 +90,7 @@ const BottomBar = ({
           {!offSaleTimeHasPast(eventData) && (
             <button
               disabled={isSoldOut || checkOffLineEventStarted(eventData)}
-              onClick={() => setModalVisible(true)}
+              onClick={buyTicketClickHandler}
               style={{ padding: "0.55rem" }}
               className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3"
             >
@@ -131,7 +130,7 @@ const BottomBar = ({
         isOpen={modalVisible}
         setIsOpen={setModalVisible}
         maskClosable={false}
-        initialFocus={buttonRef}
+        initialFocus={hrefRef}
       >
         <div className="text-left">
           <p className="text-lg text-gray-50 font-semibold pr-8">
@@ -145,13 +144,15 @@ const BottomBar = ({
             >
               Cancel
             </button>
-            <button
-              ref={buttonRef}
+            <a
+              ref={hrefRef}
               className="btn btn-rose ml-3 focus:outline-rose-500/30"
-              onClick={buyTicketClickHandler}
+              target="_blank"
+              href={eventData.event.sourceUrl}
+              rel="noopener noreferrer"
             >
               Continue to get tickets
-            </button>
+            </a>
           </div>
         </div>
       </Modal>
