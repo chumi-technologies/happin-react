@@ -6,7 +6,7 @@ import {
 import SvgIcon from '@components/SvgIcon';
 import { useEffect } from 'react';
 import moment from 'moment-timezone';
-import { LocationInfo } from "lib/model/event";
+import { EventDetail, LocationInfo } from 'lib/model/event';
 import { GroupEvent } from 'lib/model/groupEvent';
 import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
@@ -14,6 +14,7 @@ import classnames from 'classnames';
 import { currencyFormatter } from '../CheckoutPageComponents/util/currencyFormat';
 
 type EventTitleProps = {
+  event: EventDetail;
   setIsModalOpen: (arg0: boolean) => void;
   eventTitle?: string;
   isLiveStream?: boolean;
@@ -30,7 +31,7 @@ type EventTitleProps = {
   sourceURL?: string;
 }
 
-const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
+const EventTitle = ({ event, sourceURL, setIsModalOpen, setIsRedeemModalOpen, category, categoryType, eventTitle, playbackStart = false, isLiveStream = false, eventStartDate, eventEndDate, price, location, currency, groupEvents = [] }: EventTitleProps) => {
   // const [firstActive, setFirstActive] = useState(true)
   const { user } = useUserState();
   const { dimmed, showSSO } = useSSOState();
@@ -91,10 +92,23 @@ const EventTitle = ({ sourceURL, setIsModalOpen, setIsRedeemModalOpen, category,
       </h1>
 
       {/* Price */}
-      <div className="text-gray-50 font-bold mt-2">
-        {price < 0 ? 'Free' : `From ${(currencyFormatter(currency as string).format(price / 100))}`}
-      </div>
-
+      {event?.isThirdParty ? (
+        price > 0 && (
+          <div className="text-gray-50 font-bold mt-2">
+            {`From ${currencyFormatter(currency as string).format(
+              price / 100
+            )}`}
+          </div>
+        )
+      ) : (
+        <div className="text-gray-50 font-bold mt-2">
+          {price > 0
+            ? `From ${currencyFormatter(currency as string).format(
+              price / 100
+            )}`
+            : "Free"}
+        </div>
+      )}
       {/* Block with Icons */}
 
       {/*<VStack

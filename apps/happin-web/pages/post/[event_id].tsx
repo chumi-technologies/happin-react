@@ -45,7 +45,6 @@ const Post = (props: EventData) => {
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true)
   const [isOpen, setIsOpen] = useState(false);
-  console.log(props);
   const eventData = props;
   const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{ code: string, affiliate: string, organizer_token: string }>({ affiliate: '', code: '', organizer_token: '' });
