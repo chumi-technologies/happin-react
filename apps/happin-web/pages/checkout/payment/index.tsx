@@ -486,7 +486,7 @@ const PaymentInner = (props: any) => {
     }
     catch (err) {
       console.log(err)
-      generateToast('Unknown error, please contact us', toast);
+      generateToast('Unknown order error, please contact us', toast);
       router.back();
     }
   }
@@ -693,7 +693,7 @@ const PaymentInner = (props: any) => {
       if (err.type === 'card_error') {
         generateToast(err.message, toast)
       } else {
-        generateToast('Unknown error, please contact us', toast)
+        generateToast('Unknown card error, please contact us', toast)
       }
     } finally {
       setIsProcessing(false);
