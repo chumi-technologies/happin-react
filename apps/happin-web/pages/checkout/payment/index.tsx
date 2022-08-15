@@ -736,7 +736,7 @@ const PaymentInner = (props: any) => {
           return
         } else if (orderStatus.status !== EOrderStatus.INPROGRESS) {
           setIsProcessing(false);
-          generateToast('Failed to process order, please try again later', toast);
+          generateToast('Failed to process order, please change another card or call your bank to auth this transaction.', toast);
           router.back()
           return
         } else {
@@ -745,7 +745,7 @@ const PaymentInner = (props: any) => {
         retryTimes += 1;
       }
       if (retryTimes > 49) {
-        generateToast('Cannot process your order, please try again later', toast);
+        generateToast('Failed to process order, please change another card or call your bank to auth this transaction.', toast);
         router.back()
       }
     } catch (err) {
