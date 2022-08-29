@@ -31,20 +31,20 @@ const imageList = [
 ];
 const buildEvent = [
   {
-    title: 'Find out who are free and see their hangout ideas',
-    desc: 'Never miss any fun things to do.'
+    title: 'Group matching',
+    desc: 'Match with up to 5 people at a time based on similar interest hashtags, events you are going to, and opinions on fun, random questions!'
   },
   {
-    title: 'Create hangout ideas for your friends or in public',
-    desc: 'Gather people for events or fun activities.'
+    title: 'Gathering',
+    desc: 'GEN-Z version of meetups, virtually or in real life.'
   },
   {
-    title: 'Make new friends by matching based on event you attend',
-    desc: 'Never go to a party or event alone.'
+    title: 'Discover',
+    desc: 'Discover public events in your area, and other potential hashtags that you want to group match with.'
   },
   {
-    title: 'Safety-first community and event group automation',
-    desc: 'Quickly figure out where or when you will meet up without sending individual DMs.'
+    title: 'Profile & Content Visibility',
+    desc: 'Upload your media to different hashtags. You can add photos and videos to different hashtags, so only people who share the same interests can see it, even your friends!'
   },
 ];
 export default function Home() {
@@ -88,7 +88,7 @@ export default function Home() {
             <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
             <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
             <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            See what are your friends are up to
+            It’s time for you to join the party!
           </div>
         </div>
       </div>
@@ -98,18 +98,15 @@ export default function Home() {
         <div className="container">
           <div className="flex items-center flex-col md:flex-row text-center md:text-left">
             <div className="relative sm:w-3/5 md:w-1/2 xl:w-7/12 black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-7 md:mb-0 text-rose-500">
-              Social gathering platform
+              Group matching platform for new friends
             </div>
             <div className="md:pl-12 lg:pl-16 md:w-1/2 xl:w-5/12">
               <div className="relative text-lg font-semibold mb-12">
                 <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
                 <p className="mb-4 md:mb-5">
-                  Find things to do with new or old friends! Happin is a social gathering platform connecting people through
-                  everyday activities, events, and experiences.
+                  Happin is the BEST and newest way to join in on the fun. Match with up to 5 people at a time, chat with like-minded individuals, and discover the latest gatherings in your area. The party won’t start without you! Download the Happin app today!
                 </p>
-                <p className="mb-4 md:mb-5">
-                  Check your Happin feed to see what your friends are
-                  up to or when they are free to hangout</p>
+                {/*<p className="mb-4 md:mb-5"></p>*/}
               </div>
               <div className="flex justify-center md:justify-start">
                 <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
@@ -132,8 +129,8 @@ export default function Home() {
               How Happin Works
             </h1>
           </div>
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 lg:gap-24 items-center">
-            <div className="sm:w-9/12 md:w-full mx-auto lg:flex-grow flex flex-col md:items-start md:text-left items-center text-center">
+          <div className=" gap-10 md:gap-16 lg:gap-24 items-center">
+            <div className="sm:w-9/12 md:w-8/12 mx-auto lg:flex-grow flex flex-col md:items-start items-center text-center">
               <Stack spacing={4}>
               {buildEvent.map((item, index) => (
                 <div
@@ -150,30 +147,30 @@ export default function Home() {
               ))}
               </Stack>
             </div>
-            <div
-              className="relative w-full h-full flex justify-center items-center">
-              <SwitchTransition mode="out-in">
-                <CSSTransition
-                  key={buildCur}
-                  addEndListener={(node, done) => {
-                    node.addEventListener('transitionend', done, false);
-                  }}
-                  classNames="home__fade"
-                >
-                  <div className="relative w-full sm:w-3/4 md:w-full h-full flex justify-center items-center">
-                    <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />
-                    <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />
-                    <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">
-                      <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].firstImg} alt={buildEvent[buildCur].title} />
-                    </div>
-                    <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">
-                      <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].secImg} alt={buildEvent[buildCur].title} />
-                    </div>
-                  </div>
-                  {/*<img className="w-full" src={imageList[buildCur]} alt="" />*/}
-                </CSSTransition>
-              </SwitchTransition>
-            </div>
+            {/*<div*/}
+            {/*  className="relative w-full h-full flex justify-center items-center">*/}
+            {/*  <SwitchTransition mode="out-in">*/}
+            {/*    <CSSTransition*/}
+            {/*      key={buildCur}*/}
+            {/*      addEndListener={(node, done) => {*/}
+            {/*        node.addEventListener('transitionend', done, false);*/}
+            {/*      }}*/}
+            {/*      classNames="home__fade"*/}
+            {/*    >*/}
+            {/*      <div className="relative w-full sm:w-3/4 md:w-full h-full flex justify-center items-center">*/}
+            {/*        <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />*/}
+            {/*        <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />*/}
+            {/*        <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">*/}
+            {/*          <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].firstImg} alt={buildEvent[buildCur].title} />*/}
+            {/*        </div>*/}
+            {/*        <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">*/}
+            {/*          <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].secImg} alt={buildEvent[buildCur].title} />*/}
+            {/*        </div>*/}
+            {/*      </div>*/}
+            {/*      /!*<img className="w-full" src={imageList[buildCur]} alt="" />*!/*/}
+            {/*    </CSSTransition>*/}
+            {/*  </SwitchTransition>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>
