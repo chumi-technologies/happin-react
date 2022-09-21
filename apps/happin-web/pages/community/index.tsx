@@ -1,7 +1,7 @@
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Image } from "@chakra-ui/react";
+import Head from 'next/head';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Image } from '@chakra-ui/react';
 
 const Community = () => {
   const router = useRouter();
@@ -14,8 +14,8 @@ const Community = () => {
 
   useEffect(() => {
     setInfo({
-      name: router.query.userName as string,
-      avatar: router.query.photo as string,
+      name: router.query.af_referrer_name as string,
+      avatar: router.query.af_referrer_image_url as string,
       tag: router.query.tag as string,
       link: router.query.inviteUrl as string
     })
