@@ -1189,3 +1189,9 @@
   background: url("../public/images/event-invitation-top-pattern.png") center top no-repeat;
   background-size: 83%;
 }
+
+// Community
+.community__code {
+  @apply absolute bottom-10 left-1/2 black-title font-bold text-lg;
+  transform: rotate(-2.5deg) translateX(-50%);
+}

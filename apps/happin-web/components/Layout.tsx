@@ -7,7 +7,7 @@ import { useCheckoutState } from "contexts/checkout-state";
 import classnames from "classnames";
 import Footer from "./Footer";
 import { getWhiteLabelDomain } from "lib/api";
-import Script from 'next/script';
+import Script from "next/script";
 
 const Layout = ({ children }: { children: any }) => {
   const [isMobileBarOpen, setIsMobileBarOpen] = useState(true);
@@ -17,23 +17,30 @@ const Layout = ({ children }: { children: any }) => {
 
   const [isRewardPage, setRewardPage] = useState(false);
   const [isAppRewardPage, setAppRewardPage] = useState(false);
+  const [communityPage, setCommunityPage] = useState(false);
 
   const [whiteLabelLogo, setWhiteLabelLogo] = useState();
-  const [whiteLabelHome, setWhiteLabelHome] = useState('');
+  const [whiteLabelHome, setWhiteLabelHome] = useState("");
   const [checkingWhiteLable, setCheckingWhiteLable] = useState(true);
 
   const [mobileFixed, setMobileFixed] = useState(false);
 
-  const { setBoxOfficeMode , setOnlyShowMerch, setOpenInApp, setTokenPassedIn, openInApp} = useCheckoutState();
+  const {
+    setBoxOfficeMode,
+    setOnlyShowMerch,
+    setOpenInApp,
+    setTokenPassedIn,
+    openInApp,
+  } = useCheckoutState();
 
   // check the param from url, if it contains the userId then we know it's from app, hence hide the top bar
   // save the userId for the final checkout step
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
-    if (router.query?.token && router.asPath.includes('/checkout/')) {
+    if (router.query?.token && router.asPath.includes("/checkout/")) {
       setTokenPassedIn(true);
-      localStorage.setItem('chumi_jwt', router?.query?.token as string);
+      localStorage.setItem("chumi_jwt", router?.query?.token as string);
     }
 
     if (router.query?.headerHidden) {
@@ -41,7 +48,7 @@ const Layout = ({ children }: { children: any }) => {
     }
 
     if (router.query?.token) {
-      localStorage.setItem('chumi_jwt', router?.query?.token as string);
+      localStorage.setItem("chumi_jwt", router?.query?.token as string);
     }
 
     if (router.query?.fromapp) {
@@ -52,29 +59,36 @@ const Layout = ({ children }: { children: any }) => {
       setOnlyShowMerch(true);
     }
     //box office mode is only opened from 2b app
-    if (router.query?.role === 'boxoffice') {
+    if (router.query?.role === "boxoffice") {
       setBoxOfficeMode(true);
     }
-    if (router.route === '/' || router.route === '/events' ||  router.route === '/ambassador') {
+    if (
+      router.route === "/" ||
+      router.route === "/events" ||
+      router.route === "/ambassador"
+    ) {
       setIsProduction(true);
       setShowFooter(true);
       setShowHeader(true);
-    } else if (router.route === '/post/[event_id]'){
+    } else if (router.route === "/post/[event_id]") {
       setShowHeader(true);
       setMobileFixed(true);
-    } else if (router.route === '/reward'){
-      setRewardPage(true)
+    } else if (router.route === "/reward") {
+      setRewardPage(true);
       setShowHeader(false);
-    } else if (router.route === '/campaign')  {
+    } else if (router.route === "/campaign") {
       setShowHeader(false);
-    } else if (router.route === '/event-invitation')  {
+    } else if (router.route === "/community") {
+      setShowHeader(false);
+      setCommunityPage(true)
+    } else if (router.route === "/event-invitation") {
       setShowHeader(false);
       setMobileFixed(true);
-    } else if (router.route === '/appreward') {
-      setAppRewardPage(true)
+    } else if (router.route === "/appreward") {
+      setAppRewardPage(true);
       setShowHeader(false);
       setShowFooter(false);
-    } else if (router.route === '/transactionHistory') {
+    } else if (router.route === "/transactionHistory") {
       setShowHeader(false);
       setShowFooter(false);
     } else {
@@ -83,52 +97,52 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(true);
       setMobileFixed(false);
     }
-  }, [router.query, router.route, router.asPath, setBoxOfficeMode])
+  }, [router.query, router.route, router.asPath, setBoxOfficeMode]);
 
-  useEffect(()=> {
-    const hideMobileBar = localStorage.getItem('hide_mobile_bar');
+  useEffect(() => {
+    const hideMobileBar = localStorage.getItem("hide_mobile_bar");
     if (hideMobileBar) {
       setIsMobileBarOpen(false);
     }
-  }, [])
+  }, []);
 
-
-  useEffect(()=> {
-    if (typeof window !== 'undefined') {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
       const hostname = window.location.hostname;
       //const hostname = 'deadroyaltyproductions.happin.app'
       // && !hostname.includes('localhost')
-      if (hostname !== 'happin.app' && !hostname.includes('localhost')) {
-        whiteLabelDomain(hostname)
+      if (hostname !== "happin.app" && !hostname.includes("localhost")) {
+        whiteLabelDomain(hostname);
       } else {
-        setCheckingWhiteLable(false)
+        setCheckingWhiteLable(false);
       }
     }
-  }, [])
+  }, []);
 
   const whiteLabelDomain = async (domain: string) => {
     try {
       const response = await getWhiteLabelDomain(domain);
       if (response.domainLogo) {
-        const logo = response.domainLogo.startsWith('https') ? response.domainLogo : 'https://images.chumi.co/' + response.domainLogo
-        setWhiteLabelLogo(logo)
+        const logo = response.domainLogo.startsWith("https")
+          ? response.domainLogo
+          : "https://images.chumi.co/" + response.domainLogo;
+        setWhiteLabelLogo(logo);
         setWhiteLabelHome(response.clientUrl);
       }
-      setCheckingWhiteLable(false)
+      setCheckingWhiteLable(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
 
   return (
     <>
       <Head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-        <link
-          rel="apple-touch-icon"
-          href="/apple-touch-icon.png"
-          key="apple"
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" key="apple" />
         <link
           rel="icon"
           type="image/png"
@@ -143,23 +157,31 @@ const Layout = ({ children }: { children: any }) => {
           href="/favicon-16x16.png"
           key="icon16"
         />
-        <link
-          rel="icon"
-          href="/favicon.ico"
-          key="favicon"
-        />
+        <link rel="icon" href="/favicon.ico" key="favicon" />
       </Head>
       {/*<Script src="https://maps.googleapis.com/maps/api/js?libraries=places" strategy="beforeInteractive" />*/}
-      <main className={classnames('main-app', {'production': isProduction, 'reward-page': isRewardPage, 'app-reward-page': isAppRewardPage, 'mobile-fixed': mobileFixed})}>
+      <main
+        className={classnames("main-app", {
+          production: isProduction,
+          "reward-page": isRewardPage,
+          "app-reward-page": isAppRewardPage,
+          "mobile-fixed": mobileFixed,
+          "community-page": communityPage,
+        })}
+      >
         {/* Mobile App Bar for mobile screens */}
         {/* Header Section */}
-        {(!openInApp && showHeader) &&
-          <Header whiteLabelLogo={whiteLabelLogo} whiteLabelHome={whiteLabelHome} checkingWhiteLable={checkingWhiteLable}>
+        {!openInApp && showHeader && (
+          <Header
+            whiteLabelLogo={whiteLabelLogo}
+            whiteLabelHome={whiteLabelHome}
+            checkingWhiteLable={checkingWhiteLable}
+          >
             {/* { isMobileBarOpen && <MobileAppBar setIsMobileBarOpen={setIsMobileBarOpen} /> } */}
           </Header>
-        }
+        )}
         {children}
-        {showFooter &&  <Footer whiteLabelLogo={whiteLabelLogo} />}
+        {showFooter && <Footer whiteLabelLogo={whiteLabelLogo} />}
       </main>
     </>
   );
