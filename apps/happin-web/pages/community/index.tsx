@@ -1,7 +1,7 @@
-import Head from "next/head";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { Image } from "@chakra-ui/react";
+import Head from 'next/head';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { Image } from '@chakra-ui/react';
 
 const Community = () => {
   const router = useRouter();
