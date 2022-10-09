@@ -187,10 +187,10 @@ const EventSection = ({
         />
       </div>
       <div className="h-px bg-gray-600" />
-      {/*<div className="py-5 sm:py-8">*/}
-      {/*  <EventAttendees topProfiles={eventData.match.topProfiles} />*/}
-      {/*</div>*/}
-      {/*<div className="h-px bg-gray-600" />*/}
+      <div className="py-5 sm:py-8">
+        <EventAttendees topProfiles={eventData.match.topProfiles} />
+      </div>
+      <div className="h-px bg-gray-600" />
       {/* <div className="h-px bg-gray-600" /> */}
       {/* <div className="pt-5 sm:pt-8">
         <EventInterested list={interestedList} />

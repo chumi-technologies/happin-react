@@ -76,13 +76,13 @@ const BottomBar = ({
   return (
     <>
       <div className="footer-action fixed lg:sticky bottom-0 right-0 w-full bg-gray-800 z-40">
-        <div className="event-details__container flex py-3 sm:py-4">
+        <div className="event-details__container flex py-2.5 sm:py-4">
           <button
             onClick={() => {
               setIsChatButtonOpen((x: boolean) => (x = !x));
             }}
-            className="btn btn-yellow !px-0 !font-semibold !rounded-full flex items-center justify-center sm:flex-1 w-48 sm:w-auto"
-            style={{ padding: "0.55rem" }}
+            className="btn btn-yellow !py-2.5 sm:!py-3 !px-0 !font-semibold !rounded-full flex items-center justify-center sm:flex-1 w-48 sm:w-auto"
+            // style={{ padding: "0.55rem" }}
           >
             <SvgIcon id="chat" className="text-lg text-gray-900 mr-1 sm:mr-2" />
             <span className="text-sm sm:text-base">Join event community</span>
@@ -91,8 +91,8 @@ const BottomBar = ({
             <button
               disabled={isSoldOut || checkOffLineEventStarted(eventData)}
               onClick={buyTicketClickHandler}
-              style={{ padding: "0.55rem" }}
-              className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3"
+              // style={{ padding: "0.55rem" }}
+              className="btn btn-rose !py-2.5 sm:!py-3 !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3"
             >
               <SvgIcon
                 id="ticket"
@@ -111,7 +111,7 @@ const BottomBar = ({
           {offSaleTimeHasPast(eventData) && (
             <button
               disabled={true}
-              style={{ padding: "0.55rem" }}
+              // style={{ padding: "0.55rem" }}
               className="btn btn-rose !px-0 !font-semibold !rounded-full flex items-center justify-center flex-1 ml-3"
             >
               <SvgIcon
