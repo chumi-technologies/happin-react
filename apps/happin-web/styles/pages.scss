@@ -84,7 +84,7 @@
   @apply relative flex-1 h-0 text-gray-50 z-0;
 }
 .event-details__container {
-  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0 lg:min-h-full;
   //padding-right: 4.5rem;
   //padding-left: 3.5rem;
   @media (min-width: 640px) {
