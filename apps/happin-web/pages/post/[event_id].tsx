@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ReactDom from 'react-dom';
 import { GetStaticPaths } from 'next';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Box, Button, Spinner } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import classnames from 'classnames';
 import { ArrowDownIcon } from '@chakra-ui/icons';
-import { PRODUCTION_URL } from 'utils/constants';
 import { useUserState } from 'contexts/user-state';
 import SignInBar from '@components/SignInBar';
 import PopUpModal from '@components/reusable/PopUpModal';
@@ -18,7 +16,7 @@ import ChatWithFans from '@components/page_components/EventPageComponents/ChatWi
 import Modal from '@components/reusable/Modal';
 import { getEventDetail, getGroupEvents } from 'lib/api';
 import { EventData } from 'lib/model/event';
-import { Transition } from '@headlessui/react';
+import EventSEO from '@components/page_components/EventPageComponents/EventSEO';
 
 // third party event website that set x-frame-option to origin, can't open in iframe
 const forbidDomain = ['veeps.com'];
@@ -51,7 +49,7 @@ const ThirdPartyIframe = (props: any) => {
   );
 };
 
-const Post = (props: EventData & { eventId: string }) => {
+const Post = ({ eventData }: { eventData: EventData }) => {
   const router = useRouter();
   const [hideSigninBar, setHideSigninBar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,8 +60,6 @@ const Post = (props: EventData & { eventId: string }) => {
   const { setEventDeepLink, user } = useUserState();
   const [tokenExist, setTokenExist] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
-  const eventData = props;
-  const groupEvents = props.groupEvents;
   const [queryParams, setQueryParams] = useState<{
     code: string;
     affiliate: string;
@@ -73,9 +69,6 @@ const Post = (props: EventData & { eventId: string }) => {
     code: '',
     organizer_token: '',
   });
-  let eventLocation = 'Stream Via Happin';
-  let eventDescription =
-    ' - You can watch livestream on https://livestream.happin.app or download Happin App';
 
   const [openIframe, setOpenIframe] = useState<boolean>(false);
   const [thirdPartyUrl, setThirdPartyUrl] = useState<string>();
@@ -83,7 +76,6 @@ const Post = (props: EventData & { eventId: string }) => {
   const [iframePortal, setIframePortal] = useState(<></>);
 
   useEffect(() => {
-    console.log(111);
     setIframePortal(
       ReactDom.createPortal(
         <ThirdPartyIframe
@@ -97,25 +89,23 @@ const Post = (props: EventData & { eventId: string }) => {
   }, [openIframe, thirdPartyUrl]);
 
   useEffect(() => {
-    console.log(router.isFallback);
+    if (!router.isFallback) {
+      if (eventData.event.sourceUrl) {
+        setThirdPartyUrl(eventData.event.sourceUrl);
+        if (eventData.event.sourceUrlAllowIframe) {
+          setCanUseIframe(true);
+        } else {
+          setCanUseIframe(false);
+        }
+      }
+      setEventDeepLink(eventData?.event.deepLink);
+    }
   }, [router.isFallback]);
 
   const closeIframe = () => {
     setOpenIframe(false);
     setPreventScrolling(false);
   };
-
-  useEffect(() => {
-    console.log(props);
-    if (eventData.event.sourceUrl) {
-      setThirdPartyUrl(eventData.event.sourceUrl);
-      if (eventData.event.sourceUrlAllowIframe) {
-        setCanUseIframe(true);
-      } else {
-        setCanUseIframe(false);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     if (router.query.affiliate) {
@@ -141,45 +131,11 @@ const Post = (props: EventData & { eventId: string }) => {
   useEffect(() => {
     const hideSigninBar = localStorage.getItem('hide_signin_bar');
     setHideSigninBar(!!hideSigninBar);
-    if (eventData) {
-      setEventDeepLink(eventData.event.deepLink);
-    }
   }, []);
 
   const firstTimeVisitHandler = () => {
     localStorage.setItem('hide_signin_bar', '1');
     setHideSigninBar(s => !s);
-  };
-
-  (() => {
-    if (eventData) {
-      if (
-        eventData.event.acInfo.location !== 'happin.app' &&
-        eventData.event.acInfo.eventType !== 'hybrid'
-      ) {
-        eventLocation =
-          eventData.event.acInfo.venueName || eventData.event.acInfo.location;
-        eventDescription = ` - You can attend event @ ${
-          eventData.event.acInfo.venueName || eventData.event.acInfo.location
-        }`;
-      } else if (eventData.event.acInfo.eventType === 'hybrid') {
-        eventLocation =
-          eventData.event.acInfo.venueName ||
-          eventData.event.acInfo.location + ' and Stream Via Happin';
-        eventDescription = ` - You can attend event @ ${
-          eventData.event.acInfo.venueName || eventData.event.acInfo.location
-        } and watch livestream on https://happin.app or download Happin App`;
-      }
-    }
-  })();
-
-  const seoProps = {
-    description: eventData?.event?.title + eventDescription,
-    keywords: `${eventData?.event?.tags.toString()}, Happin livestream`,
-    title: eventData?.event?.title + ' @ ' + eventLocation,
-    ogImage: eventData?.event?.socialImg || eventData?.event?.cover,
-    ogUrl: `${PRODUCTION_URL}${router.asPath}`,
-    twitterImage: eventData?.event?.socialImg || eventData?.event?.cover,
   };
 
   useEffect(() => {
@@ -197,63 +153,9 @@ const Post = (props: EventData & { eventId: string }) => {
 
   return (
     <>
-      <Head>
-        <meta
-          name="description"
-          key="description"
-          content={seoProps.description}
-        />
-        <meta name="keywords" key="keywords" content={seoProps.keywords} />
-        <title>{seoProps.title}</title>
-        <meta property="og:title" key="og:title" content={seoProps.title} />
-        <meta
-          property="og:description"
-          key="og:description"
-          content={seoProps.description}
-        />
-        <meta property="og:image" key="og:image" content={seoProps.ogImage} />
-        <meta
-          property="og:site_name"
-          key="og:site_name"
-          content={seoProps.title}
-        />
-        <meta property="og:url" key="og:url" content={seoProps.ogUrl} />
-        <meta property="og:type" key="og:type" content={'website'} />
-        <meta
-          name="twitter:title"
-          key="twitter:title"
-          content={seoProps.title}
-        />
-        <meta
-          name="twitter:description"
-          key="twitter:description"
-          content={seoProps.description}
-        />
-        <meta
-          name="twitter:image"
-          key="twitter:image"
-          content={seoProps.twitterImage}
-        />
-        <meta
-          name="twitter:card"
-          key="twitter:card"
-          content="summary_large_image"
-        />
-      </Head>
+      <EventSEO eventData={eventData} />
       {iframePortal}
       <div className="event-details__page">
-        <Transition
-          show={router.isFallback}
-          enter="transition-opacity duration-75"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="transition-opacity duration-150"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[99]"
-        >
-          <Spinner thickness="4px" speed="0.65s" color="yellow.500" size="xl" />
-        </Transition>
         {/* Top Popups for First-Time Visitors */}
         {!hideSigninBar && !tokenExist && (
           <SignInBar setIsFirstTimeVisitor={firstTimeVisitHandler} />
@@ -266,11 +168,7 @@ const Post = (props: EventData & { eventId: string }) => {
             isModalOpen={isModalOpen}
             setIsModalOpen={setIsModalOpen}
           >
-            <EventDates
-              groupEvents={groupEvents}
-              setIsModalOpen={setIsModalOpen}
-              eventData={eventData}
-            />
+            <EventDates setIsModalOpen={setIsModalOpen} eventData={eventData} />
           </PopUpModal>
         )}
         {/* redeem modal */}
@@ -372,7 +270,6 @@ const Post = (props: EventData & { eventId: string }) => {
                 setIsRedeemModalOpen={setIsRedeemModalOpen}
                 setIsModalOpen={setIsModalOpen}
                 eventData={eventData}
-                groupEvents={groupEvents}
               />
             </div>
             <BottomBar
@@ -466,45 +363,12 @@ export async function getStaticProps({
     }
     return {
       props: {
-        ...props,
+        eventData: props,
         eventId: acid,
       },
+      revalidate: 60,
     };
   } catch (err) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: '/404',
-      },
-      props: {},
-    };
+    return { notFound: true };
   }
 }
-
-// fetch data on server upon every request. not using static page pre render
-// export async function getServerSideProps(context: { params: { event_id: string } }): Promise<GetServerSidePropsResult<any>> {
-//   try {
-//     const titleWithACID = context.params.event_id
-//     const tokens = titleWithACID.split('-');
-//     const acid = tokens[tokens.length - 1];
-//     const res = await getEventDetail(acid, 'both')
-//     const props = res.data
-//     if (res.data?.event?.groupAcid) {
-//       props.groupEvents = await getGroupEvents(res.data.event.groupAcid || "");
-//     }
-//     if (!res.data) {
-//       throw new Error('Event not found');
-//     }
-//     return {
-//       props,
-//     }
-//   } catch (err) {
-//     return {
-//       redirect: {
-//         permanent: false,
-//         destination: "/404",
-//       },
-//       props: {},
-//     };
-//   }
-// }
