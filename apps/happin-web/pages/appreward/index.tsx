@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { ArrowRight, Help, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import SvgIcon from "@components/SvgIcon";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
@@ -11,6 +10,7 @@ import { useSSOState } from 'contexts/sso-state';
 import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
 import { getUserInfo } from 'lib/api';
+import IconPark from '@components/IconPark';
 
 const Reward = () => {
   const router = useRouter()
@@ -21,9 +21,9 @@ const Reward = () => {
   const [ balance, setBalance ] = useState<Balance>({"coins": 0, "diamonds": 0,});
   const [ happinID, setHappinID ] = useState<string>('');
   const [ dailyCheckIn, setDailyCheckIn ] =  useState<DailyCheckIn>({"reward":0, "rewardType": "", "strike":0, "hasCheckedIn":false})
-  const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([]) 
+  const [ oneTimeTask, setOneTimeTask ] = useState<TaskDetail[]>([])
   const [ inProgress, setInProgress ] = useState<boolean>(false);
-  const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([]) 
+  const [ semiMonthlyTask, setSemiMonthlyTask ] = useState<TaskDetail[]>([])
   const [ repeatTask, setRepeatTask ] = useState<TaskDetail[]>([]);
   const toast = useToast();
   const tab = ['Earn', 'Redeem']
@@ -42,7 +42,7 @@ const Reward = () => {
         if (res.data.tasks.repeat) {
           setRepeatTask(res.data.tasks.repeat);
         }
-        
+
         // if (res.data.tasks.weekly) {
         //   setWeeklyTask(res.data.tasks.weekly);
         // }
@@ -66,7 +66,7 @@ const Reward = () => {
         temp.strike  = temp.strike + 1;
         temp.hasCheckedIn = true;
         setDailyCheckIn(temp)
-        
+
       }
 
     }
@@ -107,7 +107,7 @@ const Reward = () => {
           setSemiMonthlyTask(update);
         }
       }
-      
+
       // update balance:
       try {
         const res: RewardListResponse = await getRewards();
@@ -176,7 +176,7 @@ const Reward = () => {
                 generateToast('Get reward error', toast);
                 console.log('Get reward error: ', error)
               }
-              
+
             })()
     }
   },[user])
@@ -211,7 +211,7 @@ const Reward = () => {
                 generateToast('Get reward error', toast);
                 console.log('Get reward error: ', error)
               }
-              
+
             })()
             console.log(user);
           }
@@ -236,11 +236,11 @@ const Reward = () => {
           <div className="flex items-center justify-between mb-4 font-semibold text-gray-50">
             <div className="flex items-center">
               <span className="mr-1">Current Balance</span>
-              <Help theme="outline" size="18" fill="currentColor" strokeWidth={4}/>
+              <IconPark name="help" size={18} />
             </div>
             <div className="flex items-center  cursor-pointer">
               <span className="mr-2" onClick={() => handleSendToAPP("topup")}>Top Up Now</span>
-              <ArrowRight theme="outline" size="16" fill="currentColor" strokeWidth={5}/>
+              <IconPark name="arrow-right" size={16} />
             </div>
           </div>
           <div className="bg-gray-800 rounded-xl py-4">
@@ -257,7 +257,7 @@ const Reward = () => {
               </div>
               <div className="relative flex-1 text-center">
                 <div className="app-reward__exchange">
-                  <Switch theme="outline" size="20" fill="#fff"/>
+                  <IconPark name="switch" size={20} color="#fff" />
                 </div>
                 <img className="w-6 mx-auto" src="/images/icon-cash.svg" alt="" />
                 <div className="mt-1 text-lg font-semibold text-gray-50">{balance.diamonds}</div>
@@ -305,12 +305,12 @@ const Reward = () => {
               <div className="bg-gray-800 rounded-xl px-4 py-6 mb-4" key={task._id}>
                 <div className="flex items-center">
                   <div className="flex-1">
-                    <div className="text-xl text-white font-semibold mb-2">Earn {task.rewardAmount} 
+                    <div className="text-xl text-white font-semibold mb-2">Earn {task.rewardAmount}
                       <img className="inline w-4 ml-1.5 mr-1" src={`/images/icon-${task.rewardType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
                     </div>
                     <div className="text-gray-400 font-medium text-sm leading-5">{task.description}</div>
                   </div>
-                  { task.claimed ? 
+                  { task.claimed ?
                         <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
                         : <button className={`btn btn-outline-rose btn-sm !rounded-full ml-4 ${inProgress || !task.claimable &&'disabled'}`} disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Claim</button>
                       }
@@ -371,7 +371,7 @@ const Reward = () => {
                         <span className="align-middle">{task.rewardAmount}</span>
                       </div>
                     </div>
-                    { task.claimable ? 
+                    { task.claimable ?
                         <button className="btn btn-outline-rose btn-sm !rounded-full ml-4">Enter</button>
                         : task.claimed && <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
                       }
@@ -393,7 +393,7 @@ const Reward = () => {
                     <div className="flex items-center ml-4">
                       <img className="inline align-middle w-5 mr-1" src={`/images/icon-${task.rewardType === "coin" ? 'coin' : 'diamond'}.svg`} alt="" />
                       <span className="text-gray-50 text-sm font-medium">{task.rewardAmount}</span>
-                      { task.claimed ? 
+                      { task.claimed ?
                         <button disabled className="btn btn-dark-light btn-sm !rounded-full ml-4">Claimed</button>
                         : <button className="btn btn-outline-rose btn-sm !rounded-full ml-4 disabled" disabled={inProgress || !task.claimable} onClick={() => handleClaim(task._id, "oneTime")}>Enter</button>
                       }

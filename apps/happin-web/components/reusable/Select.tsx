@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react'
-import { Down } from '@icon-park/react';
 import classNames from 'classnames';
+import IconPark from '@components/IconPark';
 
 type SelectProps = {
   data: SelectItemProps[];
@@ -48,7 +48,7 @@ export default function Select(props: SelectProps) {
           <Listbox.Button className={classNames('select-button', {'open': open})}>
             <span className="block truncate text-sm font-medium">{selected.label}</span>
             <span className="select-button__arrow">
-              <Down theme="outline" size="16" fill="currentColor"/>
+               <IconPark name="down" size={16} />
             </span>
           </Listbox.Button>
           <Transition

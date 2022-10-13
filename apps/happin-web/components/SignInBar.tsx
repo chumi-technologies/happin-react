@@ -1,7 +1,7 @@
 import SvgIcon from '@components/SvgIcon';
-import { CloseSmall } from '@icon-park/react';
 import { useSSOState } from 'contexts/sso-state';
 import React, { useEffect } from 'react';
+import IconPark from '@components/IconPark';
 
 const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
   const { dimmed, showSSO } = useSSOState();
@@ -13,7 +13,7 @@ const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
       document.body.classList.remove("body-overflow-hidden");
     }
   }, [dimmed])
-  
+
   return (
     <div className="absolute top-0 w-full py-3 sm:py-2 px-6 sm:px-8 md:px-10 lg:px-14 z-30 bg-white text-gray-900">
       <div className="relative flex items-center flex-wrap justify-center">
@@ -23,7 +23,7 @@ const SignInBar = ({ setIsFirstTimeVisitor }: any) => {
         <div className="flex items-center justify-center absolute -right-4 w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer" onClick={() => {
           setIsFirstTimeVisitor(false)
         }}>
-          <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
+          <IconPark name="close-small" size={22} />
         </div>
       </div>
     </div>

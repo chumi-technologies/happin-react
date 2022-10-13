@@ -1,8 +1,8 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import classnames from 'classnames';
-import { GrinningFaceWithOpenMouth } from '@icon-park/react';
 import { getCaretIndex, getSelection, insertNodeAtCaret, isFirefox, updateCaret } from 'utils/contentEditable';
 import SvgIcon from '@components/SvgIcon';
+import IconPark from '@components/IconPark';
 
 type SenderProps = {
   placeholder?: string;
@@ -164,7 +164,7 @@ function Sender(props: SenderProps, ref: any) {
         className={classnames('livestream__sender-emoji', { 'bg-gray-700': emojiShow, disabled })}
         onClick={handlerPressEmoji}
       >
-        <GrinningFaceWithOpenMouth theme="outline" size="18" fill="currentColor" />
+        <IconPark name="grinning-face-with-open-mouth" size={18} />
       </div>
       <div className="flex-1 min-w-0">
         <div className="livestream__sender-wrapper">

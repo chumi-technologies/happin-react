@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { CloseSmall, Left, Right } from '@icon-park/react';
 import classNames from 'classnames';
 import Slider from 'react-slick';
 import Lightbox, { ImagesListType } from 'react-spring-lightbox';
+import IconPark from '@components/IconPark';
 
 function Arrow(props: any) {
   const { className, onClick, children } = props;
@@ -27,8 +27,8 @@ export default function Merch({ imgList }: { imgList: ImagesListType }) {
     slidesToShow: 1,
     slidesToScroll: 1,
     draggable: false,
-    nextArrow: <Arrow><Right theme="outline" size="14" fill="currentColor" /></Arrow>,
-    prevArrow: <Arrow><Left theme="outline" size="14" fill="currentColor" /></Arrow>,
+    nextArrow: <Arrow><IconPark name="right" size={14} /></Arrow>,
+    prevArrow: <Arrow><IconPark name="left" size={14} /></Arrow>,
     customPaging: function paging(){ return <div className="slides-dot-item" />},
   };
 
@@ -62,17 +62,17 @@ export default function Merch({ imgList }: { imgList: ImagesListType }) {
         className="bg-black bg-opacity-70"
         renderHeader={() => (
           <div className="flex items-center justify-center absolute top-3 right-3 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-white transition cursor-pointer text-gray-300 z-10 hover:bg-opacity-75" onClick={closeLightbox}>
-            <CloseSmall theme="outline" size="24" fill="currentColor" strokeWidth={3}/>
+            <IconPark name="close-small" size={24} />
           </div>
         )}
         renderPrevButton={() => (
           <div className={classNames('goto-btn prev', { disabled: currentImageIndex === 0 })} onClick={gotoPrevious}>
-            <Left theme="outline" size="24" fill="currentColor" />
+            <IconPark name="left" size={24} />
           </div>
         )}
         renderNextButton={() => (
           <div className={classNames('goto-btn next', { disabled: currentImageIndex === imgList.length - 1  })} onClick={gotoNext}>
-            <Right theme="outline" size="24" fill="currentColor" />
+            <IconPark name="right" size={24} />
           </div>
         )}
       />

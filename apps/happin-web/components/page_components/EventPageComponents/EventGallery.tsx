@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import classnames from 'classnames';
-import { Left, Right } from '@icon-park/react';
+import IconPark from '@components/IconPark';
 
 function Arrow(props: any) {
   const { className, onClick, children } = props;
@@ -59,8 +59,8 @@ const settings = {
       }
     }
   ],
-  nextArrow: <Arrow><Right className="ml-1.5" theme="outline" size="20" fill="currentColor" /></Arrow>,
-  prevArrow: <Arrow><Left className="mr-1.5" theme="outline" size="20" fill="currentColor" /></Arrow>,
+  nextArrow: <Arrow><IconPark className="ml-1.5" name="right" size={20} /></Arrow>,
+  prevArrow: <Arrow><IconPark className="mr-1.5" name="left" size={20} /></Arrow>,
 };
 export type galleryItemProp = {
   id: string;

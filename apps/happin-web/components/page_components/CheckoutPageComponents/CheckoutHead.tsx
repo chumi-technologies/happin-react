@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { Popover, Dialog, Transition } from '@headlessui/react'
 import SvgIcon from '@components/SvgIcon';
-import { CloseSmall, Delete, Left } from '@icon-park/react';
 import NumberInput from '@components/reusable/NumberInput';
 import classNames from 'classnames';
 import moment from 'moment'
@@ -19,6 +18,7 @@ import { useUserState } from 'contexts/user-state';
 import { useSSOState } from 'contexts/sso-state';
 import jwt_decode from "jwt-decode";
 import Link from 'next/link';
+import IconPark from '@components/IconPark';
 
 
 const CheckoutHead = ({
@@ -295,7 +295,7 @@ const CheckoutHead = ({
               </div>
               <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                <Delete theme="outline" size="14" fill="currentColor" />
+                <IconPark name="delete" size={14} />
               </div>
             </div>
           </div>
@@ -329,7 +329,7 @@ const CheckoutHead = ({
               </div>
               <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                <Delete theme="outline" size="14" fill="currentColor" />
+                <IconPark name="delete" size={14} />
               </div>
             </div>
           </div>
@@ -363,7 +363,7 @@ const CheckoutHead = ({
               </div>
               <div onClick={() => { bundleDeleteHandler(t) }}
                 className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                <Delete theme="outline" size="14" fill="currentColor" />
+                <IconPark name="delete" size={14} />
               </div>
             </div>
 
@@ -448,7 +448,7 @@ const CheckoutHead = ({
           <div className="flex items-center sm:flex-1 min-w-0">
             {!openInApp &&
               <button onClick={() => { router.back() }} className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
-                <Left theme="outline" size="24" fill="currentColor" />
+                <IconPark name="left" size={24} />
               </button>
             }
             <div className="flex-1 font-semibold min-w-0 hidden sm:block">
@@ -484,7 +484,7 @@ const CheckoutHead = ({
                         <div className="font-bold leading-none">My Cart</div>
                         <Popover.Button as={Fragment}>
                           <div className="flex items-center justify-center absolute right-3 w-9 h-9 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
-                            <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                            <IconPark name="close-small" size={22} />
                           </div>
                         </Popover.Button>
                       </div>
@@ -603,7 +603,7 @@ const CheckoutHead = ({
                     Please enter <span className="text-rose-500">Pre-Sale Code</span>
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
-                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                    <IconPark name="close-small" size={22} />
                   </div>
                 </div>
                 <input value={presaleInput} onChange={onPresaleCodeChangeHandler} type="text" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-bold text-xl sm:text-2xl" placeholder="Enter code" />

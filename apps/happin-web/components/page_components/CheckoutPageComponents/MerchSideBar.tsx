@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import SvgIcon from '@components/SvgIcon';
-import { CloseSmall } from '@icon-park/react';
 import Merch from './Merch';
 import Select from '@components/reusable/Select';
 import NumberInput from '@components/reusable/NumberInput';
@@ -9,6 +8,7 @@ import { MerchItemDataProps } from 'lib/model/checkout';
 import { useState } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
 import { increaseMerchAmount } from './util/IncreseInput';
+import IconPark from '@components/IconPark';
 
 type CheckoutSidebarProps = {
   isOpen: boolean;
@@ -67,7 +67,7 @@ const MerchSidebar = (props: CheckoutSidebarProps) => {
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
               onClick={()=>{onClose(); setInputValue(0); setSelectedPropertyIndex(0)}}>
-              <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+              <IconPark name="close-small" size={22} />
             </div>
           </div>
 

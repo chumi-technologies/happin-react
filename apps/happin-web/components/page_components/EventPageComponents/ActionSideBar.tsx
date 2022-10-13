@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { VStack, HStack } from '@chakra-ui/react';
-import { Like, ShareTwo, DownTwo, CloseSmall } from '@icon-park/react';
 import classNames from 'classnames';
 
 import {
@@ -20,6 +19,7 @@ import { useUserState } from 'contexts/user-state';
 import { useEffect } from 'react';
 import { getSavedEventTicketsList, saveOrUnsavedEvent } from 'lib/api';
 import { currencyFormatter } from '../CheckoutPageComponents/util/currencyFormat';
+import IconPark from '@components/IconPark';
 
 type ActionSideBarProps = {
   //isFavorite: boolean;
@@ -45,7 +45,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
       eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location}.`;
     } else if (eventData.event.acInfo.eventType === 'hybrid') {
       eventDescription = `@ ${moment(eventData.event.start_datetime).format('MMM DD, H:mm A')} in ${eventData.event.acInfo.venueName || eventData.event.acInfo.location} or watch livestream on our Happin App.`
-    } 
+    }
     return `${eventData.event.title} ${eventDescription} ${eventData.event.sourceUrl ? '' : `(prices from ${currencyFormatter(eventData.event.currency as string).format(eventData.event.min_price/100)})`} ${eventData.event.creator?.name ? '\nEvent organized by ' + eventData.event.creator?.name : ''} \n\nGet tickets now on `
   }
   const { user } = useUserState();
@@ -84,15 +84,15 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
   return (
     <div className="absolute right-4 top-4 sm:right-6 sm:top-6 lg:right-14 lg:top-14 z-20">
       <VStack>
-        {user && 
+        {user &&
         <div className={classNames('event-details__side-action', { 'favorite': isFavorite })}
           onClick={() => { saveOrUnsaved()}}>
-          <Like theme={isFavorite ? 'filled' : 'outline'} size="1em" fill="currentColor" strokeWidth={2} />
+          <IconPark name={isFavorite ? 'like-filled' : 'like-thin'} size="1em" />
         </div>}
 
         <div className="relative">
           <div className="event-details__side-action relative z-30" onClick={() => { setOpenShare(!openShare) }}>
-            <ShareTwo theme="outline" size="1em" fill="currentColor" strokeWidth={2} />
+            <IconPark name="share-two-thin" size="1em" />
           </div>
           {
             openShare && (
@@ -136,7 +136,7 @@ const ActionSideBar: React.FC<ActionSideBarProps> = (props) => {
             onClick={() => { setDownload(s => !s) }}
           >
             {
-              showDownload ? <CloseSmall theme="outline" size="1em" fill="currentColor" strokeWidth={2} /> : <DownTwo theme="outline" size="1em" fill="currentColor" strokeWidth={2} />
+              showDownload ? <IconPark name="close-small-thin" size="1em" /> : <IconPark name="down-two-thin" size="1em" />
             }
           </div>
           {
