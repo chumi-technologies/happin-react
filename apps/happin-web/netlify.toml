@@ -6,6 +6,7 @@
   package = "@netlify/plugin-nextjs"
 
 [context.deploy-preview.environment]
+  NODE_VERSION="12.22.0"
   NEXT_PUBLIC_HAPPIN_SERVER_HOST="https://api.happin.app/prod"
   NEXT_PUBLIC_CROWD_CORE_HOST="https://api.crowdcore.com/prod"
   NEXT_PUBLIC_HAPPIN_SSO="https://sso.happin.app"

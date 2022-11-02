@@ -4,12 +4,12 @@ import { SwitchTransition, CSSTransition } from 'react-transition-group';
 import classNames from "classnames";
 import { Stack } from '@chakra-ui/react';
 import { Dialog, Transition } from '@headlessui/react';
-import { CloseSmall } from '@icon-park/react';
 import { GetServerSidePropsResult } from 'next';
 import { getWhiteLabelDomain } from 'lib/api';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useUserState } from 'contexts/user-state';
+import IconPark from '@components/IconPark';
 
 const imageList = [
   {
@@ -221,7 +221,7 @@ export default function Home() {
                     Request for android version
                   </Dialog.Title>
                   <div ref={focusRef} className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
-                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                    <IconPark name="close-small" size={22} />
                   </div>
                 </div>
                 {/*<input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />*/}

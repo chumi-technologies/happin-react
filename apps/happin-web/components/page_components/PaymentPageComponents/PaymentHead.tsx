@@ -2,8 +2,8 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import Countdown, { zeroPad } from 'react-countdown';
-import { Left } from '@icon-park/react';
 import { useRouter } from 'next/router';
+import IconPark from '@components/IconPark';
 
 
 const PaymentHead = ({ countdownCompleted }:{ countdownCompleted: (arg:any) => void }
@@ -29,7 +29,7 @@ const PaymentHead = ({ countdownCompleted }:{ countdownCompleted: (arg:any) => v
           <div className="flex-1 min-w-0 md:flex md:items-center">
             <div className="flex items-center flex-1 min-w-0 pt-5 md:pt-0 pb-3 md:p-0 border-b md:border-b-0 border-solid border-white border-opacity-20">
               <button onClick={()=>{router.back()}} className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
-                <Left theme="outline" size="24" fill="currentColor"/>
+                <IconPark name="left" size={24} />
                 {/* <span className="md:ml-2">Back</span> */}
               </button>
               <div className="font-semibold mr-4 truncate">

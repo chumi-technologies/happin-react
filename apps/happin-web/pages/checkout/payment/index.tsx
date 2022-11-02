@@ -9,7 +9,6 @@ import {
   useElements,
   useStripe
 } from "@stripe/react-stripe-js";
-import { Delete } from '@icon-park/react';
 import { Checkbox, HStack } from '@chakra-ui/react';
 import { useEffect } from 'react';
 import { useCheckoutState } from 'contexts/checkout-state';
@@ -28,6 +27,7 @@ import { PayPalButton } from "react-paypal-button-v2";
 import _ from "lodash";
 import { loadStripe, StripeCardElement } from '@stripe/stripe-js';
 import { useUserState } from 'contexts/user-state';
+import IconPark from '@components/IconPark';
 
 
 enum EOrderStatus {
@@ -1189,7 +1189,7 @@ const PaymentInner = (props: any) => {
                                   </div>
                                   <div onClick={() => { deleteTicketFromCart(getEdtingTicketListItem(t), t.quantity, dispatchTicketListAction, removeItem) }}
                                     className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                                    <Delete theme="outline" size="14" fill="currentColor" />
+                                    <IconPark name="delete" size={14} />
                                   </div>
                                 </div>
                               </div>
@@ -1220,7 +1220,7 @@ const PaymentInner = (props: any) => {
                                   </div>
                                   <div onClick={() => { deleteMerchFromCart(getEditingMerchListItem(m), m.quantity, m.property, dispatchMerchListAction, removeItem) }}
                                     className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                                    <Delete theme="outline" size="14" fill="currentColor" />
+                                    <IconPark name="delete" size={14} />
                                   </div>
                                 </div>
                               </div>
@@ -1250,7 +1250,7 @@ const PaymentInner = (props: any) => {
                                   </div>
                                   <div onClick={() => { bundleDeleteHandler(t) }}
                                     className="relative flex items-center justify-center w-8 h-8 text-gray-400 rounded-full cursor-pointer bg-gray-800 hover:bg-gray-700 hover:text-gray-50 transition">
-                                    <Delete theme="outline" size="14" fill="currentColor" />
+                                    <IconPark name="delete" size={14} />
                                   </div>
                                 </div>
                               </div>

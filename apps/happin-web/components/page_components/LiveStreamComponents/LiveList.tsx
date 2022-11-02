@@ -1,7 +1,7 @@
-import { PlayOne } from '@icon-park/react';
 import Link from 'next/link';
 import { Avatar } from '@chakra-ui/react';
 import React from 'react';
+import IconPark from '@components/IconPark';
 
 export type liveVideo = {
   _id: string;
@@ -24,7 +24,7 @@ const LiveList = ({ list } : LiveListProp) => {
             <div className="mb-1" key={item._id}>
               <div className="group relative w-full h-32 md:h-40 rounded-md overflow-hidden">
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition cursor-pointer z-10">
-                  <PlayOne theme="filled" size="32" fill="#fff"/>
+                  <IconPark name="play-one" size={32} />
                 </div>
                 <div className="relative w-full h-full">
                   <div className="absolute inset-0 overflow-hidden">

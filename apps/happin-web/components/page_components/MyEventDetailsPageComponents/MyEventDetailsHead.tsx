@@ -1,7 +1,7 @@
-import { Left } from '@icon-park/react';
 import Link from 'next/link';
 import React from 'react';
 import {EventDetail} from '../../../lib/model/event';
+import IconPark from '@components/IconPark';
 
 export type MyEventDetailsProp = {
     eventDetail:EventDetail;
@@ -27,7 +27,7 @@ const MyEventDetailsHead = ({eventDetail}:MyEventDetailsProp) => {
         <div className="flex items-center h-16 md:h-20">
           <Link href="/my-events">
             <button className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0">
-              <Left theme="outline" size="24" fill="currentColor"/>
+              <IconPark name="left" size={24} />
               {/* <span className="md:ml-2">Back</span> */}
             </button>
           </Link>

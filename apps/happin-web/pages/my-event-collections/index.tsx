@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ICollectionData } from 'pages/event-collection/[collection_id]';
 import React, { useEffect, useState } from 'react';
-import { Plus } from '@icon-park/react';
 import { useSSOState } from '../../contexts/sso-state';
 
 export default function MyEventSets() {
@@ -76,7 +75,9 @@ export default function MyEventSets() {
             className="btn btn-yellow flex w-full sm:w-auto sm:inline-flex justify-center items-center !font-semibold !rounded-none sm:!rounded-full"
             onClick={handleCreate}
           >
-            <Plus theme="outline" size="16" fill="#121212" strokeWidth={5} />
+            <svg width="16" height="16" fill="none" viewBox="0 0 48 48">
+              <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="5" stroke="#121212" d="m24.06 10-.036 28M10 24h28" data-follow-stroke="#121212"/>
+            </svg>
             <span className="ml-2">Create new collection</span>
           </button>
         </div>

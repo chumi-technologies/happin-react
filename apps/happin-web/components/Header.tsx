@@ -3,13 +3,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import { Avatar, HStack, useToast } from '@chakra-ui/react';
 import { SearchIcon } from "@chakra-ui/icons";
-import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
 import { Menu, Transition } from '@headlessui/react'
 import classNames from 'classnames';
 import { useSSOState } from 'contexts/sso-state';
 import { useUserState } from 'contexts/user-state';
 import { exchangeDashboardEventHostToken } from 'lib/api';
 import classnames from 'classnames';
+import IconPark from '@components/IconPark';
 
 export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
   const { user, clearUser } = useUserState();
@@ -110,7 +110,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
               {({ open }) => (
                 <>
                   <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-gray-50 hover:bg-gray-900', { 'bg-gray-800 text-gray-50 hover:bg-gray-800': open })}>
-                    <More theme="outline" size="24" fill="currentColor" />
+                    <IconPark name="more" size="24" />
                   </Menu.Button>
                   <Transition
                     show={open}
@@ -178,7 +178,7 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
               {({ open }) => (
                 <>
                   <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
-                    <HamburgerButton theme="outline" size="22" fill="currentColor" />
+                    <IconPark name="hamburger-button" size="22" />
                     {!user && <Avatar size="sm" ml={2} bg="gray.600" ><span style={{background: '#fdf846', bottom: '25px', left: '25px' }} className="w-2 h-2 rounded-full absolute"></span></Avatar>}
                     {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
                   </Menu.Button>
@@ -196,13 +196,13 @@ export default function Header({ children, checkingWhiteLable, whiteLabelLogo, w
                       <div className="py-1">
                         <Menu.Item>
                           <a className="header__menu-link" onClick={clickHostEventHandler}>
-                            <International theme="outline" size="16" fill="currentColor" />
+                            <IconPark name="international" size="16" />
                             <span className="ml-2">Organizer Dashboard</span>
                           </a>
                         </Menu.Item>
                         <Menu.Item>
                           <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
-                            <DownTwo theme="outline" size="16" fill="currentColor" />
+                            <IconPark name="down-two" size="16" />
                             <span className="ml-2">Download App</span>
                           </a>
                         </Menu.Item>

@@ -1,7 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react';
 import React, { Fragment, useState, useRef } from 'react';
-import { CloseSmall } from '@icon-park/react';
 import { useEffect } from 'react';
+import IconPark from '@components/IconPark';
 
 type EventDescriptionProps = {
   description?: string;
@@ -118,7 +118,7 @@ const EventDescription = ({
                     Description
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute right-3 w-10 h-10 rounded-full hover:bg-gray-200 hover:text-gray-700 transition cursor-pointer text-gray-500" onClick={closeModal}>
-                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                    <IconPark name="close-small" size={22} />
                   </div>
                 </div>
                 <div className="flex-1 h-0 overflow-y-auto pb-6">

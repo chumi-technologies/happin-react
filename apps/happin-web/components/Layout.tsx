@@ -159,7 +159,6 @@ const Layout = ({ children }: { children: any }) => {
         />
         <link rel="icon" href="/favicon.ico" key="favicon" />
       </Head>
-      {/*<Script src="https://maps.googleapis.com/maps/api/js?libraries=places" strategy="beforeInteractive" />*/}
       <main
         className={classnames("main-app", {
           production: isProduction,

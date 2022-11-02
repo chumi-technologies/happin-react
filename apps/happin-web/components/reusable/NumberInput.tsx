@@ -1,7 +1,7 @@
 import { useNumberInput, UseNumberInputProps } from '@chakra-ui/react';
-import { Minus, Plus } from '@icon-park/react';
 import React from 'react';
 import classNames from 'classnames';
+import IconPark from '@components/IconPark';
 
 export type NumberInputProps = {
   isDisabled?: boolean;
@@ -34,10 +34,10 @@ const NumberInput = ({ isDisabled, size, max, min, onDecreaseClick, onIncreaseCl
   return (
     <div className={classNames('number-input', { 'disabled': isDisabled, [size && `number-input--${size}` || '']: true })}>
       <button disabled={isDisabled} onClick={onDecreaseClick} className="number-input-button minus" {...dec}>
-        <Minus theme="outline" size="1em" fill="currentColor"/>
+        <IconPark name="minus" />
       </button>
       <button disabled={isDisabled} onClick={onIncreaseClick} className="number-input-button plus" {...inc}>
-        <Plus theme="outline" size="1em" fill="currentColor"/>
+        <IconPark name="plus" />
       </button>
       {/* always not allow enter number */}
       <input type='number' disabled={true} {...input}/>
