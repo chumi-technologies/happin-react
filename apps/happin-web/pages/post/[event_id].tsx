@@ -461,7 +461,7 @@ export async function getStaticProps({
         eventData: props,
         // eventId: acid,
       },
-      // revalidate: 60 * 60,
+      revalidate: 60 * 60,
     };
   } catch (err) {
     return { notFound: true };
