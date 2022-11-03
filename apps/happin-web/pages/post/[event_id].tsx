@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import ReactDom from 'react-dom';
+// import ReactDom from 'react-dom';
 import { GetStaticPaths } from 'next';
 import { useRouter } from 'next/router';
 import {
@@ -10,7 +10,7 @@ import {
   SkeletonText,
 } from '@chakra-ui/react';
 import classnames from 'classnames';
-import { ArrowDownIcon } from '@chakra-ui/icons';
+// import { ArrowDownIcon } from '@chakra-ui/icons';
 import { useUserState } from 'contexts/user-state';
 import SignInBar from '@components/SignInBar';
 import PopUpModal from '@components/reusable/PopUpModal';
@@ -25,35 +25,35 @@ import { EventData } from 'lib/model/event';
 import EventSEO from '@components/page_components/EventPageComponents/EventSEO';
 
 // third party event website that set x-frame-option to origin, can't open in iframe
-const forbidDomain = ['veeps.com'];
+// const forbidDomain = ['veeps.com'];
 
-const ThirdPartyIframe = (props: any) => {
-  return (
-    <div
-      className={`event-details__backdrop ${
-        props.openIframe ? 'event-details__show_backdrop' : ''
-      }`}
-      style={{ position: props.openIframe ? 'absolute' : 'fixed' }}
-    >
-      <a
-        className="event-details__close_iframe"
-        onClick={() => {
-          props.closeIframe();
-        }}
-      >
-        <ArrowDownIcon
-          style={{ borderRadius: '50%', border: '1px solid white' }}
-        />
-      </a>
-      <iframe
-        frameBorder="0"
-        id="event_details_iframe"
-        scrolling="auto"
-        src={props.thirdPartyUrl}
-      ></iframe>
-    </div>
-  );
-};
+// const ThirdPartyIframe = (props: any) => {
+//   return (
+//     <div
+//       className={`event-details__backdrop ${
+//         props.openIframe ? 'event-details__show_backdrop' : ''
+//       }`}
+//       style={{ position: props.openIframe ? 'absolute' : 'fixed' }}
+//     >
+//       <a
+//         className="event-details__close_iframe"
+//         onClick={() => {
+//           props.closeIframe();
+//         }}
+//       >
+//         <ArrowDownIcon
+//           style={{ borderRadius: '50%', border: '1px solid white' }}
+//         />
+//       </a>
+//       <iframe
+//         frameBorder="0"
+//         id="event_details_iframe"
+//         scrolling="auto"
+//         src={props.thirdPartyUrl}
+//       ></iframe>
+//     </div>
+//   );
+// };
 
 const Post = ({ eventData }: { eventData: EventData }) => {
   const router = useRouter();
@@ -76,42 +76,42 @@ const Post = ({ eventData }: { eventData: EventData }) => {
     organizer_token: '',
   });
 
-  const [openIframe, setOpenIframe] = useState<boolean>(false);
-  const [thirdPartyUrl, setThirdPartyUrl] = useState<string>();
-  const [canUseIframe, setCanUseIframe] = useState(false);
-  const [iframePortal, setIframePortal] = useState(<></>);
-
-  useEffect(() => {
-    setIframePortal(
-      ReactDom.createPortal(
-        <ThirdPartyIframe
-          openIframe={openIframe}
-          thirdPartyUrl={thirdPartyUrl}
-          closeIframe={closeIframe}
-        />,
-        document.querySelector('#third_party_event_iframe') as Element,
-      ),
-    );
-  }, [openIframe, thirdPartyUrl]);
+  // const [openIframe, setOpenIframe] = useState<boolean>(false);
+  // const [thirdPartyUrl, setThirdPartyUrl] = useState<string>();
+  // const [canUseIframe, setCanUseIframe] = useState(false);
+  // const [iframePortal, setIframePortal] = useState(<></>);
+  //
+  // useEffect(() => {
+  //   setIframePortal(
+  //     ReactDom.createPortal(
+  //       <ThirdPartyIframe
+  //         openIframe={openIframe}
+  //         thirdPartyUrl={thirdPartyUrl}
+  //         closeIframe={closeIframe}
+  //       />,
+  //       document.querySelector('#third_party_event_iframe') as Element,
+  //     ),
+  //   );
+  // }, [openIframe, thirdPartyUrl]);
 
   useEffect(() => {
     if (!router.isFallback) {
-      if (eventData.event.sourceUrl) {
-        setThirdPartyUrl(eventData.event.sourceUrl);
-        if (eventData.event.sourceUrlAllowIframe) {
-          setCanUseIframe(true);
-        } else {
-          setCanUseIframe(false);
-        }
-      }
+      // if (eventData.event.sourceUrl) {
+      //   setThirdPartyUrl(eventData.event.sourceUrl);
+      //   if (eventData.event.sourceUrlAllowIframe) {
+      //     setCanUseIframe(true);
+      //   } else {
+      //     setCanUseIframe(false);
+      //   }
+      // }
       setEventDeepLink(eventData?.event.deepLink);
     }
   }, [router.isFallback]);
 
-  const closeIframe = () => {
-    setOpenIframe(false);
-    setPreventScrolling(false);
-  };
+  // const closeIframe = () => {
+  //   setOpenIframe(false);
+  //   setPreventScrolling(false);
+  // };
 
   useEffect(() => {
     if (router.query.affiliate) {
@@ -248,7 +248,7 @@ const Post = ({ eventData }: { eventData: EventData }) => {
   return (
     <>
       <EventSEO eventData={eventData} />
-      {iframePortal}
+      {/*{iframePortal}*/}
       <div className="event-details__page">
         {/* Top Popups for First-Time Visitors */}
         {!hideSigninBar && !tokenExist && (
@@ -358,8 +358,8 @@ const Post = ({ eventData }: { eventData: EventData }) => {
           <div className="w-full lg:w-7/12 xl:w-1/2 pb-[60px] sm:pb-20">
             <div className="event-details__container relative py-6 sm:py-8 md:py-14">
               <EventSection
-                setOpenIframe={setOpenIframe}
-                canUseIframe={canUseIframe}
+                // setOpenIframe={setOpenIframe}
+                // canUseIframe={canUseIframe}
                 setPreventScrolling={setPreventScrolling}
                 setIsRedeemModalOpen={setIsRedeemModalOpen}
                 setIsModalOpen={setIsModalOpen}
@@ -367,8 +367,8 @@ const Post = ({ eventData }: { eventData: EventData }) => {
               />
             </div>
             <BottomBar
-              setOpenIframe={setOpenIframe}
-              canUseIframe={canUseIframe}
+              // setOpenIframe={setOpenIframe}
+              // canUseIframe={canUseIframe}
               setPreventScrolling={setPreventScrolling}
               queryParams={queryParams}
               eventData={eventData}
@@ -460,7 +460,7 @@ export async function getStaticProps({
         eventData: props,
         eventId: acid,
       },
-      revalidate: 60 * 60,
+      // revalidate: 60 * 60,
     };
   } catch (err) {
     return { notFound: true };

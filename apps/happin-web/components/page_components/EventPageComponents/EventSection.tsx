@@ -11,16 +11,16 @@ const EventSection = ({
   setIsModalOpen,
   eventData,
   setIsRedeemModalOpen,
-  setOpenIframe,
-  canUseIframe,
+  // setOpenIframe,
+  // canUseIframe,
   setPreventScrolling,
 }: {
   setIsModalOpen: (arg: boolean) => void;
   eventData: EventData;
   setIsRedeemModalOpen: (arg: boolean) => void;
   setPreventScrolling: (arg: any) => void;
-  setOpenIframe: (arg: any) => void;
-  canUseIframe: boolean;
+  // setOpenIframe: (arg: any) => void;
+  // canUseIframe: boolean;
 }) => {
   //const [firstActive, setFirstActive] = useState(true)
   //const [tabCur, setTabCur] = useState(0)
@@ -147,8 +147,8 @@ const EventSection = ({
       <div className="h-px bg-gray-600" />
       <div className="py-5 sm:py-8">
         <EventDescription
-          setOpenIframe={setOpenIframe}
-          canUseIframe={canUseIframe}
+          // setOpenIframe={setOpenIframe}
+          // canUseIframe={canUseIframe}
           setPreventScrolling={setPreventScrolling}
           description={eventData.event.content}
           rawDescription={eventData.event.contentPlainText}

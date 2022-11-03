@@ -8,9 +8,9 @@ interface eventDataProp {
   eventData: EventData;
   setIsChatButtonOpen: (arg: any) => void;
   setPreventScrolling: (arg: any) => void;
-  setOpenIframe: (arg: any) => void;
+  // setOpenIframe: (arg: any) => void;
   queryParams: any;
-  canUseIframe: boolean;
+  // canUseIframe: boolean;
   setIsOpen: (arg: any) => void;
 }
 
@@ -18,9 +18,9 @@ const BottomBar = ({
   eventData,
   setIsChatButtonOpen,
   setPreventScrolling,
-  setOpenIframe,
+  // setOpenIframe,
   queryParams,
-  canUseIframe,
+  // canUseIframe,
   setIsOpen,
 }: eventDataProp) => {
   const [modalVisible, setModalVisible] = useState(false);
