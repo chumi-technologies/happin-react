@@ -16,7 +16,7 @@ const EventHost = (props: EventHostProps) => {
     <>
       <div className="flex items-center justify-between">
         <div className="flex items-center">
-          <Avatar boxSize={14} src={props.hostProfileImageUrl} name={props.hostName} />
+          {/*<Avatar boxSize={14} src={props.hostProfileImageUrl} name={props.hostName} />*/}
           <div className="flex-1 ml-3 sm:ml-5">
             <div className="font-semibold sm:text-lg">{props.hostName}</div>
             <div className="text-sm sm:text-base text-gray-400">Event Creator</div>
