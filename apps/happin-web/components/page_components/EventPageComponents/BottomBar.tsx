@@ -7,20 +7,14 @@ import React, { useRef, useState } from "react";
 interface eventDataProp {
   eventData: EventData;
   setIsChatButtonOpen: (arg: any) => void;
-  setPreventScrolling: (arg: any) => void;
-  // setOpenIframe: (arg: any) => void;
   queryParams: any;
-  // canUseIframe: boolean;
   setIsOpen: (arg: any) => void;
 }
 
 const BottomBar = ({
   eventData,
   setIsChatButtonOpen,
-  setPreventScrolling,
-  // setOpenIframe,
   queryParams,
-  // canUseIframe,
   setIsOpen,
 }: eventDataProp) => {
   const [modalVisible, setModalVisible] = useState(false);
