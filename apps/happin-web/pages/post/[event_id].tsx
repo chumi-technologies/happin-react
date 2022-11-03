@@ -57,6 +57,7 @@ import EventSEO from '@components/page_components/EventPageComponents/EventSEO';
 
 const Post = ({ eventData }: { eventData: EventData }) => {
   const router = useRouter();
+
   const [hideSigninBar, setHideSigninBar] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRedeemModalOpen, setIsRedeemModalOpen] = useState(false);
@@ -95,6 +96,7 @@ const Post = ({ eventData }: { eventData: EventData }) => {
   // }, [openIframe, thirdPartyUrl]);
 
   useEffect(() => {
+    console.log(router.isFallback);
     if (!router.isFallback) {
       // if (eventData.event.sourceUrl) {
       //   setThirdPartyUrl(eventData.event.sourceUrl);
@@ -156,96 +158,94 @@ const Post = ({ eventData }: { eventData: EventData }) => {
       setTokenExist(true);
     }
   }, [user]);
-  if (router.isFallback) {
-    return (
-      <div className="event-details__page">
-        <div className="relative lg:flex h-full lg:flex-row web-scroll sm:overflow-y-auto">
-          <div className="relative lg:sticky lg:top-0 overflow-hidden lg:w-5/12 xl:w-1/2">
+
+  return router.isFallback ? (
+    <div className="event-details__page">
+      <div className="relative lg:flex h-full lg:flex-row web-scroll sm:overflow-y-auto">
+        <div className="relative lg:sticky lg:top-0 overflow-hidden lg:w-5/12 xl:w-1/2">
+          <Skeleton
+            startColor="gray.600"
+            endColor="gray.700"
+            className="w-full h-full !rounded-none"
+          />
+          <Skeleton
+            startColor="gray.600"
+            endColor="gray.700"
+            className="block sm:hidden w-full h-[40vw] !rounded-none"
+          />
+        </div>
+        <div className="w-full lg:w-7/12 xl:w-1/2 pb-[60px] sm:pb-20">
+          <div className="event-details__container relative py-6 sm:py-8 md:py-14">
             <Skeleton
               startColor="gray.600"
               endColor="gray.700"
-              className="w-full h-full !rounded-none"
+              className="w-1/4 h-7 sm:h-8 !rounded-md"
             />
             <Skeleton
               startColor="gray.600"
               endColor="gray.700"
-              className="block sm:hidden w-full h-[40vw] !rounded-none"
+              className="w-full sm:w-3/4 h-10 sm:h-12 !rounded-md mt-2 sm:mt-4"
             />
-          </div>
-          <div className="w-full lg:w-7/12 xl:w-1/2 pb-[60px] sm:pb-20">
-            <div className="event-details__container relative py-6 sm:py-8 md:py-14">
+            <Skeleton
+              startColor="gray.600"
+              endColor="gray.700"
+              className="w-1/2 h-5 !rounded mt-2 sm:mt-3"
+            />
+            <div className="flex items-center py-6 sm:py-10">
+              <SkeletonCircle
+                size="16"
+                startColor="gray.600"
+                endColor="gray.700"
+              />
+              <div className="flex-1 ml-3 sm:ml-5">
+                <Skeleton
+                  startColor="gray.600"
+                  endColor="gray.700"
+                  className="w-2/3 sm:w-1/2 h-5 !rounded"
+                />
+                <Skeleton
+                  startColor="gray.600"
+                  endColor="gray.700"
+                  className="w-1/2 sm:w-1/4 h-3 !rounded-sm mt-2 sm:mt-3"
+                />
+              </div>
+            </div>
+            <div className="h-px bg-gray-700" />
+            <div className="py-6 sm:py-10">
               <Skeleton
                 startColor="gray.600"
                 endColor="gray.700"
                 className="w-1/4 h-7 sm:h-8 !rounded-md"
               />
-              <Skeleton
+              <SkeletonText
                 startColor="gray.600"
                 endColor="gray.700"
-                className="w-full sm:w-3/4 h-10 sm:h-12 !rounded-md mt-2 sm:mt-4"
+                skeletonHeight={3}
+                spacing="4"
+                noOfLines={3}
+                className="mt-5"
               />
-              <Skeleton
-                startColor="gray.600"
-                endColor="gray.700"
-                className="w-1/2 h-5 !rounded mt-2 sm:mt-3"
-              />
-              <div className="flex items-center py-6 sm:py-10">
-                <SkeletonCircle
-                  size="16"
-                  startColor="gray.600"
-                  endColor="gray.700"
-                />
-                <div className="flex-1 ml-3 sm:ml-5">
-                  <Skeleton
-                    startColor="gray.600"
-                    endColor="gray.700"
-                    className="w-2/3 sm:w-1/2 h-5 !rounded"
-                  />
-                  <Skeleton
-                    startColor="gray.600"
-                    endColor="gray.700"
-                    className="w-1/2 sm:w-1/4 h-3 !rounded-sm mt-2 sm:mt-3"
-                  />
-                </div>
-              </div>
-              <div className="h-px bg-gray-700" />
-              <div className="py-6 sm:py-10">
-                <Skeleton
-                  startColor="gray.600"
-                  endColor="gray.700"
-                  className="w-1/4 h-7 sm:h-8 !rounded-md"
-                />
-                <SkeletonText
-                  startColor="gray.600"
-                  endColor="gray.700"
-                  skeletonHeight={3}
-                  spacing="4"
-                  noOfLines={3}
-                  className="mt-5"
-                />
-              </div>
-              <div className="h-px bg-gray-700" />
             </div>
-            <div className="footer-action fixed lg:sticky bottom-0 right-0 w-full bg-gray-800 z-40">
-              <div className="event-details__container flex py-2.5 sm:py-4">
-                <Skeleton
-                  startColor="gray.600"
-                  endColor="gray.700"
-                  className="flex-1 h-10 sm:h-12 !rounded-full"
-                />
-                <Skeleton
-                  startColor="gray.600"
-                  endColor="gray.700"
-                  className="flex-1 h-10 sm:h-12 ml-3 !rounded-full"
-                />
-              </div>
+            <div className="h-px bg-gray-700" />
+          </div>
+          <div className="footer-action fixed lg:sticky bottom-0 right-0 w-full bg-gray-800 z-40">
+            <div className="event-details__container flex py-2.5 sm:py-4">
+              <Skeleton
+                startColor="gray.600"
+                endColor="gray.700"
+                className="flex-1 h-10 sm:h-12 !rounded-full"
+              />
+              <Skeleton
+                startColor="gray.600"
+                endColor="gray.700"
+                className="flex-1 h-10 sm:h-12 ml-3 !rounded-full"
+              />
             </div>
           </div>
         </div>
       </div>
-    )
-  }
-  return (
+    </div>
+  ) : (
     <>
       <EventSEO eventData={eventData} />
       {/*{iframePortal}*/}
