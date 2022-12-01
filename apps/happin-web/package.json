@@ -53,7 +53,8 @@
     "react-spring-lightbox": "^1.6.0",
     "sass": "^1.35.1",
     "styled-components": "^5.3.0",
-    "tim-js-sdk": "^2.15.0"
+    "tim-js-sdk": "^2.15.0",
+    "video.js": "^7.20.3"
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^4.28.4",
@@ -65,6 +66,7 @@
     "@types/react-scroll": "^1.8.3",
     "@types/react-select-country-list": "^2.2.0",
     "@types/react-slick": "^0.23.5",
+    "@types/video.js": "^7.3.49",
     "autoprefixer": "^10.4.2",
     "eslint": "7.29.0",
     "eslint-config-next": "11.0.1",

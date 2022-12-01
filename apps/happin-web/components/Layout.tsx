@@ -63,7 +63,6 @@ const Layout = ({ children }: { children: any }) => {
       setBoxOfficeMode(true);
     }
     if (
-      router.route === "/" ||
       router.route === "/events" ||
       router.route === "/ambassador"
     ) {
@@ -91,6 +90,9 @@ const Layout = ({ children }: { children: any }) => {
     } else if (router.route === "/transactionHistory") {
       setShowHeader(false);
       setShowFooter(false);
+    } else if (router.route === "/") {
+      setShowFooter(true);
+      setShowHeader(true);
     } else {
       setShowFooter(false);
       setIsProduction(false);

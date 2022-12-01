@@ -1,275 +1,260 @@
-import React, { Fragment, useRef, useState } from 'react';
-import Link from 'next/link';
-import { SwitchTransition, CSSTransition } from 'react-transition-group';
-import classNames from "classnames";
-import { Stack } from '@chakra-ui/react';
-import { Dialog, Transition } from '@headlessui/react';
-import { GetServerSidePropsResult } from 'next';
-import { getWhiteLabelDomain } from 'lib/api';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { useUserState } from 'contexts/user-state';
+import VideoPlayer from '@components/reusable/Video';
+import { VideoJsPlayer } from 'video.js';
 import IconPark from '@components/IconPark';
 
-const imageList = [
-  {
-    firstImg: '/images/HappininInitial1.png',
-    secImg: '/images/Happininfriendcreateideawithevent.png',
-  },
-  {
-    firstImg: '/images/Createhangoutideasfilled.png',
-    secImg: '/images/EventwithTickets.png',
-  },
-  {
-    firstImg: '/images/BeforeMatch.png',
-    secImg: '/images/Match.png',
-  },
-  {
-    firstImg: '/images/ProfilePasthangout.png',
-    secImg: '/images/PrivateGroupChat.png',
-  },
-];
-const buildEvent = [
-  {
-    title: 'Group matching',
-    desc: 'Match with up to 5 people at a time based on similar interest hashtags, events you are going to, and opinions on fun, random questions!'
-  },
-  {
-    title: 'Gathering',
-    desc: 'GEN-Z version of meetups, virtually or in real life.'
-  },
-  {
-    title: 'Discover',
-    desc: 'Discover public events in your area, and other potential hashtags that you want to group match with.'
-  },
-  {
-    title: 'Profile & Content Visibility',
-    desc: 'Upload your media to different hashtags. You can add photos and videos to different hashtags, so only people who share the same interests can see it, even your friends!'
-  },
-];
 export default function Home() {
-  const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false)
-  const [buildCur, setBuildCur] = useState<number>(0);
-  const { clearUser } = useUserState();
-  const closeModal = () => {
-    setIsOpen(false)
-  }
-  const openModal = () => {
-    setIsOpen(true)
-  }
-
+  const playerRef = React.useRef<VideoJsPlayer | null>(null);
+  const [isPlay, setIsPlay] = useState(false);
+  const [bannerShow, setBannerShow] = useState(true);
   useEffect(() => {
-    if (router.query.logout) {
-      clearUser();
-      router.push('/');
-    }
-  },[router])
-
-  const focusRef = useRef<HTMLDivElement>(null);
-
+    document.body.classList.add('home__page');
+    return () => {
+      document.body.classList.remove('home__page');
+    };
+  }, []);
+  const handleVideo = () => {
+    setIsPlay(true);
+    playerRef.current?.play();
+    playerRef.current?.loop(true);
+  };
+  const handlePlayerReady = (player: VideoJsPlayer) => {
+    playerRef.current = player;
+  };
   return (
-    <div className="relative bg-gray-900 text-gray-50 z-0">
-      <div className="relative overflow-hidden pt-48 pb-40 md:py-52 lg:py-64 home__banner">
-        <div className="container">
-          <div className="absolute -left-14 lg:-left-20 xl:-left-28 top-12 w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 xl:w-56 xl:h-56 rounded-full bg-yellow-500" />
-          <img className="absolute left-14 sm:left-20 md:left-32 lg:left-40 top-8 w-14 lg:w-20 xl:w-24" src="/images/music.png" alt="" />
-          <img className="absolute left-40 md:left-1/3 lg:right-auto xl:left-auto xl:right-1/3 top-2 md:top-8 h-20 md:h-28 lg:h-32 xl:h-36" src="/images/mc.png" alt="" />
-          <div className="absolute top-10 rounded-full bg-green-500 right-circle">
-            <img className="absolute -left-20 md:-left-36 top-20 sm:top-16 lg:top-14 xl:top-20 h-14 md:h-20 lg:h-24 xl:h-28 z-10" src="/images/sge.png" alt="" />
-            <img className="absolute -left-16 sm:-left-12 md:-left-16 lg:-left-12 bottom-16 top-auto sm:bottom-auto sm:top-1/2 -mt-8 md:-mt-16 h-14 md:h-20 lg:h-24 xl:h-28 z-10" src="/images/asp.png" alt="" />
-            <div className="hidden sm:block absolute left-10 lg:left-20 top-1/2 mt-8 lg:mt-20 w-8 h-8 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full bg-white z-10" />
-            <div className="absolute -left-10 top-20 lg:top-28 mt-20 w-4 h-4 lg:w-6 lg:h-6 xl:w-8 xl:h-8 rounded-full bg-white z-10" />
-            <div className="absolute left-0 sm:-left-24 md:-left-28 lg:-left-44 xl:-left-56 -bottom-12 sm:bottom-20 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 xl:w-36 xl:h-36 rounded-full bg-rose-500 z-10" />
-            <div className="hidden lg:block absolute -left-32 lg:-left-40 xl:-left-1/4 top-8 sm:top-40 lg:top-56 w-10 h-10 md:w-14 md:h-14 lg:w-20 lg:h-20 xl:w-20 xl:h-20 rounded-full bg-yellow-500" />
-          </div>
-          <div className="relative black-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold w-2/3 py-8 md:py-10 lg:py-16 xl:py-24 z-30">
-            <div className="absolute left-12 md:left-16 lg:left-20 -top-6 md:-top-14 lg:-top-14 xl:-top-32 w-12 md:w-16 h-2 lg:w-20 lg:h-3 xl:w-24 xl:h-4 home__color-purple" />
-            <div className="absolute -left-24 bottom-24 w-8 h-8 rounded-full home__color-pink z-10" />
-            <div className="absolute -left-2 lg:-left-16 -bottom-24 lg:-bottom-32 xl:-bottom-40 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 rounded-full home__color-purple z-10" />
-            <img className="absolute left-24 lg:left-40 xl:left-1/2 -bottom-16 sm:-bottom-28 md:-bottom-36 xl:-bottom-48 h-14 md:h-20 lg:h-24 xl:h-28" src="/images/fnl.png" alt="" />
-            It’s time for you to join the party!
-          </div>
-        </div>
-      </div>
-      <div className="relative overflow-hidden pt-14 pb-20 md:py-32 lg:py-40">
-        <div className="absolute left-24 md:left-96 top-0 md:top-10 w-6 h-6 md:w-8 md:h-8 rounded-full home__color-pink" />
-        <div className="absolute left-80 -bottom-8 w-24 h-24 rounded-full bg-yellow-500" />
-        <div className="container">
-          <div className="flex items-center flex-col md:flex-row text-center md:text-left">
-            <div className="relative sm:w-3/5 md:w-1/2 xl:w-7/12 black-title text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-7 md:mb-0 text-rose-500">
-              Group matching platform for new friends
-            </div>
-            <div className="md:pl-12 lg:pl-16 md:w-1/2 xl:w-5/12">
-              <div className="relative text-lg font-semibold mb-12">
-                <div className="absolute right-20 -top-10 w-4 h-4 rounded-full home__color-pink" />
-                <p className="mb-4 md:mb-5">
-                  Happin is the BEST and newest way to join in on the fun. Match with up to 5 people at a time, chat with like-minded individuals, and discover the latest gatherings in your area. The party won’t start without you! Download the Happin app today!
-                </p>
-                {/*<p className="mb-4 md:mb-5"></p>*/}
-              </div>
-              <div className="flex justify-center md:justify-start">
-                <a target="_blank" href="https://apps.apple.com/app/id1527348429" rel="noreferrer">
-                  <img className="h-12 hover:opacity-90 transition" src="/images/app-store-white.svg" alt="app-store" />
-                </a>
-              <div className="cursor-pointer mt-5 sm:mt-0 sm:ml-4">
-                <a target="_blank" href="https://play.google.com/store/apps/details?id=app.happin.prod" rel="noreferrer">
-                  <img className="h-12 hover:opacity-90 transition" src="/images/google-play-white.svg" alt="app-store" />
-                </a>
-              </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="py-14 sm:py-28 bg-white bg-opacity-5">
-        <div className="container">
-          <div className="text-center mb-10 md:mb-14 lg:mb-20">
-            <h1 className="black-title text-3xl md:text-5xl lg:text-6xl font-bold">
-              How Happin Works
-            </h1>
-          </div>
-          <div className=" gap-10 md:gap-16 lg:gap-24 items-center">
-            <div className="sm:w-9/12 md:w-8/12 mx-auto lg:flex-grow flex flex-col md:items-start items-center text-center">
-              <Stack spacing={4}>
-              {buildEvent.map((item, index) => (
+    <div className="relative z-0 font-gtw">
+      <div className="home__page-section-first">
+        {bannerShow && (
+          <div className="fixed left-0 right-0 top-1/4 sm:top-1/3 md:top-1/2 md:-mt-20 bg-white z-20 overflow-hidden">
+            <div className="container">
+              <div className="flex flex-col md:flex-row items-center justify-center py-10 md:h-40 md:py-8">
                 <div
-                  className={classNames('home__how-works-item', { 'active': buildCur === index })}
-                  key={index}
-                  aria-hidden="true"
-                  onClick={() => {
-                    setBuildCur(index);
-                  }}
+                  onClick={() => setBannerShow(false)}
+                  className="flex items-center justify-center absolute right-1.5 top-1.5 p-2 rounded-full hover:text-rose-500 transition cursor-pointer"
                 >
-                  <div className="font-semibold sm:text-lg mb-2">{item.title}</div>
-                  <div className="home__how-works-item--desc">{item.desc}</div>
+                  <IconPark name="close-small" size={26} />
                 </div>
-              ))}
-              </Stack>
-            </div>
-            {/*<div*/}
-            {/*  className="relative w-full h-full flex justify-center items-center">*/}
-            {/*  <SwitchTransition mode="out-in">*/}
-            {/*    <CSSTransition*/}
-            {/*      key={buildCur}*/}
-            {/*      addEndListener={(node, done) => {*/}
-            {/*        node.addEventListener('transitionend', done, false);*/}
-            {/*      }}*/}
-            {/*      classNames="home__fade"*/}
-            {/*    >*/}
-            {/*      <div className="relative w-full sm:w-3/4 md:w-full h-full flex justify-center items-center">*/}
-            {/*        <div className="absolute top-0 right-0 md:top-10 md:right-0 lg:-top-4 lg:-right-4 w-16 h-16 lg:w-24 lg:h-24 home__color-pink rounded-full" />*/}
-            {/*        <div className="absolute -left-2 -bottom-4 md:bottom-12 md:-left-4 lg:-bottom-4 lg:-left-4 w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 xl:w-2/3 xl:h-2/3 bg-yellow-500 rounded-full" />*/}
-            {/*        <div className="relative w-1/2 md:w-7/12 lg:w-1/2 z-10">*/}
-            {/*          <img className="w-11/12 border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].firstImg} alt={buildEvent[buildCur].title} />*/}
-            {/*        </div>*/}
-            {/*        <div className="relative w-2/5 md:w-5/12 lg:w-2/5 z-10">*/}
-            {/*          <img className="w-full border-2 border-solid border-gray-600 rounded-2xl md:rounded-2xl lg:rounded-3xl" src={imageList[buildCur].secImg} alt={buildEvent[buildCur].title} />*/}
-            {/*        </div>*/}
-            {/*      </div>*/}
-            {/*      /!*<img className="w-full" src={imageList[buildCur]} alt="" />*!/*/}
-            {/*    </CSSTransition>*/}
-            {/*  </SwitchTransition>*/}
-            {/*</div>*/}
-          </div>
-        </div>
-      </div>
-      {/*Dialog*/}
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-50 overflow-y-auto"
-          initialFocus={focusRef}
-          onClose={() => {
-          }}
-        >
-          <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="mask-enter"
-              enterFrom="mask-enter-from"
-              enterTo="mask-enter-to"
-              leave="mask-leave"
-              leaveFrom="mask-leave-from"
-              leaveTo="mask-leave-to"
-            >
-              <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-70" />
-            </Transition.Child>
-
-            {/* This element is to trick the browser into centering the modal contents. */}
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="dialog-enter"
-              enterFrom="dialog-enter-from"
-              enterTo="dialog-enter-to"
-              leave="dialog-leave"
-              leaveFrom="dialog-leave-from"
-              leaveTo="dialog-leave-to"
-            >
-              <div className="relative inline-block w-full max-w-md p-5 sm:p-6 my-8 overflow-hidden text-left align-middle bg-gray-800 rounded-2xl z-10">
-                <div className="relative flex items-center mb-6">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg sm:text-xl font-bold leading-6 text-gray-50"
-                  >
-                    Request for android version
-                  </Dialog.Title>
-                  <div ref={focusRef} className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={closeModal}>
-                    <IconPark name="close-small" size={22} />
+                <picture className="absolute -z-[1] inset-0">
+                  <img
+                    className="w-full h-[600px] sm:h-full object-cover opacity-70"
+                    src="/images/home-page/bg-home-banner.svg"
+                    alt=""
+                  />
+                </picture>
+                <div className="flex-1 md:mr-6 text-center md:text-left mb-6">
+                  <div className="text-lg font-medium leading-5 mb-2">
+                    Do you wanna try the next cool thing to interact with your
+                    friends?
+                  </div>
+                  <div className="text-lg font-medium">
+                    Join the waitlist to get early access.
                   </div>
                 </div>
-                {/*<input type="email" className="block w-full px-3 py-2 sm:py-3 border-2 border-solid border-gray-600 rounded-lg bg-gray-900 text-gray-50 text-center transition placeholder-gray-400 hover:border-gray-500 focus:bg-gray-900 font-semibold text-xl" placeholder="Enter Your Email" />*/}
-                <p className="mt-6 text-sm text-gray-400">Happin will launch android version when there are 10k people request for it. <br/>Are you an android user? Send an email to &quot;IwantAndroidHappin@happin.app&quot; to push Happin team.</p>
-                {/*<button*/}
-                {/*  type="button"*/}
-                {/*  className="mt-6 btn btn-rose w-full !rounded-full"*/}
-                {/*>*/}
-                {/*  Confirm*/}
-                {/*</button>*/}
+                <div className="flex flex-col sm:flex-row space-y-3 md:space-y-0 sm:space-x-4">
+                  <button className="btn btn-rose !rounded-full !px-5 !py-3 !font-medium">
+                    Get early access
+                  </button>
+                  <button className="btn btn-bee-yellow !rounded-full !px-5 !py-3 !font-medium">
+                    Join as 3d designer
+                  </button>
+                </div>
               </div>
-            </Transition.Child>
+            </div>
           </div>
-        </Dialog>
-      </Transition>
+        )}
+        <div className="container py-12 sm:py-18 lg:py-24 text-center">
+          <div className="max-w-[1000px] mx-auto text-3xl sm:text-5xl lg:text-7xl font-bold mb-2 sm:mb-4">
+            Send AR stickers to friends while chatting.
+          </div>
+          <div className="text-base sm:text-xl lg:text-2xl mb-8 sm:mb-10">
+            Create meaningful interactions and self-express.
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-6 lg:mb-24">
+            <button className="btn btn-rose !rounded-full sm:!px-8 sm:!py-4 lg:!px-12 sm:!text-lg lg:!text-xl !font-medium">
+              Get early access
+            </button>
+            <button className="btn btn-bee-yellow !rounded-full sm:!px-8 sm:!py-4 lg:!px-12 sm:!text-lg lg:!text-xl !font-medium">
+              Join as 3d designer
+            </button>
+          </div>
+          <div className="relative w-3/4 sm:w-[300px] md:w-[330px] lg:w-[360px] mx-auto mt-10 sm:mt-16">
+            <div className="iphone-mock">
+              <div className="iphone-mock__lock" />
+              <div className="iphone-mock__volume-up" />
+              <div className="iphone-mock__volume-down" />
+              <div className="iphone-mock__power" />
+              <div className="iphone-mock__camera" />
+              {!isPlay && (
+                <div className="home__video-starter" onClick={handleVideo}>
+                  <svg viewBox="0 0 24 24" width="30" height="30">
+                    <path
+                      fill="currentColor"
+                      d="M19.376 12.416L8.777 19.482A.5.5 0 0 1 8 19.066V4.934a.5.5 0 0 1 .777-.416l10.599 7.066a.5.5 0 0 1 0 .832z"
+                    />
+                  </svg>
+                </div>
+              )}
+              <VideoPlayer
+                className="home__banner-video"
+                options={{
+                  autoplay: false,
+                  controls: false,
+                  fluid: true,
+                  muted: true,
+                  preload: 'auto',
+                  sources: [
+                    {
+                      src: '/images/home-page/banner-video.mp4',
+                      type: 'video/mp4',
+                    },
+                  ],
+                }}
+                onReady={handlePlayerReady}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white">
+        <div className="container py-12 md:py-18 lg:py-24">
+          <div className="flex flex-col sm:items-center sm:flex-row-reverse w-full">
+            <div className="text-center sm:text-left sm:w-1/2">
+              <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-6 lg:mb-8">
+                Match with other cool people
+              </div>
+              <div className="text-base sm:text-xl lg:text-2xl">
+                Never get bored to connect with other people in your school,
+                your community and more.
+              </div>
+            </div>
+            <div className="flex justify-center sm:justify-start sm:w-1/2 mt-8 sm:mt-0">
+              <img
+                className="w-3/4 sm:w-[300px] md:w-[320px] lg:w-[340px]"
+                src="/images/home-page/section-3-phone@2x.png"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="home__page-section-second">
+        <div className="container py-12 md:py-18 lg:py-24">
+          <div className="flex flex-col sm:items-center sm:flex-row w-full">
+            <div className="text-center sm:text-left sm:w-1/2">
+              <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-6 lg:mb-8">
+                Turn the background of messaging into an AR camera
+              </div>
+              <div className="text-base sm:text-xl lg:text-2xl">
+                So you can see 3d stickers in real world while chatting with
+                your friends.
+              </div>
+            </div>
+            <div className="flex justify-center sm:justify-end sm:w-1/2 mt-8 sm:mt-0">
+              <div className="relative w-3/4 sm:w-[280px] md:w-[300px] lg:w-[340px]">
+                <div className="iphone-mock">
+                  <div className="iphone-mock__lock" />
+                  <div className="iphone-mock__volume-up" />
+                  <div className="iphone-mock__volume-down" />
+                  <div className="iphone-mock__power" />
+                  <div className="iphone-mock__camera" />
+                  <img
+                    className="w-full"
+                    src="/images/home-page/section-2-phone@2x.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white">
+        <div className="container py-12 md:py-18 lg:py-24">
+          <div className="flex flex-col sm:items-center sm:flex-row-reverse w-full">
+            <div className="text-center sm:text-left sm:w-1/2">
+              <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-6 lg:mb-8">
+                Build-in editing tool for you to create more personal stickers.
+              </div>
+              <div className="text-base sm:text-xl lg:text-2xl">
+                You can add custom text, voice, music, or effects.
+              </div>
+            </div>
+            <div className="flex justify-center sm:justify-start sm:w-1/2 mt-8 sm:mt-0">
+              <div className="relative w-3/4 sm:w-[280px] md:w-[300px] lg:w-[340px]">
+                <div className="iphone-mock">
+                  <div className="iphone-mock__lock" />
+                  <div className="iphone-mock__volume-up" />
+                  <div className="iphone-mock__volume-down" />
+                  <div className="iphone-mock__power" />
+                  <div className="iphone-mock__camera" />
+                  <img
+                    className="w-full"
+                    src="/images/home-page/section-editing@2x.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-[#e2f1ef]">
+        <div className="container py-12 md:py-18 lg:py-24">
+          <div className="flex flex-col sm:items-center sm:flex-row w-full">
+            <div className="text-center sm:text-left sm:w-1/2">
+              <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-6 lg:mb-8">
+                Access to private 3d space from anywhere when you chat with your
+                friends.
+              </div>
+            </div>
+            <div className="flex justify-center sm:justify-end sm:w-1/2 mt-8 sm:mt-0">
+              <div className="relative w-3/4 sm:w-[280px] md:w-[300px] lg:w-[340px]">
+                <div className="iphone-mock">
+                  <div className="iphone-mock__lock" />
+                  <div className="iphone-mock__volume-up" />
+                  <div className="iphone-mock__volume-down" />
+                  <div className="iphone-mock__power" />
+                  <div className="iphone-mock__camera" />
+                  <img
+                    className="w-full"
+                    src="/images/home-page/section-3d-space@2x.png"
+                    alt=""
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="bg-white">
+        <div className="container py-12 sm:py-24 md:py-32 lg:py-40">
+          <div className="flex flex-col sm:items-center sm:flex-row-reverse w-full">
+            <div className="text-center sm:text-left sm:w-1/2">
+              <div className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-6 lg:mb-8">
+                Unlimited ways to convey your emotion or create fun excuses to start a conversation.
+              </div>
+              <div className="text-base sm:text-xl lg:text-2xl">
+                3d stickers can add more realistic animation and apply to your friends’ real world.
+              </div>
+            </div>
+            <div className="flex justify-center sm:justify-start sm:w-1/2 mt-8 sm:mt-0">
+              <div className="w-full sm:w-4/5 h-full">
+                <div className="aspect-w-1 aspect-h-1 w-full">
+                  <div className="absolute inset-0 flex items-center rounded-full bg-[#CFE5FF]">
+                    <div className="absolute -left-8 flex flex-col justify-center rounded-3xl rounded-l-none xl:rounded-l-3xl pl-8 h-3/5 w-11/12 bg-[#7579C6]">
+                      <div className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold mt-6 md:mt-7">What’s up,</div>
+                      <div className="text-4xl sm:text-3xl md:text-4xl lg:text-5xl text-white font-bold mt-1 md:mt-3">buddy?!</div>
+                    </div>
+                    <img className="absolute left-0 top-0 w-1/3" src="/images/home-page/chat-heart.png" alt="" />
+                    <img className="absolute right-6 bottom-6 w-1/3" src="/images/home-page/wave.png" alt="" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
-
-
-const whiteLabelDomain = async (domain: string) => {
-  try {
-    const response = await getWhiteLabelDomain(domain);
-    if (response.groupEventId) {
-      return {eventId: response.groupEventId, isGroup: true}
-    } else if(response.redirectToAc) {
-      return {eventId: response.redirectToAc, isGroup: false}
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-export async function getServerSideProps(context: { req: {headers: {host: string}} }) : Promise<GetServerSidePropsResult<any>> {
-  //&& !context.req.headers.host.includes('localhost')
-  if (context.req.headers.host !== 'happin.app' && !context.req.headers.host.includes('localhost')) {
-    const response = await whiteLabelDomain(context.req.headers.host)
-    if (!response) {
-      return {props: {}}
-    }
-    return {
-      redirect: {
-        permanent: false,
-        destination: response.isGroup? `https://livestream.happin.app/event-schedule/${response.eventId}?host=${context.req.headers.host}` :`/post/${response.eventId}`
-      }
-    }
-  }
-  return {props: {}}
-}
-
-

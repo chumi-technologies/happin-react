@@ -185,6 +185,19 @@ button {
     @apply bg-yellow-100;
   }
 }
+.btn-bee-yellow {
+  @apply text-gray-900;
+  background-color: #FFDE4B;
+  &:hover {
+    background-color: #f2ca15;
+  }
+  &:active {
+    background-color: #ddb814;
+  }
+  &.disabled, &:disabled {
+    @apply bg-yellow-100;
+  }
+}
 
 .btn-rose {
   @include btn-color("rose")
