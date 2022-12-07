@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Left } from '@icon-park/react';
 import { Controller, useForm } from "react-hook-form";
 import { Button, Spinner, useToast } from '@chakra-ui/react';
 import { useEffect } from "react";
@@ -12,6 +11,7 @@ import Upload from "rc-upload"
 import { IThirdPartyEvent } from "pages/submit-event";
 import { useRouter } from "next/router";
 import GooglePlacesAutocomplete, { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import IconPark from '@components/IconPark';
 
 type selectOption = {
   label: string;
@@ -205,7 +205,7 @@ export default function ThirdPartyEvent({
                     setThirdPartyReadOnlyProps(undefined);
                   }}
                   className="btn inline-flex items-center text-gray-300 hover:text-gray-50 !px-0 mr-5 md:mr-7">
-                  <Left theme="outline" size="24" fill="currentColor" />
+                  <IconPark name="left" size={24} />
                 </button>
                 <div className="flex-1 font-semibold min-w-0 sm:block">
                   <div className="text-gray-50 text-center">Share third party event</div>

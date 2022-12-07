@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import SvgIcon from '@components/SvgIcon';
-import { Check, CloseSmall } from '@icon-park/react';
 import Merch from './Merch';
 import Select from '@components/reusable/Select';
 import NumberInput from '@components/reusable/NumberInput';
@@ -10,6 +9,7 @@ import { useCheckoutState } from 'contexts/checkout-state';
 import { useEffect } from 'react';
 import { increaseBundleTicketAmount } from './util/IncreseInput';
 import { currencyFormatter } from './util/currencyFormat';
+import IconPark from '@components/IconPark';
 
 
 type CheckoutSidebarProps = {
@@ -145,14 +145,16 @@ const BundleSidebar = (props: CheckoutSidebarProps) => {
             <div
               className="absolute -right-2 top-4 flex items-center justify-center w-8 h-8 rounded-full hover:text-rose-500 transition cursor-pointer"
               onClick={() => { onClose(); setInputValue(0); setSelectedProperties([]) }}>
-              <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+              <IconPark name="close-small" size={22} />
             </div>
           </div>
         </div>
         <div className="flex-1 h-0 web-scroll overflow-y-auto px-5 sm:px-6">
 
           <div className="flex items-center text-green-500 font-bold uppercase py-5">
-            <Check theme="outline" size="16" fill="currentColor" strokeWidth={6} />
+            <svg width="16" height="16" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M43 11L16.875 37L5 25.1818" stroke="currentColor" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
             <span className="ml-2 text-sm">Bundle includes:</span>
           </div>
           {

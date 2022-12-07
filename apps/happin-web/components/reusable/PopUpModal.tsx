@@ -1,5 +1,5 @@
-import { CloseSmall } from '@icon-park/react';
 import React from 'react';
+import IconPark from '@components/IconPark';
 
 const PopUpModal = ({ modalTitle, setIsModalOpen, children, closeableOutside=true, showCloseIcon=true, mobilePosition='bottom'}: any) => {
   return (
@@ -16,7 +16,7 @@ const PopUpModal = ({ modalTitle, setIsModalOpen, children, closeableOutside=tru
             <div className="flex items-center justify-center absolute right-3 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={() => {
               setIsModalOpen(false)
             }}>
-              <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3}/>
+              <IconPark name="close-small" size={22} />
             </div>
           }
         </div>

@@ -1,8 +1,8 @@
 import React, { Fragment, ReactNode, useRef } from 'react';
-import { CloseSmall } from '@icon-park/react';
 import classNames from 'classnames';
 import { Dialog, Transition } from '@headlessui/react';
 import classnames from 'classnames';
+import IconPark from '@components/IconPark';
 
 export type ModalProps = {
   isOpen: boolean;
@@ -91,7 +91,7 @@ const Modal = (props: ModalProps) => {
                         setIsOpen(false);
                         onClose && onClose();
                       }}>
-                      <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                      <IconPark name="close-small" size={22} />
                     </div>
                   </div>
                 )

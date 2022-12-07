@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { ArrowRight, Help, Lightning, Like, Stopwatch, Switch } from '@icon-park/react';
 import classnames from "classnames";
 import SvgIcon from "@components/SvgIcon";
 import { SearchIcon } from '@chakra-ui/icons';
 import { Avatar } from '@chakra-ui/react';
 import Countdown, { zeroPad } from 'react-countdown';
+import IconPark from '@components/IconPark';
 
 
 const Campaign = () => {
@@ -101,7 +101,7 @@ const Campaign = () => {
             <h2 className="text-base font-semibold mb-2 text-gray-50">About This Campaign</h2>
           </div>
           <div className="flex items-center py-1 px-4">
-            <Stopwatch theme="outline" size="18" fill="#fff"/>
+            <IconPark name="stopwatch" size={18} color="#fff" />
             <span className="text-white uppercase ml-2 flex-1 font-semibold text-tiny">Days Left</span>
             {/* <Countdown date={new Date(2022, 1, 1)} renderer={renderer} /> */}
           </div>
@@ -160,7 +160,7 @@ const Campaign = () => {
             <div className="space-y-6">
               <div className="flex items-center">
                 <div className="flex items-center justify-center w-9 h-9 bg-rose-100 rounded-full">
-                  <Like theme="filled" size="18" fill="#fe4365"/>
+                  <IconPark name="like-filled" size={18} color="#fe4365" />
                 </div>
                 <div className="mx-3 flex-1">
                   <div className="font-semibold text-sm leading-5 text-gray-50">Visit Gleam on Facebook</div>
@@ -173,7 +173,7 @@ const Campaign = () => {
               </div>
               <div className="flex items-center">
                 <div className="flex items-center justify-center w-9 h-9 bg-rose-100 rounded-full">
-                  <Lightning theme="filled" size="18" fill="#fe4365"/>
+                  <IconPark name="lightning-filled" size={18} color="#fe4365" />
                 </div>
                 <div className="mx-3 flex-1">
                   <div className="font-semibold text-sm leading-5 text-gray-50">Submit a Selfie</div>

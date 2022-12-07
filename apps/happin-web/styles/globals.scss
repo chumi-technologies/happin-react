@@ -49,6 +49,29 @@
       format("woff");
 }
 
+@font-face {
+  font-family: GTWP;
+  src: local("GT Walsheim Pro Regular"),local("GTWalsheimProRegular"),url("../public/fonts/GTWalsheimPro/GTWalsheimProRegular.woff2") format("woff2"),url("../public/fonts/GTWalsheimPro/GTWalsheimProRegular.woff") format("woff"),url("../public/fonts/GTWalsheimPro/GTWalsheimProRegular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: fallback;
+  font-style: normal
+}
+@font-face {
+  font-family: GTWP;
+  src: local("GT Walsheim Pro Medium"),local("GTWalsheimProMedium"),url("../public/fonts/GTWalsheimPro/GTWalsheimProMedium.woff2") format("woff2"),url("../public/fonts/GTWalsheimPro/GTWalsheimProMedium.woff") format("woff"),url("../public/fonts/GTWalsheimPro/GTWalsheimProMedium.ttf") format("truetype");
+  font-weight: 500;
+  font-display: fallback;
+  font-style: normal
+}
+
+@font-face {
+  font-family: GTWP;
+  src: local("GT Walsheim Pro Bold"),local("GTWalsheimProBold"),url("../public/fonts/GTWalsheimPro/GTWalsheimProBold.woff2") format("woff2"),url("../public/fonts/GTWalsheimPro/GTWalsheimProBold.woff") format("woff"),url("../public/fonts/GTWalsheimPro/GTWalsheimProBold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal
+}
+
+
 .StripeElement--webkit-autofill {
   background: transparent !important;
 }

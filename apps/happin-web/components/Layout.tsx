@@ -63,7 +63,6 @@ const Layout = ({ children }: { children: any }) => {
       setBoxOfficeMode(true);
     }
     if (
-      router.route === "/" ||
       router.route === "/events" ||
       router.route === "/ambassador"
     ) {
@@ -91,6 +90,9 @@ const Layout = ({ children }: { children: any }) => {
     } else if (router.route === "/transactionHistory") {
       setShowHeader(false);
       setShowFooter(false);
+    } else if (router.route === "/") {
+      setShowFooter(false);
+      setShowHeader(true);
     } else {
       setShowFooter(false);
       setIsProduction(false);
@@ -159,7 +161,6 @@ const Layout = ({ children }: { children: any }) => {
         />
         <link rel="icon" href="/favicon.ico" key="favicon" />
       </Head>
-      {/*<Script src="https://maps.googleapis.com/maps/api/js?libraries=places" strategy="beforeInteractive" />*/}
       <main
         className={classnames("main-app", {
           production: isProduction,

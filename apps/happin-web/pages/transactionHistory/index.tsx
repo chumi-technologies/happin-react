@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { Help, Switch } from "@icon-park/react";
 import classnames from "classnames";
 import { generateToast } from '@components/page_components/CheckoutPageComponents/util/toast';
 import { getRewards, getTransactionHistory, rewardCheckIn, rewardClaim } from 'lib/api/reward';
@@ -10,6 +9,7 @@ import { useSSOState } from 'contexts/sso-state';
 import { useRouter } from 'next/router';
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+import IconPark from '@components/IconPark';
 
 const TransactionHistory = () => {
   const router = useRouter()
@@ -139,7 +139,7 @@ const TransactionHistory = () => {
           <div className="flex items-center justify-between mb-4 font-semibold text-gray-50">
             <div className="flex items-center">
               <span className="mr-1">Current Balance</span>
-              <Help theme="outline" size="18" fill="currentColor" strokeWidth={4}/>
+              <IconPark name="help" size={18} />
             </div>
           </div>
           <div className="bg-gray-800 rounded-xl py-4">
@@ -156,7 +156,7 @@ const TransactionHistory = () => {
               </div>
               <div className="relative flex-1 text-center">
                 <div className="app-reward__exchange">
-                  <Switch theme="outline" size="20" fill="#fff"/>
+                  <IconPark name="switch" size={20} color="#fff" />
                 </div>
                 <img className="w-6 mx-auto" src="/images/icon-cash.svg" alt="" />
                 <div className="mt-1 text-lg font-semibold text-gray-50">{balance.diamonds}</div>

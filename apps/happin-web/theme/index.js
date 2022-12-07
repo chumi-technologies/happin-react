@@ -10,12 +10,14 @@ import FormError from "./components/form";
 import Radio from './components/radio';
 
 const theme = extendTheme({
-  initialColorMode: "dark",
-  useSystemColorMode: false,
+  config: {
+    // initialColorMode: 'dark',
+    useSystemColorMode: false,
+  },
   styles: {
     global: {
       body: {
-        background: "transparent",
+        background: colors.gray[900],
       },
     },
   },

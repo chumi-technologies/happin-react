@@ -7,6 +7,9 @@
 .black-title {
   font-family: proximanova, 'Helvetica Neue', 'PingFang SC', Arial, sans-serif;
 }
+.font-gtw {
+  font-family: GTWP, 'PingFang SC', Arial, sans-serif;
+}
 
 // 页面基础包裹容器
 .container {
@@ -53,6 +56,12 @@
   @apply relative z-10;
   .production &{
     @apply sticky top-0 z-10;
+  }
+}
+.header-container {
+  @apply flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-gray-900;
+  .home__page & {
+    background-color: #eaf0f8;
   }
 }
 .common__body {

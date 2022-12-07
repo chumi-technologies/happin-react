@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Avatar, Spinner, useToast } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
-import { Check, Plus } from '@icon-park/react';
 import classnames from 'classnames';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
@@ -308,8 +307,12 @@ const Playback = () => {
                     onClick={handleFollow}
                   >
                     {isFollowed ?
-                      <Check theme="outline" size="14" fill="#d9d9d9" strokeWidth={5} /> :
-                      <Plus theme="outline" size="14" fill="#fff" strokeWidth={5} />
+                      <svg width="14" height="14" viewBox="0 0 48 48" fill="none">
+                        <path d="M43 11L16.875 37L5 25.1818" stroke="#d9d9d9" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg> :
+                      <svg width="14" height="14" fill="none" viewBox="0 0 48 48">
+                        <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="5" stroke="#fff" d="m24.06 10-.036 28M10 24h28" data-follow-stroke="#fff"/>
+                      </svg>
                     }
                     <span className="ml-1.5">
                       {isFollowed ? 'Following' : 'Follow'}

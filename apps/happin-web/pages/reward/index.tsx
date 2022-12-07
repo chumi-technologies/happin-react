@@ -1,6 +1,6 @@
 import React from 'react';
-import { Lightning, Like, Stopwatch } from '@icon-park/react';
 import Countdown, { zeroPad } from 'react-countdown';
+import IconPark from '@components/IconPark';
 
 const Reward = () => {
   const count = ({ days, hours, minutes, seconds, completed }: any) => {
@@ -52,7 +52,7 @@ const Reward = () => {
       </div>
       <div className="bg-white bg-opacity-25 p-3">
         <div className="flex items-center">
-          <Stopwatch theme="outline" size="20" fill="#fff"/>
+          <IconPark name="stopwatch" size={20} />
           <span className="text-white uppercase ml-2 flex-1 font-semibold text-sm">Days Left</span>
           {/* <Countdown date={new Date(2022, 9, 1)} renderer={count} /> */}
         </div>
@@ -76,7 +76,7 @@ const Reward = () => {
           <div className="space-y-6">
             <div className="flex items-center">
               <div className="flex items-center justify-center w-9 h-9 bg-rose-100 rounded-full">
-                <Like theme="filled" size="18" fill="#fe4365"/>
+                <IconPark name="like" size={18} color="#fe4365" />
               </div>
               <div className="mx-3 flex-1">
                 <div className="font-semibold text-sm leading-5">Visit Gleam on Facebook</div>
@@ -89,7 +89,7 @@ const Reward = () => {
             </div>
             <div className="flex items-center">
               <div className="flex items-center justify-center w-9 h-9 bg-rose-100 rounded-full">
-                <Lightning theme="filled" size="18" fill="#fe4365"/>
+                <IconPark name="lightning" size={18} color="#fe4365" />
               </div>
               <div className="mx-3 flex-1">
                 <div className="font-semibold text-sm leading-5">Submit a Selfie</div>

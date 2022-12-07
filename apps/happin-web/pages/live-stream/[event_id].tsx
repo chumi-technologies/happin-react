@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Avatar, Spinner, useToast } from '@chakra-ui/react';
 import SvgIcon from '@components/SvgIcon';
-import { Check, CosmeticBrush, Left, Plus, Right } from '@icon-park/react';
 import Slider from 'react-slick';
 import classnames from 'classnames';
 import { Picker } from 'emoji-mart';
@@ -20,6 +19,7 @@ import TIM from 'tim-js-sdk';
 import moment from "moment";
 import { exchangeCrowdcoreToken, getFollowed, getGiftList, postFollow, removeFollowed, sendGiftTo } from "lib/api/user";
 import Script from 'next/script'
+import IconPark from '@components/IconPark';
 declare var TcPlayer: any;
 
 function Arrow(props: any) {
@@ -121,8 +121,8 @@ const Livestream = () => {
         }
       }
     ],
-    nextArrow: <Arrow><Right theme="outline" size="16" fill="currentColor" /></Arrow>,
-    prevArrow: <Arrow><Left theme="outline" size="16" fill="currentColor" /></Arrow>,
+    nextArrow: <Arrow><IconPark name="right" size={16} /></Arrow>,
+    prevArrow: <Arrow><IconPark name="left" size={16} /></Arrow>,
   };
 
   useEffect(() => {
@@ -1191,8 +1191,12 @@ const Livestream = () => {
                     className={classnames(isFollowed ? 'livestream__btn-following' : 'livestream__btn-follow')}
                     onClick={handleFollow}
                   >
-                    {isFollowed ? <Check theme="outline" size="14" fill="#d9d9d9" strokeWidth={5} /> :
-                      <Plus theme="outline" size="14" fill="#fff" strokeWidth={5} />
+                    {isFollowed ? <svg width="14" height="14" viewBox="0 0 48 48" fill="none">
+                        <path d="M43 11L16.875 37L5 25.1818" stroke="#d9d9d9" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg> :
+                      <svg width="14" height="14" fill="none" viewBox="0 0 48 48">
+                        <path strokeLinejoin="round" strokeLinecap="round" strokeWidth="5" stroke="#fff" d="m24.06 10-.036 28M10 24h28" data-follow-stroke="#fff"/>
+                      </svg>
                     }
                     <span className="ml-1.5">
                       {isFollowed ? 'Following' : 'Follow'}

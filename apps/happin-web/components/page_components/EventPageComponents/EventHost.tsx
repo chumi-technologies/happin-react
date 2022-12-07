@@ -1,7 +1,7 @@
 import { Avatar, Stack } from '@chakra-ui/react';
 import React, { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { CloseSmall } from '@icon-park/react';
+import IconPark from '@components/IconPark';
 
 type EventHostProps = {
   hostName?: string;
@@ -72,7 +72,7 @@ const EventHost = (props: EventHostProps) => {
                     Contact the organizer
                   </Dialog.Title>
                   <div className="flex items-center justify-center absolute -right-2 w-10 h-10 rounded-full hover:bg-gray-700 hover:text-gray-50 transition cursor-pointer text-gray-300" onClick={() => setIsOpen(false)}>
-                    <CloseSmall theme="outline" size="22" fill="currentColor" strokeWidth={3} />
+                    <IconPark name="close-small" size={22} />
                   </div>
                 </div>
                 {/* <div className="mt-6 mb-2 text-gray-50 font-semibold">Common questions:</div>

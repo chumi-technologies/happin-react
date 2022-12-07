@@ -2,15 +2,13 @@ import GroupEventCard from "./GroupEventCard";
 import { GroupEvent } from "lib/model/groupEvent";
 import { EventData } from "lib/model/event";
 type EventDatesProp = {
-  groupEvents?: GroupEvent[];
   setIsModalOpen: (arg0: boolean) => void
   eventData: EventData
 }
 
-const EventDates = ({ groupEvents = [], setIsModalOpen, eventData } : EventDatesProp) => {
-
-  groupEvents = groupEvents.filter(e => e._id !== eventData.event.eid)
-
+const EventDates = ({ setIsModalOpen, eventData } : EventDatesProp) => {
+  const groupEvents = eventData.groupEvents?.filter(e => e._id !== eventData.event.eid) || [];
+  console.log(groupEvents);
   return (
     <>
       {/* List and Calendar Toggle */}

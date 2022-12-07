@@ -1,7 +1,10 @@
 @import 'mixin';
 // Header
 .header__link {
-  @apply hidden sm:inline-flex text-sm p-1 font-medium text-gray-300 hover:text-gray-50 transition whitespace-nowrap
+  @apply hidden sm:inline-flex text-lg p-1 font-medium text-gray-300 hover:text-gray-50 transition whitespace-nowrap;
+  .home__page & {
+    @apply text-gray-800 hover:text-rose-500;
+  }
 }
 .header__menu {
   @apply flex items-center rounded-full border-2 border-solid border-gray-800 text-gray-500 py-1 pr-1 pl-3 cursor-pointer transition;
@@ -84,7 +87,7 @@
   @apply relative flex-1 h-0 text-gray-50 z-0;
 }
 .event-details__container {
-  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0;
+  @apply w-full px-4 sm:px-8 md:px-10 lg:px-14 mx-auto lg:m-0 lg:min-h-full;
   //padding-right: 4.5rem;
   //padding-left: 3.5rem;
   @media (min-width: 640px) {
@@ -516,9 +519,184 @@
 
 
 // Home
-//.home__banner {
-//  background: url("../public/images/home-banner.png") center top no-repeat;
-//}
+.home__page {
+  background-color: #fff !important;
+}
+.home__page-section-first {
+  background-image: url("../public/images/home-page/section-1-bg.jpg");
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-color: #eaf0f8;
+}
+.home__page-section-second {
+  background-image: url("../public/images/home-page/section-2-bg.jpg");
+  background-size: cover;
+  background-position: 40%;
+  background-repeat: no-repeat;
+  @media (min-width: 768px) {
+    background-position: top center;
+  }
+}
+.home__banner-video {
+  //border-radius: 25px;
+  //overflow: hidden;
+}
+.iphone-mock-wrapper {
+  position: relative;
+  width: 375px;
+}
+.iphone-mock {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  border-radius: 32px;
+  border: 5px solid #000;
+  overflow: hidden;
+  @media (min-width: 640px) {
+    border-width: 6px;
+    border-radius: 36px;
+  }
+  @media (min-width: 768px) {
+    border-width: 7px;
+    border-radius: 40px;
+  }
+  @media (min-width: 1024px) {
+    border-width: 9px;
+    border-radius: 44px;
+  }
+}
+.iphone-mock__lock,
+.iphone-mock__volume-up,
+.iphone-mock__volume-down,
+.iphone-mock__power,
+.iphone-mock__camera {
+  position: absolute;
+  background-color: #000;
+  z-index: 1;
+}
+.iphone-mock__lock,
+.iphone-mock__volume-up,
+.iphone-mock__volume-down,
+.iphone-mock__power {
+  width: 6px;
+}
+.iphone-mock__lock,
+.iphone-mock__volume-up,
+.iphone-mock__volume-down {
+  left: -2px;
+  border-radius: 4px 0 0 4px;
+  @media (min-width: 640px) {
+    left: -3px;
+  }
+  @media (min-width: 768px) {
+    left: -4px;
+  }
+  @media (min-width: 1024px) {
+    left: -5px;
+  }
+}
+.iphone-mock__lock {
+  top: 15%;
+  height: 5%;
+}
+.iphone-mock__volume-up {
+  top: 25%;
+  height: 8%;
+}
+.iphone-mock__volume-down {
+  top: calc(25% + 8% + 2%);
+  height: 8%;
+}
+.iphone-mock__power {
+  right: -2px;
+  top: 29%;
+  border-radius: 0 4px 4px 0;
+  height: 10%;
+  @media (min-width: 640px) {
+    right: -3px;
+  }
+  @media (min-width: 768px) {
+    right: -4px;
+  }
+  @media (min-width: 1024px) {
+    right: -5px;
+  }
+}
+.iphone-mock__camera {
+  top: 2.3%;
+  border-radius: 20px;
+  height: 3%;
+  width: 20%;
+}
+.home__video-starter {
+  position: absolute;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  margin-top: -30px;
+  border-radius: 50%;
+  cursor: pointer;
+  background: #FFDE4B;
+  color: #000;
+  z-index: 1;
+  transition: all .1s ease;
+  @media (min-width: 768px) {
+    width: 80px;
+    height: 80px;
+    margin-top: -40px;
+  }
+  &:hover {
+    background: #000;
+    color: #fff;
+  }
+}
+.home__page-video {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+  .video-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .video-start {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -30px;
+    margin-top: -30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
+    background: #377dff;
+    color: #fff;
+    z-index: 1;
+    &:hover {
+      background: #000;
+      //border-color: $primary;
+    }
+  }
+
+  video {
+    //width: 100%;
+    //border-radius: 12px;
+    vertical-align: top;
+    //overflow: hidden;
+    &:focus {
+      outline: none;
+    }
+  }
+  .vjs-poster {
+    background-color: transparent;
+  }
+}
 .right-circle {
   width: 360px;
   height: 360px;
