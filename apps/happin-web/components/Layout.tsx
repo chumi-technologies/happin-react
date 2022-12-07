@@ -91,7 +91,7 @@ const Layout = ({ children }: { children: any }) => {
       setShowHeader(false);
       setShowFooter(false);
     } else if (router.route === "/") {
-      setShowFooter(true);
+      setShowFooter(false);
       setShowHeader(true);
     } else {
       setShowFooter(false);

@@ -29,8 +29,8 @@ const Input = {
     outline: {
       field: {
         _focus: {
-          borderColor: colors.coolGray['900'],
-          boxShadow: "0 0 0 1px " + colors.coolGray['900']
+          borderColor: colors.gray['900'],
+          boxShadow: "0 0 0 1px " + colors.gray['900']
         }
       }
     }
@@ -49,11 +49,11 @@ const Checkbox = {
       border: '1px solid',
       borderRadius: '3px',
       _checked: {
-        bg: colors.coolGray['900'],
-        borderColor: colors.coolGray['900'],
+        bg: colors.gray['900'],
+        borderColor: colors.gray['900'],
         _hover: {
-          bg: colors.coolGray['900'],
-          borderColor: colors.coolGray['900']
+          bg: colors.gray['900'],
+          borderColor: colors.gray['900']
         }
       }
     },
@@ -99,7 +99,7 @@ const theme = extendTheme({
     outline: 'none'
   },
   colors: {
-    gray: colors.coolGray,
+    gray: colors.gray,
     blue: colors.blue,
     yellow: colors.yellow,
     red: {
