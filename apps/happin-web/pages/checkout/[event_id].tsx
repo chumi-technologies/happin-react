@@ -247,10 +247,18 @@ const Checkout = () => {
       let merchList: MerchItemDataProps[] = []
       if (res.length) {
         merchList = res.map((m: any) => {
-          const property: MerchProperty[] = m.properties.map((p: any) => ({
-            ...p,
-            originalPValue: p.pValue
-          }))
+                  
+          // 我们没有了m.properties 所以我们造一个。
+          const property: MerchProperty[] = [{
+            pName: 'Default', //代表默认属性
+            pValue: m.quantity, //这个是我们新增加的quantity
+            originalPValue: m.quantity,
+          }];
+
+        //   const property: MerchProperty[] = m.properties.map((p: any) => ({
+        //     ...p,
+        //     originalPValue: p.pValue
+        //   }))
           // if this merch's price is greater than 0, it's not considered to be
           // a bundle merch, but a regular merch binded to a ticket as optional item
           const bindTickets = m.activities.filter((a: any) => eventId === a.activityId)
@@ -259,15 +267,15 @@ const Checkout = () => {
             id: m._id,
             image: m.image,
             name: m.name,
-            max: m.max,
-            forApp: m.forApp,
+            // max: m.max, // 返回没有了所以去掉
+            // forApp: m.forApp,
             description: m.description,
             shippingCountry: m.shippingCost.map((shipping: any) => shipping.destination),
             price: m.price,
             kind: 'merch',
             mail: m.mail,
-            show: m.show,
-            isDonation: m.isDonation,
+            show: !m.deleted,
+            isDonation: false,
             property,
             isOptionalBundleItem: (m.price > 0 && bindTickets[0].length),
             tickets: bindTickets[0] || []

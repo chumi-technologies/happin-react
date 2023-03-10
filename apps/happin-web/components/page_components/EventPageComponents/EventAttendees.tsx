@@ -67,7 +67,7 @@ const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
   return (
     <>
       <div className="black-title text-xl sm:text-2xl font-semibold">Who joined the event community</div>
-      <div className="mt-3 sm:mt-5">
+      {/* <div className="mt-3 sm:mt-5">
         <Slider {...settings}>
           {
             topProfiles.map(item => (
@@ -81,12 +81,12 @@ const EventAttendees = ({ topProfiles }: {topProfiles: TopProfilesItem[]}) => {
             ))
           }
         </Slider>
-      </div>
-      {topProfiles.length > 0 &&
+      </div> */}
+      {/* {topProfiles.length > 0 &&
         <div className="mt-3 text-gray-400">
           <span className="mr-2">🔥</span>Download app and match with other like-minded people from the same event.
         </div>
-      }
+      } */}
     </>
   );
 };

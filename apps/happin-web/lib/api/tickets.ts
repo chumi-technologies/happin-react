@@ -3,7 +3,7 @@ import { getFromHappin, getFromCrowdCore, postToHappin, postToCrowdCore, deleteF
 
 const CHECKIN_TICKET_PATH = '/ticket/check-in';
 const GET_GA_TICKET_PATH = '/v2/tickets/general-admission?acid={acid}'
-const GET_MERCH_PATH = '/v2/merchandise?withActivities=true&source=sass&activityId={acid}'
+const GET_MERCH_PATH = '/box?withActivities=true&source=sass&activityId={acid}'
 const VALIADTE_CODE_PATH = '/codes/validate?activityId={acid}&code={code}'
 const LOCK_CHECKOUT_PATH = '/payment/order'
 const RELEASE_LOCK_CHECKOUT_PATH = '/payment/order/{orderId}'
