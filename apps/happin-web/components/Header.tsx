@@ -1,201 +1,246 @@
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import React, { Fragment, useEffect, useState } from 'react';
-import { Menu, Transition } from '@headlessui/react';
-import cn from 'classnames';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useUserState } from '@/contexts/user-state';
-import SvgIcon from '@/components/SvgIcon';
-import { useSSOState } from '@/contexts/sso-state';
-import { exchangeDashboardEventHostToken } from '@/api';
-import toast from 'react-hot-toast';
-import { useRouter } from 'next/router';
-import Avvvatars from 'avvvatars-react';
+import { useRouter } from 'next/router'
+import { Avatar, HStack, useToast } from '@chakra-ui/react';
+import { SearchIcon } from "@chakra-ui/icons";
+import { DownTwo, HamburgerButton, International, More, Search } from '@icon-park/react';
+import { Menu, Transition } from '@headlessui/react'
+import classNames from 'classnames';
+import { useSSOState } from 'contexts/sso-state';
+import { useUserState } from 'contexts/user-state';
+import { exchangeDashboardEventHostToken } from 'lib/api';
+import classnames from 'classnames';
 
-type HeaderProps = {
-  logo?: string;
-  mode?: 'normal' | 'animation';
-};
-const Header = ({ logo, mode = 'animation' }: HeaderProps) => {
+export default function Header({ children, checkingWhiteLable, whiteLabelLogo, whiteLabelHome }: { children?: any, checkingWhiteLable: any, whiteLabelLogo: any, whiteLabelHome: any }) {
   const { user, clearUser } = useUserState();
-  const { showSSO, showSSOSignUp } = useSSOState();
-  const [animateHeader, setAnimateHeader] = useState(mode === 'normal');
+  const { dimmed, showSSO, showSSOSignUp } = useSSOState();
+  /* const [showSearch, setSearch] = useState(false)
+  const [isEventPage, setIsEventPage] = useState(false) */
   const router = useRouter();
-  useEffect(() => {
-    if (mode === 'animation') {
-      const listener = () => {
-        if (window.scrollY > 10) {
-          setAnimateHeader(true);
-        } else setAnimateHeader(false);
-      };
-      window.addEventListener('scroll', listener);
-      return () => {
-        window.removeEventListener('scroll', listener);
-      };
+  const toast = useToast();
+  const [isWhiteLable, setIsWhiteLable] = useState(false);
+
+  useEffect(()=> {
+    if (window.location.hostname !== 'happin.app' && window.location.hostname !== 'localhost' && !window.location.hostname.includes('deploy-preview')) {
+      setIsWhiteLable(true)
     }
-  }, []);
+  }, [])
+
+  //const searchRef = useRef<HTMLInputElement>(null!);
+
+
+/*   useEffect(() => {
+    if (router.asPath.includes('/post/') || router.asPath.includes('/checkout/') || router.asPath.includes('/payment')) {
+      setIsEventPage(true);
+    } else {
+      setIsEventPage(false);
+    }
+  }, [router.asPath])
+
+
+  useEffect(() => {
+    showSearch && searchRef.current.focus()
+  }, [showSearch]) */
+
+  useEffect(() => {
+    if (dimmed) {
+      document.body.classList.add("body-overflow-hidden");
+    } else {
+      document.body.classList.remove("body-overflow-hidden");
+    }
+  }, [dimmed])
+
   const clickHostEventHandler = async () => {
     if (!user) {
-      toast('Please sign up as event organizer.');
-      showSSOSignUp('Organizer');
-      return;
+      generateToast('Please sign up as event organizer');
+      showSSOSignUp('Organizer')
+      return
     }
     if (!user.email) {
-      toast('Please sign up as event organizer.');
-      return;
+      generateToast('Please sign up as event organizer');
+      return
     }
     try {
       const res = await exchangeDashboardEventHostToken();
       if (res.code !== 200) {
-        throw new Error(res.message);
+        throw new Error(res.message)
       }
       const sassToken = res.data.token;
-      window.location.href = `https://manage.happin.app/link-happin?t=${sassToken}`;
+      window.location.href = `https://manage.happin.app/link-happin?t=${sassToken}`
     } catch (err) {
-      console.log(err);
+      console.log(err)
     }
-  };
+  }
+
+  const generateToast = (message: string) => {
+    toast({
+      title: message,
+      position: 'top',
+      isClosable: true,
+    })
+  }
 
   return (
-    <div
-      className={cn(
-        'fixed right-0 top-0 left-0 transition ease-in-out duration-500 z-10',
-        animateHeader ? 'bg-white' : 'bg-transparent',
-      )}
-    >
-      <div className="px-5 sm:px-6 md:px-10 py-2 transition-all ease-in-out duration-500">
-        <div className="flex items-center w-full">
-          <div className="flex items-center flex-1">
-            <Link className="font-bold text-xl md:text-2xl text-gray-900 no-underline" href="/">
-              {logo ? (
-                <img
-                  className={cn(
-                    'transition-all ease-in-out duration-500',
-                    animateHeader ? 'h-12' : 'h-14 md:h-20',
-                  )}
-                  src={logo}
-                  alt=""
-                />
-              ) : (
-                <div>CrowdCore</div>
-              )}
-            </Link>
-          </div>
-          <div className="flex items-center gap-4">
-            <a
-              className="inline-flex p-2 text-gray-800 hover:text-[#EE1D51]"
-              target="_blank"
-              rel="noreferrer"
-              href="#"
-            >
-              <SvgIcon name="tiktok" size={18} />
-            </a>
-            <a
-              className="inline-flex p-2 text-gray-800 hover:text-[#1DA1F2]"
-              target="_blank"
-              rel="noreferrer"
-              href="https://twitter.com/AppHappin"
-            >
-              <SvgIcon name="twitter" size={18} />
-            </a>
-            <a
-              className="inline-flex p-2 text-gray-800 hover:text-[#E4405F]"
-              target="_blank"
-              rel="noreferrer"
-              href="https://www.instagram.com/happin.app/"
-            >
-              <SvgIcon name="instagram" size={18} />
-            </a>
-          </div>
-          <Menu as="div" className="relative ml-5 sm:ml-10">
-            {({ open }) => (
-              <>
-                <Menu.Button as="div" className={cn('header__menu group', { active: open })}>
-                  <SvgIcon name="menu" className="mr-3" size={20} />
-                  {!user ? (
-                    <div
-                      className={cn(
-                        'flex items-center justify-center rounded-full bg-gray-200 w-[30px] h-[30px] text-gray-500 group-hover:text-gray-500',
-                        {
-                          'text-gray-500': open,
-                        },
-                      )}
-                    >
-                      <SvgIcon name="user" className="text-[18px]" />
-                    </div>
-                  ) : user?.photourl ? (
-                    <div className="w-[30px] h-[30px] overflow-hidden rounded-full">
-                      <img className="aspect-square h-full w-full" src={user.photourl} alt="" />
-                    </div>
-                  ) : (
-                    <Avvvatars size={30} value={user.displayname} />
-                  )}
-                </Menu.Button>
-                <Transition
-                  show={open}
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-200">
-                    <div className="py-1">
-                      <Menu.Item>
-                        <a className="header__menu-link" onClick={clickHostEventHandler}>
-                          <SvgIcon name="global" className="text-[16px]" />
-                          <span className="ml-2">Organizer Dashboard</span>
-                        </a>
+    <header className="header">
+      {children}
+      <div className=" flex items-center h-16 sm:h-20 px-4 sm:px-8 bg-gray-900">
+        {/* Mobile Search Form */}
+      {/*   <form className={classNames('absolute top-full left-0 w-full z-10 hidden', { '!block': showSearch })}>
+          <input ref={searchRef} type="text" className="header__phone-search" placeholder="Search..." />
+        </form> */}
+        <HStack w="100%" h="100%" justify="space-between">
+          {/* Left Block */}
+          <div className="flex items-center">
+            {/* Logo */}
+            {!checkingWhiteLable ?
+              whiteLabelLogo ?
+                <a>
+                  <img className="h-10 mr-6 md:mr-8 hidden sm:block" src={whiteLabelLogo} onClick={() => {
+                    if (whiteLabelHome) window.location.href = whiteLabelHome.startsWith('https://') ? whiteLabelHome : 'https://' + whiteLabelHome;
+                    else router.push('/')
+                  }} alt="Happin" />
+                </a> :
+                <a>
+                  <img className="h-9 mr-6 md:mr-8 hidden sm:block" src="/images/happin-solid-logo.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                  <img className="h-8 mr-6 sm:hidden" src="/images/happin-solid-single.svg" onClick={() => { router.push('/') }} alt="Happin" />
+                </a> : <></>
+            }
+            {/* Mobile Left Menu */}
+            <Menu as="div" className="relative md:hidden">
+              {({ open }) => (
+                <>
+                  <Menu.Button className={classNames('p-2 rounded-full text-gray-300 hover:text-gray-50 hover:bg-gray-900', { 'bg-gray-800 text-gray-50 hover:bg-gray-800': open })}>
+                    <More theme="outline" size="24" fill="currentColor" />
+                  </Menu.Button>
+                  <Transition
+                    show={open}
+                    as={Fragment}
+                    enter="fade-enter"
+                    enterFrom="fade-enter-from"
+                    enterTo="fade-enter-to"
+                    leave="fade-leave"
+                    leaveFrom="fade-leave-from"
+                    leaveTo="fade-leave-to"
+                  >
+                    <Menu.Items className="header__menu-dropdown left-0 origin-top-left divide-y divide-gray-800">
+                      <div className="py-1">
+                        {/*<Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">Home</a>
+                        </Link>
                       </Menu.Item>
-                      {/*<Menu.Item>
-                        <a className="header__menu-link">
-                          <SvgIcon name="download" className="text-[16px]" />
-                          <span className="ml-2">Download App</span>
-                        </a>
+                      <Menu.Item>
+                        <Link href="/">
+                          <a className="header__menu-link">Explore events</a>
+                        </Link>
                       </Menu.Item>*/}
-                    </div>
-                    <div className="py-1">
-                      {!user ? (
-                        <>
-                          <Menu.Item>
-                            <a className="header__menu-link" onClick={showSSO}>
-                              Log in
-                            </a>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <a className="header__menu-link" onClick={() => showSSOSignUp('Fan')}>
-                              Sign up
-                            </a>
-                          </Menu.Item>
-                        </>
-                      ) : (
-                        <>
-                          <Menu.Item>
-                            <Link href="/my-events" className="header__menu-link">My events</Link>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <a
-                              className="header__menu-link"
-                              onClick={async () => {
-                                clearUser();
-                                await router.push('/');
-                              }}
-                            >
-                              Log out
-                            </a>
-                          </Menu.Item>
-                        </>
-                      )}
-                    </div>
-                  </Menu.Items>
-                </Transition>
-              </>
-            )}
-          </Menu>
-        </div>
+                        <Menu.Item>
+                          <a className="header__menu-link md:hidden" onClick={()=>{router.push('/submit-event')}}>Submit an Event/Experience</a>
+                        </Menu.Item>
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </>
+              )}
+            </Menu>
+            {/* Left Menu */}
+            {/*<HStack spacing={4} display={{ base: "none", lg: "flex" }}>
+            <Link href="/">
+              <a className="header__link">Home</a>
+            </Link>
+            <Link href="/">
+              <a className="header__link">Explore events</a>
+            </Link>
+          </HStack>*/}
+          </div>
+
+          {/* Central Block */}
+          {/* Search */}
+{/*           {!isEventPage && <div className="header__search">
+            <label htmlFor="search" className="absolute left-4 leading-none inline-flex transition">
+              <SearchIcon w={4} h={4} color="currentColor" />
+            </label>
+            <input id="search" type="text" className="header__search-input" placeholder="Search..." />
+          </div>} */}
+
+
+          {/* Right Block */}
+          <div className="flex items-center">
+            {!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{ window.location.href = 'https://ticketing.happin.app'}}>Host events with Happin</a>}
+
+            {/*{!isWhiteLable && <a className="header__link sm:hidden md:inline-flex" onClick={()=>{router.push('/submit-event')}}>Submit a professional event</a>}*/}
+           {/*  {!isEventPage && <button className={classNames('flex p-3 mr-3 rounded-full text-gray-300 sm:hidden', { 'bg-gray-800': showSearch })} onClick={() => setSearch(s => !s)}>
+              <SearchIcon w={4} h={4} color="currentColor" />
+            </button>} */}
+
+            {/* User Profile */}
+            <Menu as="div" className="relative md:ml-5">
+              {({ open }) => (
+                <>
+                  <Menu.Button as="div" className={classNames('header__menu', { 'active': open })}>
+                    <HamburgerButton theme="outline" size="22" fill="currentColor" />
+                    {!user && <Avatar size="sm" ml={2} bg="gray.600" ><span style={{background: '#fdf846', bottom: '25px', left: '25px' }} className="w-2 h-2 rounded-full absolute"></span></Avatar>}
+                    {user && <Avatar size="sm" ml={2} src={user.photourl} name={user.displayname} />}
+                  </Menu.Button>
+                  <Transition
+                    show={open}
+                    as={Fragment}
+                    enter="fade-enter"
+                    enterFrom="fade-enter-from"
+                    enterTo="fade-enter-to"
+                    leave="fade-leave"
+                    leaveFrom="fade-leave-from"
+                    leaveTo="fade-leave-to"
+                  >
+                    <Menu.Items className="header__menu-dropdown right-0 origin-top-right divide-y divide-gray-700">
+                      <div className="py-1">
+                        <Menu.Item>
+                          <a className="header__menu-link" onClick={clickHostEventHandler}>
+                            <International theme="outline" size="16" fill="currentColor" />
+                            <span className="ml-2">Organizer Dashboard</span>
+                          </a>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <a className="header__menu-link" onClick={()=>{ window.location.href = process.env.NEXT_PUBLIC_HAPPIN_APP_APPLE_STORE as string}}>
+                            <DownTwo theme="outline" size="16" fill="currentColor" />
+                            <span className="ml-2">Download App</span>
+                          </a>
+                        </Menu.Item>
+                      </div>
+                      <div className="py-1">
+                        {!user && (
+                          <>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={showSSO}>Log in</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={()=> {showSSOSignUp('Fan')}}>Sign up</a>
+                            </Menu.Item>
+                          </>
+                        )}
+                        {user && (
+                          <>
+                           <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-event-collections')}}>Event collection</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{router.push('/my-events')}}>My events</a>
+                            </Menu.Item>
+                            <Menu.Item>
+                              <a className="header__menu-link" onClick={()=>{clearUser(); router.push('/')}}>Log out</a>
+                            </Menu.Item>
+                          </>
+                        )}
+                      </div>
+                    </Menu.Items>
+                  </Transition>
+                </>
+              )}
+            </Menu>
+          </div>
+        </HStack>
       </div>
-    </div>
-  );
-};
-export default Header;
+      {/*<div className="h-16 sm:h-20" />*/}
+    </header>
+  )
+}
