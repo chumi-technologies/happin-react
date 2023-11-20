@@ -37,7 +37,7 @@ const Layout = ({ children }: { children: any }) => {
   // save the userId for the final checkout step
   const router = useRouter();
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (router.query?.token && router.asPath.includes("/checkout/")) {
       setTokenPassedIn(true);
       localStorage.setItem("chumi_jwt", router?.query?.token as string);
@@ -117,6 +117,10 @@ const Layout = ({ children }: { children: any }) => {
         setCheckingWhiteLable(false);
       }
     }
+  }, []);*/
+
+  useEffect(() => {
+    router.replace('https://crowdcore.com/');
   }, []);
 
   const whiteLabelDomain = async (domain: string) => {
